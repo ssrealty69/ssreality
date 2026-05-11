@@ -1,65 +1,93 @@
-import Image from "next/image";
+import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
+import HeroSection from '@/components/home/HeroSection';
+import FeaturedProperties from '@/components/home/FeaturedProperties';
+import type { Property } from '@/types';
+import { FALLBACK_PROPERTIES } from '@/constants/properties';
 
-export default function Home() {
+// Lazy-load below-the-fold sections — they won't block initial paint
+const ProjectHighlights = dynamic(() => import('@/components/home/ProjectHighlights'), { ssr: true });
+const AmenitiesSection = dynamic(() => import('@/components/home/AmenitiesSection'), { ssr: true });
+const StatsSection = dynamic(() => import('@/components/home/StatsSection'), { ssr: true });
+const ServicesSection = dynamic(() => import('@/components/home/ServicesSection'), { ssr: true });
+const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection'), { ssr: true });
+const CTASection = dynamic(() => import('@/components/home/CTASection'), { ssr: true });
+
+export const metadata: Metadata = {
+  title: 'SS Realty | Premium Properties in Delhi NCR',
+  description: 'Discover premium residential and commercial properties for sale and rent across Delhi NCR with SS Realty — your trusted real estate partner.',
+};
+
+// ISR — revalidate every hour
+export const revalidate = 3600;
+
+async function getProperties(query: string): Promise<Property[]> {
+  try {
+    const base = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const res = await fetch(`${base}/api/properties?${query}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.data || [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  // Fetch data for different sections
+  const [latestData, apartmentData, plotData] = await Promise.all([
+    getProperties('sort=-createdAt&limit=4&status=available'),
+    getProperties('propertyType=apartment&limit=4&status=available'),
+    getProperties('propertyType=plot&limit=4&status=available')
+  ]);
+
+  // Fallback logic for demo/empty state
+  const latestProperties = latestData.length > 0 ? latestData : FALLBACK_PROPERTIES.slice(0, 4);
+  const apartments = apartmentData.length > 0 ? apartmentData : FALLBACK_PROPERTIES.filter(p => p.propertyType === 'apartment').slice(0, 4);
+  const plots = plotData.length > 0 ? plotData : FALLBACK_PROPERTIES.filter(p => p.propertyType === 'plot').slice(0, 4);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      <HeroSection />
+      
+      {/* 1. Newly Added Section */}
+      <FeaturedProperties 
+        title={<>Newly Added <span className="text-[#C9A227]">Properties</span></>}
+        subtitle="Stay ahead with the latest residential and commercial opportunities recently posted by our expert team."
+        properties={latestProperties}
+        viewAllHref="/properties?sortBy=newest"
+        badgeText="Fresh Listings"
+        className="pt-12 pb-6 md:pt-16 md:pb-8"
+      />
+
+      {/* 2. Luxury Apartments Section */}
+      <FeaturedProperties 
+        title={<>Luxury <span className="text-[#C9A227]">Apartments</span></>}
+        subtitle="Discover premium flats and high-rise apartments designed for a modern and sophisticated lifestyle."
+        properties={apartments}
+        viewAllHref="/properties?propertyType=apartment"
+        badgeText="Urban Living"
+        className="py-6 md:py-8"
+      />
+
+      {/* 3. Freehold Lands Section */}
+      <FeaturedProperties 
+        title={<>Freehold <span className="text-[#C9A227]">Lands & Plots</span></>}
+        subtitle="Build your dream home on our premium residential and freehold plots in strategic locations across NCR."
+        properties={plots}
+        viewAllHref="/properties?propertyType=plot"
+        badgeText="Investment Gold"
+        className="pt-6 pb-12 md:pt-8 md:pb-16"
+      />
+
+      <ProjectHighlights />
+      <AmenitiesSection />
+      <StatsSection />
+      <ServicesSection />
+      <TestimonialsSection />
+      <CTASection />
+    </>
   );
 }

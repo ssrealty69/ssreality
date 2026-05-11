@@ -1,0 +1,132 @@
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Star, Building2, CheckCircle2, Play } from 'lucide-react';
+
+export default function HeroSection() {
+  const [loadVideo, setLoadVideo] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Lazy-load YouTube iframe: load after 3s OR when user interacts
+  useEffect(() => {
+    const timer = setTimeout(() => setLoadVideo(true), 3000);
+    
+    const handleInteraction = () => setLoadVideo(true);
+    window.addEventListener('scroll', handleInteraction, { once: true, passive: true });
+    window.addEventListener('click', handleInteraction, { once: true });
+    window.addEventListener('touchstart', handleInteraction, { once: true, passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleInteraction);
+      window.removeEventListener('click', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+    };
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="relative h-[100vh] min-h-[600px] w-full overflow-hidden flex flex-col justify-center items-center font-sans">
+      
+      {/* Background: Poster image first, then YouTube iframe */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
+        {/* Lightweight poster image (loads instantly) */}
+        <Image
+          src="https://img.youtube.com/vi/M-j_LvEK2ZA/maxresdefault.jpg"
+          alt="SS Realty Hero Background"
+          fill
+          className={`object-cover transition-opacity duration-1000 ${loadVideo ? 'opacity-0' : 'opacity-100'}`}
+          priority
+          sizes="100vw"
+          quality={75}
+        />
+
+        {/* YouTube iframe (loads only after delay/interaction) */}
+        {loadVideo && (
+          <iframe
+            src="https://www.youtube.com/embed/M-j_LvEK2ZA?autoplay=1&mute=1&loop=1&playlist=M-j_LvEK2ZA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1&fs=0"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[61.87vw] min-h-[110vh] min-w-[195.55vh] object-cover border-0 pointer-events-none scale-110"
+            allow="autoplay; encrypted-media"
+            title="SS Realty background video"
+            loading="lazy"
+          />
+        )}
+        {/* Interaction Blocker */}
+        <div className="absolute inset-0 z-10 bg-transparent pointer-events-auto" />
+      </div>
+
+      {/* Reduced overlay opacity to show video better */}
+      <div className="absolute inset-0 bg-[#0A0A0A]/40 z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-[#0A0A0A]/70 z-0" />
+
+      {/* Content Container (Perfectly Centered & Scaled Down) */}
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col items-center text-center mt-8">
+        
+        {/* Top Badge (Matched to website's Gold Theme) */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-[#C9A227]/30 rounded-full bg-[#C9A227]/10 backdrop-blur-md mb-6 shadow-lg">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] animate-pulse" />
+          <span className="text-[11px] font-bold text-[#F0D060] tracking-widest uppercase">
+            Delhi NCR's No.1 Real Estate Platform
+          </span>
+        </div>
+
+        {/* Main Title (Smooth sizing and Gold Gradient) */}
+        <h1 className="text-4xl md:text-5xl lg:text-[64px] font-bold text-white tracking-tight leading-[1.1] mb-5 drop-shadow-lg">
+          Find Your Perfect Property, <br />
+          <span className="bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#C9A227] text-transparent bg-clip-text">
+            Anywhere in Delhi NCR.
+          </span>
+        </h1>
+
+        {/* Subtitle (Smaller and refined) */}
+        <p className="text-sm md:text-base text-gray-300 max-w-2xl leading-relaxed mb-8 font-medium">
+          10,000+ premium residential and commercial properties from trusted builders. <br className="hidden md:block" /> 
+          Flats, Villas, Plots, Offices & more — all in one place.
+        </p>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+          <Link 
+            href="/properties" 
+            className="inline-flex items-center justify-center px-8 py-3.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors shadow-[0_4px_14px_0_rgba(249,115,22,0.39)] text-[15px]"
+          >
+            Explore Properties Free
+          </Link>
+          
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-2 text-gray-300 font-semibold hover:text-white transition-colors text-[15px]"
+          >
+            <Play className="w-6 h-6 text-gray-400" strokeWidth={1.5} />
+            Watch Property Tour
+          </Link>
+        </div>
+
+        {/* Bottom Trust Indicators (Smaller, cleaner, exact layout) */}
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-4 pt-8">
+          
+          <div className="flex items-center gap-2">
+            <Star className="w-4 h-4 text-[#F97316]" fill="currentColor" />
+            <span className="text-[11px] font-bold text-gray-400 tracking-widest">4.8 RATING</span>
+          </div>
+
+          <div className="hidden sm:block w-px h-3 bg-gray-600" />
+
+          <div className="flex items-center gap-2">
+            <Building2 className="w-4 h-4 text-[#C9A227]" />
+            <span className="text-[11px] font-bold text-gray-400 tracking-widest">2000+ PROPERTIES</span>
+          </div>
+
+          <div className="hidden sm:block w-px h-3 bg-gray-600" />
+
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
+            <span className="text-[11px] font-bold text-gray-400 tracking-widest">VERIFIED BUILDERS</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+}
