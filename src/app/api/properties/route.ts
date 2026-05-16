@@ -5,6 +5,8 @@ import { getCached, setCached, invalidateCache } from '@/lib/redis';
 
 export const dynamic = 'force-dynamic';
 
+
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -78,10 +80,10 @@ export async function POST(req: NextRequest) {
     await connectDB();
     const body = await req.json();
     const property = await Property.create(body);
-    
+
     // Invalidate properties list cache so the new property shows up immediately
     await invalidateCache('properties:*');
-    
+
     return NextResponse.json({ success: true, data: property }, { status: 201 });
   } catch (error) {
     console.error(error);
