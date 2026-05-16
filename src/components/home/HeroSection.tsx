@@ -43,16 +43,19 @@ export default function HeroSection() {
 
         {/* YouTube iframe (loads only after delay/interaction) */}
         {loadVideo && (
-          <iframe
-            src="https://www.youtube.com/embed/M-j_LvEK2ZA?autoplay=1&mute=1&loop=1&playlist=M-j_LvEK2ZA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1&fs=0"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[61.87vw] min-h-[110vh] min-w-[195.55vh] object-cover border-0 pointer-events-none scale-110"
-            allow="autoplay; encrypted-media"
-            title="SS Realty background video"
-            loading="lazy"
-          />
+          <div className="absolute inset-0">
+            <iframe
+              src="https://www.youtube.com/embed/M-j_LvEK2ZA?autoplay=1&mute=1&loop=1&playlist=M-j_LvEK2ZA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[61.87vw] min-h-[110vh] min-w-[195.55vh] border-0 scale-110"
+              allow="autoplay; encrypted-media"
+              title="SS Realty background video"
+              loading="lazy"
+              tabIndex={-1}
+            />
+            {/* Blocker sits directly above the iframe — prevents ALL YouTube UI */}
+            <div className="absolute inset-0 z-20" style={{ pointerEvents: 'all', cursor: 'default' }} />
+          </div>
         )}
-        {/* Interaction Blocker */}
-        <div className="absolute inset-0 z-10 bg-transparent pointer-events-auto" />
       </div>
 
       {/* Reduced overlay opacity to show video better */}

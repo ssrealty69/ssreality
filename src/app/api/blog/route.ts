@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
-import { getCached, setCached } from '@/lib/redis';
+import { getCached, setCached, invalidateCache } from '@/lib/redis';
 import { getAllBlogs } from '@/lib/blog-service';
 
 export const dynamic = 'force-dynamic';
@@ -64,6 +64,10 @@ export async function POST(req: NextRequest) {
     await connectDB();
     const body = await req.json();
     const blog = await Blog.create(body);
+    
+    // Invalidate blog list cache
+    await invalidateCache('blogs:v2:*');
+    
     return NextResponse.json({ success: true, data: blog }, { status: 201 });
   } catch (error) {
     console.error(error);

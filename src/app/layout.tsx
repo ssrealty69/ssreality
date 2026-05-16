@@ -4,7 +4,7 @@ import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FloatingWhatsApp from '@/components/layout/FloatingWhatsApp';
-import Preloader from '@/components/layout/Preloader';
+
 import MobileBottomNav from '@/components/layout/MobileBottomNav';
 import { Toaster } from 'react-hot-toast';
 
@@ -82,8 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#FFFEF5] font-[var(--font-inter)]">
-        <Preloader />
+      <body className="min-h-screen flex flex-col bg-[#FFFEF5] font-[var(--font-inter)]" suppressHydrationWarning>
         <Navbar />
         <main className="flex-1 pb-16 md:pb-0">{children}</main>
         <Footer />

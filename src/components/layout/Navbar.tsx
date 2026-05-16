@@ -133,9 +133,9 @@ export default function Navbar() {
 
           <button
             onClick={() => setOpen(!open)}
-            className={`lg:hidden p-2 rounded-lg transition-colors ${
+            className={`relative z-[60] lg:hidden p-2 rounded-lg transition-colors ${
               open 
-                ? 'text-[#F0D060] z-[60]' 
+                ? 'text-[#F0D060]' 
                 : !isSolid 
                   ? 'text-white hover:bg-white/10' 
                   : 'text-[#3a3828] hover:bg-[#C9A227]/10'
@@ -172,20 +172,7 @@ export default function Navbar() {
           <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#C9A227 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
           
           <div className="relative z-10 flex flex-col h-full overflow-y-auto">
-            {/* Mobile Menu Logo */}
-            <div className="px-8 pt-8 pb-2">
-              <Link href="/" onClick={() => setOpen(false)} className="block relative w-40 h-14">
-                <Image 
-                  src="/SS Realty.png" 
-                  alt="SS Realty Logo" 
-                  fill
-                  sizes="(max-width: 768px) 160px, 160px"
-                  className="object-contain"
-                />
-              </Link>
-            </div>
-
-            <div className="px-5 py-4 space-y-1">
+            <div className="px-5 py-6 space-y-1">
               {navLinks.map((link) => (
                 <div key={link.href}>
                   <Link
