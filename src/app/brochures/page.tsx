@@ -139,11 +139,11 @@ export default function BrochuresPage() {
           </div>
 
           {/* Iframe for actual PDF content (toolbar hidden) */}
-          <div className="flex-1 w-full bg-[#FFFEF5]">
+          <div className="flex-1 w-full bg-[#FFFEF5] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
             <iframe
               key={selectedPdf}
-              src={`${selectedPdf}#toolbar=0&navpanes=0&scrollbar=0&view=Fit`}
-              className="w-full h-full"
+              src={`${selectedPdf}#toolbar=0&navpanes=0&view=FitH`}
+              className="w-full h-full min-h-[600px] sm:min-h-full"
               title="SS Realty Brochure"
               style={{ border: 'none' }}
             />
