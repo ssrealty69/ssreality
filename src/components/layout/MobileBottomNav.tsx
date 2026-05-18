@@ -11,7 +11,7 @@ export default function MobileBottomNav() {
     { name: 'EMI', href: '/emi-calculator', icon: Calculator, isCenter: false },
     { name: 'SEARCH', href: '/properties?focus=true', icon: Search, isCenter: true },
     { name: 'ABOUT', href: '/about', icon: Info, isCenter: false },
-    { name: 'BROCHURES', href: '/Arch%20Brouchre.pdf', icon: BookOpen, isCenter: false },
+    { name: 'BROCHURES', href: '/brochures', icon: BookOpen, isCenter: false },
   ];
 
   return (
@@ -38,7 +38,7 @@ export default function MobileBottomNav() {
             <Link
               key={item.name}
               href={item.href}
-              {...(item.name === 'BROCHURES' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+
               className={`flex-1 flex flex-col items-center justify-center h-full space-y-1 transition-colors ${
                 isActive ? 'text-[#C9A227]' : 'text-[#a09060] hover:text-white'
               }`}

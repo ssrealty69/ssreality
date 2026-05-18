@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Property from '@/models/Property';
 import { getCached, setCached, invalidateCache } from '@/lib/redis';
+import { FALLBACK_PROPERTIES } from '@/constants/properties';
 
 export const dynamic = 'force-dynamic';
 
@@ -65,8 +66,16 @@ export async function GET(req: NextRequest) {
     await setCached(cacheKey, response, 300); // 5 min cache
     return NextResponse.json(response);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
+    console.error("DB Connection or fetch error:", error);
+    // Return fallback data instead of 500 error to let frontend run locally without DB
+    return NextResponse.json({
+      success: true,
+      data: FALLBACK_PROPERTIES,
+      total: FALLBACK_PROPERTIES.length,
+      page: 1,
+      limit: 9,
+      totalPages: 1,
+    });
   }
 }
 

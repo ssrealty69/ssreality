@@ -82,7 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#FFFEF5] font-[var(--font-inter)]" suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col font-sans text-[#3a3828] bg-[#FFFEF5]" suppressHydrationWarning={true} data-version="2">
         <Navbar />
         <main className="flex-1 pb-16 md:pb-0">{children}</main>
         <Footer />

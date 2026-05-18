@@ -26,6 +26,7 @@ export interface IProperty extends Document {
     totalFloors?: number;
   };
   images: string[];
+  brochureUrl?: string;
   featured: boolean;
   amenities: string[];
   highlights?: {
@@ -86,6 +87,7 @@ const PropertySchema = new Schema<IProperty>(
       totalFloors: { type: Number },
     },
     images: [{ type: String }],
+    brochureUrl: { type: String },
     featured: { type: Boolean, default: false, index: true },
     amenities: [{ type: String }],
     highlights: [

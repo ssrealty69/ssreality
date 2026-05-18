@@ -10,9 +10,11 @@ import type { Property } from '@/types';
 interface PropertyCardProps {
   property: Property;
   priority?: boolean;   // Pass true for above-the-fold cards
+  actionText?: string;
+  onActionClick?: (property: Property) => void;
 }
 
-export default function PropertyCard({ property, priority = false }: PropertyCardProps) {
+export default function PropertyCard({ property, priority = false, actionText, onActionClick }: PropertyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [hoverImageError, setHoverImageError] = useState(false);
   
@@ -122,15 +124,24 @@ export default function PropertyCard({ property, priority = false }: PropertyCar
           ))}
         </div>
 
-        {/* View Details Button */}
-        <Link 
-          href={`/properties/${property._id}`}
-          className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"
-        >
-          {/* SHINE EFFECT */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
-          <span className="relative z-10">View Details</span>
-        </Link>
+        {/* View Details / Custom Action Button */}
+        {onActionClick ? (
+          <button 
+            onClick={() => onActionClick(property)}
+            className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+            <span className="relative z-10">{actionText || 'View Details'}</span>
+          </button>
+        ) : (
+          <Link 
+            href={`/properties/${property._id}`}
+            className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+            <span className="relative z-10">{actionText || 'View Details'}</span>
+          </Link>
+        )}
       </div>
     </article>
   );

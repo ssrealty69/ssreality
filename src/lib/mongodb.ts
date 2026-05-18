@@ -29,6 +29,7 @@ export async function connectDB() {
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
       dbName: process.env.MONGODB_DB || 'SSRealty',
+      serverSelectionTimeoutMS: 3000, // Fail fast if IP is not whitelisted
     });
   }
 

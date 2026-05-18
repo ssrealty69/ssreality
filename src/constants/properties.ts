@@ -3,7 +3,7 @@ import { Property } from '@/types';
 export const FALLBACK_PROPERTIES: Property[] = [
   {
     _id: 'p1',
-    title: 'Luxury Apartment in Sector 63',
+    title: 'Arch Premium Apartment',
     description: 'Modern 3 BHK apartment with all amenities and great connectivity.',
     price: 12500000,
     priceType: 'sale',
@@ -17,12 +17,13 @@ export const FALLBACK_PROPERTIES: Property[] = [
     ],
     featured: true,
     amenities: ['Gym', 'Swimming Pool', 'Power Backup', '24x7 Security'],
+    brochureUrl: '/SS%20Realty%20Arch%20Property%20Brochure.pdf',
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
     views: 1250, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
     _id: 'p2',
-    title: 'Spacious Villa in Greater Noida',
+    title: 'Nivasa Spaces in Greater Noida',
     description: 'Beautiful 4 BHK villa with private garden and modern interiors.',
     price: 35000000,
     priceType: 'sale',
@@ -36,6 +37,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     ],
     featured: true,
     amenities: ['Private Garden', 'Clubhouse', 'Gym', 'Parking'],
+    brochureUrl: '/Nivasa.pdf',
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
     views: 890, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },

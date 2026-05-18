@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, ArrowRight, X, User, Mail, MapPin, IndianRupee, Send, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
@@ -7,6 +7,9 @@ import Image from 'next/image';
 export default function EMICalculator() {
   const [loanAmount, setLoanAmount] = useState<number | string>(5000000);
   const [downPayment, setDownPayment] = useState<number | string>(1000000);
+  const [downPaymentPercent, setDownPaymentPercent] = useState<number>(20);
+  const [showDPDropdown, setShowDPDropdown] = useState(false);
+  const dpDropdownRef = useRef<HTMLDivElement>(null);
   const [interestRate, setInterestRate] = useState<number | string>(8.5);
   const [tenure, setTenure] = useState<number | string>(20);
 
@@ -26,6 +29,24 @@ export default function EMICalculator() {
     name: '',
   });
   const [loading, setLoading] = useState(false);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dpDropdownRef.current && !dpDropdownRef.current.contains(e.target as Node)) {
+        setShowDPDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Sync down payment amount when percentage or loan amount changes
+  useEffect(() => {
+    const loan = Number(loanAmount) || 0;
+    const dpAmount = Math.round((downPaymentPercent / 100) * loan);
+    setDownPayment(dpAmount);
+  }, [downPaymentPercent, loanAmount]);
 
   useEffect(() => {
     const p = Number(loanAmount) || 0;
@@ -221,17 +242,76 @@ export default function EMICalculator() {
                 prefix="₹"
               />
               
-              <CalculatorRow 
-                label="Down Payment" 
-                value={downPayment} 
-                onChange={setDownPayment} 
-                min={0} 
-                max={Number(loanAmount)} 
-                step={50000}
-                minLabel="₹0"
-                maxLabel={formatCurrency(Number(loanAmount))}
-                prefix="₹"
-              />
+              {/* Down Payment — custom dropdown + slider */}
+              <div className="flex flex-col gap-4 w-full">
+                <div className="flex justify-between items-center gap-4">
+                  <label className="text-[13px] font-bold text-[#1A1800] leading-tight flex-1">
+                    Down Payment
+                  </label>
+                  {/* Custom compact dropdown */}
+                  <div className="relative w-[140px] lg:w-[160px] shrink-0" ref={dpDropdownRef}>
+                    <button
+                      type="button"
+                      onClick={() => setShowDPDropdown(!showDPDropdown)}
+                      className="w-full h-11 border-2 border-[#E8D5A3]/40 rounded-xl text-center text-[14px] font-black text-[#1A1800] transition-colors shadow-sm bg-[#FFFEF5] cursor-pointer flex items-center justify-between px-4 hover:border-[#C9A227] focus:border-[#C9A227] focus:outline-none"
+                    >
+                      <span className="flex-1 text-center">{downPaymentPercent}%</span>
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className={`transition-transform duration-200 ${showDPDropdown ? 'rotate-180' : ''}`}>
+                        <path d="M3 4.5L6 7.5L9 4.5" stroke="#6b6450" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                    {/* Compact scrollable dropdown */}
+                    {showDPDropdown && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-[#E8D5A3]/40 rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.15)] z-50 overflow-hidden">
+                        <div className="max-h-[240px] overflow-y-auto" style={{ overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}>
+                          {Array.from({ length: 20 }, (_, i) => (i + 1) * 5).map((pct) => (
+                            <button
+                              key={pct}
+                              type="button"
+                              onClick={() => { setDownPaymentPercent(pct); setShowDPDropdown(false); }}
+                              className={`w-full px-4 py-2 text-[13px] font-bold text-center transition-colors ${
+                                downPaymentPercent === pct
+                                  ? 'bg-[#1A1800] text-[#C9A227]'
+                                  : 'text-[#1A1800] hover:bg-[#FFFEF5]'
+                              }`}
+                            >
+                              {pct}%
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Slider bar for percentage */}
+                <div className="space-y-2">
+                  <div className="relative h-6 flex items-center">
+                    <input
+                      type="range"
+                      min={5}
+                      max={100}
+                      step={5}
+                      value={downPaymentPercent}
+                      onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
+                      style={{
+                        background: `linear-gradient(to right, #C9A227 0%, #C9A227 ${((downPaymentPercent - 5) / 95) * 100}%, #E5E7EB ${((downPaymentPercent - 5) / 95) * 100}%, #E5E7EB 100%)`
+                      }}
+                      className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-[#C9A227]"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center text-[10px] font-bold text-[#6b6450]/40 tracking-wider">
+                    <span>5%</span>
+                    <span>100%</span>
+                  </div>
+                </div>
+
+                {/* Show calculated amount */}
+                <div className="flex justify-between items-center text-[11px] font-bold text-[#6b6450]/60 px-1">
+                  <span>Amount</span>
+                  <span className="text-[#1A1800] font-black text-[13px]">{formatCurrency(Number(downPayment))}</span>
+                </div>
+              </div>
 
               <div className="grid grid-cols-2 gap-6">
                 <CalculatorRow 
@@ -249,10 +329,10 @@ export default function EMICalculator() {
                   label="Interest (%)" 
                   value={interestRate} 
                   onChange={setInterestRate} 
-                  min={1} 
+                  min={0} 
                   max={20} 
                   step={0.1}
-                  minLabel="1%"
+                  minLabel="0%"
                   maxLabel="20%"
                   suffix="%"
                   isSmall

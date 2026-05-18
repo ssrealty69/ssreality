@@ -25,6 +25,7 @@ export interface Property {
     totalFloors?: number;
   };
   images: string[];
+  brochureUrl?: string;
   featured: boolean;
   amenities: string[];
   highlights?: {

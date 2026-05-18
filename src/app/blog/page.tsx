@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: 'Stay updated with the latest real estate news, market trends, investment tips, and property guides from SS Realty.',
 };
 
-// ISR — revalidate every hour
-export const revalidate = 3600;
+// Force dynamic rendering to bypass stale SSR cache
+export const dynamic = 'force-dynamic';
 
 import { getAllBlogs } from '@/lib/blog-service';
 
@@ -57,8 +57,9 @@ async function BlogPageContent({ currentCategory }: { currentCategory: string })
   );
 }
 
-export default function BlogPage({ searchParams }: { searchParams: { category?: string } }) {
-  const currentCategory = searchParams.category || 'All';
+export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
+  const params = await searchParams;
+  const currentCategory = params.category || 'All';
 
   return (
     <div className="min-h-screen bg-[#FFFEF5]">
