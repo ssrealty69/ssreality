@@ -24,8 +24,12 @@ export interface IProperty extends Document {
     furnished?: boolean;
     floor?: number;
     totalFloors?: number;
+    towers?: number;
+    totalUnits?: number;
+    reraApproved?: boolean;
   };
   images: string[];
+  videoUrl?: string;
   brochureUrl?: string;
   featured: boolean;
   amenities: string[];
@@ -85,8 +89,12 @@ const PropertySchema = new Schema<IProperty>(
       furnished: { type: Boolean, default: false },
       floor: { type: Number },
       totalFloors: { type: Number },
+      towers: { type: Number },
+      totalUnits: { type: Number },
+      reraApproved: { type: Boolean, default: false },
     },
     images: [{ type: String }],
+    videoUrl: { type: String },
     brochureUrl: { type: String },
     featured: { type: Boolean, default: false, index: true },
     amenities: [{ type: String }],

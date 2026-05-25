@@ -3,21 +3,26 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import BlogCard from '@/components/blog/BlogCard';
 import type { Blog } from '@/types';
+import { getAllBlogs } from '@/lib/blog-service';
 
 export const metadata: Metadata = {
   title: 'Blog & News | SS Realty',
   description: 'Stay updated with the latest real estate news, market trends, investment tips, and property guides from SS Realty.',
 };
 
-// Force dynamic rendering to bypass stale SSR cache
 export const dynamic = 'force-dynamic';
 
-import { getAllBlogs } from '@/lib/blog-service';
-
 async function getBlogs(category?: string): Promise<Blog[]> {
-  const { data } = await getAllBlogs(category, 9, 1);
-  return data;
+  try {
+    const { data } = await getAllBlogs(category, 9, 1);
+    return JSON.parse(JSON.stringify(data || []));
+  } catch (error) {
+    console.error("Direct service fetch for blogs failed:", error);
+    return [];
+  }
 }
+
+
 
 const CATEGORIES = ['All', 'Market Trends', 'Investment', 'Legal', 'Home Tips', 'NRI'];
 

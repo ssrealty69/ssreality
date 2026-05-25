@@ -1,11 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import FloatingWhatsApp from '@/components/layout/FloatingWhatsApp';
-
-import MobileBottomNav from '@/components/layout/MobileBottomNav';
 import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({
@@ -83,11 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="min-h-screen flex flex-col font-sans text-[#3a3828] bg-[#FFFEF5]" suppressHydrationWarning={true} data-version="2">
-        <Navbar />
-        <main className="flex-1 pb-16 md:pb-0">{children}</main>
-        <Footer />
-        <MobileBottomNav />
-        <FloatingWhatsApp />
+        {children}
         <Toaster
           position="top-right"
           toastOptions={{

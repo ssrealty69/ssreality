@@ -18,8 +18,7 @@ export const metadata: Metadata = {
   description: 'Discover premium residential and commercial properties for sale and rent across Delhi NCR with SS Realty — your trusted real estate partner.',
 };
 
-// ISR — revalidate every hour
-export const revalidate = 3600;
+export const revalidate = 3600; // Cache the page for 1 hour
 
 async function getProperties(query: string): Promise<Property[]> {
   try {

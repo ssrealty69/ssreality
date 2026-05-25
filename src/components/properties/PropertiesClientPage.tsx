@@ -129,27 +129,70 @@ export default function PropertiesClientPage({ initialProperties = [] }: { initi
   // Mobile filter panel state
   const [mobileSection, setMobileSection] = useState<'sort'|'price'|'type'|'location'|'price_t'>('sort');
 
-  const properties = initialProperties.length > 0 ? initialProperties : FALLBACK_PROPERTIES;
+  const [properties, setProperties] = useState<Property[]>(initialProperties.length > 0 ? initialProperties : FALLBACK_PROPERTIES);
+  const [loading, setLoading] = useState(false);
 
-  const filtered = useMemo(() => {
-    let list = properties.filter(p => {
-      const q = searchQuery.toLowerCase();
-      const okSearch = p.title.toLowerCase().includes(q) || p.location.address.toLowerCase().includes(q) || p.location.city.toLowerCase().includes(q);
-      const okCity = cityFilter === 'All Cities' || p.location.city === cityFilter;
-      const okType = typeFilter === 'All Types' || p.propertyType === typeFilter;
-      const okPriceType = priceType === 'All' || p.priceType === priceType;
-      let okPrice = true;
-      if (priceRange === 'Under 50L')  okPrice = p.price < 5_000_000;
-      if (priceRange === '50L - 1Cr')  okPrice = p.price >= 5_000_000 && p.price <= 10_000_000;
-      if (priceRange === 'Above 1Cr')  okPrice = p.price > 10_000_000;
-      return okSearch && okCity && okType && okPrice && okPriceType;
-    });
-    if (sortBy === 'newest')     list = [...list].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    if (sortBy === 'oldest')     list = [...list].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-    if (sortBy === 'price_asc')  list = [...list].sort((a, b) => a.price - b.price);
-    if (sortBy === 'price_desc') list = [...list].sort((a, b) => b.price - a.price);
-    return list;
-  }, [properties, searchQuery, sortBy, priceRange, typeFilter, cityFilter]);
+  useEffect(() => {
+    let active = true;
+    
+    async function fetchFilteredProperties() {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        
+        if (cityFilter && cityFilter !== 'All Cities') {
+          params.set('city', cityFilter);
+        }
+        if (typeFilter && typeFilter !== 'All Types') {
+          params.set('propertyType', typeFilter);
+        }
+        if (priceType && priceType !== 'All') {
+          params.set('priceType', priceType);
+        }
+        if (searchQuery) {
+          params.set('query', searchQuery);
+        }
+        if (priceRange === 'Under 50L') {
+          params.set('maxPrice', '5000000');
+        } else if (priceRange === '50L - 1Cr') {
+          params.set('minPrice', '5000000');
+          params.set('maxPrice', '10000000');
+        } else if (priceRange === 'Above 1Cr') {
+          params.set('minPrice', '10000000');
+        }
+        
+        let sortVal = '-createdAt';
+        if (sortBy === 'oldest') sortVal = 'createdAt';
+        else if (sortBy === 'price_asc') sortVal = 'price';
+        else if (sortBy === 'price_desc') sortVal = '-price';
+        params.set('sort', sortVal);
+        params.set('limit', '50');
+
+        const res = await fetch(`/api/properties?${params.toString()}`);
+        if (!res.ok) throw new Error("API error");
+        
+        const json = await res.json();
+        if (active) {
+          setProperties(json.data || []);
+        }
+      } catch (err) {
+        console.error("Client fetch error:", err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    const timer = setTimeout(() => {
+      fetchFilteredProperties();
+    }, searchQuery ? 300 : 0);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [searchQuery, sortBy, priceRange, typeFilter, cityFilter, priceType]);
+
+  const filtered = properties;
 
   const resetAll = () => {
     setSearchQuery('');
@@ -285,7 +328,23 @@ export default function PropertiesClientPage({ initialProperties = [] }: { initi
 
           {/* Grid */}
           <div className="flex-1 px-4 lg:px-6 pb-24 lg:pb-12">
-            {filtered.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                {[1, 2, 3, 4, 5, 6].map((n) => (
+                  <div key={n} className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm animate-pulse">
+                    <div className="bg-gray-200 aspect-[16/10] w-full" />
+                    <div className="p-5 space-y-4">
+                      <div className="h-6 bg-gray-200 rounded w-3/4" />
+                      <div className="h-4 bg-gray-200 rounded w-1/2" />
+                      <div className="flex justify-between items-center pt-2">
+                        <div className="h-5 bg-gray-200 rounded w-1/3" />
+                        <div className="h-4 bg-gray-200 rounded w-1/4" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filtered.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                 {filtered.map((property, i) => (
                   <PropertyCard key={property._id} property={property} priority={i < 3} />

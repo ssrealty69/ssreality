@@ -157,11 +157,7 @@ export default function Navbar() {
       )}
 
       {/* Mobile Menu Content */}
-      <div 
-        className={`lg:hidden absolute top-full left-0 right-0 z-[50] transition-all duration-300 transform origin-top ${
-          open ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'
-        }`}
-      >
+      <div className={`lg:hidden absolute top-full left-0 right-0 z-[50] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] transform ${open ? 'translate-x-0 opacity-100 pointer-events-auto' : 'translate-x-full opacity-0 pointer-events-none'}`}>
         <div 
           className="relative m-4 mt-2 rounded-3xl shadow-[0_40px_80px_rgba(0,0,0,0.6)] border border-white/10 overflow-hidden flex flex-col max-h-[85vh]"
           style={{

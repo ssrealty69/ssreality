@@ -1,0 +1,38 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/lib/mongodb';
+import Blog from '@/models/Blog';
+import { invalidateCache } from '@/lib/redis';
+
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
+  try {
+    await connectDB();
+    const blogs = await Blog.find({}).sort('-createdAt').lean();
+    return NextResponse.json({ success: true, data: blogs });
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    await connectDB();
+    const body = await req.json();
+    
+    // Automatically generate slug if not provided
+    if (!body.slug && body.title) {
+      body.slug = body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    }
+
+    const blog = await Blog.create(body);
+
+    await invalidateCache('blogs:*');
+
+    return NextResponse.json({ success: true, data: blog }, { status: 201 });
+  } catch (error: any) {
+    console.error("Error creating blog:", error);
+    return NextResponse.json({ success: false, error: error.message || 'Server Error' }, { status: 500 });
+  }
+}

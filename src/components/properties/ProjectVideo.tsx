@@ -4,11 +4,17 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Play } from 'lucide-react';
 
-export default function ProjectVideo({ title }: { title: string }) {
+export default function ProjectVideo({ title, videoUrl }: { title: string, videoUrl?: string }) {
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Using the same video as the hero section
-  const videoId = "M-j_LvEK2ZA"; 
+  // Extract YouTube ID from URL or use fallback
+  let videoId = "M-j_LvEK2ZA";
+  if (videoUrl) {
+    const match = videoUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/);
+    if (match && match[1]) {
+      videoId = match[1];
+    }
+  }
 
   if (isPlaying) {
     return (

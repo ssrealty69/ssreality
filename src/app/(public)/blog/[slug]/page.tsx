@@ -5,20 +5,32 @@ import Link from 'next/link';
 import { Calendar, User, ArrowLeft, Tag, Clock, Eye } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import type { Blog } from '@/types';
+import { connectDB } from '@/lib/mongodb';
+import BlogModel from '@/models/Blog';
+import { FALLBACK_BLOGS } from '@/lib/blogs';
 
-export const revalidate = 300; // ISR every 5 min
+export const dynamic = 'force-dynamic';
 
 interface Props { params: Promise<{ slug: string }> }
 
 async function getBlog(slug: string): Promise<Blog | null> {
   try {
-    const base = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const res = await fetch(`${base}/api/blog/${slug}`, { next: { revalidate: 300 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.data || null;
-  } catch { return null; }
+    await connectDB();
+    let blog = await BlogModel.findOne({ slug, published: true }).lean() as any;
+    if (blog) {
+      BlogModel.findByIdAndUpdate(blog._id, { $inc: { views: 1 } }).exec().catch(() => {});
+    } else {
+      blog = FALLBACK_BLOGS.find(b => b.slug === slug);
+    }
+    return JSON.parse(JSON.stringify(blog || null));
+  } catch (error) {
+    console.error("Direct db fetch failed for slug:", slug, error);
+    const fallback = FALLBACK_BLOGS.find(b => b.slug === slug);
+    return JSON.parse(JSON.stringify(fallback || null));
+  }
 }
+
+
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
