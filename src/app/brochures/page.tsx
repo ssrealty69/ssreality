@@ -84,7 +84,7 @@ export default function BrochuresPage() {
 
       {/* Custom PDF Viewer with Fake Toolbar */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8" ref={pdfContainerRef}>
-        <div className="w-full rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.08)] border-2 border-[#C9A227]/30 bg-[#1A1800] flex flex-col" style={{ height: 'calc(100vh - 220px)', minHeight: '500px' }}>
+        <div className="w-full rounded-2xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.08)] border-2 border-[#C9A227]/30 bg-[#1A1800] flex flex-col h-[calc(100svh-140px)] min-h-[600px] md:h-[calc(100vh-220px)]">
           
           {/* Custom Toolbar (Matches Website Theme) */}
           <div className="h-14 w-full bg-[#1A1800] flex items-center justify-end pr-3 pl-4 gap-1 sm:gap-2 shrink-0 border-b border-[#C9A227]/20">
@@ -138,15 +138,20 @@ export default function BrochuresPage() {
             </button>
           </div>
 
-          {/* Iframe for actual PDF content (toolbar hidden) */}
-          <div className="flex-1 w-full bg-[#FFFEF5] overflow-y-auto overflow-x-hidden relative" style={{ WebkitOverflowScrolling: 'touch' }}>
-            <iframe
+          {/* Iframe/Object for actual PDF content (toolbar hidden) */}
+          <div className="flex-1 w-full bg-[#FFFEF5] overflow-y-auto overflow-x-hidden relative touch-pan-y [-webkit-overflow-scrolling:touch]">
+            <object
               key={selectedPdf}
-              src={`${selectedPdf}#toolbar=0&navpanes=0&view=FitH`}
-              className="absolute top-0 left-0 w-full h-full"
-              title="SS Realty Brochure"
-              style={{ border: 'none', width: '100%', height: '100%', maxWidth: '100%' }}
-            />
+              data={`${selectedPdf}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+              type="application/pdf"
+              className="w-full h-full min-h-[75vh] md:min-h-full block border-none"
+            >
+              <iframe
+                src={`${selectedPdf}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                className="w-full h-full min-h-[75vh] md:min-h-full block border-none"
+                title="SS Realty Brochure"
+              />
+            </object>
           </div>
         </div>
       </div>
