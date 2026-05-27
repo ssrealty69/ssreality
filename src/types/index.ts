@@ -25,6 +25,8 @@ export interface Property {
     totalFloors?: number;
   };
   images: string[];
+  interiorImages?: string[];
+  galleryImages?: string[];
   brochureUrl?: string;
   featured: boolean;
   amenities: string[];
@@ -76,6 +78,13 @@ export interface Blog {
   tags: string[];
   published: boolean;
   views: number;
+  seo?: {
+    title?: string;
+    description?: string;
+    keywords?: string;
+    focusKeyword?: string;
+    canonicalUrl?: string;
+  };
   createdAt: string;
   updatedAt: string;
 }

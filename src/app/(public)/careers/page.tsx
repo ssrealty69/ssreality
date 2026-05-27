@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, MapPin, Clock, ArrowRight, Star, Users, Target, Rocket, IndianRupee, X, Upload, CheckCircle2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { useTracking } from '@/components/tracking/TrackingProvider';
 
 const jobs = [
   {
@@ -27,6 +28,7 @@ const perks = [
 ];
 
 export default function CareersPage() {
+  const { fireEvent } = useTracking();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,6 +53,15 @@ export default function CareersPage() {
       });
 
       if (res.ok) {
+        // Fire CompleteRegistration event for dynamic remarketing
+        fireEvent('CompleteRegistration', {
+          content_name: 'Job Application',
+          position: selectedJob?.title,
+          name: formData.get('name'),
+          phone: formData.get('phone'),
+          age: formData.get('age')
+        });
+
         setIsSuccess(true);
         setTimeout(() => {
           setIsModalOpen(false);

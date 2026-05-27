@@ -14,22 +14,14 @@ export default function ImageSlider({ images }: ImageSliderProps) {
   const [touchEnd, setTouchEnd] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Single fallback used only when zero images are provided
   const fallbackImages = [
     'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-    'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
-    'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-    'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80'
   ];
 
-  let displayImages = images && images.length > 0 ? images : fallbackImages;
-  if (displayImages.length === 1) {
-    displayImages = [displayImages[0], ...fallbackImages.slice(1, 5)];
-  } else if (displayImages.length > 0 && displayImages.length < 5) {
-    // Fill up to 5 if there's less
-    const needed = 5 - displayImages.length;
-    displayImages = [...displayImages, ...fallbackImages.slice(0, needed)];
-  }
+  // Only use fallback images when NO real images are provided at all.
+  // Do NOT pad uploaded images with fake Unsplash images.
+  const displayImages = images && images.length > 0 ? images : fallbackImages.slice(0, 1);
 
   const prevSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1));

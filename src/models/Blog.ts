@@ -11,6 +11,13 @@ export interface IBlog extends Document {
   tags: string[];
   published: boolean;
   views: number;
+  seo?: {
+    title?: string;
+    description?: string;
+    keywords?: string;
+    focusKeyword?: string;
+    canonicalUrl?: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,6 +37,13 @@ const BlogSchema = new Schema<IBlog>(
     tags: [{ type: String }],
     published: { type: Boolean, default: false, index: true },
     views: { type: Number, default: 0 },
+    seo: {
+      title: { type: String },
+      description: { type: String },
+      keywords: { type: String },
+      focusKeyword: { type: String },
+      canonicalUrl: { type: String },
+    },
   },
   { timestamps: true }
 );

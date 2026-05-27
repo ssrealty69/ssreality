@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { Send, Phone, Mail, MapPin, Clock, Loader2 } from 'lucide-react';
+import { useTracking } from '@/components/tracking/TrackingProvider';
 
 const schema = z.object({
   name: z.string().min(2, 'Name is required (min 2 characters)'),
@@ -29,6 +30,7 @@ const contactInfo = [
 ];
 
 export default function ContactPage() {
+  const { fireEvent } = useTracking();
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({ 
     resolver: zodResolver(schema),
@@ -45,6 +47,16 @@ export default function ContactPage() {
       });
       const result = await res.json();
       if (result.success) {
+        // Telemetry tracking event
+        fireEvent('Contact', {
+          form_name: 'General Contact Form',
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          subject: data.subject,
+          message: data.message
+        });
+
         toast.success('Message sent! We\'ll contact you within 24 hours.');
         reset();
       } else {

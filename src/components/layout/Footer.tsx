@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 // Inline SVG brand icons (lucide-react v1 removed brand icons)
 const FacebookIcon = () => (
@@ -48,25 +51,29 @@ const socials = [
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const pathname = usePathname();
+  const isFloorPlanPage = pathname?.includes('/floor-plans') || pathname?.includes('/floorview');
 
   return (
     <footer className="bg-[#0d0c00] text-[#d4c48a]">
       {/* Top CTA Strip */}
-      <div className="gold-gradient py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <h3 className="text-xl font-bold text-[#1A1800] font-[var(--font-playfair)]">
-              Ready to Find Your Dream Property?
-            </h3>
-            <p className="text-[#5c4004] text-sm mt-1">Talk to our experts today — free consultation.</p>
+      {!isFloorPlanPage && (
+        <div className="gold-gradient py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 className="text-xl font-bold text-[#1A1800] font-[var(--font-playfair)]">
+                Ready to Find Your Dream Property?
+              </h3>
+              <p className="text-[#5c4004] text-sm mt-1">Talk to our experts today — free consultation.</p>
+            </div>
+            <Link href="/contact"
+              className="flex items-center gap-2 bg-[#1A1800] text-[#C9A227] font-semibold px-6 py-3 rounded-xl hover:bg-[#282618] transition-colors whitespace-nowrap"
+            >
+              Contact Us <ArrowRight size={16} />
+            </Link>
           </div>
-          <Link href="/contact"
-            className="flex items-center gap-2 bg-[#1A1800] text-[#C9A227] font-semibold px-6 py-3 rounded-xl hover:bg-[#282618] transition-colors whitespace-nowrap"
-          >
-            Contact Us <ArrowRight size={16} />
-          </Link>
         </div>
-      </div>
+      )}
 
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

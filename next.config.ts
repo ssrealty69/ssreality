@@ -26,7 +26,12 @@ const nextConfig: NextConfig = {
 
   // ─── Experimental ────────────────────────────────────────────────────────
   experimental: {
-    optimizePackageImports: ['lucide-react', 'react-hot-toast', 'framer-motion'],
+    // NOTE: lucide-react intentionally excluded from optimizePackageImports.
+    // When enabled, Turbopack splits each icon into its own .mjs chunk (e.g. target.mjs).
+    // If any icon import is removed from code, the browser's cached chunk manifest
+    // references a chunk that no longer exists → "module factory is not available" error.
+    // Keeping it out bundles all used icons into a single stable chunk.
+    optimizePackageImports: ['react-hot-toast', 'framer-motion'],
     // Allow large file uploads up to 50MB for property/blog image uploads
     serverActions: {
       bodySizeLimit: '50mb',
@@ -49,13 +54,6 @@ const nextConfig: NextConfig = {
       // Aggressive caching for static assets (images, fonts, JS, CSS)
       {
         source: '/(.*)\\.(jpg|jpeg|png|webp|avif|svg|ico|woff|woff2|ttf|eot)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
-      },
-      // Cache Next.js static chunks
-      {
-        source: '/_next/static/(.*)',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],

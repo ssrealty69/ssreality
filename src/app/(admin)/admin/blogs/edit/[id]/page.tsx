@@ -1,0 +1,423 @@
+'use client';
+
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, Save, Loader2, Sparkles, Plus } from 'lucide-react';
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+import { MediaUpload } from '@/components/admin/MediaUpload';
+import { BlogContentEditor } from '@/components/admin/BlogContentEditor';
+import { SeoControlPanel } from '@/components/admin/SeoControlPanel';
+
+interface EditBlogProps {
+  params: Promise<{ id: string }>;
+}
+
+export default function EditBlog({ params }: EditBlogProps) {
+  const router = useRouter();
+  const { id } = use(params);
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  
+  // Blog Form State
+  const [formData, setFormData] = useState({
+    title: '',
+    slug: '',
+    excerpt: '',
+    content: '',
+    coverImage: '',
+    authorName: '',
+    category: '',
+    published: false,
+  });
+
+  // SEO Control Panel State
+  const [seoData, setSeoData] = useState({
+    title: '',
+    description: '',
+    keywords: '',
+    focusKeyword: '',
+    canonicalUrl: '',
+  });
+
+  // Dynamic Categories State
+  const [categories, setCategories] = useState<string[]>([]);
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+
+  // Fetch initial blog data and dynamic categories on mount
+  useEffect(() => {
+    async function loadBlogAndCategories() {
+      try {
+        // Fetch categories first
+        const catRes = await fetch('/api/admin/blogs/categories');
+        const catJson = await catRes.json();
+        if (catJson.success && catJson.data) {
+          setCategories(catJson.data);
+        }
+
+        // Fetch actual blog post data
+        const res = await fetch(`/api/admin/blogs/${id}`);
+        if (!res.ok) {
+          toast.error('Blog post not found');
+          router.push('/admin/blogs');
+          return;
+        }
+        
+        const json = await res.json();
+        if (json.success && json.data) {
+          const blog = json.data;
+          setFormData({
+            title: blog.title || '',
+            slug: blog.slug || '',
+            excerpt: blog.excerpt || '',
+            content: blog.content || '',
+            coverImage: blog.coverImage || '',
+            authorName: blog.author?.name || 'SS Realty Expert',
+            category: blog.category || '',
+            published: blog.published || false,
+          });
+
+          // Sync SEO properties if saved in database
+          if (blog.seo) {
+            setSeoData({
+              title: blog.seo.title || '',
+              description: blog.seo.description || '',
+              keywords: blog.seo.keywords || '',
+              focusKeyword: blog.seo.focusKeyword || '',
+              canonicalUrl: blog.seo.canonicalUrl || '',
+            });
+          }
+
+          // Make sure current category is added to the categories list if not distinct
+          if (blog.category && !catJson.data?.includes(blog.category)) {
+            setCategories(prev => [...prev, blog.category].sort((a, b) => a.localeCompare(b)));
+          }
+        }
+      } catch (error) {
+        toast.error('Failed to load blog post details');
+      } finally {
+        setFetching(false);
+      }
+    }
+    loadBlogAndCategories();
+  }, [id, router]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
+  };
+
+  // Add Dynamic Custom Category
+  const handleAddCustomCategory = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanCategory = newCategoryName.trim();
+    if (!cleanCategory) {
+      toast.error('Category name cannot be empty!');
+      return;
+    }
+
+    if (categories.includes(cleanCategory)) {
+      toast.error('This category already exists!');
+      setFormData(prev => ({ ...prev, category: cleanCategory }));
+      setShowNewCategoryInput(false);
+      setNewCategoryName('');
+      return;
+    }
+
+    // Add to lists and auto select
+    setCategories(prev => [...prev, cleanCategory].sort((a, b) => a.localeCompare(b)));
+    setFormData(prev => ({ ...prev, category: cleanCategory }));
+    setShowNewCategoryInput(false);
+    setNewCategoryName('');
+    toast.success(`Category "${cleanCategory}" added!`);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.coverImage) {
+      toast.error('Please upload a cover image banner for this blog post.');
+      return;
+    }
+
+    if (!formData.category) {
+      toast.error('Please select or create a category topic.');
+      return;
+    }
+
+    if (!formData.content || formData.content.trim() === '<p></p>' || formData.content.trim() === '') {
+      toast.error('Article content cannot be empty.');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // Structure nested properties for the PUT API endpoint
+      const payload = {
+        title: formData.title,
+        slug: formData.slug,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        coverImage: formData.coverImage,
+        category: formData.category,
+        published: formData.published,
+        seo: seoData,
+        author: {
+          name: formData.authorName
+        }
+      };
+
+      const res = await fetch(`/api/admin/blogs/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        toast.success('Blog post changes updated successfully!');
+        setTimeout(() => {
+          router.push('/admin/blogs');
+          router.refresh();
+        }, 1000);
+      } else {
+        toast.error(json.error || 'Failed to update blog post.');
+      }
+    } catch (error) {
+      console.error('[Blog Update Error]', error);
+      toast.error('An error occurred during save.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (fetching) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4">
+        <Loader2 className="animate-spin text-[#C9A227]" size={40} />
+        <p className="text-gray-500 font-medium">Fetching blog post details...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+      
+      {/* Top Header Row */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/admin/blogs" className="p-2.5 hover:bg-gray-100 rounded-full transition-colors">
+            <ArrowLeft size={20} className="text-gray-600" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-[#1A1800] flex items-center gap-2">
+              <Sparkles className="text-[#C9A227]" size={22} />
+              Edit Blog Post
+            </h1>
+            <p className="text-xs text-gray-500 mt-0.5">Modify article content, cover banners, categories, and custom search optimization tags.</p>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        
+        {/* SECTION 1: Core Details */}
+        <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
+          <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider pb-2 border-b border-gray-50">
+            1. Core Blog Details
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Title */}
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 mb-1">Blog Post Title</label>
+              <input 
+                type="text" 
+                required 
+                value={formData.title} 
+                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white" 
+                placeholder="e.g. Noida Expressway Boom" 
+              />
+            </div>
+            
+            {/* Slug */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Dynamic URL Slug</label>
+              <input 
+                type="text" 
+                required 
+                value={formData.slug} 
+                onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white font-mono" 
+                placeholder="e.g. Noida-Expressway-Boom" 
+              />
+            </div>
+            
+            {/* Dynamic Categories */}
+            <div className="space-y-1">
+              <label className="block text-xs font-bold text-gray-700 mb-1">Category Select</label>
+              
+              {!showNewCategoryInput ? (
+                <div className="flex gap-2">
+                  <select 
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
+                  >
+                    <option value="" disabled>-- Select a Topic Category --</option>
+                    {categories.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => setShowNewCategoryInput(true)}
+                    className="px-3.5 bg-gray-50 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-100 flex items-center justify-center gap-1.5 transition-colors text-xs font-bold whitespace-nowrap"
+                    title="Add dynamic custom category"
+                  >
+                    <Plus size={14} />
+                    <span>New</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2 animate-scale-in">
+                  <input 
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder="Type new category..."
+                    className="w-full border border-gray-300 rounded-lg px-3 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddCustomCategory}
+                    className="px-4 bg-[#C9A227] hover:bg-[#B8860B] text-[#1A1800] rounded-lg transition-colors text-xs font-bold flex items-center justify-center"
+                  >
+                    Add
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowNewCategoryInput(false);
+                      setNewCategoryName('');
+                    }}
+                    className="px-3 bg-gray-100 text-gray-500 rounded-lg hover:bg-gray-200 text-xs font-medium"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Excerpt */}
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 mb-1">Post Excerpt / Brief Summary</label>
+              <textarea 
+                name="excerpt" 
+                required 
+                rows={2} 
+                value={formData.excerpt} 
+                onChange={handleChange} 
+                className="w-full border border-gray-300 rounded-lg p-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white" 
+                placeholder="A compelling, short summary..."
+              />
+            </div>
+
+            {/* Author Name */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Author Name</label>
+              <input 
+                type="text" 
+                name="authorName" 
+                required 
+                value={formData.authorName} 
+                onChange={handleChange} 
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white" 
+                placeholder="e.g. John Doe" 
+              />
+            </div>
+
+            {/* Publish Checkbox */}
+            <div className="flex items-center gap-3 pt-6">
+              <input 
+                type="checkbox" 
+                id="published" 
+                name="published" 
+                checked={formData.published} 
+                onChange={handleChange} 
+                className="w-5 h-5 text-[#C9A227] rounded border-gray-300 focus:ring-[#C9A227] accent-[#C9A227]" 
+              />
+              <label htmlFor="published" className="text-xs font-bold text-gray-700 cursor-pointer select-none">
+                Published Status (Visible to public visitors)
+              </label>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 2: Media Cover Image Thumbnail */}
+        <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
+          <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider pb-2 border-b border-gray-50">
+            2. Blog Main Banner Cover Image
+          </h2>
+          <MediaUpload 
+            label="Upload Cover Image"
+            description="Upload the primary banner photo for this blog post. Displays on lists and top of page. Ratio: 16:9 recommended."
+            value={formData.coverImage}
+            onChange={(url) => setFormData(prev => ({ ...prev, coverImage: url }))}
+            folder="ss-realty/blog"
+          />
+        </section>
+
+        {/* SECTION 3: Rich-Text Editor Content */}
+        <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
+          <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider pb-2 border-b border-gray-50">
+            3. Detailed Blog Article Content
+          </h2>
+          <BlogContentEditor 
+            value={formData.content}
+            onChange={(html) => setFormData(prev => ({ ...prev, content: html }))}
+            placeholder="Write your article. Use toolbar to format text, add colors, insert hyperlinks, or embed images dynamically..."
+          />
+        </section>
+
+        {/* SECTION 4: SEO Control Panel & Meta Analyzer */}
+        <SeoControlPanel 
+          data={seoData}
+          onChange={setSeoData}
+          defaultTitle={formData.title}
+          defaultExcerpt={formData.excerpt}
+          defaultSlug={formData.slug}
+        />
+
+        {/* Action Form Footer */}
+        <div className="flex justify-end pt-4 gap-4">
+          <Link 
+            href="/admin/blogs" 
+            className="px-6 py-3 border border-gray-200 rounded-lg text-gray-600 bg-white hover:bg-gray-50 transition-colors text-xs font-bold"
+          >
+            Cancel
+          </Link>
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex items-center gap-2 bg-[#C9A227] hover:bg-[#B8860B] text-[#1A1800] font-bold px-10 py-3.5 rounded-lg transition-all shadow-md active:scale-[0.99] disabled:opacity-70 text-xs font-black uppercase tracking-wider"
+          >
+            <Save size={16} />
+            {loading ? 'Saving Changes...' : 'Save & Update Post'}
+          </button>
+        </div>
+        
+      </form>
+    </div>
+  );
+}

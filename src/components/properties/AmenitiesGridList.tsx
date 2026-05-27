@@ -1,21 +1,32 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Trees, Palette, BookOpen, Trophy, Target, Dumbbell, Droplets, Shield, Wifi, Coffee, Sparkles, CheckCircle } from 'lucide-react';
+import {
+  Trees, Palette, BookOpen, Trophy, Dumbbell,
+  Droplets, Wifi, Coffee, Sparkles, CheckCircle,
+  Car, Zap, ArrowUpDown, Building, Heart,
+  ShieldCheck, Gamepad2,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-const getIconForAmenity = (name: string) => {
+const getIconForAmenity = (name: string): LucideIcon => {
   const lowerName = name.toLowerCase();
   if (lowerName.includes('gym') || lowerName.includes('fitness')) return Dumbbell;
   if (lowerName.includes('pool') || lowerName.includes('swim')) return Droplets;
-  if (lowerName.includes('security') || lowerName.includes('cctv')) return Shield;
+  if (lowerName.includes('security') || lowerName.includes('cctv') || lowerName.includes('guard')) return ShieldCheck;
   if (lowerName.includes('wifi') || lowerName.includes('internet')) return Wifi;
-  if (lowerName.includes('cafe') || lowerName.includes('coffee')) return Coffee;
+  if (lowerName.includes('cafe') || lowerName.includes('coffee') || lowerName.includes('dining')) return Coffee;
   if (lowerName.includes('art') || lowerName.includes('craft')) return Palette;
-  if (lowerName.includes('tree') || lowerName.includes('garden') || lowerName.includes('park')) return Trees;
+  if (lowerName.includes('tree') || lowerName.includes('garden') || lowerName.includes('park') || lowerName.includes('lawn')) return Trees;
   if (lowerName.includes('book') || lowerName.includes('read') || lowerName.includes('library')) return BookOpen;
-  if (lowerName.includes('sport') || lowerName.includes('football') || lowerName.includes('cricket')) return Trophy;
-  if (lowerName.includes('play') || lowerName.includes('game') || lowerName.includes('pickleball')) return Target;
+  if (lowerName.includes('sport') || lowerName.includes('football') || lowerName.includes('cricket') || lowerName.includes('tennis') || lowerName.includes('badminton') || lowerName.includes('squash')) return Trophy;
+  if (lowerName.includes('play') || lowerName.includes('game') || lowerName.includes('pickleball') || lowerName.includes('chess') || lowerName.includes('carrom') || lowerName.includes('billiards') || lowerName.includes('table tennis') || lowerName.includes('cardroom')) return Gamepad2;
   if (lowerName.includes('spa') || lowerName.includes('sauna') || lowerName.includes('wellness')) return Sparkles;
+  if (lowerName.includes('parking') || lowerName.includes('garage') || lowerName.includes('car')) return Car;
+  if (lowerName.includes('backup') || lowerName.includes('power') || lowerName.includes('electricity') || lowerName.includes('generator')) return Zap;
+  if (lowerName.includes('lift') || lowerName.includes('elevator')) return ArrowUpDown;
+  if (lowerName.includes('clubhouse') || lowerName.includes('club house') || lowerName.includes('community')) return Building;
+  if (lowerName.includes('yoga') || lowerName.includes('meditation') || lowerName.includes('peace') || lowerName.includes('health')) return Heart;
   return CheckCircle;
 };
 
@@ -30,7 +41,7 @@ export default function AmenitiesGrid({ amenities = [] }: { amenities?: string[]
           return (
             <div key={idx} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col h-36 sm:h-48 group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex-1 flex justify-center items-center p-4 sm:p-6 bg-white">
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 1 }}
                   whileHover={{ scale: 1.2, rotate: 5 }}

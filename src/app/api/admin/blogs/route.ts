@@ -26,6 +26,11 @@ export async function POST(req: NextRequest) {
       body.slug = body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     }
 
+    // Map authorName to Mongoose author schema structure if sent by creation form
+    if (body.authorName && !body.author) {
+      body.author = { name: body.authorName };
+    }
+
     const blog = await Blog.create(body);
 
     await invalidateCache('blogs:*');

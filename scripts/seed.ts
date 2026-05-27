@@ -6,7 +6,7 @@
 import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI ||
-  'mongodb+srv://ssrealtyteams_db_user:SUv2qt0vOD0Q0xh0@ssrealty.kmrmgno.mongodb.net/?appName=SSRealty';
+  'mongodb+srv://admin:ssrealty2026@ssrealty.kmrmgno.mongodb.net/SSRealty?authSource=admin&appName=SSRealty';
 
 const PropertySchema = new mongoose.Schema({
   title: String, description: String, price: Number, priceType: String,

@@ -1,7 +1,9 @@
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { connectDB } from '@/lib/mongodb';
 import Property from '@/models/Property';
+import PropertiesTable from '@/components/admin/PropertiesTable';
+import { FALLBACK_PROPERTIES } from '@/constants/properties';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,10 +13,22 @@ export default async function AdminProperties() {
 
   try {
     await connectDB();
-    properties = await Property.find({}).sort('-createdAt').lean();
+    // Serialize MongoDB documents so they can be passed safely as plain objects to client components
+    const rawProperties = await Property.find({}).sort('-createdAt').lean();
+    properties = JSON.parse(JSON.stringify(rawProperties));
   } catch (error) {
     console.error("MongoDB Connection Error:", error);
     dbError = true;
+  }
+
+  // Fallback to demo properties when MongoDB connection fails so local testing works seamlessly
+  if (dbError || properties.length === 0) {
+    properties = FALLBACK_PROPERTIES.map(p => ({
+      ...p,
+      _id: p._id.toString(),
+      createdAt: p.createdAt || new Date().toISOString(),
+      updatedAt: p.updatedAt || new Date().toISOString(),
+    }));
   }
 
   return (
@@ -33,70 +47,13 @@ export default async function AdminProperties() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {dbError && (
-          <div className="bg-red-50 p-4 border-b border-red-100 flex items-center gap-2 text-red-700 text-sm">
-            <strong>Database Error:</strong> Could not connect to MongoDB. Please check if your current IP address is whitelisted in your Atlas cluster.
-          </div>
-        )}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100">
-                <th className="p-4 text-sm font-semibold text-gray-600">Property</th>
-                <th className="p-4 text-sm font-semibold text-gray-600">Type</th>
-                <th className="p-4 text-sm font-semibold text-gray-600">Price</th>
-                <th className="p-4 text-sm font-semibold text-gray-600">Status</th>
-                <th className="p-4 text-sm font-semibold text-gray-600 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {properties.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="p-8 text-center text-gray-500">
-                    <p>No properties found.</p>
-                    <p className="text-sm mt-2">Click "Add Property" to create one.</p>
-                  </td>
-                </tr>
-              ) : (
-                properties.map((prop: any) => (
-                  <tr key={prop._id.toString()} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="p-4">
-                      <p className="font-bold text-[#1A1800]">{prop.title}</p>
-                      <p className="text-sm text-gray-500">{prop.location?.city || 'No city'}</p>
-                    </td>
-                    <td className="p-4">
-                      <span className="capitalize text-sm font-medium text-gray-700 bg-gray-100 px-2 py-1 rounded-md">
-                        {prop.propertyType}
-                      </span>
-                    </td>
-                    <td className="p-4 font-medium text-[#1A1800]">
-                      ₹{prop.price?.toLocaleString() || 'N/A'}
-                    </td>
-                    <td className="p-4">
-                      <span className={`capitalize text-xs font-bold px-2 py-1 rounded-full ${
-                        prop.status === 'available' ? 'bg-green-100 text-green-700' :
-                        prop.status === 'sold' ? 'bg-red-100 text-red-700' :
-                        'bg-gray-100 text-gray-700'
-                      }`}>
-                        {prop.status || 'available'}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right space-x-2">
-                      <button className="p-2 text-gray-400 hover:text-[#C9A227] transition-colors rounded-lg hover:bg-gray-100">
-                        <Edit size={18} />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:text-red-600 transition-colors rounded-lg hover:bg-red-50">
-                        <Trash2 size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {dbError && (
+        <div className="bg-red-50 p-4 border border-red-100 rounded-2xl flex items-center gap-2 text-red-700 text-sm">
+          <strong>Database Error:</strong> Could not connect to MongoDB. Please check if your current IP address is whitelisted in your Atlas cluster.
         </div>
-      </div>
+      )}
+
+      <PropertiesTable initialProperties={properties} />
     </div>
   );
 }

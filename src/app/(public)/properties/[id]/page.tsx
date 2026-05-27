@@ -11,6 +11,9 @@ import SimilarPropertyCard from '@/components/properties/SimilarPropertyCard';
 import AmenitiesGrid from '@/components/properties/AmenitiesGridList';
 import ProjectVideo from '@/components/properties/ProjectVideo';
 import { MapPin, Building, Activity, Layers, BedDouble, Hash, Maximize2, CheckCircle2, Download, MessageCircle, Info, Maximize, Search, Phone, Trees, Zap } from 'lucide-react';
+import PropertyActions from '@/components/properties/PropertyActions';
+import PropertyEnquiryForm from '@/components/properties/PropertyEnquiryForm';
+import ViewPropertyTracker from '@/components/tracking/ViewPropertyTracker';
 
 import { FALLBACK_PROPERTIES } from '@/constants/properties';
 
@@ -83,6 +86,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
   return (
     <div className="font-sans bg-white pb-20">
+      <ViewPropertyTracker property={property} />
 
       {/* --- HERO SECTION --- */}
       <div className="relative w-full h-[80vh] min-h-[500px]">
@@ -137,7 +141,13 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="lg:w-1/3 relative h-[350px] rounded-xl overflow-hidden shadow-lg">
-              <ImageSlider images={property.images && property.images.length > 0 ? property.images : ['/hero-nature.png']} />
+              <ImageSlider 
+                images={
+                  property.interiorImages && property.interiorImages.length > 0 
+                    ? property.interiorImages 
+                    : (property.images && property.images.length > 0 ? property.images : ['/hero-nature.png'])
+                } 
+              />
             </div>
 
             <div className="lg:w-2/3">
@@ -225,31 +235,12 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                 )}
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="flex-[1.2] relative group overflow-hidden bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] py-4 rounded-2xl flex justify-center items-center gap-3 shadow-[var(--shadow-gold-sm)] hover:shadow-[var(--shadow-gold-lg)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
-                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover:bg-white/40 transition-colors shadow-inner">
-                    <Download size={22} className="stroke-[3]" />
-                  </div>
-                  <span className="text-[17px] font-heading font-bold tracking-tight">Download Brochure</span>
-                </button>
-
-                <a href={waLink} target="_blank" rel="noopener noreferrer"
-                  className="flex-1 relative overflow-hidden bg-gradient-to-br from-[#1B4332] via-[#2D6A4F] to-[#081C15] text-white py-4 rounded-2xl flex justify-center items-center gap-3 shadow-[0_10px_20px_-5px_rgba(27,67,50,0.4)] hover:shadow-[0_15px_35px_rgba(27,67,50,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 group">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm group-hover:rotate-12 transition-transform shadow-inner">
-                    <MessageCircle size={22} className="fill-white" />
-                  </div>
-                  <span className="text-[17px] font-heading font-bold tracking-tight">WhatsApp Now</span>
-                </a>
-
-                <button className="flex-1 relative overflow-hidden bg-[#1A1800] text-white py-4 rounded-2xl flex justify-center items-center gap-3 border border-[#C9A227]/30 shadow-2xl hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] transition-all duration-300 transform hover:-translate-y-1 active:scale-95 group">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#C9A227]/10 blur-3xl -mr-16 -mt-16 group-hover:bg-[#C9A227]/20 transition-all duration-500" />
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#E8D5A3] to-[#C9A227] flex items-center justify-center shadow-[0_0_15px_rgba(201,162,39,0.5)] group-hover:scale-110 transition-transform">
-                    <MessageCircle size={14} className="fill-[#1A1800] text-[#1A1800]" />
-                  </div>
-                  <span className="text-[17px] font-heading font-bold tracking-tight bg-gradient-to-r from-white via-[#E8D5A3] to-white bg-[length:200%_auto] hover:animate-[shimmer_2s_infinite] bg-clip-text text-transparent">Enquire Now</span>
-                </button>
-              </div>
+              <PropertyActions 
+                propertyId={property._id.toString()}
+                propertyTitle={property.title}
+                brochureUrl={property.brochureUrl}
+                waLink={waLink}
+              />
             </div>
           </div>
         </section>
@@ -300,14 +291,14 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         )}
 
         {/* --- GALLERY SECTION --- */}
-        {property.images && property.images.length > 0 && (
+        {((property.galleryImages && property.galleryImages.length > 0) || (property.images && property.images.length > 0)) && (
           <section id="gallery" className="py-16">
             <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-10">
               {property.title} - <span className="text-[#C9A227]">Gallery</span>
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
-              {property.images.map((imgUrl: string, idx: number) => (
+              {(property.galleryImages && property.galleryImages.length > 0 ? property.galleryImages : property.images).map((imgUrl: string, idx: number) => (
                 <div key={idx} className={`relative rounded-lg overflow-hidden border border-[#C9A227]/20 shadow-sm shadow-[#E8D5A3]/30 ${idx === 1 || idx === 3 ? 'row-span-2' : ''}`}>
                   <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover hover:scale-110 transition-transform duration-500" />
                 </div>
@@ -422,54 +413,11 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
             </div>
 
             <div className="lg:w-1/2">
-              <div className="bg-[#FFFEF5] rounded-3xl p-6 md:p-8 relative overflow-hidden group shadow-[0_10px_40px_-15px_rgba(201,162,39,0.2)] border-2 border-[#C9A227]/20">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#C9A227]/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-[#C9A227]/10 transition-all duration-500"></div>
-
-                <div className="flex justify-between items-start mb-6">
-                  <div>
-                    <h3 className="text-2xl font-bold text-[#1A1800] mb-1">Enquire Now</h3>
-                    <p className="text-[#1A1800]/60 text-sm">Get expert guidance for your home.</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-full bg-[#C9A227]/10 border border-[#C9A227]/40 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-[#C9A227] animate-pulse"></div>
-                  </div>
-                </div>
-
-                <form className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="relative group">
-                      <input type="text" placeholder="Name" className="w-full bg-white border border-[#C9A227]/40 rounded-xl px-4 py-2.5 text-[#1A1800] text-sm focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227]/20 transition-all placeholder:text-[#1A1800]/30" required />
-                    </div>
-                    <div className="relative group">
-                      <input type="email" placeholder="Email" className="w-full bg-white border border-[#C9A227]/40 rounded-xl px-4 py-2.5 text-[#1A1800] text-sm focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227]/20 transition-all placeholder:text-[#1A1800]/30" required />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="flex bg-white border border-[#C9A227]/40 rounded-xl overflow-hidden focus-within:border-[#C9A227] focus-within:ring-1 focus-within:ring-[#C9A227]/20 transition-all">
-                      <div className="px-3 py-2.5 text-[#1A1800]/60 text-sm border-r border-[#C9A227]/10 flex items-center bg-[#C9A227]/5">
-                        +91
-                      </div>
-                      <input type="tel" placeholder="Mobile Number" className="w-full px-4 py-2.5 bg-transparent text-[#1A1800] text-sm focus:outline-none placeholder:text-[#1A1800]/30" required />
-                    </div>
-                    <input type="text" placeholder="Your Message" className="w-full bg-white border border-[#C9A227]/40 rounded-xl px-4 py-2.5 text-[#1A1800] text-sm focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227]/20 transition-all placeholder:text-[#1A1800]/30" />
-                  </div>
-
-                  <button type="button" className="w-full bg-gradient-to-r from-[#C9A227] to-[#A88721] text-white py-3.5 rounded-xl font-bold mt-2 hover:shadow-[0_10px_20px_-5px_rgba(201,162,39,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all shadow-lg">
-                    Secure Your Unit
-                  </button>
-
-                  <div className="relative py-2 flex items-center">
-                    <div className="flex-grow border-t border-[#C9A227]/10"></div>
-                    <span className="flex-shrink mx-4 text-[10px] uppercase tracking-widest text-[#1A1800]/40 font-medium">or connect via</span>
-                    <div className="flex-grow border-t border-[#C9A227]/10"></div>
-                  </div>
-
-                  <a href={waLink} target="_blank" rel="noopener noreferrer" className="w-full bg-white border border-[#25D366] text-[#25D366] py-2.5 rounded-xl font-semibold flex justify-center items-center gap-2 hover:bg-[#25D366] hover:text-white transition-all text-sm shadow-sm group">
-                    <MessageCircle size={16} className="group-hover:animate-bounce" /> WhatsApp Support
-                  </a>
-                </form>
-              </div>
+              <PropertyEnquiryForm
+                propertyId={property._id.toString()}
+                propertyTitle={property.title}
+                waLink={waLink}
+              />
             </div>
           </div>
         </section>

@@ -3,8 +3,10 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, ArrowRight, X, User, Mail, MapPin, IndianRupee, Send, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
+import { useTracking } from '@/components/tracking/TrackingProvider';
 
 export default function EMICalculator() {
+  const { fireEvent } = useTracking();
   const [loanAmount, setLoanAmount] = useState<number | string>(5000000);
   const [downPayment, setDownPayment] = useState<number | string>(1000000);
   const [downPaymentPercent, setDownPaymentPercent] = useState<number>(20);
@@ -125,6 +127,19 @@ export default function EMICalculator() {
         });
 
         if (res.ok) {
+          // Fire Lead event for Remarketing
+          fireEvent('Lead', {
+            content_category: 'Home Loan Lead',
+            content_name: 'EMI Calculator Inquiry',
+            value: Number(loanRequest),
+            currency: 'INR',
+            name: formData.name,
+            phone: phone,
+            employment_type: formData.employmentType,
+            monthly_income: formData.monthlyIncome,
+            calculated_emi: emi
+          });
+
           setSubmitted(true);
           setTimeout(() => {
             setShowModal(false);
@@ -570,8 +585,8 @@ function InputField({ label, icon, prefixText, ...props }: any) {
           </div>
         )}
         <input 
-          className={`w-full h-11 bg-[#F9F9F7] border border-[#E8D5A3]/10 rounded-xl px-4 text-[13px] font-bold text-[#1A1800] focus:bg-white focus:border-[#C9A227] focus:outline-none transition-all placeholder:text-[#6b6450]/20 ${pl}`} 
-          style={prefixText === '+91' ? { paddingLeft: '95px' } : {}}
+          className={`w-full h-11 bg-white border border-gray-200 rounded-xl px-4 text-[13px] font-bold text-black focus:border-[#C9A227] focus:outline-none transition-all placeholder:text-gray-400 ${pl}`} 
+          style={prefixText === '+91' ? { paddingLeft: '95px', color: '#000000', backgroundColor: '#ffffff' } : { color: '#000000', backgroundColor: '#ffffff' }}
           {...props} 
         />
       </div>

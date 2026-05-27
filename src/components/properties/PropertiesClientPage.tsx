@@ -10,6 +10,7 @@ import PropertyCard from '@/components/properties/PropertyCard';
 import { CITIES, PROPERTY_TYPES } from '@/lib/utils';
 import type { Property } from '@/types';
 import { FALLBACK_PROPERTIES } from '@/constants/properties';
+import { useTracking } from '@/components/tracking/TrackingProvider';
 
 /* ─── Filter Data ─── */
 const SORT_OPTIONS = [
@@ -101,6 +102,7 @@ function FilterDropdown({
 
 /* ─── Main Component ─── */
 export default function PropertiesClientPage({ initialProperties = [] }: { initialProperties?: Property[] }) {
+  const { fireEvent } = useTracking();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy,      setSortBy]      = useState('newest');
   const [priceRange,  setPriceRange]  = useState('All Prices');
@@ -174,6 +176,18 @@ export default function PropertiesClientPage({ initialProperties = [] }: { initi
         const json = await res.json();
         if (active) {
           setProperties(json.data || []);
+          
+          // Telemetry tracking
+          if (searchQuery || cityFilter !== 'All Cities' || typeFilter !== 'All Types' || priceRange !== 'All Prices' || priceType !== 'All') {
+            fireEvent('Search', {
+              search_string: searchQuery || 'all',
+              city_filter: cityFilter,
+              type_filter: typeFilter,
+              price_type: priceType,
+              price_range: priceRange,
+              results_count: json.data?.length || 0
+            });
+          }
         }
       } catch (err) {
         console.error("Client fetch error:", err);

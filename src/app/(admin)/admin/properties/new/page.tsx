@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { MediaUpload, PdfUpload, MultiImageUpload } from '@/components/admin/MediaUpload';
 
 const PREDEFINED_AMENITIES = [
   'Gym', 'Cycling Track', 'Billiards', 'Table Tennis', 'Squash Court', 
@@ -45,10 +46,12 @@ export default function AddProperty() {
       name: '',
       phone: '',
       email: '',
-    },
-    amenities: [] as string[],
-    images: [''] as string[],
+    },    amenities: [] as string[],
+    images: [''] as string[], // Only banner image remains here (as images[0])
+    interiorImages: [] as string[],
+    galleryImages: [] as string[],
     videoUrl: '',
+    brochureUrl: '',
     highlights: [{ title: '', description: '' }],
     nearby: [{ type: 'landmark', name: '', distance: '' }],
     featured: false
@@ -63,6 +66,8 @@ export default function AddProperty() {
       const payload = {
         ...formData,
         images: formData.images.filter(img => img.trim() !== ''),
+        interiorImages: formData.interiorImages.filter(img => img.trim() !== ''),
+        galleryImages: formData.galleryImages.filter(img => img.trim() !== ''),
         highlights: formData.highlights.filter(h => h.title.trim() !== '' && h.description.trim() !== ''),
         nearby: formData.nearby.filter(n => n.name.trim() !== '' && n.distance.trim() !== ''),
         features: {
@@ -234,12 +239,68 @@ export default function AddProperty() {
           </div>
         </div>
 
-        {/* Media (Video URL) */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
-          <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Media URLs</h2>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">YouTube Video URL</label>
-            <input type="url" name="videoUrl" value={formData.videoUrl} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#C9A227]" placeholder="e.g. https://www.youtube.com/watch?v=..." />
+        {/* Media & Documents (Uploads & Links) */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
+          <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Media & Documents</h2>
+          
+          <div className="grid grid-cols-1 gap-6">
+            {/* YouTube Video Link */}
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">YouTube Video URL</label>
+              <p className="text-xs text-gray-500 mb-1.5">Optional walk-through video link for property tours</p>
+              <input 
+                type="url" 
+                name="videoUrl" 
+                value={formData.videoUrl} 
+                onChange={handleChange} 
+                className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#C9A227]" 
+                placeholder="e.g. https://www.youtube.com/watch?v=..." 
+              />
+            </div>
+
+            {/* Main Banner Image Uploader */}
+            <MediaUpload
+              label="Main Banner Image (Hero Background)"
+              description="This is the main banner image displayed at the very top background of the public details page."
+              value={formData.images[0] || ''}
+              onChange={(url) => {
+                setFormData(prev => {
+                  const newImages = [...prev.images];
+                  newImages[0] = url;
+                  return { ...prev, images: newImages };
+                });
+              }}
+            />
+
+            {/* Apartment Interior / Overview Slideshow Uploader */}
+            <MultiImageUpload
+              label="Apartment Interior / Overview Images (Up to 8 photos)"
+              description="Upload multiple interior, floor plan, or structural images displayed in the overview slider section."
+              images={formData.interiorImages}
+              onChange={(urls) => {
+                setFormData(prev => ({ ...prev, interiorImages: urls.slice(0, 8) }));
+              }}
+            />
+
+            {/* PDF Brochure Uploader */}
+            <PdfUpload
+              label="Download Brochure PDF Document"
+              description="Upload the project brochure PDF. Public visitors can download it instantly."
+              value={formData.brochureUrl || ''}
+              onChange={(url) => {
+                setFormData(prev => ({ ...prev, brochureUrl: url }));
+              }}
+            />
+
+            {/* Multi-Image Gallery Uploader */}
+            <MultiImageUpload
+              label="Property Photo Gallery / Facilities (Up to 8 photos)"
+              description="Upload multiple photos showcasing facilities (park, temple, gym) or neighborhood context (school, market)."
+              images={formData.galleryImages}
+              onChange={(urls) => {
+                setFormData(prev => ({ ...prev, galleryImages: urls.slice(0, 8) }));
+              }}
+            />
           </div>
         </div>
 
@@ -248,7 +309,7 @@ export default function AddProperty() {
           <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Location Advantages (Nearby)</h2>
           {formData.nearby.map((place, index) => (
             <div key={index} className="flex gap-4 items-start">
-              <div className="flex-1 grid grid-cols-2 gap-2">
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <input 
                   type="text" 
                   placeholder="Distance (e.g. 6.8 Km)" 
@@ -362,42 +423,7 @@ export default function AddProperty() {
           </button>
         </div>
 
-        {/* Image URLs */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
-          <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Property Images (URLs)</h2>
-          {formData.images.map((url, index) => (
-            <div key={index} className="flex gap-2">
-              <input 
-                type="text" 
-                placeholder="https://example.com/image.jpg" 
-                value={url}
-                onChange={(e) => {
-                  const newImages = [...formData.images];
-                  newImages[index] = e.target.value;
-                  setFormData({ ...formData, images: newImages });
-                }}
-                className="flex-1 border border-gray-300 rounded-lg p-3 outline-none"
-              />
-              <button 
-                type="button" 
-                onClick={() => {
-                  const newImages = formData.images.filter((_, i) => i !== index);
-                  setFormData({ ...formData, images: newImages });
-                }}
-                className="p-3 text-red-500 hover:bg-red-50 rounded-lg"
-              >
-                <Trash2 size={20} />
-              </button>
-            </div>
-          ))}
-          <button 
-            type="button" 
-            onClick={() => setFormData({ ...formData, images: [...formData.images, ''] })}
-            className="flex items-center gap-2 text-[#C9A227] font-medium hover:text-[#B8860B]"
-          >
-            <Plus size={18} /> Add Image URL
-          </button>
-        </div>
+
 
         {/* Agent Info */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">

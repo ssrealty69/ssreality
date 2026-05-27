@@ -36,10 +36,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const blog = await getBlog(slug);
   if (!blog) return { title: 'Post Not Found | SS Realty' };
+  
+  // Custom SEO parameters with rich defaults
+  const seoTitle = blog.seo?.title || `${blog.title} | SS Realty Blog`;
+  const seoDesc = blog.seo?.description || blog.excerpt;
+  const seoKeywords = blog.seo?.keywords || blog.tags?.join(', ') || '';
+  const canonicalUrl = blog.seo?.canonicalUrl || `https://ssrealty.in/blog/${slug}`;
+
   return {
-    title: `${blog.title} | SS Realty Blog`,
-    description: blog.excerpt,
-    openGraph: { images: [{ url: blog.coverImage }] },
+    title: seoTitle,
+    description: seoDesc,
+    keywords: seoKeywords,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: seoTitle,
+      description: seoDesc,
+      url: `https://ssrealty.in/blog/${slug}`,
+      type: 'article',
+      images: [{ url: blog.coverImage }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoTitle,
+      description: seoDesc,
+      images: [blog.coverImage],
+    }
   };
 }
 

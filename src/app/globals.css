@@ -314,29 +314,192 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ============================================================
-   Typography - Prose Spacing Enhancements
+   Typography - Premium Prose Layout Styles
    ============================================================ */
-.prose h2 {
-  margin-top: 2.5em !important;
-  margin-bottom: 1.25em !important;
+.prose {
+  font-family: var(--font-body);
+  color: var(--color-dark-600);
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Headings styling */
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-family: var(--font-heading);
   color: var(--color-dark-800) !important;
+  font-weight: 700 !important;
+  line-height: 1.3 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.prose h1 {
+  font-size: 2.25rem !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.prose h2 {
+  font-size: 1.75rem !important;
+  margin-top: 2em !important;
+  margin-bottom: 0.6em !important;
+  border-bottom: 1px solid rgba(232, 213, 163, 0.3);
+  padding-bottom: 0.3em;
 }
 
 .prose h3 {
-  margin-top: 2em !important;
-  margin-bottom: 1em !important;
+  font-size: 1.4rem !important;
+  margin-top: 1.8em !important;
+  margin-bottom: 0.6em !important;
+}
+
+.prose h4 {
+  font-size: 1.15rem !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 0.5em !important;
+}
+
+.prose h5 {
+  font-size: 1.05rem !important;
+  margin-top: 1.4em !important;
+  margin-bottom: 0.4em !important;
+}
+
+.prose h6 {
+  font-size: 0.95rem !important;
+  margin-top: 1.3em !important;
+  margin-bottom: 0.3em !important;
+}
+
+/* Paragraphs and Text Elements */
+.prose p {
+  margin-bottom: 1.5em !important;
+  line-height: 1.85 !important;
+  font-size: 1rem !important;
+}
+
+.prose strong, .prose b {
+  font-weight: 700 !important;
   color: var(--color-dark-800) !important;
 }
 
-.prose p {
-  margin-bottom: 1.5em !important;
-  line-height: 1.8 !important;
+.prose em, .prose i {
+  font-style: italic !important;
 }
 
-.prose ul, .prose ol {
-  margin-bottom: 2em !important;
+/* Lists styling with visible bullet points and decimal numbers */
+.prose ul {
+  list-style-type: disc !important;
+  padding-left: 1.75em !important;
+  margin-bottom: 1.75em !important;
+}
+
+.prose ol {
+  list-style-type: decimal !important;
+  padding-left: 1.75em !important;
+  margin-bottom: 1.75em !important;
 }
 
 .prose li {
-  margin-bottom: 0.75em !important;
+  margin-bottom: 0.6em !important;
+  line-height: 1.75 !important;
 }
+
+/* Premium Tables styling */
+.prose table {
+  width: 100%;
+  border-collapse: collapse !important;
+  margin-top: 2em !important;
+  margin-bottom: 2em !important;
+  font-size: 0.925rem !important;
+  background-color: #FFFFFF !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 15px rgba(26, 24, 0, 0.04) !important;
+  border: 1px solid rgba(232, 213, 163, 0.4) !important;
+}
+
+.prose th, .prose td {
+  border: 1px solid rgba(232, 213, 163, 0.4) !important;
+  padding: 14px 18px !important;
+  line-height: 1.6 !important;
+}
+
+.prose th {
+  background-color: var(--color-gold-50) !important;
+  color: var(--color-dark-900) !important;
+  font-weight: 700 !important;
+  font-family: var(--font-body) !important;
+}
+
+.prose tr:nth-child(even) {
+  background-color: rgba(255, 254, 245, 0.7) !important;
+}
+
+.prose tr:hover {
+  background-color: rgba(201, 162, 39, 0.02) !important;
+}
+
+/* Hyperlinks in blog content */
+.prose a {
+  color: var(--color-gold-500) !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+  transition: color 0.2s ease !important;
+}
+
+.prose a:hover {
+  color: var(--color-gold-600) !important;
+  text-decoration: underline !important;
+}
+
+/* Blockquotes styling */
+.prose blockquote {
+  border-left: 4px solid var(--color-gold-500) !important;
+  padding: 1rem 1.5rem !important;
+  margin: 1.75em 0 !important;
+  background-color: var(--color-gold-50) !important;
+  border-radius: 0 12px 12px 0 !important;
+  font-style: italic !important;
+  color: var(--color-dark-700) !important;
+}
+
+.prose blockquote p {
+  margin-bottom: 0 !important;
+}
+
+/* Horizontal Rules */
+.prose hr {
+  border: 0 !important;
+  border-top: 1px solid rgba(232, 213, 163, 0.6) !important;
+  margin: 2.5em 0 !important;
+}
+
+/* ============================================================
+   Custom list formatting types
+   ============================================================ */
+.prose ul.list-arrows {
+  list-style-type: '➤  ' !important;
+}
+
+.prose ul.list-squares {
+  list-style-type: square !important;
+}
+
+.prose ul.list-checkboxes {
+  list-style-type: '☐  ' !important;
+}
+
+/* perfect scrollbar hider utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+
+

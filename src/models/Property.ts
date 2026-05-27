@@ -29,6 +29,8 @@ export interface IProperty extends Document {
     reraApproved?: boolean;
   };
   images: string[];
+  interiorImages?: string[];
+  galleryImages?: string[];
   videoUrl?: string;
   brochureUrl?: string;
   featured: boolean;
@@ -94,6 +96,8 @@ const PropertySchema = new Schema<IProperty>(
       reraApproved: { type: Boolean, default: false },
     },
     images: [{ type: String }],
+    interiorImages: [{ type: String }],
+    galleryImages: [{ type: String }],
     videoUrl: { type: String },
     brochureUrl: { type: String },
     featured: { type: Boolean, default: false, index: true },

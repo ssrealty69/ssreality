@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import JobApplication from '@/models/JobApplication';
+import { cloudinary } from '@/lib/cloudinary';
 import nodemailer from 'nodemailer';
 
 export const dynamic = 'force-dynamic';
@@ -20,13 +21,31 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
-    // Save to DB (minimal details for now)
+    let resumeUrl = 'Not Provided';
+    if (resume && resume.size > 0) {
+      try {
+        const bytes = await resume.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        const base64 = `data:${resume.type};base64,${buffer.toString('base64')}`;
+        const uploadRes = await cloudinary.uploader.upload(base64, {
+          folder: 'ss-realty/resumes',
+          resource_type: 'auto',
+          unique_filename: true,
+        });
+        resumeUrl = uploadRes.secure_url;
+      } catch (uploadError) {
+        console.error('Cloudinary resume upload error:', uploadError);
+        resumeUrl = 'Attached to Email';
+      }
+    }
+
+    // Save to DB
     const application = await JobApplication.create({
       name,
       phone,
       age,
       position,
-      resumeUrl: resume ? 'Attached to Email' : 'Not Provided'
+      resumeUrl
     });
 
     // Send Email
@@ -73,7 +92,7 @@ export async function POST(req: NextRequest) {
                 <tr>
                   <td style="padding: 12px 0; color: #6b6450; font-weight: 600;">Resume:</td>
                   <td style="padding: 12px 0; font-weight: 500; color: ${resume ? '#22c55e' : '#ef4444'};">
-                    ${resume ? '📎 Attached to this email' : '❌ Not Provided'}
+                    ${resumeUrl.startsWith('http') ? `<a href="${resumeUrl}" style="color: #c9a227; text-decoration: underline; font-weight: bold;" target="_blank">📎 View Resume File</a>` : (resume ? '📎 Attached to this email' : '❌ Not Provided')}
                   </td>
                 </tr>
               </table>
