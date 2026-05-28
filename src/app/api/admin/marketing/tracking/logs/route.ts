@@ -20,9 +20,12 @@ export async function GET(req: NextRequest) {
       .limit(10)
       .lean();
 
+    // Format logs for serialization safety (converts ObjectId, Date, and other MongoDB types to strings)
+    const safeLogs = JSON.parse(JSON.stringify(logs));
+
     return NextResponse.json({
       success: true,
-      data: logs
+      data: safeLogs
     });
   } catch (error: any) {
     console.error('Fetch Event Logs Error:', error);

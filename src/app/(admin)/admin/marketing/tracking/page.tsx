@@ -89,13 +89,16 @@ export default function TrackingSettingsPage() {
     setLogsLoading(true);
     try {
       const res = await fetch('/api/admin/marketing/tracking/logs');
-      if (!res.ok) throw new Error('Failed to load telemetry logs');
+      if (!res.ok) {
+        console.error('Failed to load telemetry logs. Status:', res.status);
+        return;
+      }
       const json = await res.json();
       if (json.success && json.data) {
         setLogs(json.data);
       }
     } catch (err: any) {
-      console.error(err);
+      console.error('Error fetching logs:', err);
     } finally {
       setLogsLoading(false);
     }
