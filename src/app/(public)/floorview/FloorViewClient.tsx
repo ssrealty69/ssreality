@@ -40,8 +40,6 @@ function FloorViewContent({
   const [activeData, setActiveData] = useState<{ property: any; floorPlan: any; plotPlan?: any } | null>(null);
   const [fetchingDetails, setFetchingDetails] = useState(false);
 
-  const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
-
   // Check auth state in session storage
   useEffect(() => {
     const auth = sessionStorage.getItem('floorview_auth');
@@ -49,6 +47,15 @@ function FloorViewContent({
       setIsAuthenticated(true);
     }
   }, []);
+
+  // Auto-focus the hidden OTP input when auth screen is shown
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // Small delay to allow DOM to mount
+      const t = setTimeout(() => hiddenInputRef.current?.focus(), 100);
+      return () => clearTimeout(t);
+    }
+  }, [isAuthenticated]);
 
   // Fetch active property data if propertyIdParam exists
   useEffect(() => {
@@ -96,59 +103,32 @@ function FloorViewContent({
     }
   }, [isAuthenticated, propertyIdParam, availableProperties, selectedCategory, activePropertyId]);
 
-  const handleInputChange = (value: string, index: number) => {
-    // Keep only numbers
-    const cleanValue = value.replace(/[^0-9]/g, '');
-    if (!cleanValue) {
-      const newPasscode = [...passcode];
-      newPasscode[index] = '';
-      setPasscode(newPasscode);
-      return;
-    }
+  // Single hidden input handlers for mobile-friendly OTP
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
 
-    // Handle pasting a longer numeric code (e.g. 6 digits)
-    if (cleanValue.length > 1) {
-      const pastedDigits = cleanValue.slice(0, 6 - index).split('');
-      const newPasscode = [...passcode];
-      pastedDigits.forEach((digit, i) => {
-        if (index + i < 6) {
-          newPasscode[index + i] = digit;
-        }
-      });
-      setPasscode(newPasscode);
-
-      // Focus the last filled box, or the next empty one if any
-      const targetIndex = Math.min(index + pastedDigits.length, 5);
-      setTimeout(() => {
-        inputsRef.current[targetIndex]?.focus();
-      }, 10);
-      return;
-    }
-
-    const newPasscode = [...passcode];
-    newPasscode[index] = cleanValue;
+  const handleHiddenInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+    const digits = raw.split('');
+    const newPasscode = ['', '', '', '', '', ''];
+    digits.forEach((d, i) => { newPasscode[i] = d; });
     setPasscode(newPasscode);
+    // Keep caret at end
+    e.target.value = raw;
+  };
 
-    // Auto-focus next input with a slight timeout to keep mobile keyboard open
-    if (index < 5) {
-      setTimeout(() => {
-        inputsRef.current[index + 1]?.focus();
-      }, 10);
+  const handleHiddenKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace') {
+      const filled = passcode.filter(d => d !== '').length;
+      if (filled === 0) return;
+      const newPasscode = [...passcode];
+      newPasscode[filled - 1] = '';
+      setPasscode(newPasscode);
+      e.preventDefault();
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === 'Backspace') {
-      if (!passcode[index] && index > 0) {
-        // Clear previous input and focus it
-        const newPasscode = [...passcode];
-        newPasscode[index - 1] = '';
-        setPasscode(newPasscode);
-        setTimeout(() => {
-          inputsRef.current[index - 1]?.focus();
-        }, 10);
-      }
-    }
+  const focusHiddenInput = () => {
+    hiddenInputRef.current?.focus();
   };
 
   // Submit passcode check
@@ -176,7 +156,7 @@ function FloorViewContent({
         setShake(true);
         toast.error(result.error || 'Incorrect passcode. Access Denied.');
         setPasscode(['', '', '', '', '', '']);
-        inputsRef.current[0]?.focus();
+        hiddenInputRef.current?.focus();
         setTimeout(() => setShake(false), 500); // clear shake state
       }
     } catch (err) {
@@ -242,28 +222,56 @@ function FloorViewContent({
             Please enter your 6-digit relationship manager passcode to unlock availability details.
           </p>
 
-          {/* 6 Digit Input Boxes */}
+          {/* 6 Digit OTP — single hidden input keeps keyboard open on mobile */}
           <form onSubmit={handleSubmitPasscode} className="space-y-8">
-            <div className="flex justify-center gap-2">
-              {passcode.map((digit, idx) => (
-                <input
-                  key={idx}
-                  type="tel"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  maxLength={6}
-                  value={digit}
-                  ref={(el) => {
-                    inputsRef.current[idx] = el;
-                  }}
-                  onChange={(e) => handleInputChange(e.target.value, idx)}
-                  onKeyDown={(e) => handleKeyDown(e, idx)}
-                  onFocus={(e) => e.target.select()}
-                  disabled={loading}
-                  className="w-12 h-14 text-center text-xl font-bold bg-gray-50 border border-gray-200 focus:border-[#C9A227] focus:bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C9A227]/15 transition-all text-gray-900 shadow-sm disabled:opacity-50"
-                  placeholder="-"
-                />
-              ))}
+            {/* Hidden real input — always focused, never visible */}
+            <input
+              ref={hiddenInputRef}
+              type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              autoComplete="one-time-code"
+              maxLength={6}
+              value={passcode.join('')}
+              onChange={handleHiddenInputChange}
+              onKeyDown={handleHiddenKeyDown}
+              disabled={loading}
+              aria-label="Enter 6-digit passcode"
+              style={{
+                position: 'absolute',
+                opacity: 0,
+                width: 1,
+                height: 1,
+                pointerEvents: 'none',
+                caretColor: 'transparent',
+              }}
+            />
+
+            {/* Visual digit boxes — clicking any box focuses the hidden input */}
+            <div className="flex justify-center gap-2" onClick={focusHiddenInput}>
+              {passcode.map((digit, idx) => {
+                const isCurrent = passcode.filter(d => d !== '').length === idx;
+                return (
+                  <div
+                    key={idx}
+                    className={`w-12 h-14 flex items-center justify-center text-xl font-bold rounded-xl border transition-all cursor-text select-none shadow-sm
+                      ${digit
+                        ? 'bg-white border-[#C9A227] text-gray-900 shadow-[0_0_0_2px_rgba(201,162,39,0.15)]'
+                        : isCurrent
+                        ? 'bg-white border-[#C9A227] shadow-[0_0_0_3px_rgba(201,162,39,0.2)]'
+                        : 'bg-gray-50 border-gray-200 text-gray-300'
+                      }
+                      ${loading ? 'opacity-50' : ''}
+                    `}
+                  >
+                    {digit || (isCurrent ? (
+                      <span className="w-0.5 h-5 bg-[#C9A227] rounded-full animate-pulse" />
+                    ) : (
+                      <span className="text-gray-300 text-lg">-</span>
+                    ))}
+                  </div>
+                );
+              })}
             </div>
 
             <button
