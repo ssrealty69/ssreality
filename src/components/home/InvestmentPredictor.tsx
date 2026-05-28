@@ -141,18 +141,19 @@ export default function InvestmentPredictor() {
 
   if (!locA || !locB) return null;
 
-  // Filter history to display overlapping years (5 years -> 2024-2030, 10 years -> 2024-2035)
+  // Year range: 5-year => currentYear to currentYear+5, 10-year => currentYear to currentYear+10
+  // Automatically advances each calendar year — no manual updates needed
   const currentYear = new Date().getFullYear();
-  const startYear = currentYear - 2;
-  const yearsCount = timeframe === 5 ? 7 : 12;
+  const startYear = currentYear;  // Always starts from current year (e.g. 2026)
+  const yearsCount = timeframe === 5 ? 6 : 11; // 6 points = 5-year span; 11 points = 10-year span
   const years = Array.from({ length: yearsCount }, (_, i) => startYear + i);
   
   const historyA = years.map(yr => {
     const pt = locA.trendHistory.find(h => h.year === yr);
     if (pt) return { year: yr, price: pt.price };
     
-    // Project dynamically if year exceeds stored DB history limits (2030)
-    const diff = yr - 2025; // 2025 is current price base year
+    // Project dynamically — base year is always currentYear (auto-updates each year)
+    const diff = yr - currentYear;
     const price = Math.round(locA.currentPrice * Math.pow(1 + (locA.cagr / 100), diff));
     return { year: yr, price };
   });
@@ -161,8 +162,8 @@ export default function InvestmentPredictor() {
     const pt = locB.trendHistory.find(h => h.year === yr);
     if (pt) return { year: yr, price: pt.price };
     
-    // Project dynamically if year exceeds stored DB history limits (2030)
-    const diff = yr - 2025; // 2025 is current price base year
+    // Project dynamically — base year is always currentYear (auto-updates each year)
+    const diff = yr - currentYear;
     const price = Math.round(locB.currentPrice * Math.pow(1 + (locB.cagr / 100), diff));
     return { year: yr, price };
   });
@@ -384,7 +385,7 @@ export default function InvestmentPredictor() {
                   {timeframe}-Year Price Trajectory (INR / sq.ft.)
                 </h3>
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
-                  Comparative appreciation projection ({startYear} - {startYear + (timeframe === 5 ? 6 : 11)})
+                  Comparative appreciation projection ({startYear} – {startYear + timeframe})
                 </p>
               </div>
               
