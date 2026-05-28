@@ -1,0 +1,580 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Loader2, TrendingUp, Compass, Award, ShieldAlert, CheckCircle2, RefreshCw, BarChart2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+
+interface TrendHistoryItem {
+  year: number;
+  price: number;
+}
+
+interface LocationTrendItem {
+  _id: string;
+  name: string;
+  currentPrice: number;
+  cagr: number;
+  connectivity: number;
+  infrastructure: number;
+  livability: number;
+  commercialProximity: number;
+  growthDrivers: string[];
+  verdict: string;
+  trendHistory: TrendHistoryItem[];
+}
+
+export default function InvestmentPredictor() {
+  const [trends, setTrends] = useState<LocationTrendItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Comparative state
+  const [locAId, setLocAId] = useState<string>('');
+  const [locBId, setLocBId] = useState<string>('');
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch('/api/investment/trends')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load investment trends');
+        return res.json();
+      })
+      .then((json) => {
+        if (json.success && json.data) {
+          setTrends(json.data);
+          if (json.data.length >= 2) {
+            setLocAId(json.data[0]._id);
+            setLocBId(json.data[1]._id);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error('Failed to initialize investment engine');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-20 bg-[#FFFEF5] border-b border-[#E8D5A3]/30 flex flex-col items-center justify-center space-y-4">
+        <Loader2 className="animate-spin text-[#C9A227]" size={36} />
+        <p className="text-xs font-extrabold text-gray-400 uppercase tracking-widest animate-pulse">Initializing Investment Predictor...</p>
+      </section>
+    );
+  }
+
+  const locA = trends.find((t) => t._id === locAId) || trends[0];
+  const locB = trends.find((t) => t._id === locBId) || trends[1];
+
+  if (!locA || !locB) return null;
+
+  // Filter history to display overlapping years (e.g. 2024 to 2030)
+  const years = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  
+  const historyA = years.map(yr => {
+    const pt = locA.trendHistory.find(h => h.year === yr) || { price: locA.currentPrice };
+    return { year: yr, price: pt.price };
+  });
+
+  const historyB = years.map(yr => {
+    const pt = locB.trendHistory.find(h => h.year === yr) || { price: locB.currentPrice };
+    return { year: yr, price: pt.price };
+  });
+
+  // Calculate SVG dimensions
+  const width = 500;
+  const height = 200;
+  const paddingX = 45;
+  const paddingY = 20;
+  const chartWidth = width - paddingX * 2;
+  const chartHeight = height - paddingY * 2;
+
+  // Find max price to scale Y axis
+  const maxPrice = Math.max(...historyA.map(h => h.price), ...historyB.map(h => h.price), 1000) * 1.1;
+
+  const pointsA = historyA.map((h, idx) => {
+    const x = paddingX + (idx / (years.length - 1)) * chartWidth;
+    const y = height - paddingY - (h.price / maxPrice) * chartHeight;
+    return { x, y, data: h };
+  });
+
+  const pointsB = historyB.map((h, idx) => {
+    const x = paddingX + (idx / (years.length - 1)) * chartWidth;
+    const y = height - paddingY - (h.price / maxPrice) * chartHeight;
+    return { x, y, data: h };
+  });
+
+  const linePathA = pointsA.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+  const areaPathA = pointsA.length > 0 
+    ? `${linePathA} L ${pointsA[pointsA.length - 1].x} ${height - paddingY} L ${pointsA[0].x} ${height - paddingY} Z`
+    : '';
+
+  const linePathB = pointsB.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+  const areaPathB = pointsB.length > 0 
+    ? `${linePathB} L ${pointsB[pointsB.length - 1].x} ${height - paddingY} L ${pointsB[0].x} ${height - paddingY} Z`
+    : '';
+
+  // Determine winners
+  const isWinnerA = locA.cagr >= locB.cagr;
+  
+  return (
+    <section id="investment-comparison" className="py-20 bg-[#FFFEF5] border-b border-[#E8D5A3]/30 font-sans relative overflow-hidden">
+      {/* Background radial overlays */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#C9A227 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+      <div className="absolute top-0 right-0 w-[40%] h-[80%] bg-gradient-to-l from-[#C9A227]/5 to-transparent pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Title Block */}
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <span className="px-3.5 py-1.5 bg-[#C9A227]/10 border border-[#E8D5A3]/40 text-[#B8860B] rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+            Interactive AI Telemetry
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black font-[var(--font-playfair)] text-[#1A1800] tracking-tight leading-[1.15]">
+            Delhi NCR <span className="text-[#C9A227]">Investment Predictor</span> & Comparison
+          </h2>
+          <p className="text-[#6b6450] text-sm md:text-base leading-relaxed">
+            Choose any two emerging residential, commercial, or airport corridor micro-markets in Delhi NCR to dynamically compare 5-year price trajectories, infrastructure ratings, and growth drivers.
+          </p>
+        </div>
+
+        {/* Dropdowns Selector Card */}
+        <div className="bg-white border border-[#E8D5A3]/30 rounded-3xl p-6 md:p-8 shadow-sm mb-10 flex flex-col md:flex-row items-center gap-6 justify-between">
+          
+          {/* Selector Location A */}
+          <div className="w-full md:w-[42%] space-y-2">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A227]" />
+              Compare Location A (Anchor)
+            </label>
+            <select
+              value={locAId}
+              onChange={(e) => {
+                if (e.target.value !== locBId) setLocAId(e.target.value);
+                else toast.error('Please select two distinct locations to compare.');
+              }}
+              className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl px-4 py-3.5 text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] cursor-pointer shadow-sm transition-all"
+            >
+              {trends.map(t => (
+                <option key={t._id} value={t._id}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Verses Divider */}
+          <div className="w-10 h-10 rounded-full border border-[#E8D5A3]/40 bg-[#FFFEF5] flex items-center justify-center font-black text-[10px] text-[#C9A227] shadow-sm shrink-0 select-none animate-pulse">
+            VS
+          </div>
+
+          {/* Selector Location B */}
+          <div className="w-full md:w-[42%] space-y-2">
+            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-gray-400" />
+              Compare Location B (Benchmark)
+            </label>
+            <select
+              value={locBId}
+              onChange={(e) => {
+                if (e.target.value !== locAId) setLocBId(e.target.value);
+                else toast.error('Please select two distinct locations to compare.');
+              }}
+              className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl px-4 py-3.5 text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] cursor-pointer shadow-sm transition-all"
+            >
+              {trends.map(t => (
+                <option key={t._id} value={t._id}>{t.name}</option>
+              ))}
+            </select>
+          </div>
+
+        </div>
+
+        {/* Main Telemetry Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Left Column (5/12 width): Trajectory Graph */}
+          <div className="lg:col-span-6 bg-white border border-[#E8D5A3]/25 rounded-3xl p-6 shadow-sm space-y-6 relative overflow-hidden">
+            <div>
+              <h3 className="font-extrabold text-sm text-[#1A1800] flex items-center gap-2">
+                <BarChart2 size={16} className="text-[#C9A227]" />
+                5-Year Price Trajectory (INR / sq.ft.)
+              </h3>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                Comparative appreciation projection (2024 - 2030)
+              </p>
+            </div>
+
+            {/* Custom SVG Line Chart */}
+            <div className="relative w-full h-[220px]">
+              <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
+                <defs>
+                  <linearGradient id="areaGradA" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#C9A227" stopOpacity="0.18" />
+                    <stop offset="100%" stopColor="#C9A227" stopOpacity="0.00" />
+                  </linearGradient>
+                  <linearGradient id="areaGradB" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#9CA3AF" stopOpacity="0.12" />
+                    <stop offset="100%" stopColor="#9CA3AF" stopOpacity="0.00" />
+                  </linearGradient>
+                </defs>
+
+                {/* Horizontal Grid lines */}
+                {[0, 0.25, 0.5, 0.75, 1].map((ratio, index) => {
+                  const y = paddingY + ratio * chartHeight;
+                  const gridVal = Math.round(maxPrice * (1 - ratio));
+                  return (
+                    <g key={index} className="opacity-40">
+                      <line
+                        x1={paddingX}
+                        y1={y}
+                        x2={width - paddingX}
+                        y2={y}
+                        stroke="#E5E7EB"
+                        strokeDasharray="4 4"
+                      />
+                      <text
+                        x={paddingX - 10}
+                        y={y + 3.5}
+                        textAnchor="end"
+                        className="text-[9px] font-black fill-gray-400 font-sans"
+                      >
+                        ₹{gridVal.toLocaleString()}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Areas */}
+                {areaPathA && <path d={areaPathA} fill="url(#areaGradA)" />}
+                {areaPathB && <path d={areaPathB} fill="url(#areaGradB)" />}
+
+                {/* Location A Line (Gold) */}
+                {linePathA && (
+                  <path
+                    d={linePathA}
+                    fill="none"
+                    stroke="#C9A227"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                )}
+
+                {/* Location B Line (Grey) */}
+                {linePathB && (
+                  <path
+                    d={linePathB}
+                    fill="none"
+                    stroke="#9CA3AF"
+                    strokeWidth="2"
+                    strokeDasharray="3 3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="opacity-80"
+                  />
+                )}
+
+                {/* X Axis Date labels */}
+                {years.map((yr, idx) => {
+                  const isFirst = idx === 0;
+                  const isLast = idx === years.length - 1;
+                  const isMiddle = idx === Math.floor(years.length / 2);
+                  
+                  if (!isFirst && !isLast && !isMiddle) return null;
+
+                  const x = paddingX + (idx / (years.length - 1)) * chartWidth;
+                  return (
+                    <text
+                      key={idx}
+                      x={x}
+                      y={height - paddingY + 16}
+                      textAnchor="middle"
+                      className="text-[9px] font-black fill-gray-400 font-sans"
+                    >
+                      {yr}
+                    </text>
+                  );
+                })}
+
+                {/* Transparent Hover grids */}
+                {years.map((yr, idx) => {
+                  const x = paddingX + (idx / (years.length - 1)) * chartWidth;
+                  const hoverWidth = chartWidth / (years.length - 1);
+                  return (
+                    <rect
+                      key={idx}
+                      x={x - hoverWidth / 2}
+                      y={paddingY}
+                      width={hoverWidth}
+                      height={chartHeight}
+                      fill="transparent"
+                      className="cursor-crosshair pointer-events-auto"
+                      onMouseEnter={() => setHoveredIdx(idx)}
+                      onMouseLeave={() => setHoveredIdx(null)}
+                    />
+                  );
+                })}
+
+                {/* Hover dots & Pointer lines */}
+                {hoveredIdx !== null && pointsA[hoveredIdx] && (
+                  <g>
+                    <line
+                      x1={pointsA[hoveredIdx].x}
+                      y1={paddingY}
+                      x2={pointsA[hoveredIdx].x}
+                      y2={height - paddingY}
+                      stroke="#C9A227"
+                      strokeWidth="1"
+                      strokeDasharray="2 2"
+                    />
+                    <circle
+                      cx={pointsA[hoveredIdx].x}
+                      cy={pointsA[hoveredIdx].y}
+                      r="4"
+                      fill="#C9A227"
+                      stroke="#FFF"
+                      strokeWidth="2"
+                    />
+                    <circle
+                      cx={pointsB[hoveredIdx].x}
+                      cy={pointsB[hoveredIdx].y}
+                      r="4"
+                      fill="#9CA3AF"
+                      stroke="#FFF"
+                      strokeWidth="2"
+                    />
+                  </g>
+                )}
+              </svg>
+
+              {/* Floating custom tooltip */}
+              {hoveredIdx !== null && historyA[hoveredIdx] && (
+                <div 
+                  className="absolute bg-white/95 backdrop-blur-md border border-[#E8D5A3]/40 rounded-xl p-3 shadow-lg text-[9px] space-y-1.5 z-10 pointer-events-none transition-all duration-150 animate-in zoom-in-95"
+                  style={{
+                    left: `${Math.min(
+                      Math.max(
+                        (hoveredIdx / (years.length - 1)) * 90 + 5,
+                        10
+                      ),
+                      80
+                    )}%`,
+                    top: '10%'
+                  }}
+                >
+                  <p className="font-black text-gray-400 uppercase tracking-widest leading-none">
+                    Year {years[hoveredIdx]} Value
+                  </p>
+                  <div className="flex flex-col gap-1 pt-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227]" />
+                      <span className="text-gray-500 font-bold">A:</span>
+                      <span className="font-black text-gray-900">₹{historyA[hoveredIdx].price.toLocaleString()}/sq.ft.</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                      <span className="text-gray-500 font-bold">B:</span>
+                      <span className="font-black text-gray-900">₹{historyB[hoveredIdx].price.toLocaleString()}/sq.ft.</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Growth Legend badges */}
+            <div className="flex justify-between items-center bg-[#FFFEF5] p-3 rounded-2xl border border-[#E8D5A3]/30 text-[10px] font-black uppercase text-gray-600">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#C9A227]" />
+                <span>{locA.name.split(',')[0]}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-gray-400" />
+                <span>{locB.name.split(',')[0]}</span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Right Column (7/12 width): Metric Bars & Growth Drivers */}
+          <div className="lg:col-span-6 space-y-6">
+            
+            {/* Metric Bars Container */}
+            <div className="bg-white border border-[#E8D5A3]/25 rounded-3xl p-6 shadow-sm space-y-5">
+              <h3 className="font-extrabold text-sm text-[#1A1800] flex items-center gap-2">
+                <Compass size={16} className="text-[#C9A227]" />
+                Micro-Market Growth Indicators
+              </h3>
+              
+              <div className="space-y-4">
+                
+                {/* 1. Price Index Comparison */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
+                    <span>Average Current Price (per sq.ft.)</span>
+                    <div className="space-x-2">
+                      <span className="text-[#B8860B] font-black">₹{locA.currentPrice.toLocaleString()}</span>
+                      <span className="text-gray-400">vs</span>
+                      <span className="text-gray-600 font-black">₹{locB.currentPrice.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 h-2">
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-[#C9A227] h-full rounded-full" style={{ width: `${Math.min((locA.currentPrice / 18000) * 100, 100)}%` }} />
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-gray-400 h-full rounded-full" style={{ width: `${Math.min((locB.currentPrice / 18000) * 100, 100)}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Projected 5-Year CAGR */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
+                    <span>Projected 5-Year CAGR (%)</span>
+                    <div className="space-x-2">
+                      <span className="text-[#B8860B] font-black">+{locA.cagr}%</span>
+                      <span className="text-gray-400">vs</span>
+                      <span className="text-gray-600 font-black">+{locB.cagr}%</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 h-2">
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-[#C9A227] h-full rounded-full" style={{ width: `${(locA.cagr / 20) * 100}%` }} />
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-gray-400 h-full rounded-full" style={{ width: `${(locB.cagr / 20) * 100}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Connectivity Index */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
+                    <span>Connectivity & Metro Index</span>
+                    <div className="space-x-2">
+                      <span className="text-[#B8860B] font-black">{locA.connectivity}/10</span>
+                      <span className="text-gray-400">vs</span>
+                      <span className="text-gray-600 font-black">{locB.connectivity}/10</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 h-2">
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-[#C9A227] h-full rounded-full" style={{ width: `${locA.connectivity * 10}%` }} />
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-gray-400 h-full rounded-full" style={{ width: `${locB.connectivity * 10}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Infrastructure & Sewerage */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
+                    <span>Physical Infrastructure Score</span>
+                    <div className="space-x-2">
+                      <span className="text-[#B8860B] font-black">{locA.infrastructure}/10</span>
+                      <span className="text-gray-400">vs</span>
+                      <span className="text-gray-600 font-black">{locB.infrastructure}/10</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 h-2">
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-[#C9A227] h-full rounded-full" style={{ width: `${locA.infrastructure * 10}%` }} />
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-gray-400 h-full rounded-full" style={{ width: `${locB.infrastructure * 10}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. Livability & Green Score */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
+                    <span>Livability & Green Index</span>
+                    <div className="space-x-2">
+                      <span className="text-[#B8860B] font-black">{locA.livability}/10</span>
+                      <span className="text-gray-400">vs</span>
+                      <span className="text-gray-600 font-black">{locB.livability}/10</span>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 h-2">
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-[#C9A227] h-full rounded-full" style={{ width: `${locA.livability * 10}%` }} />
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
+                      <div className="bg-gray-400 h-full rounded-full" style={{ width: `${locB.livability * 10}%` }} />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Growth Drivers bullets split */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white border border-[#E8D5A3]/25 rounded-3xl p-5 shadow-sm">
+              <div className="space-y-3">
+                <h4 className="text-[11px] font-black text-[#C9A227] uppercase tracking-wider leading-none">
+                  {locA.name.split(',')[0]} Key Drivers
+                </h4>
+                <ul className="space-y-2 text-[10px] text-gray-600 font-semibold leading-relaxed">
+                  {locA.growthDrivers.map((drv, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <CheckCircle2 size={12} className="text-emerald-500 shrink-0 mt-0.5" />
+                      <span>{drv}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-wider leading-none">
+                  {locB.name.split(',')[0]} Key Drivers
+                </h4>
+                <ul className="space-y-2 text-[10px] text-gray-600 font-semibold leading-relaxed">
+                  {locB.growthDrivers.map((drv, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <CheckCircle2 size={12} className="text-[#a09060] shrink-0 mt-0.5" />
+                      <span>{drv}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Dynamic Investment Verdict (Full Width Card below) */}
+        <div className="mt-8 bg-gradient-to-r from-[#1A1800] via-[#2D2A00] to-[#1A1800] text-white rounded-3xl p-6 md:p-8 relative overflow-hidden border border-[#E8D5A3]/20 shadow-xl flex flex-col md:flex-row items-center gap-6 justify-between animate-in fade-in slide-in-from-bottom duration-500">
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#C9A227 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+          <div className="space-y-3 relative z-10 max-w-4xl">
+            
+            {/* dynamic Winner badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#C9A227]/20 border border-[#E8D5A3]/30 rounded-full text-[9px] font-black uppercase text-[#C9A227] tracking-wider leading-none">
+              <Award size={12} />
+              AI Capital Advisory Verdict
+            </div>
+            
+            <h3 className="font-extrabold text-lg text-white font-[var(--font-playfair)] tracking-wide">
+              Comparative Analysis Verdict: {isWinnerA ? locA.name.split(',')[0] : locB.name.split(',')[0]} stands out as appreciation leader!
+            </h3>
+            
+            <p className="text-white/70 text-xs leading-relaxed font-medium">
+              Our dynamic algorithm projects {isWinnerA ? `+${locA.cagr}%` : `+${locB.cagr}%`} CAGR for the appreciation leader. {locA.verdict} Meanwhile, {locB.verdict.toLowerCase()}
+            </p>
+          </div>
+
+          <div className="relative z-10 shrink-0 text-center bg-white/5 border border-white/10 rounded-2xl p-4 min-w-[150px] font-sans">
+            <span className="text-[9px] font-black text-[#C9A227] uppercase tracking-wider block mb-1">Appreciation Gap</span>
+            <span className="text-2xl font-black text-white leading-none block">
+              {Math.abs(locA.cagr - locB.cagr).toFixed(1)}%
+            </span>
+            <span className="text-[8px] text-white/50 font-bold block mt-1">CAGR Advantage</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+}

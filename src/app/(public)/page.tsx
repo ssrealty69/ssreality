@@ -8,6 +8,7 @@ import { FALLBACK_PROPERTIES } from '@/constants/properties';
 // Lazy-load below-the-fold sections — they won't block initial paint
 const ProjectHighlights = dynamic(() => import('@/components/home/ProjectHighlights'), { ssr: true });
 const AmenitiesSection = dynamic(() => import('@/components/home/AmenitiesSection'), { ssr: true });
+const InvestmentPredictor = dynamic(() => import('@/components/home/InvestmentPredictor'), { ssr: true });
 const StatsSection = dynamic(() => import('@/components/home/StatsSection'), { ssr: true });
 const ServicesSection = dynamic(() => import('@/components/home/ServicesSection'), { ssr: true });
 const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection'), { ssr: true });
@@ -83,6 +84,7 @@ export default async function HomePage() {
 
       <ProjectHighlights />
       <AmenitiesSection />
+      <InvestmentPredictor />
       <StatsSection />
       <ServicesSection />
       <TestimonialsSection />
