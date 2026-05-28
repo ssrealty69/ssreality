@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Star, Quote } from 'lucide-react';
 
 const testimonials = [
@@ -37,7 +40,8 @@ const testimonials = [
 
 function Avatar({ initials, color }: { initials: string; color: string }) {
   return (
-    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0`}
+    <div
+      className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
       style={{ background: color }}
     >
       {initials}
@@ -46,6 +50,135 @@ function Avatar({ initials, color }: { initials: string; color: string }) {
 }
 
 const colors = ['#C9A227', '#B8860B', '#9a6f08', '#C9A227'];
+
+function TestimonialCard({ t, i }: { t: typeof testimonials[0]; i: number }) {
+  return (
+    <div className="bg-white rounded-2xl p-6 border border-[#E8D5A3]/60 shadow-[0_2px_16px_rgba(26,24,0,0.05)] hover:shadow-[var(--shadow-gold)] transition-shadow h-full flex flex-col">
+      {/* Quote icon */}
+      <Quote size={28} className="text-[#C9A227]/30 mb-4" />
+
+      {/* Stars */}
+      <div className="flex gap-1 mb-4">
+        {Array.from({ length: t.rating }).map((_, j) => (
+          <Star key={j} size={14} fill="#C9A227" className="text-[#C9A227]" />
+        ))}
+      </div>
+
+      <p className="text-sm text-[#504e40] leading-relaxed mb-5 italic flex-1">&quot;{t.content}&quot;</p>
+
+      {/* Property tag */}
+      <div className="badge-gold mb-5 text-[10px]">{t.property}</div>
+
+      {/* Author */}
+      <div className="flex items-center gap-3">
+        <Avatar initials={t.image} color={colors[i % colors.length]} />
+        <div>
+          <p className="font-semibold text-[#1A1800] text-sm">{t.name}</p>
+          <p className="text-xs text-[#6b6450]">{t.role}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Mobile-only swipeable carousel with auto-play */
+function MobileCarousel() {
+  const [active, setActive] = useState(0);
+  const total = testimonials.length;
+
+  // Touch tracking
+  const touchStartX = useRef<number | null>(null);
+  const touchDelta = useRef(0);
+  const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isPaused = useRef(false);
+
+  const goNext = useCallback(() => {
+    setActive((prev) => (prev + 1) % total);
+  }, [total]);
+
+  const goPrev = useCallback(() => {
+    setActive((prev) => (prev - 1 + total) % total);
+  }, [total]);
+
+  // Auto-play: advances right-to-left every 3.5 s
+  const startAuto = useCallback(() => {
+    if (autoRef.current) clearInterval(autoRef.current);
+    autoRef.current = setInterval(() => {
+      if (!isPaused.current) goNext();
+    }, 3500);
+  }, [goNext]);
+
+  useEffect(() => {
+    startAuto();
+    return () => {
+      if (autoRef.current) clearInterval(autoRef.current);
+    };
+  }, [startAuto]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDelta.current = 0;
+    isPaused.current = true; // pause auto during swipe
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDelta.current = e.touches[0].clientX - touchStartX.current;
+  };
+
+  const handleTouchEnd = () => {
+    const threshold = 40; // px
+    if (touchDelta.current < -threshold) goNext();
+    else if (touchDelta.current > threshold) goPrev();
+    touchStartX.current = null;
+    touchDelta.current = 0;
+    isPaused.current = false;
+    startAuto(); // restart timer after manual swipe
+  };
+
+  return (
+    <div className="relative overflow-hidden">
+      {/* Slide track */}
+      <div
+        className="flex transition-transform duration-500 ease-in-out"
+        style={{ transform: `translateX(-${active * 100}%)` }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {testimonials.map((t, i) => (
+          <div
+            key={t.name}
+            className="min-w-full px-1"
+            style={{ userSelect: 'none' }}
+          >
+            <TestimonialCard t={t} i={i} />
+          </div>
+        ))}
+      </div>
+
+      {/* Dot indicators */}
+      <div className="flex justify-center gap-2 mt-5">
+        {testimonials.map((_, i) => (
+          <button
+            key={i}
+            aria-label={`Go to testimonial ${i + 1}`}
+            onClick={() => {
+              setActive(i);
+              isPaused.current = false;
+              startAuto();
+            }}
+            className={`rounded-full transition-all duration-300 ${
+              i === active
+                ? 'w-6 h-2 bg-[#C9A227]'
+                : 'w-2 h-2 bg-[#C9A227]/30'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function TestimonialsSection() {
   return (
@@ -61,33 +194,15 @@ export default function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Mobile: swipeable carousel (hidden on sm+) */}
+        <div className="sm:hidden">
+          <MobileCarousel />
+        </div>
+
+        {/* Tablet / Desktop: original grid (hidden on mobile) */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {testimonials.map((t, i) => (
-            <div key={t.name} className="bg-white rounded-2xl p-6 border border-[#E8D5A3]/60 shadow-[0_2px_16px_rgba(26,24,0,0.05)] hover:shadow-[var(--shadow-gold)] transition-shadow">
-              {/* Quote icon */}
-              <Quote size={28} className="text-[#C9A227]/30 mb-4" />
-
-              {/* Stars */}
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: t.rating }).map((_, j) => (
-                  <Star key={j} size={14} fill="#C9A227" className="text-[#C9A227]" />
-                ))}
-              </div>
-
-              <p className="text-sm text-[#504e40] leading-relaxed mb-5 italic">&quot;{t.content}&quot;</p>
-
-              {/* Property tag */}
-              <div className="badge-gold mb-5 text-[10px]">{t.property}</div>
-
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                <Avatar initials={t.image} color={colors[i % colors.length]} />
-                <div>
-                  <p className="font-semibold text-[#1A1800] text-sm">{t.name}</p>
-                  <p className="text-xs text-[#6b6450]">{t.role}</p>
-                </div>
-              </div>
-            </div>
+            <TestimonialCard key={t.name} t={t} i={i} />
           ))}
         </div>
       </div>
