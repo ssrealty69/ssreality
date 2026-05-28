@@ -189,19 +189,213 @@ const SEED_TRENDS = [
   }
 ];
 
+function generateDynamicLocation(name: string) {
+  const normalized = name.trim();
+  
+  // Deterministic seed based on name hash to ensure same inputs give identical outputs
+  let hash = 0;
+  for (let i = 0; i < normalized.length; i++) {
+    hash = normalized.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const absHash = Math.abs(hash);
+
+  // Parse City
+  let city = 'Delhi NCR';
+  const lowerName = normalized.toLowerCase();
+  if (lowerName.includes('gurugram') || lowerName.includes('gurgaon')) {
+    city = 'Gurugram';
+  } else if (lowerName.includes('noida extension') || lowerName.includes('greater noida')) {
+    city = 'Greater Noida';
+  } else if (lowerName.includes('noida')) {
+    city = 'Noida';
+  } else if (lowerName.includes('delhi')) {
+    city = 'Delhi';
+  } else if (lowerName.includes('faridabad')) {
+    city = 'Faridabad';
+  } else if (lowerName.includes('ghaziabad')) {
+    city = 'Ghaziabad';
+  }
+
+  // Parse Sector or Area Number
+  let sectorNumber = 0;
+  const sectorMatch = normalized.match(/(?:sector|sec)\s*(\d+)/i);
+  if (sectorMatch) {
+    sectorNumber = parseInt(sectorMatch[1], 10);
+  } else {
+    sectorNumber = (absHash % 150) + 1;
+  }
+
+  // Determine if developing (newer) vs mature
+  let isDeveloping = false;
+  if (city === 'Gurugram' && sectorNumber > 60) {
+    isDeveloping = true;
+  } else if (city === 'Noida' && sectorNumber > 100) {
+    isDeveloping = true;
+  } else if (city === 'Greater Noida' || city === 'Faridabad' || city === 'Ghaziabad') {
+    isDeveloping = true;
+  } else if (lowerName.includes('expressway') || lowerName.includes('extension') || lowerName.includes('highway') || lowerName.includes('corridor')) {
+    isDeveloping = true;
+  }
+
+  // Deterministic Price Calculation
+  let basePrice = 6500;
+  if (city === 'Gurugram') {
+    basePrice = isDeveloping ? 9000 : 13500;
+  } else if (city === 'Noida') {
+    basePrice = isDeveloping ? 7200 : 9800;
+  } else if (city === 'Greater Noida') {
+    basePrice = 5800;
+  } else if (city === 'Delhi') {
+    basePrice = 16000;
+  } else if (city === 'Faridabad' || city === 'Ghaziabad') {
+    basePrice = 4800;
+  }
+
+  const priceVariation = (absHash % 25) * 100; // variations up to ₹2,500
+  const currentPrice = basePrice + priceVariation;
+
+  // CAGR calculation (developing has higher cagr)
+  let cagr = isDeveloping ? 12.0 : 8.5;
+  const cagrVariation = ((absHash % 45) / 10); // variation up to 4.5%
+  cagr = parseFloat((cagr + cagrVariation).toFixed(1));
+
+  // Index scores
+  const scoreBase = isDeveloping ? 6.5 : 8.5;
+  const connectivity = parseFloat((scoreBase + (absHash % 15) / 10).toFixed(1));
+  const infrastructure = parseFloat((scoreBase + (absHash % 18) / 10).toFixed(1));
+  const livability = parseFloat((scoreBase + (absHash % 12) / 10).toFixed(1));
+  const commercialProximity = parseFloat((scoreBase + (absHash % 20) / 10).toFixed(1));
+
+  // Growth drivers
+  let growthDrivers: string[] = [];
+  if (city === 'Gurugram') {
+    if (isDeveloping) {
+      growthDrivers = [
+        'Proximity to emerging Dwarka Expressway & Global City corridor',
+        'Proposed Metro linkage under NCR master transit layout',
+        'Rapid premium high-rise developer land banking'
+      ];
+    } else {
+      growthDrivers = [
+        'Direct NH-48 and Rapid Metro network integration',
+        'Mature high-end retail hubs and premium multi-specialty healthcare',
+        'Established corporate occupancy with strong corporate lease yields'
+      ];
+    }
+  } else if (city === 'Noida') {
+    if (isDeveloping) {
+      growthDrivers = [
+        'Seamless access to upcoming Jewar International Airport link',
+        'Aqua Line metro expansion plans under implementation',
+        'Designated low-density housing corridors and eco-parks'
+      ];
+    } else {
+      growthDrivers = [
+        'Immediate DND Flyway and South Delhi grid connectivity',
+        'Mature institutional commercial hubs and tech company offices',
+        'Seamless access to established local sector markets'
+      ];
+    }
+  } else if (city === 'Greater Noida' || lowerName.includes('expressway')) {
+    growthDrivers = [
+      'Immediate access to Jewar International Airport corridor',
+      'Massive industrial development hubs and electronics city clusters',
+      'Affordable entry parameters with spacious integrated townships'
+    ];
+  } else {
+    growthDrivers = [
+      'Steady urbanization under Delhi NCR Master Plan guidelines',
+      'Proposed secondary transit corridors and local highway upgrading',
+      'High demand for mid-income family residential accommodation'
+    ];
+  }
+
+  // Verdict
+  let verdict = '';
+  if (isDeveloping) {
+    verdict = `Developing growth corridor with exceptional double-digit capital appreciation potential of +${cagr}% CAGR. Backed by fast-evolving civic transit, airport connectivity links, and high developer interest, making it perfect for high-yield mid-to-long term investors.`;
+  } else {
+    verdict = `Premium, fully mature residential zone characterized by high current occupancy, stable rental returns, and robust infrastructure. Ideal for risk-averse investors seeking wealth preservation, excellent livability, and reliable price appreciation.`;
+  }
+
+  // Generate 2022 to 2030 price history trend deterministically
+  const trendHistory = [];
+  const startYear = 2022;
+  const baseYear = 2025; // 2025 is current price
+  
+  for (let year = 2022; year <= 2030; year++) {
+    const diff = year - baseYear;
+    let price = currentPrice;
+    if (diff > 0) {
+      price = Math.round(currentPrice * Math.pow(1 + (cagr / 100), diff));
+    } else if (diff < 0) {
+      price = Math.round(currentPrice / Math.pow(1 + (cagr / 100), Math.abs(diff)));
+    }
+    trendHistory.push({ year, price });
+  }
+
+  return {
+    name: name,
+    currentPrice,
+    cagr,
+    connectivity,
+    infrastructure,
+    livability,
+    commercialProximity,
+    growthDrivers,
+    verdict,
+    trendHistory,
+    lastUpdated: new Date()
+  };
+}
+
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
     
-    let trends = await LocationTrend.find({}).lean();
-    
     // Auto seed if empty
-    if (!trends || trends.length === 0) {
+    let count = await LocationTrend.countDocuments();
+    if (count === 0) {
       console.log('Seeding initial location trends...');
       await LocationTrend.insertMany(SEED_TRENDS);
-      trends = await LocationTrend.find({}).lean();
     }
 
+    const searchParams = req.nextUrl.searchParams;
+    const query = searchParams.get('query');
+
+    if (query && query.trim().length >= 3) {
+      const normalizedQuery = query.trim();
+      
+      // Look up location by name (case-insensitive exact or starts-with check)
+      let matched = await LocationTrend.findOne({
+        name: { $regex: new RegExp(`^${normalizedQuery.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}$`, 'i') }
+      }).lean();
+
+      if (!matched) {
+        // Try searching for sub-string matches
+        matched = await LocationTrend.findOne({
+          name: { $regex: new RegExp(normalizedQuery.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i') }
+        }).lean();
+      }
+
+      if (matched) {
+        return NextResponse.json({
+          success: true,
+          data: JSON.parse(JSON.stringify(matched))
+        });
+      }
+
+      // If still not found, algorithmically generate, save to DB, and return it!
+      const generated = generateDynamicLocation(normalizedQuery);
+      const created = await LocationTrend.create(generated);
+      
+      return NextResponse.json({
+        success: true,
+        data: JSON.parse(JSON.stringify(created.toObject()))
+      });
+    }
+
+    const trends = await LocationTrend.find({}).lean();
     const safeTrends = JSON.parse(JSON.stringify(trends));
 
     return NextResponse.json({

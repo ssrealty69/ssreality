@@ -32,6 +32,14 @@ export default function InvestmentPredictor() {
   const [locBId, setLocBId] = useState<string>('');
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
+  // Search autocomplete states
+  const [searchQueryA, setSearchQueryA] = useState('');
+  const [searchQueryB, setSearchQueryB] = useState('');
+  const [showSuggestionsA, setShowSuggestionsA] = useState(false);
+  const [showSuggestionsB, setShowSuggestionsB] = useState(false);
+  const [isSearchingA, setIsSearchingA] = useState(false);
+  const [isSearchingB, setIsSearchingB] = useState(false);
+
   useEffect(() => {
     fetch('/api/investment/trends')
       .then((res) => {
@@ -44,6 +52,8 @@ export default function InvestmentPredictor() {
           if (json.data.length >= 2) {
             setLocAId(json.data[0]._id);
             setLocBId(json.data[1]._id);
+            setSearchQueryA(json.data[0].name);
+            setSearchQueryB(json.data[1].name);
           }
         }
       })
@@ -55,6 +65,66 @@ export default function InvestmentPredictor() {
         setLoading(false);
       });
   }, []);
+
+  const handleSelectLocation = async (locationName: string, isAnchor: boolean) => {
+    if (isAnchor) {
+      setIsSearchingA(true);
+      setShowSuggestionsA(false);
+      setSearchQueryA(locationName);
+    } else {
+      setIsSearchingB(true);
+      setShowSuggestionsB(false);
+      setSearchQueryB(locationName);
+    }
+
+    try {
+      const res = await fetch(`/api/investment/trends?query=${encodeURIComponent(locationName)}`);
+      if (!res.ok) throw new Error('Location not found');
+      const json = await res.json();
+      if (json.success && json.data) {
+        const fetchedItem = json.data;
+        
+        // Add to trends state list if missing
+        setTrends(prev => {
+          if (!prev.find(t => t._id === fetchedItem._id)) {
+            return [...prev, fetchedItem];
+          }
+          return prev.map(t => t._id === fetchedItem._id ? fetchedItem : t);
+        });
+
+        if (isAnchor) {
+          if (fetchedItem._id === locBId) {
+            toast.error('Location A cannot be the same as Location B.');
+            const currentA = trends.find(t => t._id === locAId);
+            if (currentA) setSearchQueryA(currentA.name);
+          } else {
+            setLocAId(fetchedItem._id);
+          }
+        } else {
+          if (fetchedItem._id === locAId) {
+            toast.error('Location B cannot be the same as Location A.');
+            const currentB = trends.find(t => t._id === locBId);
+            if (currentB) setSearchQueryB(currentB.name);
+          } else {
+            setLocBId(fetchedItem._id);
+          }
+        }
+      } else {
+        toast.error('Failed to parse location telemetry');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Dynamic location generator offline');
+      const currentVal = isAnchor 
+        ? (trends.find(t => t._id === locAId)?.name || '') 
+        : (trends.find(t => t._id === locBId)?.name || '');
+      if (isAnchor) setSearchQueryA(currentVal);
+      else setSearchQueryB(currentVal);
+    } finally {
+      if (isAnchor) setIsSearchingA(false);
+      else setIsSearchingB(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -144,23 +214,72 @@ export default function InvestmentPredictor() {
         <div className="bg-white border border-[#E8D5A3]/30 rounded-3xl p-6 md:p-8 shadow-sm mb-10 flex flex-col md:flex-row items-center gap-6 justify-between">
           
           {/* Selector Location A */}
-          <div className="w-full md:w-[42%] space-y-2">
+          <div className="w-full md:w-[42%] space-y-2 relative">
             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-[#C9A227]" />
               Compare Location A (Anchor)
             </label>
-            <select
-              value={locAId}
-              onChange={(e) => {
-                if (e.target.value !== locBId) setLocAId(e.target.value);
-                else toast.error('Please select two distinct locations to compare.');
-              }}
-              className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl px-4 py-3.5 text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] cursor-pointer shadow-sm transition-all"
-            >
-              {trends.map(t => (
-                <option key={t._id} value={t._id}>{t.name}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQueryA}
+                onChange={(e) => {
+                  setSearchQueryA(e.target.value);
+                  setShowSuggestionsA(true);
+                }}
+                onFocus={() => {
+                  setShowSuggestionsA(true);
+                  setShowSuggestionsB(false);
+                }}
+                className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-10 py-3.5 text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
+                placeholder="Search or type location (e.g. Noida Sector 150)..."
+              />
+              <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
+                {isSearchingA ? (
+                  <Loader2 className="animate-spin text-[#C9A227]" size={16} />
+                ) : (
+                  <Compass className="text-[#C9A227]" size={16} />
+                )}
+              </div>
+            </div>
+
+            {/* Suggestions Overlay A */}
+            {showSuggestionsA && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowSuggestionsA(false)} />
+                <ul className="absolute left-0 right-0 top-full mt-2 bg-white border border-[#E8D5A3]/40 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto divide-y divide-[#E8D5A3]/10 divide-dashed">
+                  {/* Preset matches */}
+                  {trends
+                    .filter(t => t.name.toLowerCase().includes(searchQueryA.toLowerCase()))
+                    .slice(0, 5)
+                    .map(t => (
+                      <li
+                        key={t._id}
+                        onClick={() => handleSelectLocation(t.name, true)}
+                        className="px-4 py-3 text-xs font-bold text-gray-700 hover:bg-[#C9A227]/5 hover:text-[#B8860B] transition-colors cursor-pointer flex items-center justify-between"
+                      >
+                        <span>{t.name}</span>
+                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-1.5 py-0.5 rounded">Preset</span>
+                      </li>
+                    ))}
+                  {/* Custom Option */}
+                  {searchQueryA.trim().length >= 3 && !trends.some(t => t.name.toLowerCase() === searchQueryA.trim().toLowerCase()) && (
+                    <li
+                      onClick={() => handleSelectLocation(searchQueryA.trim(), true)}
+                      className="px-4 py-3.5 text-xs font-black text-[#B8860B] hover:bg-[#C9A227]/10 transition-colors cursor-pointer flex items-center gap-2 bg-[#C9A227]/5"
+                    >
+                      <RefreshCw size={14} className="animate-spin" />
+                      <span>Compare Custom: &quot;{searchQueryA.trim()}&quot;</span>
+                    </li>
+                  )}
+                  {trends.filter(t => t.name.toLowerCase().includes(searchQueryA.toLowerCase())).length === 0 && searchQueryA.trim().length < 3 && (
+                    <li className="px-4 py-3 text-xs text-gray-400 font-bold text-center">
+                      Type at least 3 letters to generate custom sector...
+                    </li>
+                  )}
+                </ul>
+              </>
+            )}
           </div>
 
           {/* Verses Divider */}
@@ -169,23 +288,72 @@ export default function InvestmentPredictor() {
           </div>
 
           {/* Selector Location B */}
-          <div className="w-full md:w-[42%] space-y-2">
+          <div className="w-full md:w-[42%] space-y-2 relative">
             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-gray-400" />
               Compare Location B (Benchmark)
             </label>
-            <select
-              value={locBId}
-              onChange={(e) => {
-                if (e.target.value !== locAId) setLocBId(e.target.value);
-                else toast.error('Please select two distinct locations to compare.');
-              }}
-              className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl px-4 py-3.5 text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] cursor-pointer shadow-sm transition-all"
-            >
-              {trends.map(t => (
-                <option key={t._id} value={t._id}>{t.name}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQueryB}
+                onChange={(e) => {
+                  setSearchQueryB(e.target.value);
+                  setShowSuggestionsB(true);
+                }}
+                onFocus={() => {
+                  setShowSuggestionsB(true);
+                  setShowSuggestionsA(false);
+                }}
+                className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-10 py-3.5 text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
+                placeholder="Search or type location (e.g. Gurugram Sector 21)..."
+              />
+              <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
+                {isSearchingB ? (
+                  <Loader2 className="animate-spin text-[#C9A227]" size={16} />
+                ) : (
+                  <Compass className="text-[#C9A227]" size={16} />
+                )}
+              </div>
+            </div>
+
+            {/* Suggestions Overlay B */}
+            {showSuggestionsB && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowSuggestionsB(false)} />
+                <ul className="absolute left-0 right-0 top-full mt-2 bg-white border border-[#E8D5A3]/40 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto divide-y divide-[#E8D5A3]/10 divide-dashed">
+                  {/* Preset matches */}
+                  {trends
+                    .filter(t => t.name.toLowerCase().includes(searchQueryB.toLowerCase()))
+                    .slice(0, 5)
+                    .map(t => (
+                      <li
+                        key={t._id}
+                        onClick={() => handleSelectLocation(t.name, false)}
+                        className="px-4 py-3 text-xs font-bold text-gray-700 hover:bg-[#C9A227]/5 hover:text-[#B8860B] transition-colors cursor-pointer flex items-center justify-between"
+                      >
+                        <span>{t.name}</span>
+                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-1.5 py-0.5 rounded">Preset</span>
+                      </li>
+                    ))}
+                  {/* Custom Option */}
+                  {searchQueryB.trim().length >= 3 && !trends.some(t => t.name.toLowerCase() === searchQueryB.trim().toLowerCase()) && (
+                    <li
+                      onClick={() => handleSelectLocation(searchQueryB.trim(), false)}
+                      className="px-4 py-3.5 text-xs font-black text-[#B8860B] hover:bg-[#C9A227]/10 transition-colors cursor-pointer flex items-center gap-2 bg-[#C9A227]/5"
+                    >
+                      <RefreshCw size={14} className="animate-spin" />
+                      <span>Compare Custom: &quot;{searchQueryB.trim()}&quot;</span>
+                    </li>
+                  )}
+                  {trends.filter(t => t.name.toLowerCase().includes(searchQueryB.toLowerCase())).length === 0 && searchQueryB.trim().length < 3 && (
+                    <li className="px-4 py-3 text-xs text-gray-400 font-bold text-center">
+                      Type at least 3 letters to generate custom sector...
+                    </li>
+                  )}
+                </ul>
+              </>
+            )}
           </div>
 
         </div>
@@ -556,11 +724,11 @@ export default function InvestmentPredictor() {
               AI Capital Advisory Verdict
             </div>
             
-            <h3 className="font-extrabold text-lg text-white font-[var(--font-playfair)] tracking-wide">
+            <h3 className="font-extrabold text-lg text-white font-[var(--font-playfair)] tracking-wide" style={{ color: '#FFFFFF' }}>
               Comparative Analysis Verdict: {isWinnerA ? locA.name.split(',')[0] : locB.name.split(',')[0]} stands out as appreciation leader!
             </h3>
             
-            <p className="text-white/70 text-xs leading-relaxed font-medium">
+            <p className="text-white/70 text-xs leading-relaxed font-medium" style={{ color: 'rgba(255, 255, 255, 0.75)' }}>
               Our dynamic algorithm projects {isWinnerA ? `+${locA.cagr}%` : `+${locB.cagr}%`} CAGR for the appreciation leader. {locA.verdict} Meanwhile, {locB.verdict.toLowerCase()}
             </p>
           </div>
