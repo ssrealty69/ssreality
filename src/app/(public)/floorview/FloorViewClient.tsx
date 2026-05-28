@@ -97,23 +97,57 @@ function FloorViewContent({
   }, [isAuthenticated, propertyIdParam, availableProperties, selectedCategory, activePropertyId]);
 
   const handleInputChange = (value: string, index: number) => {
-    // Only allow numbers
-    if (value && isNaN(Number(value))) return;
+    // Keep only numbers
+    const cleanValue = value.replace(/[^0-9]/g, '');
+    if (!cleanValue) {
+      const newPasscode = [...passcode];
+      newPasscode[index] = '';
+      setPasscode(newPasscode);
+      return;
+    }
+
+    // Handle pasting a longer numeric code (e.g. 6 digits)
+    if (cleanValue.length > 1) {
+      const pastedDigits = cleanValue.slice(0, 6 - index).split('');
+      const newPasscode = [...passcode];
+      pastedDigits.forEach((digit, i) => {
+        if (index + i < 6) {
+          newPasscode[index + i] = digit;
+        }
+      });
+      setPasscode(newPasscode);
+
+      // Focus the last filled box, or the next empty one if any
+      const targetIndex = Math.min(index + pastedDigits.length, 5);
+      setTimeout(() => {
+        inputsRef.current[targetIndex]?.focus();
+      }, 10);
+      return;
+    }
 
     const newPasscode = [...passcode];
-    newPasscode[index] = value.slice(-1); // only keep last digit
+    newPasscode[index] = cleanValue;
     setPasscode(newPasscode);
 
-    // Auto-focus next input
-    if (value && index < 5) {
-      inputsRef.current[index + 1]?.focus();
+    // Auto-focus next input with a slight timeout to keep mobile keyboard open
+    if (index < 5) {
+      setTimeout(() => {
+        inputsRef.current[index + 1]?.focus();
+      }, 10);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    // Backspace handles focus shift to previous input
-    if (e.key === 'Backspace' && !passcode[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus();
+    if (e.key === 'Backspace') {
+      if (!passcode[index] && index > 0) {
+        // Clear previous input and focus it
+        const newPasscode = [...passcode];
+        newPasscode[index - 1] = '';
+        setPasscode(newPasscode);
+        setTimeout(() => {
+          inputsRef.current[index - 1]?.focus();
+        }, 10);
+      }
     }
   };
 
@@ -214,14 +248,17 @@ function FloorViewContent({
               {passcode.map((digit, idx) => (
                 <input
                   key={idx}
-                  type="text"
-                  maxLength={1}
+                  type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
                   value={digit}
                   ref={(el) => {
                     inputsRef.current[idx] = el;
                   }}
                   onChange={(e) => handleInputChange(e.target.value, idx)}
                   onKeyDown={(e) => handleKeyDown(e, idx)}
+                  onFocus={(e) => e.target.select()}
                   disabled={loading}
                   className="w-12 h-14 text-center text-xl font-bold bg-gray-50 border border-gray-200 focus:border-[#C9A227] focus:bg-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C9A227]/15 transition-all text-gray-900 shadow-sm disabled:opacity-50"
                   placeholder="-"
