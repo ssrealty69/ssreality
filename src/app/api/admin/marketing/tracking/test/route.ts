@@ -11,16 +11,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    const settings = await getTrackingSettings();
+    const dbSettings = await getTrackingSettings();
     
-    if (!settings) {
+    if (!dbSettings) {
       return NextResponse.json({ success: false, error: 'Tracking configurations not found' }, { status: 404 });
+    }
+
+    let settings = JSON.parse(JSON.stringify(dbSettings));
+
+    // Support testing unsaved in-progress changes from form body
+    try {
+      const body = await req.json();
+      if (body && typeof body === 'object') {
+        settings = {
+          ...settings,
+          ...body
+        };
+      }
+    } catch (e) {
+      // Fallback to database settings if no body is supplied
     }
 
     if (!settings.isEnabled) {
       return NextResponse.json({
         success: false,
-        message: 'Global tracking is disabled. Enable it before running the test.'
+        message: 'Global tracking is disabled. Toggle "GLOBAL RETARGETING" to ON and click "Save Telemetry Setup" to activate it.'
       });
     }
 

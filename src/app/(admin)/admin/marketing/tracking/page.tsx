@@ -179,7 +179,8 @@ export default function TrackingSettingsPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify(settings)
       });
       const json = await res.json();
       if (json.success) {

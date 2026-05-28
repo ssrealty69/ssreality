@@ -198,50 +198,31 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
           )}
 
           {/* ==================================================== */}
-          {/* GOOGLE ADS REMARKETING Container Loader             */}
+          {/* GOOGLE TAG (GTAG.JS) FOR ADS & GA4                   */}
           {/* ==================================================== */}
-          {settings.googleAdsConversionId && (
+          {(settings.googleAdsConversionId || settings.ga4MeasurementId) && (
             <>
               <Script
-                src={`https://www.googletagmanager.com/gtag/js?id=${settings.googleAdsConversionId}`}
+                src={`https://www.googletagmanager.com/gtag/js?id=${settings.googleAdsConversionId || settings.ga4MeasurementId}`}
                 strategy="afterInteractive"
               />
               <Script
-                id="google-ads-init"
+                id="google-tag-init"
                 strategy="afterInteractive"
                 dangerouslySetInnerHTML={{
                   __html: `
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){window.dataLayer.push(arguments);}
                     gtag('js', new Date());
-                    gtag('config', '${settings.googleAdsConversionId}', {
-                      'send_page_view': true
-                      ${settings.googleAdsRemarketingLabel ? `, 'remarketing_custom_params': { 'label': '${settings.googleAdsRemarketingLabel}' }` : ''}
-                    });
-                  `,
-                }}
-              />
-            </>
-          )}
-
-          {/* ==================================================== */}
-          {/* GA4 MEASUREMENT tag Loader (Direct fallback)        */}
-          {/* ==================================================== */}
-          {settings.ga4MeasurementId && !settings.googleAdsConversionId && (
-            <>
-              <Script
-                src={`https://www.googletagmanager.com/gtag/js?id=${settings.ga4MeasurementId}`}
-                strategy="afterInteractive"
-              />
-              <Script
-                id="ga4-init"
-                strategy="afterInteractive"
-                dangerouslySetInnerHTML={{
-                  __html: `
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){window.dataLayer.push(arguments);}
-                    gtag('js', new Date());
-                    gtag('config', '${settings.ga4MeasurementId}');
+                    ${settings.googleAdsConversionId ? `
+                      gtag('config', '${settings.googleAdsConversionId}', {
+                        'send_page_view': true
+                        ${settings.googleAdsRemarketingLabel ? `, 'remarketing_custom_params': { 'label': '${settings.googleAdsRemarketingLabel}' }` : ''}
+                      });
+                    ` : ''}
+                    ${settings.ga4MeasurementId ? `
+                      gtag('config', '${settings.ga4MeasurementId}');
+                    ` : ''}
                   `,
                 }}
               />
