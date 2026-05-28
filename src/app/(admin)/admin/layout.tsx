@@ -1,11 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminTopbar from '@/components/admin/AdminTopbar';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Bypass sidebar and topbar on the login page
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
 
   return (
     <div className="h-screen bg-[#F8F9FA] flex overflow-hidden">
