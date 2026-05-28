@@ -77,27 +77,52 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      fetch('/api/admin/stats').then(res => {
-        if (!res.ok) throw new Error('Failed to fetch dashboard stats');
-        return res.json();
-      }),
-      fetch('/api/admin/analytics').then(res => {
-        if (!res.ok) throw new Error('Failed to fetch telemetry analytics');
+
+    const fetchStats = fetch('/api/admin/stats')
+      .then(async res => {
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('Failed to fetch stats. Status:', res.status, text);
+          return null;
+        }
         return res.json();
       })
-    ])
+      .catch(err => {
+        console.error('Error fetching stats:', err);
+        return null;
+      });
+
+    const fetchAnalytics = fetch('/api/admin/analytics')
+      .then(async res => {
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('Failed to fetch analytics. Status:', res.status, text);
+          return null;
+        }
+        return res.json();
+      })
+      .catch(err => {
+        console.error('Error fetching analytics:', err);
+        return null;
+      });
+
+    Promise.all([fetchStats, fetchAnalytics])
       .then(([statsData, analyticsData]) => {
-        if (statsData.success) {
+        if (statsData && statsData.success) {
           setCounts(statsData.counts);
           setPreviews(statsData.previews);
+        } else if (statsData) {
+          toast.error(statsData.error || 'Failed to load dashboard counts');
         }
-        if (analyticsData.success) {
+
+        if (analyticsData && analyticsData.success) {
           setAnalytics(analyticsData);
+        } else if (analyticsData) {
+          toast.error(analyticsData.error || 'Failed to load traffic metrics');
         }
       })
       .catch((err) => {
-        console.error(err);
+        console.error('Error loading dashboard metrics:', err);
         toast.error('Failed to load dashboard metrics');
       })
       .finally(() => {

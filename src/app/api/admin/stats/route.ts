@@ -33,15 +33,19 @@ export async function GET(req: NextRequest) {
       JobApplication.find({}).sort('-createdAt').limit(4).lean()
     ]);
 
-    // Format IDs for serialization safety
-    const formattedLeads = JSON.parse(JSON.stringify(recentLeads)).map((lead: any) => ({
+    // Format IDs and Dates for 100% serialization safety
+    const formattedLeads = recentLeads.map((lead: any) => ({
       ...lead,
-      _id: lead._id.toString()
+      _id: lead._id.toString(),
+      createdAt: lead.createdAt ? new Date(lead.createdAt).toISOString() : undefined,
+      updatedAt: lead.updatedAt ? new Date(lead.updatedAt).toISOString() : undefined
     }));
 
-    const formattedJobs = JSON.parse(JSON.stringify(recentJobs)).map((job: any) => ({
+    const formattedJobs = recentJobs.map((job: any) => ({
       ...job,
-      _id: job._id.toString()
+      _id: job._id.toString(),
+      createdAt: job.createdAt ? new Date(job.createdAt).toISOString() : undefined,
+      updatedAt: job.updatedAt ? new Date(job.updatedAt).toISOString() : undefined
     }));
 
     return NextResponse.json({

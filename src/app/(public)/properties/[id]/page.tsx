@@ -81,11 +81,61 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
     }
   }
 
+  // JSON-LD Structured Data for Property (Google Rich Cards compliant with image and price)
+  const propertyJsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: property.title,
+      image: property.images && property.images.length > 0 ? property.images : ['https://ssrealty.in/SS%20Realty%20Official%20Logo.png'],
+      description: property.description || `Premium ${property.features.bedrooms} BHK ${property.propertyType} for sale/rent at ${property.location.address}, ${property.location.city}.`,
+      sku: property._id ? property._id.toString() : id,
+      brand: {
+        '@type': 'Brand',
+        name: 'SS Realty'
+      },
+      offers: {
+        '@type': 'Offer',
+        price: property.price || 5000000,
+        priceCurrency: 'INR',
+        priceValidUntil: '2028-12-31',
+        itemCondition: 'https://schema.org/NewCondition',
+        availability: 'https://schema.org/InStock',
+        url: `https://ssrealty.in/properties/${property._id ? property._id.toString() : id}`
+      }
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': property.propertyType === 'flat' || property.propertyType === 'apartment' ? 'Apartment' : 'SingleFamilyResidence',
+      name: property.title,
+      description: property.description,
+      image: property.images && property.images.length > 0 ? property.images : ['https://ssrealty.in/SS%20Realty%20Official%20Logo.png'],
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: property.location.address,
+        addressLocality: property.location.city,
+        addressRegion: 'Haryana / NCR',
+        addressCountry: 'IN'
+      },
+      numberOfBedrooms: property.features.bedrooms || 3,
+      numberOfBathrooms: property.features.bathrooms || 3,
+      floorSize: {
+        '@type': 'QuantitativeValue',
+        value: property.features.area,
+        unitText: property.features.areaUnit === 'sqyd' ? 'Square Yards' : 'Square Feet'
+      }
+    }
+  ];
+
   const waMessage = encodeURIComponent(`Hi! I'm interested in ${property.title}. Please share details.`);
   const waLink = `https://api.whatsapp.com/send?phone=+919311059100&text=${waMessage}`;
 
   return (
     <div className="font-sans bg-white pb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}
+      />
       <ViewPropertyTracker property={property} />
 
       {/* --- HERO SECTION --- */}
