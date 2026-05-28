@@ -81,6 +81,74 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        {/* Server-Side Pre-rendered Marketing & Tracking Scripts */}
+        {settings?.isEnabled && (
+          <>
+            {/* Google Tag Manager (GTM) */}
+            {settings.googleTagManagerId && (
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                    })(window,document,'script','dataLayer','${settings.googleTagManagerId}');
+                  `,
+                }}
+              />
+            )}
+
+            {/* Meta (Facebook) Pixel */}
+            {settings.metaPixelId && (
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    !function(f,b,e,v,n,t,s)
+                    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                    n.queue=[];t=b.createElement(e);t.async=!0;
+                    t.src=v;s=b.getElementsByTagName(e)[0];
+                    s.parentNode.insertBefore(t,s)}(window, document,'script',
+                    'https://connect.facebook.net/en_US/fbevents.js');
+                    fbq('init', '${settings.metaPixelId}'${settings.enableAdvancedMatching ? ', { em: "anonymous@example.com" }' : ''});
+                    fbq('track', 'PageView');
+                  `,
+                }}
+              />
+            )}
+
+            {/* Google Analytics 4 (GA4) & Google Ads */}
+            {(settings.googleAdsConversionId || settings.ga4MeasurementId) && (
+              <>
+                <script
+                  async
+                  src={`https://www.googletagmanager.com/gtag/js?id=${settings.googleAdsConversionId || settings.ga4MeasurementId}`}
+                />
+                <script
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                      window.dataLayer = window.dataLayer || [];
+                      function gtag(){window.dataLayer.push(arguments);}
+                      gtag('js', new Date());
+                      ${settings.googleAdsConversionId ? `
+                        gtag('config', '${settings.googleAdsConversionId}', {
+                          'send_page_view': true
+                          ${settings.googleAdsRemarketingLabel ? `, 'remarketing_custom_params': { 'label': '${settings.googleAdsRemarketingLabel}' }` : ''}
+                        });
+                      ` : ''}
+                      ${settings.ga4MeasurementId ? `
+                        gtag('config', '${settings.ga4MeasurementId}');
+                      ` : ''}
+                    `,
+                  }}
+                />
+              </>
+            )}
+          </>
+        )}
       </head>
       <body className="min-h-screen flex flex-col font-sans text-[#3a3828] bg-[#FFFEF5]" suppressHydrationWarning={true} data-version="2">
         {settings?.isEnabled && settings.googleTagManagerId && (
