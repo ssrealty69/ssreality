@@ -1,11 +1,5 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI!;
-
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable');
-}
-
 interface GlobalMongoose {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
@@ -23,20 +17,29 @@ if (!global.mongoose) {
 }
 
 export async function connectDB() {
+  const MONGODB_URI = process.env.MONGODB_URI;
+
+  if (!MONGODB_URI) {
+    throw new Error(
+      'MONGODB_URI is not defined. Please set it in your environment variables.'
+    );
+  }
+
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
       dbName: process.env.MONGODB_DB || 'SSRealty',
-      serverSelectionTimeoutMS: 3000, // Fail fast if IP is not whitelisted
+      serverSelectionTimeoutMS: 10000, // Allow up to 10s on cold serverless starts
+      socketTimeoutMS: 20000,
     });
   }
 
   try {
     cached.conn = await cached.promise;
   } catch (e) {
-    cached.promise = null;
+    cached.promise = null; // Reset so next request can retry
     throw e;
   }
 
