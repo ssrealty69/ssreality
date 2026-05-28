@@ -6,8 +6,8 @@ export function proxy(request: NextRequest) {
 
   // Protect /admin and /api/admin routes
   if ((pathname.startsWith('/admin') && pathname !== '/admin/login') || pathname.startsWith('/api/admin')) {
-    // Skip protection for the login/logout/seed API itself
-    if (pathname === '/api/admin/login' || pathname === '/api/admin/logout' || pathname === '/api/admin/seed') {
+    // Only login and logout are exempt — seed is now a protected POST endpoint
+    if (pathname === '/api/admin/login' || pathname === '/api/admin/logout') {
       return NextResponse.next();
     }
 
@@ -22,7 +22,7 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // Prevent logged in admins from seeing the login page
+  // Prevent logged-in admins from seeing the login page
   if (pathname === '/admin/login') {
     const token = request.cookies.get('admin_token');
     if (token && token.value === 'authenticated') {

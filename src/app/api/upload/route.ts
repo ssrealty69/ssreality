@@ -4,7 +4,7 @@ import { cloudinary } from '@/lib/cloudinary';
 // File size limit: 50MB
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-// Allowed MIME types
+// Allowed MIME types — validated server-side (not just client-side)
 const ALLOWED_TYPES = [
   'image/jpeg',
   'image/jpg',
@@ -25,21 +25,36 @@ const FOLDER_PRESET_MAP: Record<string, 'property' | 'blog' | 'thumbnail'> = {
   'ss-realty':            'property', // default
 };
 
+// Allowed upload folders — prevent directory traversal attacks
+const ALLOWED_FOLDERS = new Set(Object.keys(FOLDER_PRESET_MAP));
+
 export async function POST(req: NextRequest) {
   try {
-    // Auth check
-    const secret = req.headers.get('x-admin-secret') || req.cookies.get('admin_token')?.value;
-    if (secret !== process.env.ADMIN_SECRET && secret !== 'authenticated') {
+    // ── Auth check: only ADMIN_SECRET or valid admin cookie are accepted ─────
+    // FIXED: Previously `secret !== 'authenticated'` let anyone bypass by
+    // sending `x-admin-secret: authenticated`. Now we only accept ADMIN_SECRET.
+    const secret = req.headers.get('x-admin-secret');
+    const cookieToken = req.cookies.get('admin_token')?.value;
+    const adminSecret = process.env.ADMIN_SECRET;
+
+    const isAuthorized =
+      (secret && adminSecret && secret === adminSecret) ||
+      cookieToken === 'authenticated';
+
+    if (!isAuthorized) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
     const formData = await req.formData();
     const file = formData.get('file') as File;
-    const folder = (formData.get('folder') as string) || 'ss-realty';
+    const rawFolder = (formData.get('folder') as string) || 'ss-realty';
 
     if (!file) {
       return NextResponse.json({ success: false, error: 'No file provided' }, { status: 400 });
     }
+
+    // ── Folder whitelist — prevent path traversal ─────────────────────────
+    const folder = ALLOWED_FOLDERS.has(rawFolder) ? rawFolder : 'ss-realty';
 
     // ── File size validation ──────────────────────────────────────────────
     if (file.size > MAX_FILE_SIZE) {
@@ -49,7 +64,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── File type validation ──────────────────────────────────────────────
+    // ── File type validation (MIME type from file object) ─────────────────
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
         { success: false, error: `Invalid file type: ${file.type}. Allowed: JPEG, PNG, WebP, AVIF, GIF, HEIC, PDF` },
@@ -67,13 +82,11 @@ export async function POST(req: NextRequest) {
     const isPdf = file.type === 'application/pdf';
 
     // ── Upload to Cloudinary with auto-optimization ───────────────────────
-    // Cloudinary handles: resize → convert to WebP/AVIF → compress → CDN cache
     const result = await cloudinary.uploader.upload(base64, {
       folder,
-      resource_type: 'image', // Both images and PDFs use 'image' to enable inline viewing/embeds instead of forced raw attachment downloads
+      resource_type: 'image',
       unique_filename: true,
       use_filename: false,
-      // Auto-optimization transformations based on folder type (skip for PDFs)
       ...(!isPdf && preset === 'property' && {
         transformation: [
           { width: 1920, height: 1280, crop: 'limit' },
@@ -96,7 +109,6 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    // Return useful metadata to the frontend
     return NextResponse.json({
       success: true,
       url: result.secure_url,
@@ -112,6 +124,8 @@ export async function POST(req: NextRequest) {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Upload failed';
     console.error('[Upload API Error]', error);
-    return NextResponse.json({ success: false, error: msg }, { status: 500 });
+    // Do not leak internal error details in production
+    const safeMsg = process.env.NODE_ENV === 'production' ? 'Upload failed' : msg;
+    return NextResponse.json({ success: false, error: safeMsg }, { status: 500 });
   }
 }

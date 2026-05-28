@@ -38,20 +38,70 @@ const nextConfig: NextConfig = {
     },
   },
 
-  // ─── HTTP Headers ────────────────────────────────────────────────────────
+  // ─── HTTP Security Headers ────────────────────────────────────────────────
   async headers() {
     return [
-      // Security headers for all routes
+      // ── Comprehensive security headers for all routes ─────────────────────
       {
         source: '/(.*)',
         headers: [
+          // Prevent MIME-type sniffing
           { key: 'X-Content-Type-Options', value: 'nosniff' },
+          // Prevent clickjacking
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          // Control referrer information
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          // DNS prefetch control
           { key: 'X-DNS-Prefetch-Control', value: 'on' },
+          // Force HTTPS for 1 year (HSTS) — only applies in production
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+          // Restrict browser feature access
+          {
+            key: 'Permissions-Policy',
+            value: [
+              'camera=()',
+              'microphone=()',
+              'geolocation=()',
+              'payment=()',
+              'usb=()',
+              'magnetometer=()',
+              'gyroscope=()',
+              'accelerometer=()',
+            ].join(', '),
+          },
+          // Content Security Policy — blocks XSS, injection, and unauthorized resources
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              // Scripts: self + Vercel analytics + Google tag manager + inline (needed for Next.js)
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live",
+              // Styles: self + Google Fonts + inline (needed for Next.js)
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              // Fonts: self + Google Fonts CDN
+              "font-src 'self' https://fonts.gstatic.com data:",
+              // Images: self + Cloudinary + Unsplash + Pixabay + YouTube + data URIs
+              "img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com https://images.unsplash.com https://cdn.pixabay.com https://img.youtube.com https://www.google-analytics.com",
+              // Connections: self + API calls + Google Analytics
+              "connect-src 'self' https://www.google-analytics.com https://vitals.vercel-insights.com https://vercel.live wss://ws-us3.pusher.com",
+              // Frames: only YouTube embeds allowed
+              "frame-src https://www.youtube.com https://youtube.com",
+              // Media: self only
+              "media-src 'self' https://res.cloudinary.com",
+              // Objects: none
+              "object-src 'none'",
+              // Base URI restricted to self
+              "base-uri 'self'",
+              // Form actions: self only
+              "form-action 'self'",
+            ].join('; '),
+          },
         ],
       },
-      // Aggressive caching for static assets (images, fonts, JS, CSS)
+      // ── Aggressive caching for static assets ──────────────────────────────
       {
         source: '/(.*)\\.(jpg|jpeg|png|webp|avif|svg|ico|woff|woff2|ttf|eot)',
         headers: [
