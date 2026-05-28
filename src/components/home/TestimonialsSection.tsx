@@ -5,36 +5,52 @@ import { Star, Quote } from 'lucide-react';
 
 const testimonials = [
   {
-    name: 'Rajesh Sharma',
-    role: 'Software Engineer, Gurugram',
-    content: 'SS Realty helped me find my dream apartment in Baner within 2 weeks! Their team was professional, transparent, and guided me through every step of the process.',
+    name: 'Vikram Singh',
+    role: 'Govt. Employee, Noida',
+    content: 'SS Realty ne mujhe Noida Sector 62 mein ek bahut achha 2BHK flat dilaya. Price bilkul budget mein tha aur registration process bhi smooth rahi. Team ne har step par guide kiya.',
     rating: 5,
-    image: 'RS',
-    property: 'Purchased 3BHK in Baner',
+    initials: 'VS',
+    property: 'Purchased 2BHK Flat — Noida Sector 62',
   },
   {
-    name: 'Priya Mehta',
-    role: 'Business Owner, Delhi',
-    content: 'Excellent service! I was looking for a commercial space in Gurugram and SS Realty found me the perfect office in Hinjewadi. The legal documentation was smooth and hassle-free.',
+    name: 'Priya Agarwal',
+    role: 'Teacher, Ghaziabad',
+    content: 'Maine SS Realty se Vasundhara, Ghaziabad mein 3BHK flat liya. Inki team ne society ke baare mein puri details di aur loan process mein bhi help ki. Bahut trustworthy hain.',
     rating: 5,
-    image: 'PM',
-    property: 'Commercial Office in Hinjewadi',
+    initials: 'PA',
+    property: 'Purchased 3BHK Flat — Vasundhara, Ghaziabad',
   },
   {
-    name: 'Amit & Sunita Patel',
-    role: 'NRI Clients, USA',
-    content: 'As NRIs, we were worried about the property buying process in India. SS Realty made it seamless — from virtual tours to final registration. Absolutely trustworthy!',
+    name: 'Ramesh Yadav',
+    role: 'Farmer, Greater Noida',
+    content: 'Greater Noida West mein ek residential plot lena tha. SS Realty ne registry se lekar patwari tak sab kuch handle kiya. Koi bhi tension nahi hua. Bohot acchi service hai.',
     rating: 5,
-    image: 'AP',
-    property: 'Villa in Lonavala',
+    initials: 'RY',
+    property: 'Purchased Residential Land — Greater Noida West',
   },
   {
-    name: 'Sneha Kulkarni',
-    role: 'Doctor, Nashik',
-    content: 'I invested in a plot through SS Realty and the returns have been amazing. Their investment advisory team is knowledgeable and the advice was spot-on.',
+    name: 'Suresh Gupta',
+    role: 'Shop Owner, Delhi',
+    content: 'Rohini mein commercial shop ke liye SS Realty se contact kiya. Unhone location, footfall aur ROI sab samjhaya. Meri dukan 3 mahine mein hi profitable ho gayi. Shukriya team!',
     rating: 5,
-    image: 'SK',
-    property: 'Residential Plot in Nashik',
+    initials: 'SG',
+    property: 'Purchased Commercial Shop — Rohini, Delhi',
+  },
+  {
+    name: 'Anita Sharma',
+    role: 'Housewife, Gurugram',
+    content: 'Gurugram ke Sohna Road par villa leni thi family ke liye. SS Realty ne 3-4 options dikhaye aur har ek ki pros-cons batayi. Hum bahut khush hain apni villa se. Highly recommend!',
+    rating: 5,
+    initials: 'AS',
+    property: 'Purchased Villa — Sohna Road, Gurugram',
+  },
+  {
+    name: 'Deepak Tyagi',
+    role: 'Business Owner, Faridabad',
+    content: 'Faridabad ke paas Aravalli mein ek farmhouse lena tha weekend retreat ke liye. SS Realty ne legal verification se lekar registry tak sab kuch theek se kiya. Ekdum mast experience raha.',
+    rating: 5,
+    initials: 'DT',
+    property: 'Purchased Farmhouse — Aravalli, Faridabad',
   },
 ];
 
@@ -49,7 +65,7 @@ function Avatar({ initials, color }: { initials: string; color: string }) {
   );
 }
 
-const colors = ['#C9A227', '#B8860B', '#9a6f08', '#C9A227'];
+const colors = ['#C9A227', '#B8860B', '#9a6f08', '#C9A227', '#B8860B', '#9a6f08'];
 
 function TestimonialCard({ t, i }: { t: typeof testimonials[0]; i: number }) {
   return (
@@ -71,7 +87,7 @@ function TestimonialCard({ t, i }: { t: typeof testimonials[0]; i: number }) {
 
       {/* Author */}
       <div className="flex items-center gap-3">
-        <Avatar initials={t.image} color={colors[i % colors.length]} />
+        <Avatar initials={t.initials} color={colors[i % colors.length]} />
         <div>
           <p className="font-semibold text-[#1A1800] text-sm">{t.name}</p>
           <p className="text-xs text-[#6b6450]">{t.role}</p>
@@ -86,7 +102,6 @@ function MobileCarousel() {
   const [active, setActive] = useState(0);
   const total = testimonials.length;
 
-  // Touch tracking
   const touchStartX = useRef<number | null>(null);
   const touchDelta = useRef(0);
   const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -100,7 +115,6 @@ function MobileCarousel() {
     setActive((prev) => (prev - 1 + total) % total);
   }, [total]);
 
-  // Auto-play: advances right-to-left every 3.5 s
   const startAuto = useCallback(() => {
     if (autoRef.current) clearInterval(autoRef.current);
     autoRef.current = setInterval(() => {
@@ -118,7 +132,7 @@ function MobileCarousel() {
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchDelta.current = 0;
-    isPaused.current = true; // pause auto during swipe
+    isPaused.current = true;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -127,18 +141,17 @@ function MobileCarousel() {
   };
 
   const handleTouchEnd = () => {
-    const threshold = 40; // px
+    const threshold = 40;
     if (touchDelta.current < -threshold) goNext();
     else if (touchDelta.current > threshold) goPrev();
     touchStartX.current = null;
     touchDelta.current = 0;
     isPaused.current = false;
-    startAuto(); // restart timer after manual swipe
+    startAuto();
   };
 
   return (
     <div className="relative overflow-hidden">
-      {/* Slide track */}
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${active * 100}%)` }}
@@ -147,11 +160,7 @@ function MobileCarousel() {
         onTouchEnd={handleTouchEnd}
       >
         {testimonials.map((t, i) => (
-          <div
-            key={t.name}
-            className="min-w-full px-1"
-            style={{ userSelect: 'none' }}
-          >
+          <div key={t.name} className="min-w-full px-1" style={{ userSelect: 'none' }}>
             <TestimonialCard t={t} i={i} />
           </div>
         ))}
@@ -169,9 +178,7 @@ function MobileCarousel() {
               startAuto();
             }}
             className={`rounded-full transition-all duration-300 ${
-              i === active
-                ? 'w-6 h-2 bg-[#C9A227]'
-                : 'w-2 h-2 bg-[#C9A227]/30'
+              i === active ? 'w-6 h-2 bg-[#C9A227]' : 'w-2 h-2 bg-[#C9A227]/30'
             }`}
           />
         ))}
@@ -199,8 +206,8 @@ export default function TestimonialsSection() {
           <MobileCarousel />
         </div>
 
-        {/* Tablet / Desktop: original grid (hidden on mobile) */}
-        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Tablet / Desktop: grid (hidden on mobile) */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
             <TestimonialCard key={t.name} t={t} i={i} />
           ))}

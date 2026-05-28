@@ -12,7 +12,7 @@ const InvestmentPredictor = dynamic(() => import('@/components/home/InvestmentPr
 const StatsSection = dynamic(() => import('@/components/home/StatsSection'), { ssr: true });
 const ServicesSection = dynamic(() => import('@/components/home/ServicesSection'), { ssr: true });
 const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection'), { ssr: true });
-const CTASection = dynamic(() => import('@/components/home/CTASection'), { ssr: true });
+
 
 export const metadata: Metadata = {
   title: 'SS Realty | Premium Properties in Delhi NCR',
@@ -88,7 +88,6 @@ export default async function HomePage() {
       <StatsSection />
       <ServicesSection />
       <TestimonialsSection />
-      <CTASection />
     </>
   );
 }
