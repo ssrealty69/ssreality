@@ -33,12 +33,11 @@ export default function AdminSidebar({
           onClick={() => setIsOpen(false)}
         />
       )}
-
       {/* Sidebar */}
       <aside
         className={`
           fixed inset-y-0 left-0 z-50 w-64 bg-[#1A1800] border-r border-[#C9A227]/20 transform transition-transform duration-300
-          lg:static lg:translate-x-0 lg:flex-shrink-0
+          lg:static lg:translate-x-0 lg:flex-shrink-0 lg:h-screen lg:overflow-y-auto
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
       >
