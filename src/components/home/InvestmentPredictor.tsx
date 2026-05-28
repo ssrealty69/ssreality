@@ -142,9 +142,10 @@ export default function InvestmentPredictor() {
   if (!locA || !locB) return null;
 
   // Filter history to display overlapping years (5 years -> 2024-2030, 10 years -> 2024-2035)
-  const years = timeframe === 5 
-    ? [2024, 2025, 2026, 2027, 2028, 2029, 2030]
-    : [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035];
+  const currentYear = new Date().getFullYear();
+  const startYear = currentYear - 2;
+  const yearsCount = timeframe === 5 ? 7 : 12;
+  const years = Array.from({ length: yearsCount }, (_, i) => startYear + i);
   
   const historyA = years.map(yr => {
     const pt = locA.trendHistory.find(h => h.year === yr);
@@ -383,7 +384,7 @@ export default function InvestmentPredictor() {
                   {timeframe}-Year Price Trajectory (INR / sq.ft.)
                 </h3>
                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
-                  Comparative appreciation projection (2024 - {timeframe === 5 ? 2030 : 2035})
+                  Comparative appreciation projection ({startYear} - {startYear + (timeframe === 5 ? 6 : 11)})
                 </p>
               </div>
               
