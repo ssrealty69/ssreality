@@ -54,8 +54,15 @@ export default function AdminLogin() {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white mb-2 font-[var(--font-playfair)]">Admin Portal</h1>
-          <p className="text-white/60 text-sm">Enter your secret token to access the dashboard</p>
+          <h1 
+            className="text-2xl font-bold mb-2 font-[var(--font-playfair)] tracking-wide" 
+            style={{ color: '#C9A227' }}
+          >
+            Admin Portal
+          </h1>
+          <p className="text-white/60 text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+            Enter your secret token to access the dashboard
+          </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
