@@ -244,7 +244,7 @@ export default function InvestmentPredictor() {
                   setShowSuggestionsA(true);
                   setShowSuggestionsB(false);
                 }}
-                className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-10 py-3.5 text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
+                className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-10 py-3.5 text-[16px] md:text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
                 placeholder="Search or type location (e.g. Noida Sector 150)..."
               />
               <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
@@ -318,7 +318,7 @@ export default function InvestmentPredictor() {
                   setShowSuggestionsB(true);
                   setShowSuggestionsA(false);
                 }}
-                className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-10 py-3.5 text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
+                className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-10 py-3.5 text-[16px] md:text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
                 placeholder="Search or type location (e.g. Gurugram Sector 21)..."
               />
               <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
