@@ -31,6 +31,7 @@ export default function InvestmentPredictor() {
   const [locAId, setLocAId] = useState<string>('');
   const [locBId, setLocBId] = useState<string>('');
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [timeframe, setTimeframe] = useState<5 | 10>(5);
 
   // Search autocomplete states
   const [searchQueryA, setSearchQueryA] = useState('');
@@ -140,17 +141,29 @@ export default function InvestmentPredictor() {
 
   if (!locA || !locB) return null;
 
-  // Filter history to display overlapping years (e.g. 2024 to 2030)
-  const years = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  // Filter history to display overlapping years (5 years -> 2024-2030, 10 years -> 2024-2035)
+  const years = timeframe === 5 
+    ? [2024, 2025, 2026, 2027, 2028, 2029, 2030]
+    : [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035];
   
   const historyA = years.map(yr => {
-    const pt = locA.trendHistory.find(h => h.year === yr) || { price: locA.currentPrice };
-    return { year: yr, price: pt.price };
+    const pt = locA.trendHistory.find(h => h.year === yr);
+    if (pt) return { year: yr, price: pt.price };
+    
+    // Project dynamically if year exceeds stored DB history limits (2030)
+    const diff = yr - 2025; // 2025 is current price base year
+    const price = Math.round(locA.currentPrice * Math.pow(1 + (locA.cagr / 100), diff));
+    return { year: yr, price };
   });
 
   const historyB = years.map(yr => {
-    const pt = locB.trendHistory.find(h => h.year === yr) || { price: locB.currentPrice };
-    return { year: yr, price: pt.price };
+    const pt = locB.trendHistory.find(h => h.year === yr);
+    if (pt) return { year: yr, price: pt.price };
+    
+    // Project dynamically if year exceeds stored DB history limits (2030)
+    const diff = yr - 2025; // 2025 is current price base year
+    const price = Math.round(locB.currentPrice * Math.pow(1 + (locB.cagr / 100), diff));
+    return { year: yr, price };
   });
 
   // Calculate SVG dimensions
@@ -363,14 +376,40 @@ export default function InvestmentPredictor() {
           
           {/* Left Column (5/12 width): Trajectory Graph */}
           <div className="lg:col-span-6 bg-white border border-[#E8D5A3]/25 rounded-3xl p-6 shadow-sm space-y-6 relative overflow-hidden">
-            <div>
-              <h3 className="font-extrabold text-sm text-[#1A1800] flex items-center gap-2">
-                <BarChart2 size={16} className="text-[#C9A227]" />
-                5-Year Price Trajectory (INR / sq.ft.)
-              </h3>
-              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
-                Comparative appreciation projection (2024 - 2030)
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h3 className="font-extrabold text-sm text-[#1A1800] flex items-center gap-2">
+                  <BarChart2 size={16} className="text-[#C9A227]" />
+                  {timeframe}-Year Price Trajectory (INR / sq.ft.)
+                </h3>
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                  Comparative appreciation projection (2024 - {timeframe === 5 ? 2030 : 2035})
+                </p>
+              </div>
+              
+              {/* Premium Segmented Toggle Tabs */}
+              <div className="flex bg-[#FFFEF5] p-1 border border-[#E8D5A3]/30 rounded-xl max-w-fit shrink-0 select-none">
+                <button
+                  onClick={() => setTimeframe(5)}
+                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
+                    timeframe === 5
+                      ? 'bg-[#C9A227] text-white shadow-sm'
+                      : 'text-gray-400 hover:text-[#B8860B]'
+                  }`}
+                >
+                  5 Years
+                </button>
+                <button
+                  onClick={() => setTimeframe(10)}
+                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
+                    timeframe === 10
+                      ? 'bg-[#C9A227] text-white shadow-sm'
+                      : 'text-gray-400 hover:text-[#B8860B]'
+                  }`}
+                >
+                  10 Years
+                </button>
+              </div>
             </div>
 
             {/* Custom SVG Line Chart */}
