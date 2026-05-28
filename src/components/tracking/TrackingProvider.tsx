@@ -1,7 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useRef } from 'react';
-import Script from 'next/script';
+import { usePathname } from 'next/navigation';
+
 
 interface TrackingSettingsData {
   isEnabled: boolean;
@@ -35,6 +36,10 @@ interface TrackingProviderProps {
 
 export default function TrackingProvider({ settings, children }: TrackingProviderProps) {
   const sessionIdRef = useRef<string>('');
+  const pathname = usePathname();
+  const entryTimeRef = useRef<number>(Date.now());
+  const lastPathRef = useRef<string>('');
+
 
   // 1. Generate unique session ID on client mount
   useEffect(() => {
@@ -134,16 +139,64 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
     }
   }, [settings]);
 
-  // A pageview event on initial mount/navigation check
+  // 4. Track Route Navigation & Stay Duration
   useEffect(() => {
-    if (settings?.isEnabled) {
-      fireEvent('PageView', {
-        page_title: document.title,
-        page_location: window.location.href,
-        page_path: window.location.pathname
-      });
+    if (!settings || !settings.isEnabled) return;
+
+    const currentTime = Date.now();
+    const currentPath = pathname || '/';
+
+    // A. Log PageLeave event for previous page if we have one
+    if (lastPathRef.current && lastPathRef.current !== currentPath) {
+      const stayDurationMs = currentTime - entryTimeRef.current;
+      const stayDurationSeconds = Math.round(stayDurationMs / 1000);
+      
+      // Only fire if the duration is realistic (positive and less than 12 hours)
+      if (stayDurationSeconds > 0 && stayDurationSeconds < 43200) {
+        fireEvent('PageLeave', {
+          page_path: lastPathRef.current,
+          duration_seconds: stayDurationSeconds,
+        });
+      }
     }
-  }, [settings]);
+
+    // B. Track PageView for the new page
+    fireEvent('PageView', {
+      page_title: typeof document !== 'undefined' ? document.title : 'SS Realty',
+      page_location: typeof window !== 'undefined' ? window.location.href : '',
+      page_path: currentPath,
+    });
+
+    // C. Update references for the next navigation
+    lastPathRef.current = currentPath;
+    entryTimeRef.current = currentTime;
+  }, [pathname, settings?.isEnabled]);
+
+  // 5. Track Stay Duration when leaving the tab or closing the page
+  useEffect(() => {
+    const handleExit = () => {
+      if (document.visibilityState === 'hidden' && lastPathRef.current) {
+        const stayDurationMs = Date.now() - entryTimeRef.current;
+        const stayDurationSeconds = Math.round(stayDurationMs / 1000);
+        
+        if (stayDurationSeconds > 0 && stayDurationSeconds < 43200) {
+          fireEvent('PageLeave', {
+            page_path: lastPathRef.current,
+            duration_seconds: stayDurationSeconds,
+          });
+        }
+      }
+    };
+
+    window.addEventListener('visibilitychange', handleExit);
+    window.addEventListener('beforeunload', handleExit);
+
+    return () => {
+      window.removeEventListener('visibilitychange', handleExit);
+      window.removeEventListener('beforeunload', handleExit);
+    };
+  }, []);
+
 
   const value = { fireEvent };
 
