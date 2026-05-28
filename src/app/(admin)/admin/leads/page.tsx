@@ -495,18 +495,6 @@ export default function AdminLeadsPage() {
                           >
                             <MessageSquare size={14} />
                           </a>
-                          <button
-                            onClick={() => handleDeleteEnquiry(enq._id)}
-                            disabled={deletingId === enq._id}
-                            className="p-2 border border-gray-100 hover:border-red-500 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-xl transition-all cursor-pointer disabled:opacity-40"
-                            title="Delete Enquiry"
-                          >
-                            {deletingId === enq._id ? (
-                              <Loader2 size={14} className="animate-spin" />
-                            ) : (
-                              <Trash2 size={14} />
-                            )}
-                          </button>
                         </div>
                       </td>
                     </tr>
@@ -583,14 +571,6 @@ export default function AdminLeadsPage() {
                           >
                             <MessageSquare size={14} />
                           </a>
-                          <button
-                            onClick={() => handleDeleteLead(lead._id)}
-                            disabled={deletingId === lead._id}
-                            className="p-2 border border-gray-100 hover:border-red-500 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-xl transition-all cursor-pointer"
-                            title="Delete Lead"
-                          >
-                            <Trash2 size={14} />
-                          </button>
                         </div>
                       </td>
                     </tr>
@@ -658,14 +638,6 @@ export default function AdminLeadsPage() {
                             >
                               <MessageSquare size={14} />
                             </a>
-                            <button
-                              onClick={() => handleDeleteLead(lead._id)}
-                              disabled={deletingId === lead._id}
-                              className="p-2 border border-gray-100 hover:border-red-500 hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-xl transition-all cursor-pointer"
-                              title="Delete Lead"
-                            >
-                              <Trash2 size={14} />
-                            </button>
                           </div>
                         </td>
                       </tr>
