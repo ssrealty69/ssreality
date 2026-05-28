@@ -9,6 +9,8 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
+
+
     const token = req.cookies.get('admin_token')?.value;
     const secret = req.headers.get('x-admin-secret');
     if (token !== 'authenticated' && secret !== process.env.ADMIN_SECRET) {
