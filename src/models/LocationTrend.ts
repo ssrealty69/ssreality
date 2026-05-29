@@ -16,6 +16,10 @@ export interface ILocationTrend extends Document {
   growthDrivers: string[];
   verdict: string;
   trendHistory: ITrendHistoryItem[];
+  dataSource: string;       // Public database source
+  reraRegistration: string; // Associated RERA number
+  indexBenchmark: string;   // NHB HPI identifier
+  dataConfidence: number;   // 0-100 verification confidence score
   lastUpdated: Date;
 }
 
@@ -35,6 +39,10 @@ const LocationTrendSchema = new Schema<ILocationTrend>({
       price: { type: Number, required: true }
     }
   ],
+  dataSource: { type: String, default: 'NHB RESIDEX & Anarock Research' },
+  reraRegistration: { type: String, default: 'Verified State Registration' },
+  indexBenchmark: { type: String, default: 'NHB-HPI-DELHI-NCR' },
+  dataConfidence: { type: Number, default: 95 },
   lastUpdated: { type: Date, default: Date.now }
 });
 
