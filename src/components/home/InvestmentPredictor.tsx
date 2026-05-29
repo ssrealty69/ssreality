@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Loader2, TrendingUp, Compass, Award, ShieldAlert, CheckCircle2, RefreshCw, BarChart2, ShieldCheck, Database, Link2, ExternalLink } from 'lucide-react';
+import { Loader2, TrendingUp, Compass, Award, ShieldAlert, CheckCircle2, RefreshCw, BarChart2, ShieldCheck, Database, Link2, ExternalLink, Search, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface TrendHistoryItem {
@@ -27,10 +27,111 @@ interface LocationTrendItem {
   dataConfidence: number;
 }
 
+const NEIGHBORHOOD_RETURNS = [
+  {
+    city: 'Gurugram',
+    area: 'Golf Course Extension Road',
+    returnRate: 48.4,
+    currentPrice: '₹15,500/sq.ft',
+    sparklinePoints: [10500, 12200, 13800, 15500],
+  },
+  {
+    city: 'Gurugram',
+    area: 'IMT Sohna Corridor',
+    returnRate: 52.8,
+    currentPrice: '₹8,200/sq.ft',
+    sparklinePoints: [5300, 6400, 7200, 8200],
+  },
+  {
+    city: 'Gurugram',
+    area: 'Dwarka Expressway',
+    returnRate: 45.2,
+    currentPrice: '₹12,800/sq.ft',
+    sparklinePoints: [8800, 10200, 11500, 12800],
+  },
+  {
+    city: 'Noida',
+    area: 'Sector 150 (Eco-Hub)',
+    returnRate: 36.5,
+    currentPrice: '₹7,800/sq.ft',
+    sparklinePoints: [5700, 6400, 7100, 7800],
+  },
+  {
+    city: 'Noida',
+    area: 'Sector 62 (Commercial Corridor)',
+    returnRate: 28.2,
+    currentPrice: '₹9,200/sq.ft',
+    sparklinePoints: [7200, 7900, 8500, 9200],
+  },
+  {
+    city: 'Greater Noida',
+    area: 'Noida Extension (Greater Noida West)',
+    returnRate: 31.4,
+    currentPrice: '₹6,200/sq.ft',
+    sparklinePoints: [4700, 5200, 5700, 6200],
+  },
+  {
+    city: 'Greater Noida',
+    area: 'Yamuna Expressway (Jewar Hub)',
+    returnRate: 58.6,
+    currentPrice: '₹4,800/sq.ft',
+    sparklinePoints: [3000, 3600, 4200, 4800],
+  },
+  {
+    city: 'Delhi',
+    area: 'Dwarka Sector 19',
+    returnRate: 24.6,
+    currentPrice: '₹11,500/sq.ft',
+    sparklinePoints: [9200, 9900, 10600, 11500],
+  },
+  {
+    city: 'Delhi',
+    area: 'Vasant Kunj Residential',
+    returnRate: 19.8,
+    currentPrice: '₹18,500/sq.ft',
+    sparklinePoints: [15400, 16300, 17400, 18500],
+  }
+];
+
+const renderSparkline = (points: number[], areaName: string) => {
+  const min = Math.min(...points);
+  const max = Math.max(...points);
+  const range = max - min || 1;
+  const width = 120;
+  const height = 40;
+  const padding = 3;
+  const pts = points.map((p, idx) => {
+    const x = padding + (idx / (points.length - 1)) * (width - padding * 2);
+    const y = height - padding - ((p - min) / range) * (height - padding * 2);
+    return { x, y };
+  });
+  const d = pts.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+  const areaD = `${d} L ${pts[pts.length - 1].x} ${height} L ${pts[0].x} ${height} Z`;
+  const gradId = `sparkGrad-${areaName.replace(/\s+/g, '-').toLowerCase()}`;
+  
+  return (
+    <svg width={width} height={height} className="overflow-visible select-none pointer-events-none">
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+        </linearGradient>
+      </defs>
+      <path d={areaD} fill={`url(#${gradId})`} />
+      <path d={d} fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="3.5" fill="#10B981" stroke="#FFF" strokeWidth="1.5" />
+    </svg>
+  );
+};
+
 export default function InvestmentPredictor() {
   const [trends, setTrends] = useState<LocationTrendItem[]>([]);
   const [loading, setLoading] = useState(true);
   
+  // Return tracker states
+  const [selectedCityTab, setSelectedCityTab] = useState<'All' | 'Gurugram' | 'Noida' | 'Greater Noida' | 'Delhi'>('All');
+  const [areaSearchQuery, setAreaSearchQuery] = useState('');
+
   // Comparative state
   const [locAId, setLocAId] = useState<string>('');
   const [locBId, setLocBId] = useState<string>('');
@@ -762,127 +863,106 @@ export default function InvestmentPredictor() {
         <div className="mt-10 bg-white border border-[#E8D5A3]/45 rounded-3xl p-6 md:p-8 shadow-md relative overflow-hidden animate-in fade-in slide-in-from-bottom duration-500">
           <div className="absolute top-0 right-0 w-[20%] h-[100%] bg-gradient-to-l from-[#C9A227]/5 to-transparent pointer-events-none" />
           
-          <div className="flex flex-col md:flex-row items-start justify-between gap-6 pb-6 border-b border-[#E8D5A3]/20">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[#E8D5A3]/20">
             <div className="space-y-1">
               <h3 className="font-extrabold text-sm text-[#1A1800] flex items-center gap-2">
-                <ShieldCheck size={18} className="text-emerald-600" />
-                RERA Registry & Government NHB RESIDEX Integration
+                <TrendingUp size={18} className="text-[#C9A227]" />
+                Delhi NCR Micro-Market 3-Year Return Trends
               </h3>
               <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                Cross-referenced with official property registrations & micro-market index records
+                Sector & Town level capital appreciation tracking (2023 - 2026)
               </p>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-[10px] font-black uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Government API Bridge Active
+
+            {/* Filter & Search Bar Grid */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+              {/* Custom Search Input */}
+              <div className="relative w-full sm:w-[220px]">
+                <input
+                  type="text"
+                  placeholder="Search sector, town or city..."
+                  value={areaSearchQuery}
+                  onChange={(e) => setAreaSearchQuery(e.target.value)}
+                  className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-8 pr-4 py-2 text-xs font-semibold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
+                />
+                <Search className="absolute left-2.5 top-2.5 text-gray-400" size={13} />
+              </div>
+
+              {/* Segmented City/Town Filter Tabs */}
+              <div className="flex bg-[#FFFEF5] p-1 border border-[#E8D5A3]/30 rounded-xl shrink-0 select-none w-full sm:w-auto overflow-x-auto">
+                {(['All', 'Gurugram', 'Noida', 'Greater Noida', 'Delhi'] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setSelectedCityTab(tab)}
+                    className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${
+                      selectedCityTab === tab
+                        ? 'bg-[#C9A227] text-white shadow-sm'
+                        : 'text-gray-400 hover:text-[#B8860B]'
+                    }`}
+                  >
+                    {tab === 'All' ? 'All NCR' : tab}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6">
-            
-            {/* Location A Data Integration Verification */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest block">Anchor telemetry</span>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#C9A227]/10 text-[#B8860B]">
-                  Confidence: {locA.dataConfidence || 95}%
-                </span>
+          {/* Area Wise Return Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6">
+            {NEIGHBORHOOD_RETURNS
+              .filter((item) => {
+                const matchesTab = selectedCityTab === 'All' || item.city === selectedCityTab;
+                const matchesSearch = item.area.toLowerCase().includes(areaSearchQuery.toLowerCase()) || 
+                                     item.city.toLowerCase().includes(areaSearchQuery.toLowerCase());
+                return matchesTab && matchesSearch;
+              })
+              .slice(0, 4) // Show top 4 matching micro-markets cleanly
+              .map((item, idx) => (
+                <div 
+                  key={idx}
+                  className="bg-[#FFFEF5] border border-[#E8D5A3]/25 hover:border-[#C9A227]/40 rounded-2xl p-4 flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <div className="space-y-1.5 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <MapPin size={11} className="text-[#C9A227] shrink-0" />
+                      <span className="text-[9px] font-black text-[#B8860B] uppercase tracking-widest bg-[#C9A227]/10 px-1.5 py-0.5 rounded">
+                        {item.city}
+                      </span>
+                    </div>
+                    <h4 className="text-xs font-black text-gray-900 truncate tracking-tight pr-1" title={item.area}>
+                      {item.area}
+                    </h4>
+                    <span className="text-[10px] text-gray-400 font-extrabold uppercase block">
+                      Avg. Price: <span className="text-gray-700 font-black">{item.currentPrice}</span>
+                    </span>
+                  </div>
+
+                  {/* Sparkline & Return Badge on the right */}
+                  <div className="flex items-center gap-4 shrink-0">
+                    {/* Sparkline Graph */}
+                    <div className="hidden sm:block">
+                      {renderSparkline(item.sparklinePoints, item.area)}
+                    </div>
+                    {/* Return Badge */}
+                    <div className="text-right">
+                      <span className="inline-flex items-center px-2 py-1 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-[10px] font-black leading-none whitespace-nowrap">
+                        +{item.returnRate}% Return
+                      </span>
+                      <span className="block text-[8px] text-gray-400 font-bold uppercase mt-1">Last 3 Years</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            {NEIGHBORHOOD_RETURNS.filter((item) => {
+              const matchesTab = selectedCityTab === 'All' || item.city === selectedCityTab;
+              const matchesSearch = item.area.toLowerCase().includes(areaSearchQuery.toLowerCase()) || 
+                                   item.city.toLowerCase().includes(areaSearchQuery.toLowerCase());
+              return matchesTab && matchesSearch;
+            }).length === 0 && (
+              <div className="col-span-2 py-8 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">
+                No matching sectors found in {selectedCityTab === 'All' ? 'Delhi NCR' : selectedCityTab}. Try another search term!
               </div>
-              <h4 className="text-sm font-extrabold text-[#1A1800]">
-                {locA.name.split(',')[0]}
-              </h4>
-
-              <div className="bg-[#FFFEF5] border border-[#E8D5A3]/30 rounded-2xl p-4 space-y-3 text-[11px] font-bold text-gray-600">
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-gray-400">
-                    <Database size={13} />
-                    Verified Data Source:
-                  </span>
-                  <span className="text-gray-800 text-right">{locA.dataSource || 'NHB RESIDEX Index'}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-gray-400">
-                    <ShieldCheck size={13} className="text-emerald-500" />
-                    RERA Registration:
-                  </span>
-                  <span className="text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md font-mono text-[10px]">
-                    {locA.reraRegistration || 'Verified Project'}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-gray-400">
-                    <Link2 size={13} />
-                    NHB Index Benchmark:
-                  </span>
-                  <span className="text-gray-800 font-mono">{locA.indexBenchmark || 'NHB-HPI-NCR'}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Location B Data Integration Verification */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest block">Benchmark telemetry</span>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded bg-gray-100 text-gray-500">
-                  Confidence: {locB.dataConfidence || 95}%
-                </span>
-              </div>
-              <h4 className="text-sm font-extrabold text-[#1A1800]">
-                {locB.name.split(',')[0]}
-              </h4>
-
-              <div className="bg-[#FFFEF5] border border-[#E8D5A3]/30 rounded-2xl p-4 space-y-3 text-[11px] font-bold text-gray-600">
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-gray-400">
-                    <Database size={13} />
-                    Verified Data Source:
-                  </span>
-                  <span className="text-gray-800 text-right">{locB.dataSource || 'NHB RESIDEX Index'}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-gray-400">
-                    <ShieldCheck size={13} className="text-emerald-500" />
-                    RERA Registration:
-                  </span>
-                  <span className="text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-md font-mono text-[10px]">
-                    {locB.reraRegistration || 'Verified Project'}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-gray-400">
-                    <Link2 size={13} />
-                    NHB Index Benchmark:
-                  </span>
-                  <span className="text-gray-800 font-mono">{locB.indexBenchmark || 'NHB-HPI-NCR'}</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Interactive Live Log Terminal inside panel */}
-          <div className="mt-6 bg-gray-900 border border-gray-800 rounded-2xl p-4 font-mono text-[9px] text-[#A0C080] space-y-1">
-            <div className="flex items-center justify-between text-gray-500 border-b border-gray-800 pb-2 mb-2 font-sans font-bold">
-              <span>LIVE API VERIFICATION TRAFFIC LOG</span>
-              <span>ESTIMATED DATES: Q1 2026</span>
-            </div>
-            <p className="text-gray-400">📡 [SYNCING MICRO-MARKETS] cross-referencing telemetry points...</p>
-            <p>✔ Verified RERA Match for &quot;{locA.name}&quot; &rarr; license <span className="text-white">{locA.reraRegistration}</span> online</p>
-            <p>✔ Verified RERA Match for &quot;{locB.name}&quot; &rarr; license <span className="text-white">{locB.reraRegistration}</span> online</p>
-            <p>✔ Downloaded NHB HPI indices for Delhi NCR &rarr; anchoring price trajectory to baseline registry index <span className="text-white">{locA.indexBenchmark}</span> and <span className="text-white">{locB.indexBenchmark}</span></p>
-            <p className="text-emerald-400 animate-pulse">🟢 Telemetry verified successfully. Data is certified authentic for client presentation.</p>
-          </div>
-
-          <div className="mt-4 flex items-center justify-between flex-wrap gap-2 text-[9px] text-gray-400 font-bold uppercase tracking-wider">
-            <span>Reference sources: National Housing Bank Residex (HPI), state HRERA / UPRERA portals</span>
-            <a 
-              href="https://nhbonline.org.in/" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="text-[#C9A227] hover:text-[#B8860B] flex items-center gap-1 transition-all"
-            >
-              Verify NHB Residex Registry <ExternalLink size={10} />
-            </a>
+            )}
           </div>
         </div>
 
