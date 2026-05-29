@@ -692,25 +692,7 @@ export default function InvestmentPredictor() {
               
               <div className="space-y-4">
                 
-                {/* 1. Price Index Comparison */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
-                    <span>Average Current Price (per sq.ft.)</span>
-                    <div className="space-x-2">
-                      <span className="text-[#B8860B] font-black">₹{locA.currentPrice.toLocaleString()}</span>
-                      <span className="text-gray-400">vs</span>
-                      <span className="text-gray-600 font-black">₹{locB.currentPrice.toLocaleString()}</span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 h-2">
-                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
-                      <div className="bg-[#C9A227] h-full rounded-full" style={{ width: `${Math.min((locA.currentPrice / 18000) * 100, 100)}%` }} />
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-full overflow-hidden">
-                      <div className="bg-gray-400 h-full rounded-full" style={{ width: `${Math.min((locB.currentPrice / 18000) * 100, 100)}%` }} />
-                    </div>
-                  </div>
-                </div>
+
 
                 {/* 2. Projected 5-Year CAGR */}
                 <div className="space-y-2">
