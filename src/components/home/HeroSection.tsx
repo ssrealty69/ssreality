@@ -57,7 +57,7 @@ export default function HeroSection() {
     <section ref={sectionRef} className="relative h-[100vh] min-h-[600px] w-full overflow-hidden flex flex-col justify-center items-center font-sans">
       
       {/* Background: Poster image first, then YouTube iframe */}
-      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
         {/* Lightweight poster image (loads instantly) */}
         <Image
           src="https://img.youtube.com/vi/M-j_LvEK2ZA/maxresdefault.jpg"
@@ -71,24 +71,22 @@ export default function HeroSection() {
 
         {/* YouTube iframe (loads only after delay/interaction) */}
         {loadVideo && (
-          <div className="absolute inset-0">
+          <div className="absolute inset-0 pointer-events-none">
             <iframe
               src="https://www.youtube.com/embed/M-j_LvEK2ZA?autoplay=1&mute=1&loop=1&playlist=M-j_LvEK2ZA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&enablejsapi=1"
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[61.87vw] min-h-[110vh] min-w-[195.55vh] border-0 scale-110"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[61.87vw] min-h-[110vh] min-w-[195.55vh] border-0 scale-110 pointer-events-none"
               allow="autoplay; encrypted-media"
               title="SS Realty background video"
               loading="lazy"
               tabIndex={-1}
             />
-            {/* Blocker sits directly above the iframe — prevents ALL YouTube UI */}
-            <div className="absolute inset-0 z-20" style={{ pointerEvents: 'all', cursor: 'default' }} />
           </div>
         )}
       </div>
 
       {/* Reduced overlay opacity to show video better */}
-      <div className="absolute inset-0 bg-[#0A0A0A]/40 z-0" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-[#0A0A0A]/70 z-0" />
+      <div className="absolute inset-0 bg-[#0A0A0A]/40 z-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-[#0A0A0A]/70 z-0 pointer-events-none" />
 
       {/* Content Container (Perfectly Centered & Scaled Down) */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col items-center text-center mt-8">
