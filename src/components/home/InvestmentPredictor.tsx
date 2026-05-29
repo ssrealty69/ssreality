@@ -958,15 +958,15 @@ export default function InvestmentPredictor() {
               </div>
 
               {/* Segmented City/Town Filter Tabs */}
-              <div className="flex bg-[#FFFEF5] p-1 border border-[#E8D5A3]/30 rounded-xl shrink-0 select-none w-full sm:w-auto overflow-x-auto">
+              <div className="flex bg-[#FFFDF0] p-1 border border-[#E8D5A3]/35 rounded-xl shrink-0 select-none w-full sm:w-auto overflow-x-auto no-scrollbar gap-1">
                 {(['All', 'Gurugram', 'Noida', 'Greater Noida', 'Delhi'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setSelectedCityTab(tab)}
-                    className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${
+                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all duration-300 whitespace-nowrap cursor-pointer ${
                       selectedCityTab === tab
-                        ? 'bg-[#C9A227] text-white shadow-sm'
-                        : 'text-gray-400 hover:text-[#B8860B]'
+                        ? 'bg-gradient-to-r from-[#C9A227] to-[#B8860B] text-white shadow-sm'
+                        : 'text-[#6b6450] hover:text-[#B8860B] hover:bg-[#E8D5A3]/10'
                     }`}
                   >
                     {tab === 'All' ? 'All NCR' : tab}
