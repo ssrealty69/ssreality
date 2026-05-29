@@ -154,7 +154,8 @@ export default function AdminJobsPage() {
               <thead>
                 <tr className="bg-gray-50 text-[10px] font-black text-gray-400 uppercase border-b border-gray-100">
                   <th className="py-4 px-6">Applied Date</th>
-                  <th className="py-4 px-4">Candidate Info</th>
+                  <th className="py-4 px-4">Candidate Name</th>
+                  <th className="py-4 px-4">Contact Number</th>
                   <th className="py-4 px-4">Position Applied</th>
                   <th className="py-4 px-4">Age Profile</th>
                   <th className="py-4 px-4">Resume File</th>
@@ -174,9 +175,12 @@ export default function AdminJobsPage() {
                         })}
                       </span>
                     </td>
-                    <td className="py-4 px-4 space-y-1">
-                      <div className="font-extrabold text-gray-800 leading-none">{app.name}</div>
-                      <div className="text-[11px] text-gray-500 font-semibold">{app.phone}</div>
+                    <td className="py-4 px-4 font-extrabold text-gray-800 whitespace-nowrap">{app.name}</td>
+                    <td className="py-4 px-4 text-gray-600 font-bold whitespace-nowrap">
+                      <span className="flex items-center gap-1.5">
+                        <Phone size={12} className="text-[#C9A227] shrink-0" />
+                        {app.phone}
+                      </span>
                     </td>
                     <td className="py-4 px-4 font-black text-[#1A1800] uppercase tracking-wider">{app.position}</td>
                     <td className="py-4 px-4 font-bold text-gray-700">{app.age} Years</td>
