@@ -449,10 +449,10 @@ export default function InvestmentPredictor() {
         </div>
 
         {/* Main Telemetry Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left Column (5/12 width): Trajectory Graph */}
-          <div className="lg:col-span-6 bg-white border border-[#E8D5A3]/25 rounded-3xl p-6 shadow-sm space-y-6 relative overflow-hidden">
+          <div className="lg:col-span-6 bg-white border border-[#E8D5A3]/25 rounded-3xl p-6 shadow-sm relative overflow-hidden flex flex-col justify-between h-full space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <h3 className="font-extrabold text-sm text-[#1A1800] flex items-center gap-2">
@@ -490,7 +490,7 @@ export default function InvestmentPredictor() {
             </div>
 
             {/* Custom SVG Line Chart */}
-            <div className="relative w-full h-[220px]">
+            <div className="relative w-full flex-1 min-h-[280px] lg:min-h-[310px] mt-2 mb-2">
               <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible">
                 <defs>
                   <linearGradient id="areaGradA" x1="0" y1="0" x2="0" y2="1">
