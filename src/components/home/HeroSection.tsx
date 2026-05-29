@@ -121,20 +121,12 @@ export default function HeroSection() {
         </p>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+        <div className="flex justify-center mb-16 w-full">
           <Link 
             href="/properties" 
-            className="inline-flex items-center justify-center px-8 py-3.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] transition-colors shadow-[0_4px_14px_0_rgba(249,115,22,0.39)] text-[15px]"
+            className="inline-flex items-center justify-center px-8 py-3.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] hover:scale-[1.03] transition-all duration-300 shadow-[0_4px_14px_0_rgba(249,115,22,0.39)] text-[15px] cursor-pointer"
           >
             Explore Properties Free
-          </Link>
-          
-          <Link
-            href="/projects"
-            className="inline-flex items-center gap-2 text-gray-300 font-semibold hover:text-white transition-colors text-[15px]"
-          >
-            <Play className="w-6 h-6 text-gray-400" strokeWidth={1.5} />
-            Watch Property Tour
           </Link>
         </div>
 

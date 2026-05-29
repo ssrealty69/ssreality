@@ -25,9 +25,9 @@ export default function ProjectVideo({ title, videoUrl }: { title: string, video
           
           <div className="relative w-full aspect-video rounded-[26px] overflow-hidden bg-black border-4 border-white shadow-inner">
             <iframe
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&disablekb=1&iv_load_policy=3`}
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=0&rel=0&modestbranding=1&disablekb=1&iv_load_policy=3&playlist=${videoId}&loop=1&enablejsapi=1`}
               title="Project Video"
-              className="absolute inset-0 w-full h-full border-0 pointer-events-auto"
+              className="absolute inset-0 w-full h-full border-0 pointer-events-none"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
