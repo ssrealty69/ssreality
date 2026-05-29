@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Loader2, TrendingUp, Compass, Award, ShieldAlert, CheckCircle2, RefreshCw, BarChart2, ShieldCheck, Database, Link2, ExternalLink, Search, MapPin, X } from 'lucide-react';
+import { Loader2, TrendingUp, Compass, Award, ShieldAlert, CheckCircle2, RefreshCw, BarChart2, ShieldCheck, Database, Link2, ExternalLink, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface TrendHistoryItem {
@@ -27,110 +27,11 @@ interface LocationTrendItem {
   dataConfidence: number;
 }
 
-const NEIGHBORHOOD_RETURNS = [
-  {
-    city: 'Gurugram',
-    area: 'Golf Course Extension Road',
-    returnRate: 48.4,
-    currentPrice: '₹15,500/sq.ft',
-    sparklinePoints: [10500, 12200, 13800, 15500],
-  },
-  {
-    city: 'Gurugram',
-    area: 'IMT Sohna Corridor',
-    returnRate: 52.8,
-    currentPrice: '₹8,200/sq.ft',
-    sparklinePoints: [5300, 6400, 7200, 8200],
-  },
-  {
-    city: 'Gurugram',
-    area: 'Dwarka Expressway',
-    returnRate: 45.2,
-    currentPrice: '₹12,800/sq.ft',
-    sparklinePoints: [8800, 10200, 11500, 12800],
-  },
-  {
-    city: 'Noida',
-    area: 'Sector 150 (Eco-Hub)',
-    returnRate: 36.5,
-    currentPrice: '₹7,800/sq.ft',
-    sparklinePoints: [5700, 6400, 7100, 7800],
-  },
-  {
-    city: 'Noida',
-    area: 'Sector 62 (Commercial Corridor)',
-    returnRate: 28.2,
-    currentPrice: '₹9,200/sq.ft',
-    sparklinePoints: [7200, 7900, 8500, 9200],
-  },
-  {
-    city: 'Greater Noida',
-    area: 'Noida Extension (Greater Noida West)',
-    returnRate: 31.4,
-    currentPrice: '₹6,200/sq.ft',
-    sparklinePoints: [4700, 5200, 5700, 6200],
-  },
-  {
-    city: 'Greater Noida',
-    area: 'Yamuna Expressway (Jewar Hub)',
-    returnRate: 58.6,
-    currentPrice: '₹4,800/sq.ft',
-    sparklinePoints: [3000, 3600, 4200, 4800],
-  },
-  {
-    city: 'Delhi',
-    area: 'Dwarka Sector 19',
-    returnRate: 24.6,
-    currentPrice: '₹11,500/sq.ft',
-    sparklinePoints: [9200, 9900, 10600, 11500],
-  },
-  {
-    city: 'Delhi',
-    area: 'Vasant Kunj Residential',
-    returnRate: 19.8,
-    currentPrice: '₹18,500/sq.ft',
-    sparklinePoints: [15400, 16300, 17400, 18500],
-  }
-];
-
-const renderSparkline = (points: number[], areaName: string) => {
-  const min = Math.min(...points);
-  const max = Math.max(...points);
-  const range = max - min || 1;
-  const width = 120;
-  const height = 40;
-  const padding = 3;
-  const pts = points.map((p, idx) => {
-    const x = padding + (idx / (points.length - 1)) * (width - padding * 2);
-    const y = height - padding - ((p - min) / range) * (height - padding * 2);
-    return { x, y };
-  });
-  const d = pts.map((p, idx) => `${idx === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-  const areaD = `${d} L ${pts[pts.length - 1].x} ${height} L ${pts[0].x} ${height} Z`;
-  const gradId = `sparkGrad-${areaName.replace(/\s+/g, '-').toLowerCase()}`;
-  
-  return (
-    <svg width={width} height={height} className="overflow-visible select-none pointer-events-none">
-      <defs>
-        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
-        </linearGradient>
-      </defs>
-      <path d={areaD} fill={`url(#${gradId})`} />
-      <path d={d} fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="3.5" fill="#10B981" stroke="#FFF" strokeWidth="1.5" />
-    </svg>
-  );
-};
-
 export default function InvestmentPredictor() {
   const [trends, setTrends] = useState<LocationTrendItem[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Return tracker states
-  const [selectedCityTab, setSelectedCityTab] = useState<'All' | 'Gurugram' | 'Noida' | 'Greater Noida' | 'Delhi'>('All');
-  const [areaSearchQuery, setAreaSearchQuery] = useState('');
+
 
   // Comparative state
   const [locAId, setLocAId] = useState<string>('');
@@ -928,112 +829,7 @@ export default function InvestmentPredictor() {
           </div>
         </div>
 
-        {/* RERA & Government Data Integration Panel */}
-        <div className="mt-10 bg-white border border-[#E8D5A3]/45 rounded-3xl p-6 md:p-8 shadow-md relative overflow-hidden animate-in fade-in slide-in-from-bottom duration-500">
-          <div className="absolute top-0 right-0 w-[20%] h-[100%] bg-gradient-to-l from-[#C9A227]/5 to-transparent pointer-events-none" />
-          
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[#E8D5A3]/20">
-            <div className="space-y-1">
-              <h3 className="font-extrabold text-sm text-[#1A1800] flex items-center gap-2">
-                <TrendingUp size={18} className="text-[#C9A227]" />
-                Delhi NCR Micro-Market 3-Year Return Trends
-              </h3>
-              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                Sector & Town level capital appreciation tracking (2023 - 2026)
-              </p>
-            </div>
 
-            {/* Filter & Search Bar Grid */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
-              {/* Custom Search Input */}
-              <div className="relative w-full sm:w-[220px]">
-                <input
-                  type="text"
-                  placeholder="Search sector, town or city..."
-                  value={areaSearchQuery}
-                  onChange={(e) => setAreaSearchQuery(e.target.value)}
-                  className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-8 pr-4 py-2 text-xs font-semibold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
-                />
-                <Search className="absolute left-2.5 top-2.5 text-gray-400" size={13} />
-              </div>
-
-              {/* Segmented City/Town Filter Tabs */}
-              <div className="flex bg-[#FFFDF0] p-1 border border-[#E8D5A3]/35 rounded-xl shrink-0 select-none w-full sm:w-auto overflow-x-auto no-scrollbar gap-1">
-                {(['All', 'Gurugram', 'Noida', 'Greater Noida', 'Delhi'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setSelectedCityTab(tab)}
-                    className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                      selectedCityTab === tab
-                        ? 'bg-gradient-to-r from-[#C9A227] to-[#B8860B] text-white shadow-sm'
-                        : 'text-[#6b6450] hover:text-[#B8860B] hover:bg-[#E8D5A3]/10'
-                    }`}
-                  >
-                    {tab === 'All' ? 'All NCR' : tab}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Area Wise Return Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6">
-            {NEIGHBORHOOD_RETURNS
-              .filter((item) => {
-                const matchesTab = selectedCityTab === 'All' || item.city === selectedCityTab;
-                const matchesSearch = item.area.toLowerCase().includes(areaSearchQuery.toLowerCase()) || 
-                                     item.city.toLowerCase().includes(areaSearchQuery.toLowerCase());
-                return matchesTab && matchesSearch;
-              })
-              .slice(0, 4) // Show top 4 matching micro-markets cleanly
-              .map((item, idx) => (
-                <div 
-                  key={idx}
-                  className="bg-[#FFFEF5] border border-[#E8D5A3]/25 hover:border-[#C9A227]/40 rounded-2xl p-4 flex items-center justify-between gap-4 shadow-sm hover:shadow-md transition-all duration-300"
-                >
-                  <div className="space-y-1.5 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <MapPin size={11} className="text-[#C9A227] shrink-0" />
-                      <span className="text-[9px] font-black text-[#B8860B] uppercase tracking-widest bg-[#C9A227]/10 px-1.5 py-0.5 rounded">
-                        {item.city}
-                      </span>
-                    </div>
-                    <h4 className="text-xs font-black text-gray-900 truncate tracking-tight pr-1" title={item.area}>
-                      {item.area}
-                    </h4>
-                    <span className="text-[10px] text-gray-400 font-extrabold uppercase block">
-                      Avg. Price: <span className="text-gray-700 font-black">{item.currentPrice}</span>
-                    </span>
-                  </div>
-
-                  {/* Sparkline & Return Badge on the right */}
-                  <div className="flex items-center gap-4 shrink-0">
-                    {/* Sparkline Graph */}
-                    <div className="hidden sm:block">
-                      {renderSparkline(item.sparklinePoints, item.area)}
-                    </div>
-                    {/* Return Badge */}
-                    <div className="text-right">
-                      <span className="inline-flex items-center px-2 py-1 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-[10px] font-black leading-none whitespace-nowrap">
-                        +{item.returnRate}% Return
-                      </span>
-                      <span className="block text-[8px] text-gray-400 font-bold uppercase mt-1">Last 3 Years</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            {NEIGHBORHOOD_RETURNS.filter((item) => {
-              const matchesTab = selectedCityTab === 'All' || item.city === selectedCityTab;
-              const matchesSearch = item.area.toLowerCase().includes(areaSearchQuery.toLowerCase()) || 
-                                   item.city.toLowerCase().includes(areaSearchQuery.toLowerCase());
-              return matchesTab && matchesSearch;
-            }).length === 0 && (
-              <div className="col-span-2 py-8 text-center text-xs font-bold text-gray-400 uppercase tracking-wider">
-                No matching sectors found in {selectedCityTab === 'All' ? 'Delhi NCR' : selectedCityTab}. Try another search term!
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* Dynamic Investment Verdict (Full Width Card below) */}
         <div className="mt-8 bg-gradient-to-r from-[#1A1800] via-[#2D2A00] to-[#1A1800] text-white rounded-3xl p-6 md:p-8 relative overflow-hidden border border-[#E8D5A3]/20 shadow-xl flex flex-col md:flex-row items-center gap-6 justify-between animate-in fade-in slide-in-from-bottom duration-500">
