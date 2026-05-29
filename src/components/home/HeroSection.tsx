@@ -74,8 +74,15 @@ export default function HeroSection() {
         </div>
 
         {/* Main Title (Smooth sizing and Gold Gradient) */}
-        <h1 className="text-4xl md:text-5xl lg:text-[64px] font-bold text-white tracking-tight leading-[1.1] mb-5 drop-shadow-lg">
-          Find Your Perfect Property, <br />
+        <h1 className="text-4xl md:text-5xl lg:text-[64px] font-bold tracking-tight leading-[1.1] mb-5 drop-shadow-lg">
+          <span style={{ 
+            color: '#FFFFFF',
+            WebkitTextStroke: '0.6px rgba(232, 213, 163, 0.8)',
+            textShadow: '0 4px 16px rgba(0, 0, 0, 0.8), 0 0 4px rgba(201, 162, 39, 0.3)'
+          }}>
+            Find Your Perfect Property,
+          </span>
+          <br />
           <span className="bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#C9A227] text-transparent bg-clip-text">
             Anywhere in Delhi NCR.
           </span>
