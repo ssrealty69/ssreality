@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Star, Quote } from 'lucide-react';
+import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const testimonials = [
   {
@@ -97,9 +97,10 @@ function TestimonialCard({ t, i }: { t: typeof testimonials[0]; i: number }) {
   );
 }
 
-/** Mobile-only swipeable carousel with auto-play */
-function MobileCarousel() {
+/** Responsive sliding carousel with auto-play */
+function TestimonialsCarousel() {
   const [active, setActive] = useState(0);
+  const [cardsPerView, setCardsPerView] = useState(1);
   const total = testimonials.length;
 
   const touchStartX = useRef<number | null>(null);
@@ -107,13 +108,47 @@ function MobileCarousel() {
   const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isPaused = useRef(false);
 
+  // Detect cards per view based on window size
+  useEffect(() => {
+    const updateCardsPerView = () => {
+      if (window.innerWidth >= 1024) {
+        setCardsPerView(3);
+      } else if (window.innerWidth >= 640) {
+        setCardsPerView(2);
+      } else {
+        setCardsPerView(1);
+      }
+    };
+
+    updateCardsPerView();
+    window.addEventListener('resize', updateCardsPerView);
+    return () => window.removeEventListener('resize', updateCardsPerView);
+  }, []);
+
+  // Clamp active index when cardsPerView changes
+  useEffect(() => {
+    setActive((prev) => Math.min(prev, total - cardsPerView));
+  }, [cardsPerView, total]);
+
   const goNext = useCallback(() => {
-    setActive((prev) => (prev + 1) % total);
-  }, [total]);
+    setActive((prev) => {
+      const maxIdx = total - cardsPerView;
+      if (prev >= maxIdx) {
+        return 0;
+      }
+      return prev + 1;
+    });
+  }, [total, cardsPerView]);
 
   const goPrev = useCallback(() => {
-    setActive((prev) => (prev - 1 + total) % total);
-  }, [total]);
+    setActive((prev) => {
+      const maxIdx = total - cardsPerView;
+      if (prev <= 0) {
+        return maxIdx;
+      }
+      return prev - 1;
+    });
+  }, [total, cardsPerView]);
 
   const startAuto = useCallback(() => {
     if (autoRef.current) clearInterval(autoRef.current);
@@ -150,39 +185,79 @@ function MobileCarousel() {
     startAuto();
   };
 
+  const numDots = total - cardsPerView + 1;
+
   return (
-    <div className="relative overflow-hidden">
-      <div
-        className="flex transition-transform duration-500 ease-in-out"
-        style={{ transform: `translateX(-${active * 100}%)` }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        {testimonials.map((t, i) => (
-          <div key={t.name} className="min-w-full px-1" style={{ userSelect: 'none' }}>
-            <TestimonialCard t={t} i={i} />
-          </div>
-        ))}
+    <div 
+      className="relative px-2 sm:px-10"
+      onMouseEnter={() => { isPaused.current = true; }}
+      onMouseLeave={() => { isPaused.current = false; }}
+    >
+      {/* Carousel Container wrapper with overflow hidden */}
+      <div className="overflow-hidden py-4 -mx-3">
+        <div
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ 
+            transform: `translateX(-${active * (100 / cardsPerView)}%)`,
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {testimonials.map((t, i) => (
+            <div 
+              key={t.name} 
+              className="px-3 shrink-0 transition-all duration-300" 
+              style={{ 
+                width: `${100 / cardsPerView}%`,
+                userSelect: 'none' 
+              }}
+            >
+              <TestimonialCard t={t} i={i} />
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Dot indicators */}
-      <div className="flex justify-center gap-2 mt-5">
-        {testimonials.map((_, i) => (
+      {/* Navigation Arrows for tablet & desktop */}
+      {numDots > 1 && (
+        <>
           <button
-            key={i}
-            aria-label={`Go to testimonial ${i + 1}`}
-            onClick={() => {
-              setActive(i);
-              isPaused.current = false;
-              startAuto();
-            }}
-            className={`rounded-full transition-all duration-300 ${
-              i === active ? 'w-6 h-2 bg-[#C9A227]' : 'w-2 h-2 bg-[#C9A227]/30'
-            }`}
-          />
-        ))}
-      </div>
+            onClick={goPrev}
+            className="absolute left-[-10px] top-[50%] -translate-y-[50%] hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white border border-[#E8D5A3]/60 shadow-[0_2px_12px_rgba(26,24,0,0.08)] text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-all duration-300 z-10 hover:scale-105"
+            aria-label="Previous testimonial"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <button
+            onClick={goNext}
+            className="absolute right-[-10px] top-[50%] -translate-y-[50%] hidden sm:flex items-center justify-center w-12 h-12 rounded-full bg-white border border-[#E8D5A3]/60 shadow-[0_2px_12px_rgba(26,24,0,0.08)] text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-all duration-300 z-10 hover:scale-105"
+            aria-label="Next testimonial"
+          >
+            <ChevronRight size={24} />
+          </button>
+        </>
+      )}
+
+      {/* Dot indicators */}
+      {numDots > 1 && (
+        <div className="flex justify-center gap-2 mt-5">
+          {Array.from({ length: numDots }).map((_, i) => (
+            <button
+              key={i}
+              aria-label={`Go to testimonial group ${i + 1}`}
+              onClick={() => {
+                setActive(i);
+                isPaused.current = false;
+                startAuto();
+              }}
+              className={`rounded-full transition-all duration-300 ${
+                i === active ? 'w-6 h-2 bg-[#C9A227]' : 'w-2 h-2 bg-[#C9A227]/30'
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -201,16 +276,8 @@ export default function TestimonialsSection() {
           </p>
         </div>
 
-        {/* Mobile: swipeable carousel (hidden on sm+) */}
-        <div className="sm:hidden">
-          <MobileCarousel />
-        </div>
-
-        {/* Tablet / Desktop: grid (hidden on mobile) */}
-        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
-            <TestimonialCard key={t.name} t={t} i={i} />
-          ))}
+        <div className="w-full">
+          <TestimonialsCarousel />
         </div>
       </div>
     </section>
