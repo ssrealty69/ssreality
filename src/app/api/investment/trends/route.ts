@@ -433,8 +433,8 @@ export async function GET(req: NextRequest) {
       console.log('Seeding initial location trends...');
       await LocationTrend.insertMany(SEED_TRENDS);
     } else {
-      // Check migration & emoji presence
-      const hasEmoji = await LocationTrend.findOne({ name: /[\uD800-\uDBFF][\uDC00-\uDFFF]/ });
+      // Check migration & emoji presence with standard safe regex
+      const hasEmoji = await LocationTrend.findOne({ name: { $regex: /👑|🚀|🌳|🏢|✈️/ } });
       const sample = await LocationTrend.findOne({ reraRegistration: { $exists: true } });
       if (!sample || hasEmoji) {
         console.log('Migrating database: clearing emoji-prefixed names and updating records...');
