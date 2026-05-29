@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Loader2, TrendingUp, Compass, Award, ShieldAlert, CheckCircle2, RefreshCw, BarChart2, ShieldCheck, Database, Link2, ExternalLink, Search, MapPin } from 'lucide-react';
+import { Loader2, TrendingUp, Compass, Award, ShieldAlert, CheckCircle2, RefreshCw, BarChart2, ShieldCheck, Database, Link2, ExternalLink, Search, MapPin, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface TrendHistoryItem {
@@ -158,8 +158,9 @@ export default function InvestmentPredictor() {
           if (json.data.length >= 2) {
             setLocAId(json.data[0]._id);
             setLocBId(json.data[1]._id);
-            setSearchQueryA(json.data[0].name);
-            setSearchQueryB(json.data[1].name);
+            // Pre-populate search query strings cleanly without any emojis
+            setSearchQueryA(json.data[0].name.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim());
+            setSearchQueryB(json.data[1].name.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim());
           }
         }
       })
@@ -172,63 +173,74 @@ export default function InvestmentPredictor() {
       });
   }, []);
 
-  const handleSelectLocation = async (locationName: string, isAnchor: boolean) => {
+  const handleSelectSuggestion = (locationName: string, isAnchor: boolean) => {
+    const cleanName = locationName.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim();
     if (isAnchor) {
-      setIsSearchingA(true);
+      setSearchQueryA(cleanName);
       setShowSuggestionsA(false);
-      setSearchQueryA(locationName);
     } else {
-      setIsSearchingB(true);
+      setSearchQueryB(cleanName);
       setShowSuggestionsB(false);
-      setSearchQueryB(locationName);
+    }
+  };
+
+  const handleCompareTelemetry = async () => {
+    if (!searchQueryA.trim() || !searchQueryB.trim()) {
+      toast.error('Please enter both location names to compare.');
+      return;
+    }
+    if (searchQueryA.trim().toLowerCase() === searchQueryB.trim().toLowerCase()) {
+      toast.error('Location A and Location B cannot be the same.');
+      return;
     }
 
+    setIsSearchingA(true);
+    setIsSearchingB(true);
+
     try {
-      const res = await fetch(`/api/investment/trends?query=${encodeURIComponent(locationName)}`);
-      if (!res.ok) throw new Error('Location not found');
-      const json = await res.json();
-      if (json.success && json.data) {
-        const fetchedItem = json.data;
-        
-        // Add to trends state list if missing
+      // 1. Fetch Location A
+      const resA = await fetch(`/api/investment/trends?query=${encodeURIComponent(searchQueryA.trim())}`);
+      const jsonA = await resA.json();
+
+      // 2. Fetch Location B
+      const resB = await fetch(`/api/investment/trends?query=${encodeURIComponent(searchQueryB.trim())}`);
+      const jsonB = await resB.json();
+
+      if (jsonA.success && jsonA.data && jsonB.success && jsonB.data) {
+        const itemA = jsonA.data;
+        const itemB = jsonB.data;
+
+        // Strip emojis to make future text inputs perfectly clean
+        const cleanA = itemA.name.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim();
+        const cleanB = itemB.name.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim();
+
+        // Add both retrieved locations to state if they are missing
         setTrends(prev => {
-          if (!prev.find(t => t._id === fetchedItem._id)) {
-            return [...prev, fetchedItem];
-          }
-          return prev.map(t => t._id === fetchedItem._id ? fetchedItem : t);
+          let updated = [...prev];
+          if (!updated.find(t => t._id === itemA._id)) updated.push(itemA);
+          else updated = updated.map(t => t._id === itemA._id ? itemA : t);
+
+          if (!updated.find(t => t._id === itemB._id)) updated.push(itemB);
+          else updated = updated.map(t => t._id === itemB._id ? itemB : t);
+
+          return updated;
         });
 
-        if (isAnchor) {
-          if (fetchedItem._id === locBId) {
-            toast.error('Location A cannot be the same as Location B.');
-            const currentA = trends.find(t => t._id === locAId);
-            if (currentA) setSearchQueryA(currentA.name);
-          } else {
-            setLocAId(fetchedItem._id);
-          }
-        } else {
-          if (fetchedItem._id === locAId) {
-            toast.error('Location B cannot be the same as Location A.');
-            const currentB = trends.find(t => t._id === locBId);
-            if (currentB) setSearchQueryB(currentB.name);
-          } else {
-            setLocBId(fetchedItem._id);
-          }
-        }
+        setLocAId(itemA._id);
+        setLocBId(itemB._id);
+        setSearchQueryA(cleanA);
+        setSearchQueryB(cleanB);
+
+        toast.success('Investment comparison synchronised successfully!');
       } else {
-        toast.error('Failed to parse location telemetry');
+        toast.error('Failed to retrieve telemetry data. Please check place spelling.');
       }
     } catch (err) {
       console.error(err);
-      toast.error('Dynamic location generator offline');
-      const currentVal = isAnchor 
-        ? (trends.find(t => t._id === locAId)?.name || '') 
-        : (trends.find(t => t._id === locBId)?.name || '');
-      if (isAnchor) setSearchQueryA(currentVal);
-      else setSearchQueryB(currentVal);
+      toast.error('Investment search offline. Please try again.');
     } finally {
-      if (isAnchor) setIsSearchingA(false);
-      else setIsSearchingB(false);
+      setIsSearchingA(false);
+      setIsSearchingB(false);
     }
   };
 
@@ -331,149 +343,206 @@ export default function InvestmentPredictor() {
         </div>
 
         {/* Dropdowns Selector Card */}
-        <div className="bg-white border border-[#E8D5A3]/30 rounded-3xl p-6 md:p-8 shadow-sm mb-10 flex flex-col md:flex-row items-center gap-6 justify-between">
-          
-          {/* Selector Location A */}
-          <div className="w-full md:w-[42%] space-y-2 relative">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#C9A227]" />
-              Compare Location A (Anchor)
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQueryA}
-                onChange={(e) => {
-                  setSearchQueryA(e.target.value);
-                  setShowSuggestionsA(true);
-                }}
-                onFocus={() => {
-                  setShowSuggestionsA(true);
-                  setShowSuggestionsB(false);
-                }}
-                className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-10 py-3.5 text-[16px] md:text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
-                placeholder="Search or type location (e.g. Noida Sector 150)..."
-              />
-              <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
-                {isSearchingA ? (
-                  <Loader2 className="animate-spin text-[#C9A227]" size={16} />
-                ) : (
-                  <Compass className="text-[#C9A227]" size={16} />
+        <div className="bg-white border border-[#E8D5A3]/30 rounded-3xl p-6 md:p-8 shadow-md mb-10 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 relative">
+            
+            {/* Selector Location A */}
+            <div className="space-y-2 relative">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#C9A227]" />
+                Compare Location A (Anchor)
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQueryA}
+                  onChange={(e) => {
+                    setSearchQueryA(e.target.value);
+                    setShowSuggestionsA(true);
+                  }}
+                  onFocus={() => {
+                    setShowSuggestionsA(true);
+                    setShowSuggestionsB(false);
+                  }}
+                  className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-16 py-3.5 text-[15px] font-bold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
+                  placeholder="Type sector/area name (e.g. Sector 150 Noida)..."
+                />
+                
+                {/* Mobile Clear Button (Instantly clears inputs with 1 tap) */}
+                {searchQueryA && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQueryA('');
+                      setShowSuggestionsA(true);
+                    }}
+                    className="absolute right-10 top-3.5 text-gray-400 hover:text-gray-600 transition-colors p-0.5 rounded-full hover:bg-gray-100"
+                    title="Clear input"
+                  >
+                    <X size={15} />
+                  </button>
                 )}
+
+                <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
+                  {isSearchingA ? (
+                    <Loader2 className="animate-spin text-[#C9A227]" size={16} />
+                  ) : (
+                    <Compass className="text-[#C9A227]" size={16} />
+                  )}
+                </div>
               </div>
+
+              {/* Suggestions Overlay A */}
+              {showSuggestionsA && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowSuggestionsA(false)} />
+                  <ul className="absolute left-0 right-0 top-full mt-2 bg-white border border-[#E8D5A3]/40 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto divide-y divide-[#E8D5A3]/10 divide-dashed">
+                    {/* Preset matches */}
+                    {trends
+                      .filter(t => t.name.toLowerCase().includes(searchQueryA.toLowerCase()))
+                      .slice(0, 5)
+                      .map(t => {
+                        const cleanName = t.name.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim();
+                        return (
+                          <li
+                            key={t._id}
+                            onClick={() => handleSelectSuggestion(t.name, true)}
+                            className="px-4 py-3 text-xs font-bold text-gray-700 hover:bg-[#C9A227]/5 hover:text-[#B8860B] transition-colors cursor-pointer flex items-center justify-between"
+                          >
+                            <span>{cleanName}</span>
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-1.5 py-0.5 rounded">Preset</span>
+                          </li>
+                        );
+                      })}
+                    {/* Custom Option */}
+                    {searchQueryA.trim().length >= 3 && !trends.some(t => t.name.toLowerCase() === searchQueryA.trim().toLowerCase()) && (
+                      <li
+                        onClick={() => handleSelectSuggestion(searchQueryA.trim(), true)}
+                        className="px-4 py-3.5 text-xs font-black text-[#B8860B] hover:bg-[#C9A227]/10 transition-colors cursor-pointer flex items-center gap-2 bg-[#C9A227]/5"
+                      >
+                        <RefreshCw size={14} className="animate-spin" />
+                        <span>Compare Custom: &quot;{searchQueryA.trim()}&quot;</span>
+                      </li>
+                    )}
+                    {trends.filter(t => t.name.toLowerCase().includes(searchQueryA.toLowerCase())).length === 0 && searchQueryA.trim().length < 3 && (
+                      <li className="px-4 py-3 text-xs text-gray-400 font-bold text-center">
+                        Type at least 3 letters to generate custom sector...
+                      </li>
+                    )}
+                  </ul>
+                </>
+              )}
             </div>
 
-            {/* Suggestions Overlay A */}
-            {showSuggestionsA && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowSuggestionsA(false)} />
-                <ul className="absolute left-0 right-0 top-full mt-2 bg-white border border-[#E8D5A3]/40 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto divide-y divide-[#E8D5A3]/10 divide-dashed">
-                  {/* Preset matches */}
-                  {trends
-                    .filter(t => t.name.toLowerCase().includes(searchQueryA.toLowerCase()))
-                    .slice(0, 5)
-                    .map(t => (
-                      <li
-                        key={t._id}
-                        onClick={() => handleSelectLocation(t.name, true)}
-                        className="px-4 py-3 text-xs font-bold text-gray-700 hover:bg-[#C9A227]/5 hover:text-[#B8860B] transition-colors cursor-pointer flex items-center justify-between"
-                      >
-                        <span>{t.name}</span>
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-1.5 py-0.5 rounded">Preset</span>
-                      </li>
-                    ))}
-                  {/* Custom Option */}
-                  {searchQueryA.trim().length >= 3 && !trends.some(t => t.name.toLowerCase() === searchQueryA.trim().toLowerCase()) && (
-                    <li
-                      onClick={() => handleSelectLocation(searchQueryA.trim(), true)}
-                      className="px-4 py-3.5 text-xs font-black text-[#B8860B] hover:bg-[#C9A227]/10 transition-colors cursor-pointer flex items-center gap-2 bg-[#C9A227]/5"
-                    >
-                      <RefreshCw size={14} className="animate-spin" />
-                      <span>Compare Custom: &quot;{searchQueryA.trim()}&quot;</span>
-                    </li>
-                  )}
-                  {trends.filter(t => t.name.toLowerCase().includes(searchQueryA.toLowerCase())).length === 0 && searchQueryA.trim().length < 3 && (
-                    <li className="px-4 py-3 text-xs text-gray-400 font-bold text-center">
-                      Type at least 3 letters to generate custom sector...
-                    </li>
-                  )}
-                </ul>
-              </>
-            )}
-          </div>
+            {/* Selector Location B */}
+            <div className="space-y-2 relative">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-gray-400" />
+                Compare Location B (Benchmark)
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQueryB}
+                  onChange={(e) => {
+                    setSearchQueryB(e.target.value);
+                    setShowSuggestionsB(true);
+                  }}
+                  onFocus={() => {
+                    setShowSuggestionsB(true);
+                    setShowSuggestionsA(false);
+                  }}
+                  className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-16 py-3.5 text-[15px] font-bold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
+                  placeholder="Type sector/area name (e.g. Sector 21 Gurugram)..."
+                />
 
-          {/* Verses Divider */}
-          <div className="w-10 h-10 rounded-full border border-[#E8D5A3]/40 bg-[#FFFEF5] flex items-center justify-center font-black text-[10px] text-[#C9A227] shadow-sm shrink-0 select-none animate-pulse">
-            VS
-          </div>
-
-          {/* Selector Location B */}
-          <div className="w-full md:w-[42%] space-y-2 relative">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-gray-400" />
-              Compare Location B (Benchmark)
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQueryB}
-                onChange={(e) => {
-                  setSearchQueryB(e.target.value);
-                  setShowSuggestionsB(true);
-                }}
-                onFocus={() => {
-                  setShowSuggestionsB(true);
-                  setShowSuggestionsA(false);
-                }}
-                className="w-full bg-[#FFFEF5] border border-[#E8D5A3]/40 rounded-xl pl-4 pr-10 py-3.5 text-[16px] md:text-xs font-extrabold text-[#1A1800] focus:outline-none focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] shadow-sm transition-all"
-                placeholder="Search or type location (e.g. Gurugram Sector 21)..."
-              />
-              <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
-                {isSearchingB ? (
-                  <Loader2 className="animate-spin text-[#C9A227]" size={16} />
-                ) : (
-                  <Compass className="text-[#C9A227]" size={16} />
+                {/* Mobile Clear Button (Instantly clears inputs with 1 tap) */}
+                {searchQueryB && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQueryB('');
+                      setShowSuggestionsB(true);
+                    }}
+                    className="absolute right-10 top-3.5 text-gray-400 hover:text-gray-600 transition-colors p-0.5 rounded-full hover:bg-gray-100"
+                    title="Clear input"
+                  >
+                    <X size={15} />
+                  </button>
                 )}
+
+                <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
+                  {isSearchingB ? (
+                    <Loader2 className="animate-spin text-[#C9A227]" size={16} />
+                  ) : (
+                    <Compass className="text-[#C9A227]" size={16} />
+                  )}
+                </div>
               </div>
+
+              {/* Suggestions Overlay B */}
+              {showSuggestionsB && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowSuggestionsB(false)} />
+                  <ul className="absolute left-0 right-0 top-full mt-2 bg-white border border-[#E8D5A3]/40 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto divide-y divide-[#E8D5A3]/10 divide-dashed">
+                    {/* Preset matches */}
+                    {trends
+                      .filter(t => t.name.toLowerCase().includes(searchQueryB.toLowerCase()))
+                      .slice(0, 5)
+                      .map(t => {
+                        const cleanName = t.name.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, '').trim();
+                        return (
+                          <li
+                            key={t._id}
+                            onClick={() => handleSelectSuggestion(t.name, false)}
+                            className="px-4 py-3 text-xs font-bold text-gray-700 hover:bg-[#C9A227]/5 hover:text-[#B8860B] transition-colors cursor-pointer flex items-center justify-between"
+                          >
+                            <span>{cleanName}</span>
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-1.5 py-0.5 rounded">Preset</span>
+                          </li>
+                        );
+                      })}
+                    {/* Custom Option */}
+                    {searchQueryB.trim().length >= 3 && !trends.some(t => t.name.toLowerCase() === searchQueryB.trim().toLowerCase()) && (
+                      <li
+                        onClick={() => handleSelectSuggestion(searchQueryB.trim(), false)}
+                        className="px-4 py-3.5 text-xs font-black text-[#B8860B] hover:bg-[#C9A227]/10 transition-colors cursor-pointer flex items-center gap-2 bg-[#C9A227]/5"
+                      >
+                        <RefreshCw size={14} className="animate-spin" />
+                        <span>Compare Custom: &quot;{searchQueryB.trim()}&quot;</span>
+                      </li>
+                    )}
+                    {trends.filter(t => t.name.toLowerCase().includes(searchQueryB.toLowerCase())).length === 0 && searchQueryB.trim().length < 3 && (
+                      <li className="px-4 py-3 text-xs text-gray-400 font-bold text-center">
+                        Type at least 3 letters to generate custom sector...
+                      </li>
+                    )}
+                  </ul>
+                </>
+              )}
             </div>
 
-            {/* Suggestions Overlay B */}
-            {showSuggestionsB && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setShowSuggestionsB(false)} />
-                <ul className="absolute left-0 right-0 top-full mt-2 bg-white border border-[#E8D5A3]/40 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto divide-y divide-[#E8D5A3]/10 divide-dashed">
-                  {/* Preset matches */}
-                  {trends
-                    .filter(t => t.name.toLowerCase().includes(searchQueryB.toLowerCase()))
-                    .slice(0, 5)
-                    .map(t => (
-                      <li
-                        key={t._id}
-                        onClick={() => handleSelectLocation(t.name, false)}
-                        className="px-4 py-3 text-xs font-bold text-gray-700 hover:bg-[#C9A227]/5 hover:text-[#B8860B] transition-colors cursor-pointer flex items-center justify-between"
-                      >
-                        <span>{t.name}</span>
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-1.5 py-0.5 rounded">Preset</span>
-                      </li>
-                    ))}
-                  {/* Custom Option */}
-                  {searchQueryB.trim().length >= 3 && !trends.some(t => t.name.toLowerCase() === searchQueryB.trim().toLowerCase()) && (
-                    <li
-                      onClick={() => handleSelectLocation(searchQueryB.trim(), false)}
-                      className="px-4 py-3.5 text-xs font-black text-[#B8860B] hover:bg-[#C9A227]/10 transition-colors cursor-pointer flex items-center gap-2 bg-[#C9A227]/5"
-                    >
-                      <RefreshCw size={14} className="animate-spin" />
-                      <span>Compare Custom: &quot;{searchQueryB.trim()}&quot;</span>
-                    </li>
-                  )}
-                  {trends.filter(t => t.name.toLowerCase().includes(searchQueryB.toLowerCase())).length === 0 && searchQueryB.trim().length < 3 && (
-                    <li className="px-4 py-3 text-xs text-gray-400 font-bold text-center">
-                      Type at least 3 letters to generate custom sector...
-                    </li>
-                  )}
-                </ul>
-              </>
-            )}
+          </div>
+
+          {/* Premium Wide "Compare Locations" Trigger Button */}
+          <div className="pt-2">
+            <button
+              onClick={handleCompareTelemetry}
+              disabled={isSearchingA || isSearchingB}
+              className="w-full py-4 px-6 bg-gradient-to-r from-[#C9A227] via-[#DFBF58] to-[#C9A227] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-md hover:shadow-lg active:scale-[0.99] hover:brightness-[1.05] transition-all duration-300 flex items-center justify-center gap-2 relative overflow-hidden select-none"
+            >
+              {(isSearchingA || isSearchingB) ? (
+                <>
+                  <Loader2 className="animate-spin text-white" size={16} />
+                  <span>Syncing Micro-Market Telemetry...</span>
+                </>
+              ) : (
+                <>
+                  <BarChart2 size={16} />
+                  <span>Compare Analytics & Projections</span>
+                </>
+              )}
+            </button>
           </div>
 
         </div>

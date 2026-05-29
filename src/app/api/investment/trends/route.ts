@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 const SEED_TRENDS = [
   {
-    name: '👑 Golf Course Extension, Gurgaon',
+    name: 'Golf Course Extension, Gurgaon',
     currentPrice: 15500,
     cagr: 12.4,
     connectivity: 9.4,
@@ -36,7 +36,7 @@ const SEED_TRENDS = [
     dataConfidence: 98
   },
   {
-    name: '🚀 Dwarka Expressway, Gurgaon',
+    name: 'Dwarka Expressway, Gurgaon',
     currentPrice: 12800,
     cagr: 14.8,
     connectivity: 9.2,
@@ -66,7 +66,7 @@ const SEED_TRENDS = [
     dataConfidence: 97
   },
   {
-    name: '🌳 Noida Sector 150 (Eco-Hub)',
+    name: 'Noida Sector 150 (Eco-Hub)',
     currentPrice: 7800,
     cagr: 11.2,
     connectivity: 8.5,
@@ -96,7 +96,7 @@ const SEED_TRENDS = [
     dataConfidence: 96
   },
   {
-    name: '🏢 Greater Noida West (Noida Extension)',
+    name: 'Greater Noida West (Noida Extension)',
     currentPrice: 6200,
     cagr: 9.8,
     connectivity: 8.0,
@@ -126,7 +126,7 @@ const SEED_TRENDS = [
     dataConfidence: 94
   },
   {
-    name: '✈️ Yamuna Expressway (Jewar Hub)',
+    name: 'Yamuna Expressway (Jewar Hub)',
     currentPrice: 4800,
     cagr: 15.5,
     connectivity: 7.8,
@@ -156,7 +156,7 @@ const SEED_TRENDS = [
     dataConfidence: 92
   },
   {
-    name: '⛰️ Gwal Pahari (Green Hills Corridor)',
+    name: 'Gwal Pahari (Green Hills Corridor)',
     currentPrice: 11200,
     cagr: 13.6,
     connectivity: 8.8,
@@ -186,7 +186,7 @@ const SEED_TRENDS = [
     dataConfidence: 95
   },
   {
-    name: '🛣️ Sohna Road, Gurgaon',
+    name: 'Sohna Road, Gurgaon',
     currentPrice: 8500,
     cagr: 10.4,
     connectivity: 8.6,
@@ -427,16 +427,17 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
     
-    // Auto seed if empty OR if old schema detected (missing reraRegistration)
+    // Auto seed if empty OR if old schema or emoji names detected
     let count = await LocationTrend.countDocuments();
     if (count === 0) {
       console.log('Seeding initial location trends...');
       await LocationTrend.insertMany(SEED_TRENDS);
     } else {
-      // Check migration
+      // Check migration & emoji presence
+      const hasEmoji = await LocationTrend.findOne({ name: /[\uD800-\uDBFF][\uDC00-\uDFFF]/ });
       const sample = await LocationTrend.findOne({ reraRegistration: { $exists: true } });
-      if (!sample) {
-        console.log('Old schema detected. Wiping and migrating with new data sources & RERA codes...');
+      if (!sample || hasEmoji) {
+        console.log('Migrating database: clearing emoji-prefixed names and updating records...');
         await LocationTrend.deleteMany({});
         await LocationTrend.insertMany(SEED_TRENDS);
       }
@@ -498,4 +499,3 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Server Error', details: error.message }, { status: 500 });
   }
 }
-
