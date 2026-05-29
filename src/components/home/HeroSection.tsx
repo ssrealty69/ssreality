@@ -6,24 +6,52 @@ import { Star, Building2, CheckCircle2, Play } from 'lucide-react';
 
 export default function HeroSection() {
   const [loadVideo, setLoadVideo] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Lazy-load YouTube iframe: load after 3s OR when user interacts
+  // Lazy-load YouTube iframe: load after a short delay or interaction
   useEffect(() => {
-    const timer = setTimeout(() => setLoadVideo(true), 3000);
+    const timer = setTimeout(() => setLoadVideo(true), 1500);
     
     const handleInteraction = () => setLoadVideo(true);
     window.addEventListener('scroll', handleInteraction, { once: true, passive: true });
     window.addEventListener('click', handleInteraction, { once: true });
     window.addEventListener('touchstart', handleInteraction, { once: true, passive: true });
 
+    // Listen to postMessage state change events from the YouTube Player
+    const handleYoutubeMessage = (event: MessageEvent) => {
+      if (event.origin && event.origin.includes('youtube.com')) {
+        try {
+          const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+          if (data && data.event === 'infoDelivery' && data.info && data.info.playerState === 1) {
+            setIsVideoPlaying(true);
+          }
+        } catch (e) {
+          // ignore parsing errors from other message events
+        }
+      }
+    };
+
+    window.addEventListener('message', handleYoutubeMessage);
+
     return () => {
       clearTimeout(timer);
       window.removeEventListener('scroll', handleInteraction);
       window.removeEventListener('click', handleInteraction);
       window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('message', handleYoutubeMessage);
     };
   }, []);
+
+  // Safety fallback: if video is loading but doesn't play or message is blocked, fade poster anyway after 6s
+  useEffect(() => {
+    if (loadVideo && !isVideoPlaying) {
+      const backupTimer = setTimeout(() => {
+        setIsVideoPlaying(true);
+      }, 6000);
+      return () => clearTimeout(backupTimer);
+    }
+  }, [loadVideo, isVideoPlaying]);
 
   return (
     <section ref={sectionRef} className="relative h-[100vh] min-h-[600px] w-full overflow-hidden flex flex-col justify-center items-center font-sans">
@@ -35,7 +63,7 @@ export default function HeroSection() {
           src="https://img.youtube.com/vi/M-j_LvEK2ZA/maxresdefault.jpg"
           alt="SS Realty Hero Background"
           fill
-          className={`object-cover transition-opacity duration-1000 ${loadVideo ? 'opacity-0' : 'opacity-100'}`}
+          className={`object-cover transition-opacity duration-1000 ${isVideoPlaying ? 'opacity-0' : 'opacity-100'}`}
           priority
           sizes="100vw"
           quality={75}
@@ -45,7 +73,7 @@ export default function HeroSection() {
         {loadVideo && (
           <div className="absolute inset-0">
             <iframe
-              src="https://www.youtube.com/embed/M-j_LvEK2ZA?autoplay=1&mute=1&loop=1&playlist=M-j_LvEK2ZA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0"
+              src="https://www.youtube.com/embed/M-j_LvEK2ZA?autoplay=1&mute=1&loop=1&playlist=M-j_LvEK2ZA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&enablejsapi=1"
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[61.87vw] min-h-[110vh] min-w-[195.55vh] border-0 scale-110"
               allow="autoplay; encrypted-media"
               title="SS Realty background video"
