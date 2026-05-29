@@ -230,8 +230,12 @@ function generateDynamicLocation(name: string) {
   // Parse City
   let city = 'Delhi NCR';
   const lowerName = normalized.toLowerCase();
+  const isSohna = lowerName.includes('sohna');
+
   if (lowerName.includes('gurugram') || lowerName.includes('gurgaon')) {
     city = 'Gurugram';
+  } else if (isSohna) {
+    city = 'Gurugram'; // Sohna is part of Gurugram district and a massive growth hub
   } else if (lowerName.includes('noida extension') || lowerName.includes('greater noida')) {
     city = 'Greater Noida';
   } else if (lowerName.includes('noida')) {
@@ -255,7 +259,9 @@ function generateDynamicLocation(name: string) {
 
   // Determine if developing (newer) vs mature
   let isDeveloping = false;
-  if (city === 'Gurugram' && sectorNumber > 60) {
+  if (isSohna) {
+    isDeveloping = true;
+  } else if (city === 'Gurugram' && sectorNumber > 60) {
     isDeveloping = true;
   } else if (city === 'Noida' && sectorNumber > 100) {
     isDeveloping = true;
@@ -267,7 +273,9 @@ function generateDynamicLocation(name: string) {
 
   // Deterministic Price Calculation
   let basePrice = 6500;
-  if (city === 'Gurugram') {
+  if (isSohna) {
+    basePrice = 7500; // Realistic base price for Sohna area
+  } else if (city === 'Gurugram') {
     basePrice = isDeveloping ? 9000 : 13500;
   } else if (city === 'Noida') {
     basePrice = isDeveloping ? 7200 : 9800;
@@ -284,19 +292,35 @@ function generateDynamicLocation(name: string) {
 
   // CAGR calculation (developing has higher cagr)
   let cagr = isDeveloping ? 12.0 : 8.5;
+  if (isSohna) {
+    cagr = 14.5; // High growth CAGR for IMT Sohna emerging hub
+  }
   const cagrVariation = ((absHash % 45) / 10); // variation up to 4.5%
   cagr = parseFloat((cagr + cagrVariation).toFixed(1));
 
   // Index scores
   const scoreBase = isDeveloping ? 6.5 : 8.5;
-  const connectivity = parseFloat((scoreBase + (absHash % 15) / 10).toFixed(1));
-  const infrastructure = parseFloat((scoreBase + (absHash % 18) / 10).toFixed(1));
-  const livability = parseFloat((scoreBase + (absHash % 12) / 10).toFixed(1));
-  const commercialProximity = parseFloat((scoreBase + (absHash % 20) / 10).toFixed(1));
+  let connectivity = parseFloat((scoreBase + (absHash % 15) / 10).toFixed(1));
+  let infrastructure = parseFloat((scoreBase + (absHash % 18) / 10).toFixed(1));
+  let livability = parseFloat((scoreBase + (absHash % 12) / 10).toFixed(1));
+  let commercialProximity = parseFloat((scoreBase + (absHash % 20) / 10).toFixed(1));
+
+  if (isSohna) {
+    connectivity = parseFloat((8.8 + (absHash % 8) / 10).toFixed(1)); // 8.8 to 9.5 due to KMP, DMIC, highways, DMRC
+    infrastructure = parseFloat((9.2 + (absHash % 6) / 10).toFixed(1)); // 9.2 to 9.7 due to industrial layout
+    livability = parseFloat((8.2 + (absHash % 8) / 10).toFixed(1));
+    commercialProximity = parseFloat((8.5 + (absHash % 10) / 10).toFixed(1));
+  }
 
   // Growth drivers
   let growthDrivers: string[] = [];
-  if (city === 'Gurugram') {
+  if (isSohna) {
+    growthDrivers = [
+      'Direct link to KMP Expressway, Delhi-Mumbai Industrial Corridor & Ring Road',
+      'Emerging IMT Sohna Industrial/IT Hub with multi-modal logistics parks',
+      'Proposed DMRC Metro extension & Haryana Orbital Rail Transit linkage'
+    ];
+  } else if (city === 'Gurugram') {
     if (isDeveloping) {
       growthDrivers = [
         'Proximity to emerging Dwarka Expressway & Global City corridor',
@@ -340,7 +364,9 @@ function generateDynamicLocation(name: string) {
 
   // Verdict
   let verdict = '';
-  if (isDeveloping) {
+  if (isSohna) {
+    verdict = `Highly robust, fast-accelerating industrial and IT corridor (IMT Sohna). Positioned at the junction of KMP Expressway, Delhi-Mumbai Corridor, and Palwal-Faridabad highways, backed by a massive upcoming electronic manufacturing hub and orbital rail systems. Premier high-yield appreciation leader.`;
+  } else if (isDeveloping) {
     verdict = `Developing growth corridor with exceptional double-digit capital appreciation potential of +${cagr}% CAGR. Backed by fast-evolving civic transit, airport connectivity links, and high developer interest, making it perfect for high-yield mid-to-long term investors.`;
   } else {
     verdict = `Premium, fully mature residential zone characterized by high current occupancy, stable rental returns, and robust infrastructure. Ideal for risk-averse investors seeking wealth preservation, excellent livability, and reliable price appreciation.`;
@@ -435,6 +461,15 @@ export async function GET(req: NextRequest) {
       }
 
       if (matched) {
+        // Self-healing migration for Sohna: If it is Sohna but got the old low CAGR < 13%
+        if (normalizedQuery.toLowerCase().includes('sohna') && matched.cagr < 13) {
+          console.log('Self-healing outdated Sohna telemetry in DB...');
+          const regenerated = generateDynamicLocation(matched.name);
+          await LocationTrend.updateOne({ _id: matched._id }, { $set: regenerated });
+          const updatedMatched = await LocationTrend.findOne({ _id: matched._id }).lean();
+          if (updatedMatched) matched = updatedMatched;
+        }
+
         return NextResponse.json({
           success: true,
           data: JSON.parse(JSON.stringify(matched))
