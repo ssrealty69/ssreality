@@ -86,16 +86,26 @@ function TestimonialCard({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // On mount: ensure the video autoplays muted (mobile-safe)
   useEffect(() => {
     if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.muted = false;
-        videoRef.current.play().catch((err) => {
-          console.log("Audio play blocked or user interaction required:", err);
-        });
-      } else {
-        videoRef.current.pause();
-      }
+      videoRef.current.muted = true;
+      videoRef.current.play().catch(() => {});
+    }
+  }, []);
+
+  // When user clicks Play — unmute and keep playing; Pause — mute and pause
+  useEffect(() => {
+    if (!videoRef.current) return;
+    if (isPlaying) {
+      videoRef.current.muted = false;
+      videoRef.current.play().catch((err) => {
+        console.log('Audio play blocked:', err);
+      });
+    } else {
+      // Just mute, don't pause — so video keeps showing on mobile
+      videoRef.current.muted = true;
+      videoRef.current.pause();
     }
   }, [isPlaying]);
 
@@ -106,26 +116,28 @@ function TestimonialCard({
         {/* Spinning golden gradient border beam */}
         <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_20%,#C9A227_40%,#FFF9E3_50%,#B8860B_60%,transparent_80%)] animate-[spin_5s_linear_infinite] opacity-80 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
-        {/* Clean vertical video (NO autoplay, muted on start, playsInline) */}
+        {/* Autoplay muted video — unmutes on user tap (mobile-safe) */}
         <video
           ref={videoRef}
           src={t.videoUrl}
           loop
           muted
+          autoPlay
           playsInline
+          preload="auto"
           className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] object-cover rounded-[14.5px] z-0 select-none"
         />
 
         {/* Subtle vignette shadow overlay on top and bottom of the video */}
         <div className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] bg-gradient-to-b from-black/45 via-transparent to-black/55 rounded-[14.5px] z-10 pointer-events-none" />
 
-        {/* Pulsating Translucent LIVE Video badge */}
+        {/* Pulsating Translucent badge */}
         <div className="absolute top-5 right-5 bg-black/40 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/10 z-20 flex items-center justify-center pointer-events-none">
           <span className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-red-500 animate-ping' : 'bg-[#C9A227] animate-pulse'} mr-1.5`} />
-          <span className="text-[8px] text-white font-bold uppercase tracking-widest">{isPlaying ? 'PLAYING' : 'VIDEO'}</span>
+          <span className="text-[8px] text-white font-bold uppercase tracking-widest">{isPlaying ? 'LIVE' : 'MUTED'}</span>
         </div>
 
-        {/* Play / Pause Toggle Button */}
+        {/* Unmute / Mute Toggle Button */}
         <button
           onClick={onPlayToggle}
           className="absolute bottom-6 bg-black/60 hover:bg-[#C9A227] text-white font-bold text-xs tracking-wider uppercase py-2.5 px-5 rounded-full border border-white/10 z-20 flex items-center gap-2 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
@@ -133,12 +145,12 @@ function TestimonialCard({
           {isPlaying ? (
             <>
               <Pause size={14} className="fill-white text-white" />
-              <span>Pause</span>
+              <span>Mute</span>
             </>
           ) : (
             <>
               <Play size={14} className="fill-white text-white" />
-              <span>Play Video</span>
+              <span>▶ Unmute</span>
             </>
           )}
         </button>
