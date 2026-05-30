@@ -12,9 +12,10 @@ interface PropertyCardProps {
   priority?: boolean;   // Pass true for above-the-fold cards
   actionText?: string;
   onActionClick?: (property: Property) => void;
+  amenitiesCount?: number;
 }
 
-export default function PropertyCard({ property, priority = false, actionText, onActionClick }: PropertyCardProps) {
+export default function PropertyCard({ property, priority = false, actionText, onActionClick, amenitiesCount = 3 }: PropertyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [hoverImageError, setHoverImageError] = useState(false);
   
@@ -114,9 +115,9 @@ export default function PropertyCard({ property, priority = false, actionText, o
           </div>
         </div>
 
-        {/* Features List - Show 3 amenities for better info */}
+        {/* Features List - Show customized count of amenities */}
         <div className="space-y-0.5 mb-4 flex-grow">
-          {(property.amenities || []).slice(0, 3).map((amenity, idx) => (
+          {(property.amenities || []).slice(0, amenitiesCount).map((amenity, idx) => (
             <div key={idx} className="flex items-start gap-1.5 text-[11px] text-[#334155]">
               <Check size={11} className="text-[#059669] mt-0.5 shrink-0" />
               <span className="line-clamp-1">{amenity}</span>
@@ -125,7 +126,17 @@ export default function PropertyCard({ property, priority = false, actionText, o
         </div>
 
         {/* View Details / Custom Action Button */}
-        {onActionClick ? (
+        {property.status === 'delivered' ? (
+          <a 
+            href={property.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.title + ', ' + property.location.address + ', ' + property.location.city)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm select-none"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+            <span className="relative z-10">{actionText || 'View Location'}</span>
+          </a>
+        ) : onActionClick ? (
           <button 
             onClick={() => onActionClick(property)}
             className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"

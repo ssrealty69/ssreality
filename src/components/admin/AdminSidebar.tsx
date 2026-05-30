@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target } from 'lucide-react';
+import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target, Compass } from 'lucide-react';
 import Image from 'next/image';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/properties', label: 'Properties', icon: Home },
   { href: '/admin/floor-plans', label: 'Floor Plans', icon: Layers },
+  { href: '/admin/delivered-landmarks', label: 'Delivered Landmarks', icon: Compass },
   { href: '/admin/leads', label: 'Leads', icon: Users },
   { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },

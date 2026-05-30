@@ -60,6 +60,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
     galleryImages: [] as string[],
     videoUrl: '',
     brochureUrl: '',
+    googleMapsUrl: '',
     highlights: [{ title: '', description: '' }],
     nearby: [{ type: 'landmark', name: '', distance: '' }],
     featured: false
@@ -120,6 +121,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
               : (prop.images && prop.images.length > 2 ? prop.images.slice(2) : []),
             videoUrl: prop.videoUrl || '',
             brochureUrl: prop.brochureUrl || '',
+            googleMapsUrl: prop.googleMapsUrl || '',
             highlights: prop.highlights && prop.highlights.length > 0 ? prop.highlights : [{ title: '', description: '' }],
             nearby: prop.nearby && prop.nearby.length > 0 ? prop.nearby : [{ type: 'landmark', name: '', distance: '' }],
             featured: prop.featured || false
@@ -272,6 +274,8 @@ export default function EditProperty({ params }: EditPropertyProps) {
               <select name="status" value={formData.status} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#C9A227] outline-none">
                 <option value="available">Available</option>
                 <option value="sold">Sold</option>
+                <option value="rented">Rented</option>
+                <option value="delivered">Delivered</option>
               </select>
             </div>
             <div className="flex items-center gap-2 mt-6">
@@ -288,6 +292,10 @@ export default function EditProperty({ params }: EditPropertyProps) {
             <div className="md:col-span-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
               <input type="text" name="location.address" required value={formData.location.address} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
+            </div>
+            <div className="md:col-span-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps / Location URL (For Delivered Properties)</label>
+              <input type="url" name="googleMapsUrl" value={formData.googleMapsUrl} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#C9A227]" placeholder="e.g. https://maps.app.goo.gl/..." />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">City</label>

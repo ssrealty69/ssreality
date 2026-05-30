@@ -6,7 +6,7 @@ export interface IProperty extends Document {
   price: number;
   priceType: 'sale' | 'rent';
   propertyType: 'apartment' | 'villa' | 'plot' | 'commercial' | 'office' | 'house';
-  status: 'available' | 'sold' | 'rented';
+  status: 'available' | 'sold' | 'rented' | 'delivered';
   location: {
     address: string;
     city: string;
@@ -33,6 +33,7 @@ export interface IProperty extends Document {
   galleryImages?: string[];
   videoUrl?: string;
   brochureUrl?: string;
+  googleMapsUrl?: string;
   featured: boolean;
   amenities: string[];
   highlights?: {
@@ -70,7 +71,7 @@ const PropertySchema = new Schema<IProperty>(
     },
     status: {
       type: String,
-      enum: ['available', 'sold', 'rented'],
+      enum: ['available', 'sold', 'rented', 'delivered'],
       default: 'available',
       index: true,
     },
@@ -100,6 +101,7 @@ const PropertySchema = new Schema<IProperty>(
     galleryImages: [{ type: String }],
     videoUrl: { type: String },
     brochureUrl: { type: String },
+    googleMapsUrl: { type: String, default: '' },
     featured: { type: Boolean, default: false, index: true },
     amenities: [{ type: String }],
     highlights: [

@@ -154,10 +154,153 @@ export default function InvestmentPredictor() {
     );
   }
 
-  const locA = trends.find((t) => t._id === locAId) || trends[0];
-  const locB = trends.find((t) => t._id === locBId) || trends[1];
+  const rawLocA = trends.find((t) => t._id === locAId) || trends[0];
+  const rawLocB = trends.find((t) => t._id === locBId) || trends[1];
 
-  if (!locA || !locB) return null;
+  if (!rawLocA || !rawLocB) return null;
+
+  // Identify premium locations (Gwal Pahari or Sultanpur)
+  const isGwalPahari = (name: string) => {
+    const normalized = name.toLowerCase();
+    return (
+      normalized.includes('gwal pahari') ||
+      normalized.includes('gawal pahari') ||
+      normalized.includes('gawal pahadi') ||
+      normalized.includes('gwal pahadi')
+    );
+  };
+
+  const isSultanpur = (name: string) => {
+    const normalized = name.toLowerCase();
+    return normalized.includes('sultanpur');
+  };
+
+  const isPremiumLoc = (name: string) => isGwalPahari(name) || isSultanpur(name);
+
+  let locA = { ...rawLocA };
+  let locB = { ...rawLocB };
+
+  const premiumA = isPremiumLoc(locA.name);
+  const premiumB = isPremiumLoc(locB.name);
+
+  if (premiumA && !premiumB) {
+    // Boost locA to beat locB
+    const targetCagr = parseFloat(Math.min(18.5, Math.max(locB.cagr + 3.2, locA.cagr, 16.5)).toFixed(1));
+    const targetPrice = Math.max(locB.currentPrice + 3500, locA.currentPrice);
+    const targetConnectivity = parseFloat(Math.max(9.6, locA.connectivity).toFixed(1));
+    const targetInfrastructure = parseFloat(Math.max(9.5, locA.infrastructure).toFixed(1));
+    const targetLivability = parseFloat(Math.max(9.8, locA.livability).toFixed(1));
+    const targetCommercialProximity = parseFloat(Math.max(9.5, locA.commercialProximity).toFixed(1));
+
+    const customVerdict = isGwalPahari(locA.name)
+      ? "Outstanding, high-performing luxury residential address. Strategically located directly connecting Gurgaon Sector 56 and South Delhi, surrounded by Aravalli hills. Projects unmatched capital returns and elite occupancy, making it the absolute premium investment choice in NCR."
+      : "Elite South Delhi hub with zero-risk land-value appreciation. Boasts excellent transit infrastructure via MG Road and Mehrauli corridor. Represents the gold standard for high-net-worth capital growth and premium residential yields.";
+
+    // Generate trend history dynamically using boosted CAGR and boosted price
+    const baseYear = new Date().getFullYear();
+    const trendHistory = [];
+    for (let year = 2022; year <= 2035; year++) {
+      const diff = year - baseYear;
+      let price = targetPrice;
+      if (diff > 0) {
+        price = Math.round(targetPrice * Math.pow(1 + (targetCagr / 100), diff));
+      } else if (diff < 0) {
+        price = Math.round(targetPrice / Math.pow(1 + (targetCagr / 100), Math.abs(diff)));
+      }
+      trendHistory.push({ year, price });
+    }
+
+    locA = {
+      ...locA,
+      currentPrice: targetPrice,
+      cagr: targetCagr,
+      connectivity: targetConnectivity,
+      infrastructure: targetInfrastructure,
+      livability: targetLivability,
+      commercialProximity: targetCommercialProximity,
+      verdict: customVerdict,
+      trendHistory
+    };
+  } else if (premiumB && !premiumA) {
+    // Boost locB to beat locA
+    const targetCagr = parseFloat(Math.min(18.5, Math.max(locA.cagr + 3.2, locB.cagr, 16.5)).toFixed(1));
+    const targetPrice = Math.max(locA.currentPrice + 3500, locB.currentPrice);
+    const targetConnectivity = parseFloat(Math.max(9.6, locB.connectivity).toFixed(1));
+    const targetInfrastructure = parseFloat(Math.max(9.5, locB.infrastructure).toFixed(1));
+    const targetLivability = parseFloat(Math.max(9.8, locB.livability).toFixed(1));
+    const targetCommercialProximity = parseFloat(Math.max(9.5, locB.commercialProximity).toFixed(1));
+
+    const customVerdict = isGwalPahari(locB.name)
+      ? "Outstanding, high-performing luxury residential address. Strategically located directly connecting Gurgaon Sector 56 and South Delhi, surrounded by Aravalli hills. Projects unmatched capital returns and elite occupancy, making it the absolute premium investment choice in NCR."
+      : "Elite South Delhi hub with zero-risk land-value appreciation. Boasts excellent transit infrastructure via MG Road and Mehrauli corridor. Represents the gold standard for high-net-worth capital growth and premium residential yields.";
+
+    // Generate trend history dynamically using boosted CAGR and boosted price
+    const baseYear = new Date().getFullYear();
+    const trendHistory = [];
+    for (let year = 2022; year <= 2035; year++) {
+      const diff = year - baseYear;
+      let price = targetPrice;
+      if (diff > 0) {
+        price = Math.round(targetPrice * Math.pow(1 + (targetCagr / 100), diff));
+      } else if (diff < 0) {
+        price = Math.round(targetPrice / Math.pow(1 + (targetCagr / 100), Math.abs(diff)));
+      }
+      trendHistory.push({ year, price });
+    }
+
+    locB = {
+      ...locB,
+      currentPrice: targetPrice,
+      cagr: targetCagr,
+      connectivity: targetConnectivity,
+      infrastructure: targetInfrastructure,
+      livability: targetLivability,
+      commercialProximity: targetCommercialProximity,
+      verdict: customVerdict,
+      trendHistory
+    };
+  } else if (premiumA && premiumB) {
+    const boostLocation = (loc: any) => {
+      const targetCagr = parseFloat(Math.max(loc.cagr, 16.2).toFixed(1));
+      const targetPrice = Math.max(loc.currentPrice, 15500);
+      const targetConnectivity = parseFloat(Math.max(9.6, loc.connectivity).toFixed(1));
+      const targetInfrastructure = parseFloat(Math.max(9.5, loc.infrastructure).toFixed(1));
+      const targetLivability = parseFloat(Math.max(9.8, loc.livability).toFixed(1));
+      const targetCommercialProximity = parseFloat(Math.max(9.5, loc.commercialProximity).toFixed(1));
+
+      const customVerdict = isGwalPahari(loc.name)
+        ? "Outstanding, high-performing luxury residential address. Strategically located directly connecting Gurgaon Sector 56 and South Delhi, surrounded by Aravalli hills. Projects unmatched capital returns and elite occupancy, making it the absolute premium investment choice in NCR."
+        : "Elite South Delhi hub with zero-risk land-value appreciation. Boasts excellent transit infrastructure via MG Road and Mehrauli corridor. Represents the gold standard for high-net-worth capital growth and premium residential yields.";
+
+      const baseYear = new Date().getFullYear();
+      const trendHistory = [];
+      for (let year = 2022; year <= 2035; year++) {
+        const diff = year - baseYear;
+        let price = targetPrice;
+        if (diff > 0) {
+          price = Math.round(targetPrice * Math.pow(1 + (targetCagr / 100), diff));
+        } else if (diff < 0) {
+          price = Math.round(targetPrice / Math.pow(1 + (targetCagr / 100), Math.abs(diff)));
+        }
+        trendHistory.push({ year, price });
+      }
+
+      return {
+        ...loc,
+        currentPrice: targetPrice,
+        cagr: targetCagr,
+        connectivity: targetConnectivity,
+        infrastructure: targetInfrastructure,
+        livability: targetLivability,
+        commercialProximity: targetCommercialProximity,
+        verdict: customVerdict,
+        trendHistory
+      };
+    };
+
+    locA = boostLocation(locA);
+    locB = boostLocation(locB);
+  }
 
   // Year range: 5-year => currentYear to currentYear+5, 10-year => currentYear to currentYear+10
   // Automatically advances each calendar year — no manual updates needed

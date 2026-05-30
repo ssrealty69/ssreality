@@ -49,22 +49,5 @@ export default async function ConfigureFloorPlan({
     );
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link 
-          href="/admin/floor-plans" 
-          className="p-2 bg-white border border-gray-100 hover:border-[#C9A227]/30 text-gray-600 hover:text-[#C9A227] rounded-xl transition-all shadow-sm"
-        >
-          <ArrowLeft size={20} />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-[#1A1800]">Configure Floor Plan</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Property: <strong className="text-gray-700">{property.title}</strong></p>
-        </div>
-      </div>
-
-      <FloorPlanConfigurator property={property} existingPlan={existingPlan} />
-    </div>
-  );
+  return <FloorPlanConfigurator property={property} existingPlan={existingPlan} />;
 }

@@ -26,6 +26,29 @@ export default function PropertiesTable({ initialProperties }: PropertiesTablePr
     return matchesSearch && matchesType && matchesStatus;
   });
 
+  // Handle One-Click Toggle for Delivered
+  const handleToggleDelivered = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/admin/properties/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (res.ok) {
+        setProperties((prev) =>
+          prev.map((p) => (p._id.toString() === id ? { ...p, status: newStatus } : p))
+        );
+        toast.success(`Property updated as ${newStatus === 'delivered' ? 'Delivered' : 'Available'}!`);
+      } else {
+        const err = await res.json();
+        toast.error(err.error || 'Failed to update property status');
+      }
+    } catch (error) {
+      toast.error('An error occurred while updating status');
+    }
+  };
+
   // Handle Delete
   const handleDelete = async (id: string, title: string) => {
     if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
@@ -130,13 +153,34 @@ export default function PropertiesTable({ initialProperties }: PropertiesTablePr
                       ₹{prop.price?.toLocaleString('en-IN') || 'N/A'}
                     </td>
                     <td className="p-4">
-                      <span className={`capitalize text-xs font-bold px-2 py-1 rounded-full ${
-                        prop.status === 'available' ? 'bg-green-100 text-green-700' :
-                        prop.status === 'sold' ? 'bg-red-100 text-red-700' :
-                        'bg-gray-100 text-gray-700'
-                      }`}>
-                        {prop.status || 'available'}
-                      </span>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <span className={`capitalize text-xs font-bold px-2 py-1 rounded-full w-fit ${
+                          prop.status === 'available' ? 'bg-green-100 text-green-700' :
+                          prop.status === 'sold' ? 'bg-red-100 text-red-700' :
+                          prop.status === 'delivered' ? 'bg-blue-100 text-blue-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {prop.status || 'available'}
+                        </span>
+                        
+                        {prop.status === 'delivered' ? (
+                          <button
+                            onClick={() => handleToggleDelivered(prop._id.toString(), 'available')}
+                            className="text-[10px] bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 font-extrabold px-1.5 py-0.5 rounded transition-all active:scale-[0.97] w-fit"
+                            title="Restore as Available"
+                          >
+                            Set Available
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleToggleDelivered(prop._id.toString(), 'delivered')}
+                            className="text-[10px] bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 font-extrabold px-1.5 py-0.5 rounded transition-all active:scale-[0.97] w-fit"
+                            title="Mark as Delivered"
+                          >
+                            Mark Delivered
+                          </button>
+                        )}
+                      </div>
                     </td>
                     <td className="p-4 text-right space-x-1 sm:space-x-2">
                       <Link 

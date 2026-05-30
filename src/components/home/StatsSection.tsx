@@ -18,8 +18,8 @@ export default function StatsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-14">
           <div className="gold-divider mx-auto mb-5" />
-          <h2 className="text-4xl font-[var(--font-playfair)] text-white">
-            Our <span className="text-[#C9A227]">Numbers</span> Speak
+          <h2 className="text-4xl font-[var(--font-playfair)]">
+            <span className="text-white">Our</span> <span className="text-[#C9A227]">Numbers</span> <span className="text-white">Speak</span>
           </h2>
           <p className="text-[#a09060] mt-3 max-w-xl mx-auto text-sm">
             Trusted by thousands of families and investors across Delhi NCR for over 15 years.

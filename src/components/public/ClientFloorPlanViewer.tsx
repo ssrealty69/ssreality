@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Building, MapPin, Layers, Phone, Mail, Award, MessageSquare, Info, Filter, Compass, Copy, Share2, MessageCircle, Smartphone } from 'lucide-react';
+import { Building, MapPin, Layers, Phone, Mail, Award, MessageSquare, Info, Filter, Compass, Copy, Share2, MessageCircle, Smartphone, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Flat {
@@ -104,6 +104,49 @@ export default function ClientFloorPlanViewer({
   const [selectedFlat, setSelectedFlat] = useState<Flat | null>(null);
   const [selectedPlot, setSelectedPlot] = useState<Plot | null>(null);
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [sharing, setSharing] = useState(false);
+
+  const getShareLink = async (): Promise<string | null> => {
+    try {
+      setSharing(true);
+      const res = await fetch('/api/share-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ propertyId: property._id }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success && data.token) {
+        return `${window.location.origin}/floorview?token=${data.token}`;
+      } else {
+        toast.error(data.error || 'Failed to generate secure share link');
+        return null;
+      }
+    } catch (err) {
+      console.error('Share link generation error:', err);
+      toast.error('Failed to generate secure share link');
+      return null;
+    } finally {
+      setSharing(false);
+    }
+  };
+
+  const handleShareAction = async (type: 'whatsapp' | 'sms' | 'copy') => {
+    if (sharing) return;
+    const link = await getShareLink();
+    if (!link) return;
+
+    if (type === 'whatsapp') {
+      const text = `Hi, please check out the floor plan & flat availability tracker for "${property.title}" here: ${link}`;
+      window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+    } else if (type === 'sms') {
+      const text = `Hi, please check out the floor plan & flat availability for "${property.title}": ${link}`;
+      window.open(`sms:?body=${encodeURIComponent(text)}`, '_blank');
+    } else if (type === 'copy') {
+      navigator.clipboard.writeText(link);
+      toast.success('Secure Client-Sharing link copied!');
+    }
+    setShowShareMenu(false);
+  };
 
   // Sync selectedCategory when property changes
   useEffect(() => {
@@ -320,11 +363,16 @@ export default function ClientFloorPlanViewer({
                       <div className="relative">
                         <button
                           onClick={() => setShowShareMenu(!showShareMenu)}
-                          className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] hover:from-[#B8860B] hover:to-[#C9A227] text-[#1A1800] font-extrabold px-5 py-3 rounded-xl text-xs transition-all shadow-md hover:shadow-lg hover:shadow-[#C9A227]/10 cursor-pointer h-[46px] select-none flex-shrink-0 hover:scale-[1.02] active:scale-[0.98]"
+                          disabled={sharing}
+                          className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] hover:from-[#B8860B] hover:to-[#C9A227] text-[#1A1800] font-extrabold px-5 py-3 rounded-xl text-xs transition-all shadow-md hover:shadow-lg hover:shadow-[#C9A227]/10 cursor-pointer h-[46px] select-none flex-shrink-0 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-75"
                           title="Share secure client-locked floor plan page"
                         >
-                          <Share2 size={14} className="stroke-[2.5]" />
-                          <span>Share Page</span>
+                          {sharing ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : (
+                            <Share2 size={14} className="stroke-[2.5]" />
+                          )}
+                          <span>{sharing ? 'Generating...' : 'Share Page'}</span>
                         </button>
                         
                         {showShareMenu && (
@@ -344,13 +392,9 @@ export default function ClientFloorPlanViewer({
                               
                               {/* WhatsApp Option */}
                               <button
-                                onClick={() => {
-                                  const link = `${window.location.origin}/floorview?propertyId=${property._id}`;
-                                  const text = `Hi, please check out the live floor plan & flat availability tracker for "${property.title}" here: ${link}`;
-                                  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-                                  setShowShareMenu(false);
-                                }}
-                                className="w-full px-4 py-2.5 hover:bg-emerald-50 text-left text-xs font-bold text-gray-700 hover:text-emerald-700 flex items-center gap-2.5 transition-colors cursor-pointer"
+                                onClick={() => handleShareAction('whatsapp')}
+                                disabled={sharing}
+                                className="w-full px-4 py-2.5 hover:bg-emerald-50 text-left text-xs font-bold text-gray-700 hover:text-emerald-700 flex items-center gap-2.5 transition-colors cursor-pointer disabled:opacity-50"
                               >
                                 <MessageCircle size={15} className="text-emerald-500 stroke-[2.5]" />
                                 <span>Share on WhatsApp</span>
@@ -358,13 +402,9 @@ export default function ClientFloorPlanViewer({
                               
                               {/* SMS Option */}
                               <button
-                                onClick={() => {
-                                  const link = `${window.location.origin}/floorview?propertyId=${property._id}`;
-                                  const text = `Hi, please check out the live floor plan & flat availability for "${property.title}": ${link}`;
-                                  window.open(`sms:?body=${encodeURIComponent(text)}`, '_blank');
-                                  setShowShareMenu(false);
-                                }}
-                                className="w-full px-4 py-2.5 hover:bg-blue-50 text-left text-xs font-bold text-gray-700 hover:text-blue-700 flex items-center gap-2.5 transition-colors cursor-pointer"
+                                onClick={() => handleShareAction('sms')}
+                                disabled={sharing}
+                                className="w-full px-4 py-2.5 hover:bg-blue-50 text-left text-xs font-bold text-gray-700 hover:text-blue-700 flex items-center gap-2.5 transition-colors cursor-pointer disabled:opacity-50"
                               >
                                 <Smartphone size={15} className="text-blue-500 stroke-[2.5]" />
                                 <span>Share via SMS</span>
@@ -372,13 +412,9 @@ export default function ClientFloorPlanViewer({
                               
                               {/* Copy Link Option */}
                               <button
-                                onClick={() => {
-                                  const link = `${window.location.origin}/floorview?propertyId=${property._id}`;
-                                  navigator.clipboard.writeText(link);
-                                  toast.success('Secure Client-Sharing link copied!');
-                                  setShowShareMenu(false);
-                                }}
-                                className="w-full px-4 py-2.5 hover:bg-[#C9A227]/5 text-left text-xs font-bold text-gray-700 hover:text-[#C9A227] flex items-center gap-2.5 transition-colors cursor-pointer border-t border-gray-100 mt-1"
+                                onClick={() => handleShareAction('copy')}
+                                disabled={sharing}
+                                className="w-full px-4 py-2.5 hover:bg-[#C9A227]/5 text-left text-xs font-bold text-gray-700 hover:text-[#C9A227] flex items-center gap-2.5 transition-colors cursor-pointer border-t border-gray-100 mt-1 disabled:opacity-50"
                               >
                                 <Copy size={15} className="text-[#C9A227] stroke-[2.5]" />
                                 <span>Copy Client Link</span>

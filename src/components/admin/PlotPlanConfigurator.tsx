@@ -6,7 +6,7 @@ import * as XLSX from 'xlsx';
 import { 
   FileSpreadsheet, Upload, Download, Save, Trash2, 
   Layers, CheckCircle, AlertTriangle, HelpCircle, 
-  Map, Edit, Check, X, ShieldAlert, Loader2 
+  Map, Edit, Check, X, ShieldAlert, Loader2, ArrowLeft
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -306,8 +306,22 @@ export default function PlotPlanConfigurator({
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start pb-12">
       
       {/* Sidebar Configurations (1/3 Width) */}
-      <div className="lg:col-span-1 space-y-6">
-        
+      <div className="lg:col-span-1 lg:sticky lg:top-6 self-start space-y-6">
+        {/* Page Header Card */}
+        <div className="bg-white border border-[#C9A227]/20 rounded-2xl p-4 shadow-sm flex items-center gap-3">
+          <button 
+            onClick={() => router.push('/admin/floor-plans')}
+            className="p-2 bg-gray-50 border border-gray-100 hover:border-[#C9A227]/30 text-gray-600 hover:text-[#C9A227] rounded-xl transition-all cursor-pointer flex items-center justify-center"
+            title="Back to Floor Plans list"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div>
+            <h1 className="text-md font-extrabold text-[#1A1800] leading-tight">Configure Plotting Layout Map</h1>
+            <p className="text-[10px] text-gray-400 mt-0.5 leading-none">Property: <strong className="text-gray-600 font-bold">{property.title}</strong></p>
+          </div>
+        </div>
+
         {/* Step 1: Template Download & Excel Upload */}
         <div className="bg-white border border-[#C9A227]/20 rounded-2xl p-5 shadow-sm space-y-4">
           <div className="flex items-center gap-2 border-b border-gray-100 pb-3">

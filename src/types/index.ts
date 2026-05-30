@@ -5,7 +5,7 @@ export interface Property {
   price: number;
   priceType: 'sale' | 'rent';
   propertyType: 'apartment' | 'villa' | 'plot' | 'commercial' | 'office' | 'house';
-  status: 'available' | 'sold' | 'rented';
+  status: 'available' | 'sold' | 'rented' | 'delivered';
   location: {
     address: string;
     city: string;
@@ -28,6 +28,7 @@ export interface Property {
   interiorImages?: string[];
   galleryImages?: string[];
   brochureUrl?: string;
+  googleMapsUrl?: string;
   featured: boolean;
   amenities: string[];
   highlights?: {

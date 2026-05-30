@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
+import Script from 'next/script';
 import { getTrackingSettings } from '@/lib/tracking-service';
 import TrackingProvider from '@/components/tracking/TrackingProvider';
 
@@ -82,12 +83,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-        {/* Server-Side Pre-rendered Marketing & Tracking Scripts */}
+      </head>
+      <body className="min-h-screen flex flex-col font-sans text-[#3a3828] bg-[#FFFEF5]" suppressHydrationWarning={true} data-version="2">
+        {/* Optimized Next.js Script Loader */}
         {settings?.isEnabled && (
           <>
             {/* Google Tag Manager (GTM) */}
             {settings.googleTagManagerId && (
-              <script
+              <Script
+                id="gtm-script"
+                strategy="afterInteractive"
                 dangerouslySetInnerHTML={{
                   __html: `
                     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -102,7 +107,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
             {/* Meta (Facebook) Pixel */}
             {settings.metaPixelId && (
-              <script
+              <Script
+                id="fb-pixel"
+                strategy="afterInteractive"
                 dangerouslySetInnerHTML={{
                   __html: `
                     !function(f,b,e,v,n,t,s)
@@ -123,11 +130,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {/* Google Analytics 4 (GA4) & Google Ads */}
             {(settings.googleAdsConversionId || settings.ga4MeasurementId) && (
               <>
-                <script
-                  async
+                <Script
+                  id="gtag-load"
+                  strategy="afterInteractive"
                   src={`https://www.googletagmanager.com/gtag/js?id=${settings.googleAdsConversionId || settings.ga4MeasurementId}`}
                 />
-                <script
+                <Script
+                  id="gtag-init"
+                  strategy="afterInteractive"
                   dangerouslySetInnerHTML={{
                     __html: `
                       window.dataLayer = window.dataLayer || [];
@@ -149,8 +159,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             )}
           </>
         )}
-      </head>
-      <body className="min-h-screen flex flex-col font-sans text-[#3a3828] bg-[#FFFEF5]" suppressHydrationWarning={true} data-version="2">
         {settings?.isEnabled && settings.googleTagManagerId && (
           <noscript>
             <iframe

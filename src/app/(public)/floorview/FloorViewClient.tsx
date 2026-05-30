@@ -28,8 +28,10 @@ function FloorViewContent({
 }: FloorViewClientProps) {
   const searchParams = useSearchParams();
   const propertyIdParam = searchParams.get('propertyId');
+  const tokenParam = searchParams.get('token');
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isExpired, setIsExpired] = useState(false);
   const [passcode, setPasscode] = useState<string[]>(['', '', '', '', '', '']);
   const [shake, setShake] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -57,8 +59,33 @@ function FloorViewContent({
     }
   }, [isAuthenticated]);
 
-  // Fetch active property data if propertyIdParam exists
+  // Fetch active property data if propertyIdParam or tokenParam exists
   useEffect(() => {
+    if (tokenParam) {
+      setFetchingDetails(true);
+      fetch(`/api/share-token/${tokenParam}`)
+        .then(async (res) => {
+          const data = await res.json();
+          if (res.ok && data.success && data.data) {
+            setActiveData(data.data);
+          } else {
+            setIsExpired(true);
+            if (data.error) {
+              toast.error(data.error);
+            }
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          setIsExpired(true);
+          toast.error('Failed to load shared floor plan');
+        })
+        .finally(() => {
+          setFetchingDetails(false);
+        });
+      return;
+    }
+
     if (!isAuthenticated && !propertyIdParam) return;
     
     const targetId = propertyIdParam || activePropertyId;
@@ -87,11 +114,11 @@ function FloorViewContent({
       .finally(() => {
         setFetchingDetails(false);
       });
-  }, [isAuthenticated, propertyIdParam, activePropertyId]);
+  }, [isAuthenticated, propertyIdParam, tokenParam, activePropertyId]);
 
   // Set default active property in central console initially when no property is selected
   useEffect(() => {
-    if (isAuthenticated && !propertyIdParam && !activePropertyId && availableProperties.length > 0) {
+    if (isAuthenticated && !propertyIdParam && !tokenParam && !activePropertyId && availableProperties.length > 0) {
       const filtered = availableProperties.filter(p => {
         const cat = p.propertyType?.toLowerCase() === 'plot' ? 'plot' : 'apartment';
         return cat === selectedCategory;
@@ -101,7 +128,7 @@ function FloorViewContent({
         setActivePropertyId(filtered[0]._id);
       }
     }
-  }, [isAuthenticated, propertyIdParam, availableProperties, selectedCategory, activePropertyId]);
+  }, [isAuthenticated, propertyIdParam, tokenParam, availableProperties, selectedCategory, activePropertyId]);
 
   // Single hidden input handlers for mobile-friendly OTP
   const hiddenInputRef = useRef<HTMLInputElement>(null);
@@ -176,8 +203,53 @@ function FloorViewContent({
     }
   }, [passcode]);
 
-  // Auth Screen Gate - only prompt for passcode if we are NOT in shared mode (i.e. no propertyId query param)
-  if (!isAuthenticated && !propertyIdParam) {
+  // Expired Screen Gate
+  if (isExpired) {
+    return (
+      <div className="min-h-screen bg-[#FDFCF9] text-gray-800 flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans">
+        <div 
+          className="absolute inset-0 opacity-[0.25] pointer-events-none z-0" 
+          style={{ 
+            backgroundImage: 'radial-gradient(#C9A227 0.8px, transparent 0.8px)', 
+            backgroundSize: '28px 28px' 
+          }} 
+        />
+        <div className="w-full max-w-md bg-white border border-[#C9A227]/30 rounded-3xl p-8 shadow-xl relative z-10 text-center transition-all">
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-500 to-[#C9A227] shadow-[0_2px_8px_rgba(201,162,39,0.3)]" />
+          
+          <div className="flex justify-center mb-6 mt-2">
+            <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shadow-sm">
+              <svg className="w-8 h-8 text-[#C9A227] animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+
+          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight font-[var(--font-playfair)]">
+            This link has expired
+          </h1>
+          <p className="text-[10px] text-[#C9A227] uppercase tracking-widest font-extrabold mt-1">
+            SS Realty Secure Share
+          </p>
+
+          <p className="text-gray-500 text-xs mt-4 mb-8 leading-relaxed max-w-xs mx-auto">
+            This floor plan preview was valid for 72 hours to ensure availability accuracy. Please contact your SS Realty relationship manager for a fresh preview link.
+          </p>
+
+          <a
+            href="/contact"
+            className="w-full relative group overflow-hidden bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-extrabold py-3.5 rounded-xl shadow-md transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 text-sm cursor-pointer"
+          >
+            Contact SS Realty
+            <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  // Auth Screen Gate - only prompt for passcode if we are NOT in shared mode (i.e. no propertyId/token query param)
+  if (!isAuthenticated && !propertyIdParam && !tokenParam) {
     return (
       <div className="min-h-screen bg-[#FDFCF9] text-gray-800 flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans">
         
@@ -307,7 +379,7 @@ function FloorViewContent({
   }
 
   // Shared Link Locked View Mode
-  if (propertyIdParam) {
+  if (propertyIdParam || tokenParam) {
     if (!activeData) return null;
     return (
       <ClientFloorPlanViewer 

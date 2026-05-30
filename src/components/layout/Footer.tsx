@@ -44,9 +44,9 @@ const companyLinks = [
 ];
 
 const socials = [
-  { href: 'https://www.facebook.com/people/SS-Realty/61571897675312/', Icon: FacebookIcon, label: 'Facebook' },
-  { href: 'https://www.instagram.com/ss_realty_official/', Icon: InstagramIcon, label: 'Instagram' },
-  { href: 'https://www.youtube.com/channel/UC95L8ulqSDWs8kv1kCm5zVQ', Icon: YoutubeIcon, label: 'YouTube' },
+  { href: 'https://www.facebook.com/profile.php?id=61571897675312', Icon: FacebookIcon, label: 'Facebook' },
+  { href: 'https://www.instagram.com/ss_realty_official', Icon: InstagramIcon, label: 'Instagram' },
+  { href: 'https://www.youtube.com/@ssrealty5270', Icon: YoutubeIcon, label: 'YouTube' },
 ];
 
 export default function Footer() {
@@ -96,6 +96,7 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               {socials.map(({ href, Icon, label }) => (
                 <a key={label} href={href} aria-label={label}
+                  target="_blank" rel="noopener noreferrer"
                   className="w-9 h-9 rounded-lg bg-white/5 border border-[#C9A227]/20 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-[#1A1800] transition-all duration-200"
                 >
                   <Icon />
@@ -148,7 +149,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="text-[#C9A227] mt-0.5 shrink-0" />
                 <span className="text-sm text-[#a09060]">
-                  C43, Street Number 9, DR Ambedkar Colony,<br />Chattarpur Enclave, Chhatarpur,<br />New Delhi, Delhi 110030
+                  Plot No-2, Dalmia Farm, Jonapur,<br />New Delhi, Delhi 110047
                 </span>
               </li>
               <li>

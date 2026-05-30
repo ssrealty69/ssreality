@@ -23,7 +23,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const contactInfo = [
-  { icon: MapPin, title: 'Office Address', detail: 'C43, St Number 9, DR Ambedkar Colony, Chattarpur Enclave, New Delhi 110030' },
+  { icon: MapPin, title: 'Office Address', detail: 'Plot No-2, Dalmia Farm, Jonapur, New Delhi 110047' },
   { icon: Phone, title: 'Phone', detail: '+91 93110 59100' },
   { icon: Mail, title: 'Email', detail: 'info@ssrealty.in' },
   { icon: Clock, title: 'Working Hours', detail: 'Mon–Sat: 9:00 AM – 7:00 PM' },
@@ -106,8 +106,8 @@ export default function ContactPage() {
             <div className="rounded-2xl overflow-hidden border border-[#E8D5A3] h-48 bg-[#FFFBEB] flex items-center justify-center">
               <div className="text-center text-[#a09060]">
                 <MapPin size={32} className="mx-auto mb-2 text-[#C9A227]" />
-                <p className="text-sm font-medium">Chhatarpur, New Delhi</p>
-                <p className="text-xs">Chattarpur Enclave, 110030</p>
+                <p className="text-sm font-medium">Jonapur, New Delhi</p>
+                <p className="text-xs">Dalmia Farm, 110047</p>
               </div>
             </div>
           </div>

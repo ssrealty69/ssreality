@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Layers, Copy, Check, Save, Info, RefreshCw, X } from 'lucide-react';
+import { Layers, Copy, Check, Save, Info, RefreshCw, X, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Flat {
@@ -217,7 +217,22 @@ export default function FloorPlanConfigurator({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Configuration Sidebar */}
-      <div className="lg:col-span-1 space-y-6">
+      <div className="lg:col-span-1 lg:sticky lg:top-6 self-start space-y-6">
+        {/* Page Header Card */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center gap-3">
+          <button 
+            onClick={() => router.push('/admin/floor-plans')}
+            className="p-2 bg-gray-50 border border-gray-100 hover:border-[#C9A227]/30 text-gray-600 hover:text-[#C9A227] rounded-xl transition-all cursor-pointer flex items-center justify-center"
+            title="Back to Floor Plans list"
+          >
+            <ArrowLeft size={16} />
+          </button>
+          <div>
+            <h1 className="text-md font-extrabold text-[#1A1800] leading-tight">Configure Floor Plan</h1>
+            <p className="text-[10px] text-gray-400 mt-0.5 leading-none">Property: <strong className="text-gray-600 font-bold">{property.title}</strong></p>
+          </div>
+        </div>
+
         <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm space-y-4">
           <h2 className="text-md font-bold text-gray-800 flex items-center gap-2">
             <Layers size={18} className="text-[#C9A227]" />

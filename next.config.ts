@@ -87,12 +87,12 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com https://images.unsplash.com https://cdn.pixabay.com https://img.youtube.com https://www.google-analytics.com",
               // Connections: self + API calls + Google Analytics
               "connect-src 'self' https://www.google-analytics.com https://vitals.vercel-insights.com https://vercel.live wss://ws-us3.pusher.com",
-              // Frames: only YouTube embeds allowed
-              "frame-src https://www.youtube.com https://youtube.com",
+              // Frames: YouTube embeds and local PDF viewing allowed
+              "frame-src 'self' https://www.youtube.com https://youtube.com",
               // Media: self only
               "media-src 'self' https://res.cloudinary.com",
-              // Objects: none
-              "object-src 'none'",
+              // Objects: local PDF viewing allowed
+              "object-src 'self'",
               // Base URI restricted to self
               "base-uri 'self'",
               // Form actions: self only
