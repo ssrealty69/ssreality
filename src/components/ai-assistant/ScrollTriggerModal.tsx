@@ -129,7 +129,7 @@ export default function ScrollTriggerModal({ isOpen, onClose, onOpenChat }: Scro
 
               {/* ── CARD ── */}
               <motion.div
-                className="relative w-full max-w-[310px] sm:max-w-[340px] rounded-3xl overflow-hidden"
+                className="relative w-full max-w-[310px] sm:max-w-[340px] rounded-3xl overflow-visible"
                 style={{
                   background: '#FFFEF5',
                   border: '2px solid #E8AF30',
@@ -293,13 +293,13 @@ export default function ScrollTriggerModal({ isOpen, onClose, onOpenChat }: Scro
                                   <>
                                     {/* Click outside interceptor overlay */}
                                     <div 
-                                      className="fixed inset-0 z-40 cursor-default bg-transparent"
+                                      className="fixed inset-0 z-[210] cursor-default bg-transparent"
                                       onClick={() => setDropdownOpen(false)}
                                     />
                                     
                                     {/* Options container list */}
                                     <motion.div
-                                      className="absolute top-[calc(100%+4px)] left-0 w-full z-50 rounded-xl overflow-hidden shadow-lg border border-[#E8AF30]/40"
+                                      className="absolute top-[calc(100%+4px)] left-0 w-full z-[300] rounded-xl overflow-hidden shadow-lg border border-[#E8AF30]/40 pointer-events-auto"
                                       style={{
                                         background: '#FFFEF5',
                                         boxShadow: '0 8px 24px rgba(232,175,48,0.15), 0 4px 10px rgba(0,0,0,0.06)',
