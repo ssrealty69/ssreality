@@ -502,4 +502,96 @@ input:focus, select:focus, textarea:focus {
   scrollbar-width: none !important;  /* Firefox */
 }
 
+/* ============================================================
+   AI Virtual Sales Assistant — Utilities
+   ============================================================ */
+
+/* Hand wave animation */
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  15%       { transform: rotate(20deg); }
+  30%       { transform: rotate(-10deg); }
+  45%       { transform: rotate(18deg); }
+  60%       { transform: rotate(-5deg); }
+}
+
+/* Eye blink */
+@keyframes blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95%            { transform: scaleY(0.08); }
+}
+
+/* Gentle breathe */
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1); }
+  50%       { transform: scaleY(1.025); }
+}
+
+/* AI typing dots */
+@keyframes ai-dot-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+.ai-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #C9A227;
+  display: inline-block;
+  animation: ai-dot-bounce 0.7s ease-in-out infinite;
+}
+.ai-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.ai-typing-dot:nth-child(3) { animation-delay: 0.30s; }
+
+/* Mascot shadow */
+.mascot-shadow {
+  filter: drop-shadow(0 8px 20px rgba(201, 162, 39, 0.25))
+          drop-shadow(0 2px 6px rgba(26, 24, 0, 0.15));
+}
+
+/* Dark glassmorphism for chat window */
+.chat-glass {
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(201, 162, 39, 0.25);
+  box-shadow:
+    0 30px 90px rgba(26, 24, 0, 0.15),
+    0 8px 32px rgba(201, 162, 39, 0.1);
+}
+
+/* AI form inputs — shared across ai-assistant components */
+.ai-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  color: #1A1800;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(201, 162, 39, 0.25);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.ai-input:focus {
+  border-color: #C9A227 !important;
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15) !important;
+}
+
+.ai-input::placeholder {
+  color: #9CA3AF;
+}
+
+.ai-error {
+  font-size: 11px;
+  color: #EF4444;
+  margin-top: 3px;
+  padding-left: 4px;
+}
+
+
 

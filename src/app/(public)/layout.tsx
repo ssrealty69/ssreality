@@ -2,6 +2,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FloatingWhatsApp from '@/components/layout/FloatingWhatsApp';
 import MobileBottomNav from '@/components/layout/MobileBottomNav';
+import VirtualSalesAssistant from '@/components/ai-assistant/VirtualSalesAssistant';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +12,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <Footer />
       <MobileBottomNav />
       <FloatingWhatsApp />
+      <VirtualSalesAssistant />
     </>
   );
 }
+

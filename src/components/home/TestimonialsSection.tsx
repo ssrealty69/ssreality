@@ -11,7 +11,7 @@ const testimonials = [
     rating: 5,
     initials: 'PA',
     property: 'Purchased 3BHK Flat — Vasundhara, Ghaziabad',
-    videoUrl: '/Priya Feedback.mp4',
+    videoUrl: '/priya-feedback.mp4',
   },
   {
     name: 'Vikram Singh',
@@ -85,38 +85,55 @@ function TestimonialCard({
   onPlayToggle: () => void;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  // On mount: ensure the video autoplays muted (mobile-safe)
+  // IntersectionObserver — play when card enters viewport, pause when it leaves
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = true;
-      videoRef.current.play().catch(() => {});
-    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.muted = true;
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (cardRef.current) observer.observe(cardRef.current);
+    return () => observer.disconnect();
   }, []);
 
-  // When user clicks Play — unmute and keep playing; Pause — mute and pause
+  // Unmute when user explicitly clicks Play
   useEffect(() => {
-    if (!videoRef.current) return;
+    const video = videoRef.current;
+    if (!video) return;
     if (isPlaying) {
-      videoRef.current.muted = false;
-      videoRef.current.play().catch((err) => {
-        console.log('Audio play blocked:', err);
-      });
+      video.muted = false;
+      video.play().catch(() => {});
     } else {
-      // Just mute, don't pause — so video keeps showing on mobile
-      videoRef.current.muted = true;
-      videoRef.current.pause();
+      video.muted = true;
     }
   }, [isPlaying]);
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-[310px] mx-auto select-none">
       {/* Tall Portrait Video Card */}
-      <div className="relative overflow-hidden rounded-2xl w-full aspect-[9/16] h-[530px] flex items-center justify-center p-[1.5px] shadow-[0_4px_25px_rgba(26,24,0,0.06)] hover:shadow-[var(--shadow-gold)] transition-all duration-300 group">
-        {/* Spinning golden gradient border beam */}
-        <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_20%,#C9A227_40%,#FFF9E3_50%,#B8860B_60%,transparent_80%)] animate-[spin_5s_linear_infinite] opacity-80 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      <div
+        ref={cardRef}
+        className="relative overflow-hidden rounded-2xl w-full aspect-[9/16] h-[530px] flex items-center justify-center p-[1.5px] shadow-[0_4px_25px_rgba(26,24,0,0.06)] hover:shadow-[var(--shadow-gold)] transition-all duration-300 group"
+      >
+        {/* Spinning golden gradient border beam — z-index 0 (behind everything) */}
+        <div className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent_20%,#C9A227_40%,#FFF9E3_50%,#B8860B_60%,transparent_80%)] animate-[spin_5s_linear_infinite] opacity-80 group-hover:opacity-100 transition-opacity pointer-events-none z-0" />
 
-        {/* Autoplay muted video — unmutes on user tap (mobile-safe) */}
+        {/* Black bg behind video so no gradient bleeds through while loading */}
+        <div className="absolute inset-[1.5px] rounded-[14.5px] bg-black z-[1]" />
+
+        {/* Video — z-[2] so it sits above the black bg and below overlays */}
         <video
           ref={videoRef}
           src={t.videoUrl}
@@ -125,22 +142,22 @@ function TestimonialCard({
           autoPlay
           playsInline
           preload="auto"
-          className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] object-cover rounded-[14.5px] z-0 select-none"
+          className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] object-cover rounded-[14.5px] z-[2] select-none"
         />
 
-        {/* Subtle vignette shadow overlay on top and bottom of the video */}
-        <div className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] bg-gradient-to-b from-black/45 via-transparent to-black/55 rounded-[14.5px] z-10 pointer-events-none" />
+        {/* Vignette overlay */}
+        <div className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] bg-gradient-to-b from-black/40 via-transparent to-black/60 rounded-[14.5px] z-[3] pointer-events-none" />
 
-        {/* Pulsating Translucent badge */}
-        <div className="absolute top-5 right-5 bg-black/40 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/10 z-20 flex items-center justify-center pointer-events-none">
+        {/* Badge */}
+        <div className="absolute top-5 right-5 bg-black/40 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/10 z-[4] flex items-center justify-center pointer-events-none">
           <span className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-red-500 animate-ping' : 'bg-[#C9A227] animate-pulse'} mr-1.5`} />
           <span className="text-[8px] text-white font-bold uppercase tracking-widest">{isPlaying ? 'LIVE' : 'MUTED'}</span>
         </div>
 
-        {/* Unmute / Mute Toggle Button */}
+        {/* Unmute / Mute button */}
         <button
           onClick={onPlayToggle}
-          className="absolute bottom-6 bg-black/60 hover:bg-[#C9A227] text-white font-bold text-xs tracking-wider uppercase py-2.5 px-5 rounded-full border border-white/10 z-20 flex items-center gap-2 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+          className="absolute bottom-6 bg-black/60 hover:bg-[#C9A227] text-white font-bold text-xs tracking-wider uppercase py-2.5 px-5 rounded-full border border-white/10 z-[4] flex items-center gap-2 backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
         >
           {isPlaying ? (
             <>
@@ -150,7 +167,7 @@ function TestimonialCard({
           ) : (
             <>
               <Play size={14} className="fill-white text-white" />
-              <span>▶ Unmute</span>
+              <span>Unmute</span>
             </>
           )}
         </button>
