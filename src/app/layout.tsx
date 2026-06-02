@@ -82,6 +82,32 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'SS Realty',
+              url: process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in',
+              logo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || ''}/SS%20Realty%20Official%20Logo.png`,
+              description: 'Premium real estate and property services in Delhi NCR.',
+              contactPoint: {
+                '@type': 'ContactPoint',
+                telephone: '+91-9311059100',
+                contactType: 'customer service',
+                areaServed: 'IN',
+                availableLanguage: ['English', 'Hindi']
+              },
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: 'Noida',
+                addressRegion: 'Uttar Pradesh',
+                addressCountry: 'IN'
+              }
+            }),
+          }}
+        />
 
       </head>
       <body className="min-h-screen flex flex-col font-sans text-[#3a3828] bg-[#FFFEF5]" suppressHydrationWarning={true} data-version="2">

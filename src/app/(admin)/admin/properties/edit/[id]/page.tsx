@@ -6,6 +6,7 @@ import { ArrowLeft, Save, Plus, Trash2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { MediaUpload, PdfUpload, MultiImageUpload } from '@/components/admin/MediaUpload';
+import { SeoControlPanel } from '@/components/admin/SeoControlPanel';
 
 const PREDEFINED_AMENITIES = [
   'Gym', 'Cycling Track', 'Billiards', 'Table Tennis', 'Squash Court', 
@@ -64,6 +65,15 @@ export default function EditProperty({ params }: EditPropertyProps) {
     highlights: [{ title: '', description: '' }],
     nearby: [{ type: 'landmark', name: '', distance: '' }],
     featured: false
+  });
+
+  // SEO Control Panel State
+  const [seoData, setSeoData] = useState({
+    title: '',
+    description: '',
+    keywords: '',
+    focusKeyword: '',
+    canonicalUrl: '',
   });
 
   // Fetch initial data
@@ -126,6 +136,16 @@ export default function EditProperty({ params }: EditPropertyProps) {
             nearby: prop.nearby && prop.nearby.length > 0 ? prop.nearby : [{ type: 'landmark', name: '', distance: '' }],
             featured: prop.featured || false
           });
+          
+          if (prop.seo) {
+            setSeoData({
+              title: prop.seo.title || '',
+              description: prop.seo.description || '',
+              keywords: prop.seo.keywords || '',
+              focusKeyword: prop.seo.focusKeyword || '',
+              canonicalUrl: prop.seo.canonicalUrl || '',
+            });
+          }
         }
       } catch (error) {
         toast.error('Failed to load property');
@@ -157,7 +177,8 @@ export default function EditProperty({ params }: EditPropertyProps) {
           totalFloors: formData.features.totalFloors ? parseInt(formData.features.totalFloors as string) : undefined,
           towers: formData.features.towers ? parseInt(formData.features.towers as string) : undefined,
           totalUnits: formData.features.totalUnits ? parseInt(formData.features.totalUnits as string) : undefined,
-        }
+        },
+        seo: seoData
       };
 
       const res = await fetch(`/api/admin/properties/${id}`, {
@@ -544,6 +565,15 @@ export default function EditProperty({ params }: EditPropertyProps) {
             </div>
           </div>
         </div>
+
+        {/* SEO Control Panel & Meta Analyzer */}
+        <SeoControlPanel 
+          data={seoData}
+          onChange={setSeoData}
+          defaultTitle={formData.title}
+          defaultExcerpt={formData.description.substring(0, 160)}
+          defaultSlug={''} // Properties don't strictly use slugs yet
+        />
 
         <div className="flex justify-end pt-4 pb-12">
           <button

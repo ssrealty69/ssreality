@@ -9,6 +9,8 @@ export interface IBlog extends Document {
   author: { name: string; image?: string };
   category: string;
   tags: string[];
+  status: 'draft' | 'published' | 'scheduled';
+  publishDate?: Date;
   published: boolean;
   views: number;
   seo?: {
@@ -35,6 +37,8 @@ const BlogSchema = new Schema<IBlog>(
     },
     category: { type: String, required: true, index: true },
     tags: [{ type: String }],
+    status: { type: String, enum: ['draft', 'published', 'scheduled'], default: 'draft', index: true },
+    publishDate: { type: Date },
     published: { type: Boolean, default: false, index: true },
     views: { type: Number, default: 0 },
     seo: {

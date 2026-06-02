@@ -6,6 +6,7 @@ import { ArrowLeft, Save, Plus, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { MediaUpload, PdfUpload, MultiImageUpload } from '@/components/admin/MediaUpload';
+import { SeoControlPanel } from '@/components/admin/SeoControlPanel';
 
 const PREDEFINED_AMENITIES = [
   'Gym', 'Cycling Track', 'Billiards', 'Table Tennis', 'Squash Court', 
@@ -58,6 +59,15 @@ export default function AddProperty() {
     featured: false
   });
 
+  // SEO Control Panel State
+  const [seoData, setSeoData] = useState({
+    title: '',
+    description: '',
+    keywords: '',
+    focusKeyword: '',
+    canonicalUrl: '',
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -79,7 +89,8 @@ export default function AddProperty() {
           totalFloors: formData.features.totalFloors ? parseInt(formData.features.totalFloors as string) : undefined,
           towers: formData.features.towers ? parseInt(formData.features.towers as string) : undefined,
           totalUnits: formData.features.totalUnits ? parseInt(formData.features.totalUnits as string) : undefined,
-        }
+        },
+        seo: seoData
       };
 
       const res = await fetch('/api/admin/properties', {
@@ -458,6 +469,15 @@ export default function AddProperty() {
             </div>
           </div>
         </div>
+
+        {/* SEO Control Panel & Meta Analyzer */}
+        <SeoControlPanel 
+          data={seoData}
+          onChange={setSeoData}
+          defaultTitle={formData.title}
+          defaultExcerpt={formData.description.substring(0, 160)}
+          defaultSlug={''} // Properties don't strictly use slugs yet, but can be passed empty
+        />
 
         <div className="flex justify-end pt-4 pb-12">
           <button

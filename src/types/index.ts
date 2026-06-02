@@ -60,6 +60,10 @@ export interface Property {
     image?: string;
   };
   views: number;
+  seo?: {
+    title: string;
+    description: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -77,6 +81,8 @@ export interface Blog {
   };
   category: string;
   tags: string[];
+  status?: 'draft' | 'published' | 'scheduled';
+  publishDate?: Date;
   published: boolean;
   views: number;
   seo?: {

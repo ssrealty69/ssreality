@@ -22,7 +22,8 @@ export default function AddBlog() {
     coverImage: '',
     authorName: 'SS Realty Expert', // Brand default author
     category: '',
-    published: false,
+    status: 'draft',
+    publishDate: '',
   });
 
   // SEO Control Panel State
@@ -144,6 +145,7 @@ export default function AddBlog() {
       // Map properties matching DB expectations + embed SEO sub-object
       const payload = {
         ...formData,
+        publishDate: formData.status === 'scheduled' && formData.publishDate ? new Date(formData.publishDate).toISOString() : null,
         seo: seoData,
         author: {
           name: formData.authorName
@@ -315,20 +317,35 @@ export default function AddBlog() {
               />
             </div>
 
-            {/* Publish Checkbox */}
-            <div className="flex items-center gap-3 pt-6">
-              <input 
-                type="checkbox" 
-                id="published" 
-                name="published" 
-                checked={formData.published} 
+            {/* Status Select */}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Post Status</label>
+              <select 
+                name="status" 
+                value={formData.status} 
                 onChange={handleChange} 
-                className="w-5 h-5 text-[#C9A227] rounded border-gray-300 focus:ring-[#C9A227] accent-[#C9A227]" 
-              />
-              <label htmlFor="published" className="text-xs font-bold text-gray-700 cursor-pointer select-none">
-                Publish Immediately (Make live on website public blogs)
-              </label>
+                className="w-full border border-gray-300 rounded-lg p-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
+              >
+                <option value="draft">Draft (Save for later)</option>
+                <option value="published">Published (Make live immediately)</option>
+                <option value="scheduled">Scheduled (Auto-publish at future date)</option>
+              </select>
             </div>
+
+            {/* Scheduled Date Picker */}
+            {formData.status === 'scheduled' && (
+              <div className="animate-fade-in-up">
+                <label className="block text-xs font-bold text-gray-700 mb-1">Schedule Date & Time</label>
+                <input 
+                  type="datetime-local" 
+                  name="publishDate" 
+                  required 
+                  value={formData.publishDate} 
+                  onChange={handleChange} 
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white" 
+                />
+              </div>
+            )}
           </div>
         </section>
 

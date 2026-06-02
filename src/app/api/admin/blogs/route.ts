@@ -43,6 +43,13 @@ export async function POST(req: NextRequest) {
       body.author = { name: body.authorName };
     }
 
+    // Sync published boolean based on status to maintain legacy compatibility
+    if (body.status === 'published') {
+      body.published = true;
+    } else {
+      body.published = false;
+    }
+
     const blog = await Blog.create(body);
     await invalidateCache('blogs:*');
     return NextResponse.json({ success: true, data: blog }, { status: 201 });

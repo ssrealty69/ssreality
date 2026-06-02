@@ -203,8 +203,51 @@ export default async function HomePage() {
     }
   ];
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What type of properties does SS Realty offer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SS Realty offers a wide range of premium properties including luxury apartments, villas, residential plots, and commercial spaces primarily in the Delhi NCR region."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are the properties listed by SS Realty verified?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all properties listed on our platform undergo a strict verification process to ensure authenticity, clear titles, and quality standards."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can SS Realty help me with property loans?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. We provide consultation and assistance in securing home loans through our trusted banking partners, making your property buying experience seamless."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does SS Realty deal in commercial real estate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, we specialize in high-yield commercial real estate, offering premium office spaces and retail shops for both end-use and investment purposes."
+        }
+      }
+    ]
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <HeroSection />
       
       {/* 1. Newly Added Section */}

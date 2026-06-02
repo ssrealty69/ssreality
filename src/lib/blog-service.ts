@@ -10,7 +10,13 @@ export async function getAllBlogs(category?: string, limit: number = 9, page: nu
   try {
     await connectDB();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filter: Record<string, any> = { published: true };
+    const filter: Record<string, any> = { 
+      $or: [
+        { published: true }, // Legacy
+        { status: 'published' },
+        { status: 'scheduled', publishDate: { $lte: new Date() } }
+      ]
+    };
     if (category && category !== 'All') {
       filter.category = category;
     }

@@ -269,69 +269,25 @@ export default function ScrollTriggerModal({ isOpen, onClose, onOpenChat }: Scro
                               <MapPin size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                             </div>
                             <div className="relative">
-                              {/* Hidden input to hold select value */}
-                              <input type="hidden" {...register('propertyType')} />
-                              
-                              {/* Trigger Button */}
-                              <button
-                                type="button"
-                                onClick={() => setDropdownOpen((prev) => !prev)}
-                                className="ai-input !pl-[32px] pr-7 w-full text-left flex items-center justify-between transition-all select-none"
-                                style={{ fontSize: '11px', color: currentPropertyType ? '#1A1800' : '#9CA3AF' }}
+                              {/* Native select — triggers OS picker on mobile (slide-up on iOS, spinner on Android) */}
+                              <select
+                                {...register('propertyType')}
+                                className="ai-input !pl-[32px] pr-2 w-full appearance-none cursor-pointer"
+                                style={{
+                                  fontSize: '11px',
+                                  color: currentPropertyType ? '#1A1800' : '#9CA3AF',
+                                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`,
+                                  backgroundRepeat: 'no-repeat',
+                                  backgroundPosition: 'right 8px center',
+                                  backgroundSize: '12px',
+                                }}
                               >
-                                <span className="truncate">{currentPropertyType || 'Property Type'}</span>
-                                <ChevronDown 
-                                  size={12} 
-                                  className={`text-gray-400 transition-transform duration-200 flex-shrink-0 ${dropdownOpen ? 'rotate-180 text-[#E8AF30]' : ''}`} 
-                                />
-                              </button>
+                                <option value="" style={{ color: '#9CA3AF' }}>Property Type</option>
+                                {propertyTypes.map((t) => (
+                                  <option key={t} value={t} style={{ color: '#1A1800' }}>{t}</option>
+                                ))}
+                              </select>
                               <Home size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-
-                              {/* Dropdown Options Overlay */}
-                              <AnimatePresence>
-                                {dropdownOpen && (
-                                  <>
-                                    {/* Click outside interceptor overlay */}
-                                    <div 
-                                      className="fixed inset-0 z-[210] cursor-default bg-transparent"
-                                      onClick={() => setDropdownOpen(false)}
-                                    />
-                                    
-                                    {/* Options container list */}
-                                    <motion.div
-                                      className="absolute top-[calc(100%+4px)] left-0 w-full z-[300] rounded-xl overflow-hidden shadow-lg border border-[#E8AF30]/40 pointer-events-auto"
-                                      style={{
-                                        background: '#FFFEF5',
-                                        boxShadow: '0 8px 24px rgba(232,175,48,0.15), 0 4px 10px rgba(0,0,0,0.06)',
-                                      }}
-                                      initial={{ opacity: 0, y: 5, scale: 0.96 }}
-                                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                                      exit={{ opacity: 0, y: 3, scale: 0.98 }}
-                                      transition={{ duration: 0.15, ease: 'easeOut' }}
-                                    >
-                                      {propertyTypes.map((t) => (
-                                        <div
-                                          key={t}
-                                          onClick={() => {
-                                            setValue('propertyType', t, { shouldValidate: true });
-                                            setDropdownOpen(false);
-                                          }}
-                                          className={`px-3 py-2 text-left cursor-pointer transition-colors text-[11px] font-semibold flex items-center justify-between border-b border-gray-100/50 last:border-b-0 ${
-                                            currentPropertyType === t
-                                              ? 'bg-[#FFF9E6] text-[#B58110]'
-                                              : 'hover:bg-[#FFFDF0] hover:text-[#B58110] text-gray-700'
-                                          }`}
-                                        >
-                                          <span>{t}</span>
-                                          {currentPropertyType === t && (
-                                            <span className="w-1.5 h-1.5 rounded-full bg-[#E8AF30]" />
-                                          )}
-                                        </div>
-                                      ))}
-                                    </motion.div>
-                                  </>
-                                )}
-                              </AnimatePresence>
                             </div>
                           </div>
 

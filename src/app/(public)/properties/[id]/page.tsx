@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { connectDB } from '@/lib/mongodb';
@@ -31,6 +32,47 @@ export async function generateStaticParams() {
       id: property._id,
     }));
   }
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    await connectDB();
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      const property: any = await Property.findById(id).select('title description seo images').lean();
+      if (property) {
+        return {
+          title: property.seo?.title || `${property.title} | SS Realty`,
+          description: property.seo?.description || property.description,
+          openGraph: {
+            title: property.seo?.title || property.title,
+            description: property.seo?.description || property.description,
+            images: property.images && property.images.length > 0 ? [property.images[0]] : [],
+          }
+        };
+      }
+    }
+  } catch (e) {
+    console.error("Error generating metadata", e);
+  }
+
+  const fallback = FALLBACK_PROPERTIES.find((p) => p._id === id);
+  if (fallback) {
+    return {
+      title: `${fallback.title} | SS Realty`,
+      description: fallback.description,
+      openGraph: {
+        title: fallback.title,
+        description: fallback.description,
+        images: fallback.images && fallback.images.length > 0 ? [fallback.images[0]] : [],
+      }
+    };
+  }
+
+  return {
+    title: 'Property Not Found | SS Realty',
+    description: 'The requested property could not be found.',
+  };
 }
 
 export default async function PropertyLandingPage({ params }: { params: Promise<{ id: string }> }) {

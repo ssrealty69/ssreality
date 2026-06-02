@@ -53,6 +53,10 @@ export interface IProperty extends Document {
     image?: string;
   };
   views: number;
+  seo?: {
+    title: string;
+    description: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -125,6 +129,10 @@ const PropertySchema = new Schema<IProperty>(
       image: { type: String },
     },
     views: { type: Number, default: 0 },
+    seo: {
+      title: { type: String },
+      description: { type: String },
+    },
   },
   { timestamps: true }
 );

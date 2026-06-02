@@ -11,12 +11,19 @@ import { FALLBACK_BLOGS } from '@/lib/blogs';
 
 export const dynamic = 'force-dynamic';
 
-interface Props { params: Promise<{ slug: string }> }
+type Props = { params: Promise<{ slug: string }> };
 
 async function getBlog(slug: string): Promise<Blog | null> {
   try {
     await connectDB();
-    let blog = await BlogModel.findOne({ slug, published: true }).lean() as any;
+    let blog = await BlogModel.findOne({ 
+      slug, 
+      $or: [
+        { published: true }, // Legacy
+        { status: 'published' },
+        { status: 'scheduled', publishDate: { $lte: new Date() } }
+      ]
+    }).lean() as any;
     if (blog) {
       BlogModel.findByIdAndUpdate(blog._id, { $inc: { views: 1 } }).exec().catch(() => {});
     } else {
@@ -85,8 +92,8 @@ export default async function BlogPostPage({ params }: Props) {
     datePublished: blog.createdAt,
     dateModified: blog.updatedAt || blog.createdAt,
     author: {
-      '@type': 'Organization',
-      name: 'SS Realty',
+      '@type': 'Person',
+      name: blog.author?.name || 'SS Realty Expert',
       url: 'https://ssrealty.in',
     },
     publisher: {

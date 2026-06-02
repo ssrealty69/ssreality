@@ -26,14 +26,12 @@ export default function BlogsTable({ initialBlogs }: BlogsTableProps) {
       (blog.excerpt || '').toLowerCase().includes(search.toLowerCase());
     const matchesCategory = categoryFilter ? blog.category === categoryFilter : true;
     
-    let matchesPublished = true;
-    if (publishedFilter === 'published') {
-      matchesPublished = blog.published === true;
-    } else if (publishedFilter === 'draft') {
-      matchesPublished = blog.published === false;
+    let matchesStatus = true;
+    if (publishedFilter) {
+      matchesStatus = blog.status === publishedFilter || (!blog.status && blog.published && publishedFilter === 'published') || (!blog.status && !blog.published && publishedFilter === 'draft');
     }
 
-    return matchesSearch && matchesCategory && matchesPublished;
+    return matchesSearch && matchesCategory && matchesStatus;
   });
 
   // Handle Delete
@@ -98,6 +96,7 @@ export default function BlogsTable({ initialBlogs }: BlogsTableProps) {
           >
             <option value="">All Statuses</option>
             <option value="published">Published</option>
+            <option value="scheduled">Scheduled</option>
             <option value="draft">Draft</option>
           </select>
         </div>
@@ -138,9 +137,10 @@ export default function BlogsTable({ initialBlogs }: BlogsTableProps) {
                     </td>
                     <td className="p-4">
                       <span className={`capitalize text-xs font-bold px-2 py-1 rounded-full ${
-                        blog.published ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                        (blog.status === 'published' || (!blog.status && blog.published)) ? 'bg-green-100 text-green-700' : 
+                        blog.status === 'scheduled' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'
                       }`}>
-                        {blog.published ? 'Published' : 'Draft'}
+                        {blog.status || (blog.published ? 'published' : 'draft')}
                       </span>
                     </td>
                     <td className="p-4 text-sm text-gray-500">

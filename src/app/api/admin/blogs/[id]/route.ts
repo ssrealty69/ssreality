@@ -37,6 +37,14 @@ export async function PUT(
       body.slug = body.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     }
 
+    if (body.status) {
+      if (body.status === 'published') {
+        body.published = true;
+      } else {
+        body.published = false;
+      }
+    }
+
     const blog = await Blog.findByIdAndUpdate(id, body, { new: true }).lean();
     if (!blog) {
       return NextResponse.json({ success: false, error: 'Blog not found' }, { status: 404 });

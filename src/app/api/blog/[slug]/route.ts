@@ -17,7 +17,14 @@ export async function GET(
     let blog;
     try {
       await connectDB();
-      blog = await Blog.findOne({ slug, published: true }).lean();
+      blog = await Blog.findOne({ 
+        slug, 
+        $or: [
+          { published: true }, // Legacy
+          { status: 'published' },
+          { status: 'scheduled', publishDate: { $lte: new Date() } }
+        ]
+      }).lean();
       if (blog) {
         await Blog.findByIdAndUpdate(blog._id, { $inc: { views: 1 } });
       }
