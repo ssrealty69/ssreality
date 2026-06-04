@@ -11,22 +11,14 @@ export default async function AdminDeliveredLandmarks() {
 
   try {
     await connectDB();
-    const rawProperties = await Property.find({}).sort('-createdAt').lean();
+    const rawProperties = await Property.find({ status: 'delivered' }).sort('-createdAt').lean();
     properties = JSON.parse(JSON.stringify(rawProperties));
   } catch (error) {
     console.error("MongoDB Connection Error on Delivered Landmarks Admin:", error);
     dbError = true;
   }
 
-  // Fallback properties for seamless local testing
-  if (dbError || properties.length === 0) {
-    properties = FALLBACK_PROPERTIES.map(p => ({
-      ...p,
-      _id: p._id.toString(),
-      createdAt: p.createdAt || new Date().toISOString(),
-      updatedAt: p.updatedAt || new Date().toISOString(),
-    }));
-  }
+
 
   return (
     <div className="space-y-6">

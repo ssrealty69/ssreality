@@ -2,13 +2,14 @@ import type { MetadataRoute } from 'next';
 import { connectDB } from '@/lib/mongodb';
 import Property from '@/models/Property';
 import Blog from '@/models/Blog';
+import { Question } from '@/models/Question';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in';
 
   // Yahan apne dynamic pages add kar sakte ho (database se bhi fetch kar sakte ho)
   const staticPages: MetadataRoute.Sitemap = [
-    '', '/properties', '/about', '/contact', '/blog'
+    '', '/properties', '/about', '/contact', '/blog', '/ask-anything'
   ].map(route => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -49,7 +50,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    return [...staticPages, ...propertyPages, ...blogPages];
+    // Fetch published QA questions
+    const questions = await Question.find({ status: 'published' }).select('slug updatedAt createdAt').lean();
+    
+    const qaPages: MetadataRoute.Sitemap = questions.map((q: any) => ({
+      url: `${baseUrl}/ask-anything/${q.slug}`,
+      lastModified: q.updatedAt || q.createdAt || new Date(),
+      changeFrequency: 'daily',
+      priority: 0.7,
+    }));
+
+    return [...staticPages, ...propertyPages, ...blogPages, ...qaPages];
   } catch (error) {
     console.error('Error generating sitemap:', error);
     // Return static pages as fallback

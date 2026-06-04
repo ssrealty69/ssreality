@@ -143,7 +143,7 @@ export function SeoControlPanel({ data, onChange, defaultTitle = '', defaultExce
           {/* Breadcrumbs */}
           <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-1 font-sans">
             <Globe size={11} className="text-gray-400" />
-            <span>https://ssrealty.in</span>
+            <span>https://ssrealty.com</span>
             <span className="text-gray-400">›</span>
             <span>blog</span>
             <span className="text-gray-400">›</span>
@@ -168,7 +168,7 @@ export function SeoControlPanel({ data, onChange, defaultTitle = '', defaultExce
         {/* Title */}
         <div className="space-y-1 md:col-span-2">
           <div className="flex justify-between items-center">
-            <label className="block text-xs font-bold text-gray-700">SEO Custom Title</label>
+            <label className="block text-xs font-bold text-gray-700">Page Title / Tab Title (SEO Custom Title)</label>
             <span className={`text-[10px] font-bold ${
               data.title.length >= 50 && data.title.length <= 60 ? 'text-emerald-500' : 'text-gray-400'
             }`}>
@@ -254,7 +254,7 @@ export function SeoControlPanel({ data, onChange, defaultTitle = '', defaultExce
             type="url"
             value={data.canonicalUrl}
             onChange={(e) => updateField('canonicalUrl', e.target.value)}
-            placeholder="https://ssrealty.in/blog/your-slug"
+            placeholder="https://ssrealty.com/blog/your-slug"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
           />
         </div>

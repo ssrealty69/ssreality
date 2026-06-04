@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Compass, Image as ImageIcon, ListPlus, Save, AlertCircle, Sparkles, ChevronDown, ChevronUp, MapPin } from 'lucide-react';
+import { Check, Compass, Image as ImageIcon, ListPlus, Save, AlertCircle, Sparkles, ChevronDown, ChevronUp, MapPin, Plus, Trash2, ArrowLeftRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { MediaUpload } from '@/components/admin/MediaUpload';
 
 interface DeliveredLandmarksClientProps {
   initialProperties: any[];
@@ -12,165 +13,202 @@ export default function DeliveredLandmarksClient({ initialProperties }: Delivere
   const [properties, setProperties] = useState(initialProperties);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [localHighlights, setLocalHighlights] = useState<{ [key: string]: string[] }>({});
+  
+  // Local state for editing fields before saving
+  const [editForm, setEditForm] = useState<any>({});
 
-  // Initialize highlight points for a property
-  const getHighlights = (prop: any) => {
-    if (localHighlights[prop._id]) {
-      return localHighlights[prop._id];
+  const handleExpand = (prop: any) => {
+    if (expandedId === prop._id) {
+      setExpandedId(null);
+    } else {
+      setExpandedId(prop._id);
+      
+      // Ensure 4 pointers exist
+      const paddedAmenities = [...(prop.amenities || [])];
+      while (paddedAmenities.length < 4) {
+        paddedAmenities.push('');
+      }
+
+      setEditForm({
+        title: prop.title || '',
+        propertyType: prop.propertyType || 'apartment',
+        address: prop.location?.address || '',
+        city: prop.location?.city || '',
+        googleMapsUrl: prop.googleMapsUrl || '',
+        amenities: paddedAmenities.slice(0, 4),
+        images: [...(prop.images || [])]
+      });
     }
-    const current = prop.amenities || [];
-    // Ensure we always have exactly 4 strings
-    const padded = [...current];
-    while (padded.length < 4) {
-      padded.push('');
-    }
-    return padded.slice(0, 4);
   };
 
-  const handleHighlightChange = (propId: string, index: number, value: string) => {
-    const current = [...getHighlights(properties.find(p => p._id === propId))];
-    current[index] = value;
-    setLocalHighlights(prev => ({
-      ...prev,
-      [propId]: current
-    }));
-  };
-
-  // Toggle Delivered status
-  const handleToggleDelivered = async (prop: any) => {
-    const isCurrentlyDelivered = prop.status === 'delivered';
-    const newStatus = isCurrentlyDelivered ? 'available' : 'delivered';
-    setUpdatingId(prop._id);
+  const handleAddNew = async () => {
+    setUpdatingId('new');
+    const dummyData = {
+      title: "New Delivered Landmark",
+      description: "Manual entry for delivered landmark.",
+      price: 0,
+      priceType: "sale",
+      propertyType: "apartment",
+      status: "delivered",
+      location: {
+        address: "TBD",
+        city: "TBD",
+        state: "Haryana"
+      },
+      features: {
+        area: 0,
+        areaUnit: "sqft"
+      },
+      agent: {
+        name: "Admin",
+        phone: "0000000000",
+        email: "admin@ssrealty.in"
+      },
+      images: [],
+      amenities: ["", "", "", ""]
+    };
 
     try {
-      const res = await fetch(`/api/admin/properties/${prop._id}`, {
-        method: 'PUT',
+      const res = await fetch('/api/admin/properties', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify(dummyData),
       });
 
       if (res.ok) {
-        setProperties(prev => 
-          prev.map(p => p._id === prop._id ? { ...p, status: newStatus } : p)
-        );
-        toast.success(
-          newStatus === 'delivered' 
-            ? `${prop.title} added to Delivered Landmarks!` 
-            : `${prop.title} returned to regular listings.`
-        );
+        const { data } = await res.json();
+        setProperties(prev => [data, ...prev]);
+        toast.success("New Landmark added! Please edit it.");
+        handleExpand(data);
       } else {
-        toast.error('Failed to update property status.');
+        toast.error("Failed to add new landmark.");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error('An error occurred while updating status.');
+    } catch (e) {
+      toast.error("An error occurred.");
     } finally {
       setUpdatingId(null);
     }
   };
 
-  // Update image order (make selected image index 0)
-  const handleSelectMedallionImage = async (prop: any, imgUrl: string) => {
-    const currentImages = prop.images || [];
-    if (currentImages[0] === imgUrl) return; // already primary
-
-    setUpdatingId(prop._id);
-    const newImages = [imgUrl, ...currentImages.filter((img: string) => img !== imgUrl)];
-
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to remove this landmark?')) return;
+    setUpdatingId(id);
     try {
-      const res = await fetch(`/api/admin/properties/${prop._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ images: newImages }),
+      const res = await fetch(`/api/admin/properties/${id}`, {
+        method: 'DELETE',
       });
-
       if (res.ok) {
-        setProperties(prev => 
-          prev.map(p => p._id === prop._id ? { ...p, images: newImages } : p)
-        );
-        toast.success('Medallion image updated successfully!');
+        setProperties(prev => prev.filter(p => p._id !== id));
+        toast.success('Landmark removed.');
       } else {
-        toast.error('Failed to update medallion image.');
+        toast.error('Failed to remove.');
       }
-    } catch (error) {
-      console.error(error);
-      toast.error('An error occurred while updating image.');
+    } catch(e) {
+      toast.error('Error occurred.');
     } finally {
       setUpdatingId(null);
     }
   };
 
-  // Save highlight pointers
-  const handleSaveHighlights = async (propId: string) => {
-    const prop = properties.find(p => p._id === propId);
-    if (!prop) return;
-
+  const handleSave = async (propId: string) => {
     setUpdatingId(propId);
-    const highlights = getHighlights(prop).filter((h: string) => h.trim() !== '');
+    
+    const updateData = {
+      title: editForm.title,
+      propertyType: editForm.propertyType,
+      'location.address': editForm.address,
+      'location.city': editForm.city,
+      googleMapsUrl: editForm.googleMapsUrl,
+      amenities: editForm.amenities.filter((a: string) => a.trim() !== ''),
+      images: editForm.images.filter(Boolean)
+    };
 
     try {
       const res = await fetch(`/api/admin/properties/${propId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amenities: highlights }),
+        body: JSON.stringify(updateData),
       });
 
       if (res.ok) {
-        setProperties(prev => 
-          prev.map(p => p._id === propId ? { ...p, amenities: highlights } : p)
-        );
-        toast.success('Highlights points saved successfully!');
-        setExpandedId(null); // Automatically collapse the configuration drawer
+        const { data } = await res.json();
+        setProperties(prev => prev.map(p => p._id === propId ? data : p));
+        toast.success('Landmark updated successfully!');
+        setExpandedId(null);
       } else {
-        toast.error('Failed to save highlights points.');
+        toast.error('Failed to update landmark.');
       }
-    } catch (error) {
-      console.error(error);
-      toast.error('An error occurred while saving highlights.');
+    } catch(e) {
+      toast.error('Error occurred.');
     } finally {
       setUpdatingId(null);
     }
   };
 
+  const handleSwapImages = () => {
+    if (editForm.images.length >= 2) {
+      const newImages = [...editForm.images];
+      const temp = newImages[0];
+      newImages[0] = newImages[1];
+      newImages[1] = temp;
+      setEditForm({ ...editForm, images: newImages });
+    }
+  };
+
+  const handleImageChange = (url: string, index: number) => {
+    const newImages = [...(editForm.images || [])];
+    newImages[index] = url;
+    setEditForm({ ...editForm, images: newImages });
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20">
       {/* Overview Card */}
-      <div className="bg-[#FAF8F2] border border-[#C9A227]/30 rounded-2xl p-5 flex items-start gap-4 shadow-sm">
-        <Compass className="text-[#AA7C11] shrink-0 mt-0.5 animate-[spin_40s_linear_infinite]" size={22} />
-        <div>
-          <h2 className="text-base font-bold text-[#AA7C11] uppercase tracking-wider font-serif">Gold Standard Landmarks</h2>
-          <p className="text-gray-600 text-xs mt-1 leading-relaxed">
-            Mark properties as <strong>Delivered</strong> to show them on the Home Page Delivered Landmarks section. You can customize the 4 key highlight pointers and choose which photo should represent the property in the round medallion.
-          </p>
+      <div className="bg-[#FAF8F2] border border-[#C9A227]/30 rounded-2xl p-5 flex flex-col md:flex-row items-start justify-between shadow-sm gap-4">
+        <div className="flex items-start gap-4">
+            <Compass className="text-[#AA7C11] shrink-0 mt-0.5 animate-[spin_40s_linear_infinite]" size={22} />
+            <div>
+            <h2 className="text-base font-bold text-[#AA7C11] uppercase tracking-wider font-serif">Gold Standard Landmarks</h2>
+            <p className="text-gray-600 text-xs mt-1 leading-relaxed max-w-2xl">
+                Manage your Delivered Landmarks. You can manually add past properties that are completely sold out, and upload exactly 2 images for them. The first image will be the primary Medallion image on the front-end.
+            </p>
+            </div>
         </div>
+        <button
+            onClick={handleAddNew}
+            disabled={updatingId === 'new'}
+            className="flex items-center gap-2 bg-[#1A1800] hover:bg-[#AA7C11] text-white px-4 py-2.5 rounded-xl font-bold uppercase tracking-wider text-xs transition-colors shadow-lg cursor-pointer shrink-0"
+        >
+            <Plus size={16} />
+            <span>Add New Landmark</span>
+        </button>
       </div>
 
       {/* Properties List */}
       <div className="grid grid-cols-1 gap-6">
         {properties.map((prop) => {
-          const isDelivered = prop.status === 'delivered';
           const isExpanded = expandedId === prop._id;
-          const highlights = getHighlights(prop);
-          const currentMedallionImage = prop.images?.[0] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=300&q=80';
+          const currentMedallionImage = prop.images?.[0];
 
           return (
             <div 
               key={prop._id}
-              className={`bg-white border transition-all duration-300 rounded-2xl overflow-hidden shadow-sm hover:shadow-md ${
-                isDelivered ? 'border-[#C9A227]/50' : 'border-gray-200'
-              }`}
+              className={`bg-white border transition-all duration-300 rounded-2xl overflow-hidden shadow-sm hover:shadow-md border-[#C9A227]/50`}
             >
               {/* Header Info Row */}
               <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   {/* Small Circular Image Thumbnail */}
-                  <div className="relative w-16 h-16 rounded-full overflow-hidden border border-[#C9A227]/40 shrink-0 bg-[#FAF8F2]">
-                    <img 
-                      src={currentMedallionImage} 
-                      alt={prop.title}
-                      className="object-cover w-full h-full"
-                    />
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden border border-[#C9A227]/40 shrink-0 bg-[#FAF8F2] flex items-center justify-center">
+                    {currentMedallionImage ? (
+                      <img 
+                        src={currentMedallionImage} 
+                        alt={prop.title}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <ImageIcon size={24} className="text-gray-300" />
+                    )}
                   </div>
 
                   <div>
@@ -187,53 +225,67 @@ export default function DeliveredLandmarksClient({ initialProperties }: Delivere
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
-                  {/* Status Toggle Badge */}
-                  <div className="flex items-center gap-2">
-                    <span className={`text-xs font-black uppercase tracking-wider ${isDelivered ? 'text-emerald-600' : 'text-gray-400'}`}>
-                      {isDelivered ? 'Delivered' : 'Not Delivered'}
-                    </span>
-                    <button
-                      onClick={() => handleToggleDelivered(prop)}
-                      disabled={updatingId === prop._id}
-                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                        isDelivered ? 'bg-emerald-500' : 'bg-gray-200'
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                          isDelivered ? 'translate-x-5' : 'translate-x-0'
-                        }`}
-                      />
-                    </button>
-                  </div>
-
-                  {/* Expand Configuration Button */}
-                  {isDelivered && (
-                    <button
-                      onClick={() => setExpandedId(isExpanded ? null : prop._id)}
-                      className="p-2 hover:bg-[#C9A227]/10 text-[#AA7C11] rounded-lg transition-colors border border-[#C9A227]/20 flex items-center gap-1.5 text-xs font-bold uppercase cursor-pointer"
-                    >
-                      <span>Configure</span>
-                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                    </button>
-                  )}
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                  <button
+                    onClick={() => handleDelete(prop._id)}
+                    disabled={updatingId === prop._id}
+                    className="p-2 hover:bg-red-50 text-red-500 rounded-lg transition-colors border border-red-100 flex items-center gap-1.5 text-xs font-bold uppercase cursor-pointer"
+                    title="Remove Landmark"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <button
+                    onClick={() => handleExpand(prop)}
+                    className="p-2 hover:bg-[#C9A227]/10 text-[#AA7C11] rounded-lg transition-colors border border-[#C9A227]/20 flex items-center gap-1.5 text-xs font-bold uppercase cursor-pointer min-w-[80px] justify-center"
+                  >
+                    <span>{isExpanded ? 'Close' : 'Edit'}</span>
+                    {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  </button>
                 </div>
               </div>
 
               {/* Collapsible Edit Section */}
-              {isDelivered && isExpanded && (
-                <div className="border-t border-[#C9A227]/20 bg-[#FAF8F2]/30 p-5 space-y-6 animate-fade-in-up">
+              {isExpanded && (
+                <div className="border-t border-[#C9A227]/20 bg-[#FAF8F2]/30 p-5 space-y-8 animate-fade-in-up">
                   
+                  {/* Basic Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Title</label>
+                        <input type="text" value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} className="bg-white border border-[#C9A227]/30 text-gray-800 text-sm rounded-xl p-3 focus:border-[#C9A227] outline-none w-full" />
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Property Type</label>
+                        <select value={editForm.propertyType} onChange={e => setEditForm({...editForm, propertyType: e.target.value})} className="bg-white border border-[#C9A227]/30 text-gray-800 text-sm rounded-xl p-3 focus:border-[#C9A227] outline-none w-full">
+                            <option value="apartment">Apartment</option>
+                            <option value="villa">Villa</option>
+                            <option value="plot">Plot</option>
+                            <option value="commercial">Commercial</option>
+                            <option value="office">Office</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Address</label>
+                        <input type="text" value={editForm.address} onChange={e => setEditForm({...editForm, address: e.target.value})} className="bg-white border border-[#C9A227]/30 text-gray-800 text-sm rounded-xl p-3 focus:border-[#C9A227] outline-none w-full" />
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">City</label>
+                        <input type="text" value={editForm.city} onChange={e => setEditForm({...editForm, city: e.target.value})} className="bg-white border border-[#C9A227]/30 text-gray-800 text-sm rounded-xl p-3 focus:border-[#C9A227] outline-none w-full" />
+                    </div>
+                    <div>
+                        <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Google Maps Link</label>
+                        <input type="url" value={editForm.googleMapsUrl} onChange={e => setEditForm({...editForm, googleMapsUrl: e.target.value})} placeholder="https://maps.google.com/..." className="bg-white border border-[#C9A227]/30 text-gray-800 text-sm rounded-xl p-3 focus:border-[#C9A227] outline-none w-full" />
+                    </div>
+                  </div>
+
                   {/* 1. Highlights Pointer Section */}
-                  <div className="space-y-3">
+                  <div className="space-y-3 pt-4 border-t border-dashed border-[#C9A227]/20">
                     <div className="flex items-center gap-1.5 text-[#AA7C11] text-xs font-black uppercase tracking-wider">
                       <ListPlus size={16} />
-                      <span>1. Custom Highlight Pointers (Max 4)</span>
+                      <span>Custom Highlight Pointers (Max 4)</span>
                     </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {highlights.map((value, idx) => (
+                      {editForm.amenities.map((value: string, idx: number) => (
                         <div key={idx} className="flex flex-col">
                           <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                             Pointer {idx + 1}
@@ -241,81 +293,72 @@ export default function DeliveredLandmarksClient({ initialProperties }: Delivere
                           <input
                             type="text"
                             value={value}
-                            onChange={(e) => handleHighlightChange(prop._id, idx, e.target.value)}
+                            onChange={(e) => {
+                                const newAm = [...editForm.amenities];
+                                newAm[idx] = e.target.value;
+                                setEditForm({...editForm, amenities: newAm});
+                            }}
                             placeholder={`e.g. Possession & Registry 100% Done`}
                             className="bg-white border border-[#C9A227]/30 text-gray-800 text-xs rounded-xl p-3 focus:border-[#C9A227] focus:ring-2 focus:ring-[#C9A227]/10 outline-none w-full"
                           />
                         </div>
                       ))}
                     </div>
+                  </div>
 
-                    <div className="flex justify-end pt-2">
-                      <button
-                        onClick={() => handleSaveHighlights(prop._id)}
-                        disabled={updatingId === prop._id}
-                        className="flex items-center gap-1.5 bg-[#C9A227] hover:bg-[#B8860B] text-[#1A1800] font-black text-xs px-4 py-2.5 rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer uppercase tracking-wider"
-                      >
-                        <Save size={14} />
-                        <span>Save Pointers</span>
-                      </button>
+                  {/* 2. Image Manager */}
+                  <div className="space-y-4 pt-4 border-t border-dashed border-[#C9A227]/20">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-[#AA7C11] text-xs font-black uppercase tracking-wider">
+                        <ImageIcon size={16} />
+                        <span>2 Images Setup</span>
+                        </div>
+                        <button 
+                          onClick={handleSwapImages}
+                          type="button"
+                          className="flex items-center gap-1 bg-[#F5F5F5] hover:bg-gray-200 text-gray-700 text-[10px] uppercase font-bold px-3 py-1.5 rounded border border-gray-300 transition-colors cursor-pointer"
+                        >
+                            <ArrowLeftRight size={14} /> Swap Images
+                        </button>
+                    </div>
+                    <p className="text-gray-500 text-[11px] leading-relaxed -mt-2">
+                      Upload exactly 2 images. Image 1 is the front medallion. Image 2 shows on hover. Use the Swap button to reverse them.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2 p-4 border border-[#C9A227]/30 rounded-xl bg-white relative">
+                            <div className="absolute top-2 left-2 bg-[#C9A227] text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow z-10 pointer-events-none">Image 1 (Front)</div>
+                            <MediaUpload 
+                                label=""
+                                description=""
+                                value={editForm.images[0] || ''}
+                                onChange={(url) => handleImageChange(url, 0)}
+                                folder="ss-realty/landmarks"
+                            />
+                        </div>
+                        <div className="space-y-2 p-4 border border-[#C9A227]/30 rounded-xl bg-white relative">
+                            <div className="absolute top-2 left-2 bg-gray-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow z-10 pointer-events-none">Image 2 (Hover)</div>
+                            <MediaUpload 
+                                label=""
+                                description=""
+                                value={editForm.images[1] || ''}
+                                onChange={(url) => handleImageChange(url, 1)}
+                                folder="ss-realty/landmarks"
+                            />
+                        </div>
                     </div>
                   </div>
 
-                  {/* 2. Medallion Image Picker */}
-                  <div className="space-y-3 pt-3 border-t border-dashed border-[#C9A227]/20">
-                    <div className="flex items-center gap-1.5 text-[#AA7C11] text-xs font-black uppercase tracking-wider">
-                      <ImageIcon size={16} />
-                      <span>2. Choose Circular Medallion Image</span>
-                    </div>
-                    <p className="text-gray-500 text-[11px] leading-relaxed">
-                      Select which property picture should represent this landmark inside the round circle medallion on the Homepage.
-                    </p>
-
-                    {(!prop.images || prop.images.length === 0) ? (
-                      <div className="text-center p-4 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-gray-500 text-xs flex items-center justify-center gap-2">
-                        <AlertCircle size={16} />
-                        <span>No images uploaded for this property yet. Upload images via Properties Edit page.</span>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
-                        {prop.images.map((imgUrl: string, idx: number) => {
-                          const isPrimary = prop.images[0] === imgUrl;
-
-                          return (
-                            <button
-                              key={idx}
-                              onClick={() => handleSelectMedallionImage(prop, imgUrl)}
-                              disabled={updatingId === prop._id}
-                              className={`group relative aspect-square rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                                isPrimary 
-                                  ? 'border-[#C9A227] shadow-[0_0_10px_rgba(201,162,39,0.3)]' 
-                                  : 'border-transparent hover:border-gray-300'
-                              }`}
-                            >
-                              <img 
-                                src={imgUrl} 
-                                alt={`Property view ${idx + 1}`} 
-                                className="object-cover w-full h-full"
-                              />
-
-                              {isPrimary ? (
-                                <div className="absolute inset-0 bg-[#C9A227]/10 flex items-center justify-center">
-                                  <div className="bg-[#C9A227] text-[#1A1800] text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded shadow">
-                                    Active
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-                                  <div className="bg-white/90 text-gray-800 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow">
-                                    Set Active
-                                  </div>
-                                </div>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                  {/* Save Button */}
+                  <div className="flex justify-end pt-4 border-t border-[#C9A227]/20">
+                      <button
+                        onClick={() => handleSave(prop._id)}
+                        disabled={updatingId === prop._id}
+                        className="flex items-center gap-2 bg-[#C9A227] hover:bg-[#B8860B] text-[#1A1800] font-black text-sm px-6 py-3 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer uppercase tracking-wider"
+                      >
+                        <Save size={16} />
+                        <span>Save Landmark Changes</span>
+                      </button>
                   </div>
 
                 </div>

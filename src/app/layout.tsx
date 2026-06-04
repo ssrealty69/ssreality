@@ -207,6 +207,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </noscript>
         )}
         <TrackingProvider settings={settings}>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: 'SS Realty',
+                url: process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in',
+                logo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in'}/SS Realty Official Logo.png`,
+                description: 'SS Realty — Your trusted real estate partner in Delhi NCR. Find premium apartments, villas, plots and commercial properties for sale and rent.',
+                contactPoint: {
+                  '@type': 'ContactPoint',
+                  telephone: '+91-9999999999', // Update as needed
+                  contactType: 'customer service'
+                }
+              }),
+            }}
+          />
           {children}
         </TrackingProvider>
         <Toaster

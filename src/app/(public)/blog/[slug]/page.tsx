@@ -45,10 +45,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!blog) return { title: 'Post Not Found | SS Realty' };
   
   // Custom SEO parameters with rich defaults
-  const seoTitle = blog.seo?.title || `${blog.title} | SS Realty Blog`;
+  const seoTitle = blog.seo?.title || blog.title;
   const seoDesc = blog.seo?.description || blog.excerpt;
   const seoKeywords = blog.seo?.keywords || blog.tags?.join(', ') || '';
-  const canonicalUrl = blog.seo?.canonicalUrl || `https://ssrealty.in/blog/${slug}`;
+  const canonicalUrl = blog.seo?.canonicalUrl || `https://ssrealty.com/blog/${slug}`;
 
   return {
     title: seoTitle,

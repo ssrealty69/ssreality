@@ -53,9 +53,10 @@ function DeliveredPropertyCard({ property }: { property: Property }) {
             alt={`${property.title} - ${property.location.city}`}
             fill
             className={`object-cover transition-all duration-1000 ease-out ${isHovered && hasSecondImage ? 'opacity-0 scale-110' : 'opacity-100 scale-100 group-hover:scale-105'}`}
-            sizes="224px"
-            quality={85}
-            loading="lazy"
+            sizes="(max-width: 768px) 100vw, 600px"
+            quality={100}
+            priority
+            unoptimized
             onError={() => setMainImageError(true)}
           />
 
@@ -66,8 +67,10 @@ function DeliveredPropertyCard({ property }: { property: Property }) {
               alt={`${property.title} - View 2`}
               fill
               className={`object-cover transition-all duration-1000 ease-out ${isHovered ? 'opacity-100 scale-105' : 'opacity-0'}`}
-              sizes="224px"
-              quality={85}
+              sizes="(max-width: 768px) 100vw, 600px"
+              quality={100}
+              priority
+              unoptimized
               onError={() => setImageError(true)}
             />
           )}
