@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { QAContentEditor } from '@/components/qa/QAContentEditor';
 
-export default function EditAnswerPage({ params }: { params: { id: string } }) {
+export default function EditAnswerPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const unwrappedParams = use(params);
   const [questions, setQuestions] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     questionId: '',
@@ -29,7 +30,7 @@ export default function EditAnswerPage({ params }: { params: { id: string } }) {
       });
     
     // Fetch the answer being edited
-    fetch(`/api/admin/qa/answers/${params.id}`)
+    fetch(`/api/admin/qa/answers/${unwrappedParams.id}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -42,7 +43,7 @@ export default function EditAnswerPage({ params }: { params: { id: string } }) {
         }
       })
       .finally(() => setLoading(false));
-  }, [params.id]);
+  }, [unwrappedParams.id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +53,7 @@ export default function EditAnswerPage({ params }: { params: { id: string } }) {
     }
     setSaving(true);
     try {
-      const res = await fetch(`/api/admin/qa/answers/${params.id}`, {
+      const res = await fetch(`/api/admin/qa/answers/${unwrappedParams.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

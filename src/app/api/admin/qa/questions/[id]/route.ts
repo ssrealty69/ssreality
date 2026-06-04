@@ -4,10 +4,11 @@ import { Question } from '@/models/Question';
 import { Answer } from '@/models/Answer';
 import { connectDB } from '@/lib/mongodb';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     await connectDB();
-    const question = await Question.findById(params.id).populate('answers').lean();
+    const question = await Question.findById(id).populate('answers').lean();
 
     if (!question) {
       return NextResponse.json({ success: false, error: 'Question not found' }, { status: 404 });
@@ -23,12 +24,13 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     await connectDB();
     const data = await req.json();
 
-    const updatedQuestion = await Question.findByIdAndUpdate(params.id, data, {
+    const updatedQuestion = await Question.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
     });
@@ -72,10 +74,11 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     await connectDB();
-    const deletedQuestion = await Question.findByIdAndDelete(params.id);
+    const deletedQuestion = await Question.findByIdAndDelete(id);
 
     if (!deletedQuestion) {
       return NextResponse.json({ success: false, error: 'Question not found' }, { status: 404 });

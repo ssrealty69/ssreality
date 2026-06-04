@@ -3,10 +3,11 @@ import mongoose from 'mongoose';
 import { Question } from '@/models/Question';
 import { connectDB } from '@/lib/mongodb';
 
-export async function GET(req: Request, { params }: { params: { slug: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
+    const { slug } = await params;
     await connectDB();
-    const question = await Question.findOne({ slug: params.slug, status: 'published' })
+    const question = await Question.findOne({ slug, status: 'published' })
       .populate({
         path: 'answers',
         match: { status: 'published' },
