@@ -11,7 +11,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
       .populate({
         path: 'answers',
         match: { status: 'published' },
-        sort: { upvotes: -1, createdAt: -1 }
+        options: { sort: { upvotes: -1, createdAt: -1 } }
       })
       .lean();
 
