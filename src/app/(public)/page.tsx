@@ -4,6 +4,8 @@ import HeroSection from '@/components/home/HeroSection';
 import FeaturedProperties from '@/components/home/FeaturedProperties';
 import type { Property } from '@/types';
 import { FALLBACK_PROPERTIES } from '@/constants/properties';
+import { connectDB } from '@/lib/mongodb';
+import PropertyModel from '@/models/Property';
 
 // Lazy-load below-the-fold sections — they won't block initial paint
 const ProjectHighlights = dynamic(() => import('@/components/home/ProjectHighlights'), { ssr: true });
@@ -22,28 +24,28 @@ export const metadata: Metadata = {
 
 export const revalidate = 3600; // Cache the page for 1 hour
 
-async function getProperties(query: string): Promise<Property[]> {
-  try {
-    const base = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const res = await fetch(`${base}/api/properties?${query}`, {
-      next: { revalidate: 3600 },
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.data || [];
-  } catch {
-    return [];
-  }
-}
-
 export default async function HomePage() {
-  // Fetch data for different sections
-  const [latestData, apartmentData, plotData, deliveredData] = await Promise.all([
-    getProperties('sort=-createdAt&limit=4&status=available'),
-    getProperties('propertyType=apartment&limit=4&status=available'),
-    getProperties('propertyType=plot&limit=4&status=available'),
-    getProperties('limit=6&status=delivered')
-  ]);
+  let latestData: any[] = [];
+  let apartmentData: any[] = [];
+  let plotData: any[] = [];
+  let deliveredData: any[] = [];
+
+  try {
+    await connectDB();
+    const [latestRaw, apartmentRaw, plotRaw, deliveredRaw] = await Promise.all([
+      PropertyModel.find({ status: 'available' }).sort('-createdAt').limit(4).lean(),
+      PropertyModel.find({ propertyType: 'apartment', status: 'available' }).sort('-createdAt').limit(4).lean(),
+      PropertyModel.find({ propertyType: 'plot', status: 'available' }).sort('-createdAt').limit(4).lean(),
+      PropertyModel.find({ status: 'delivered' }).sort('-createdAt').limit(6).lean(),
+    ]);
+
+    latestData = JSON.parse(JSON.stringify(latestRaw));
+    apartmentData = JSON.parse(JSON.stringify(apartmentRaw));
+    plotData = JSON.parse(JSON.stringify(plotRaw));
+    deliveredData = JSON.parse(JSON.stringify(deliveredRaw));
+  } catch (error) {
+    console.error("Error fetching homepage data directly from MongoDB:", error);
+  }
 
   // Fallback logic for demo/empty state
   const latestProperties = latestData.length > 0 ? latestData : FALLBACK_PROPERTIES.slice(0, 4);
