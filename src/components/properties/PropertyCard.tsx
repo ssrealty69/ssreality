@@ -19,7 +19,7 @@ export default function PropertyCard({ property, priority = false, actionText, o
   const [isHovered, setIsHovered] = useState(false);
   const [hoverImageError, setHoverImageError] = useState(false);
   
-  const mainImage = property.images?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+  const mainImage = property.images?.[0] || '/SS Realty.png';
   const hoverImage = property.images?.[1] || mainImage;
   
   const hasSecondImage = !!property.images?.[1] && !hoverImageError;

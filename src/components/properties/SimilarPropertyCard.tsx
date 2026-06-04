@@ -11,7 +11,7 @@ interface SimilarPropertyCardProps {
 }
 
 export default function SimilarPropertyCard({ property }: SimilarPropertyCardProps) {
-  const mainImage = property.images?.[0] || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+  const mainImage = property.images?.[0] || '/SS Realty.png';
   
   return (
     <article className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full group transition-all duration-300 hover:shadow-md hover:border-[#C9A227]/30">

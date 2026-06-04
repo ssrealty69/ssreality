@@ -16,7 +16,7 @@ function DeliveredPropertyCard({ property }: { property: Property }) {
   const [imageError, setImageError] = useState(false);
 
   const mainImage = mainImageError || !property.images?.[0]
-    ? 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80'
+    ? '/SS Realty.png'
     : property.images[0];
   const hoverImage = property.images?.[1] || mainImage;
   const hasSecondImage = !!property.images?.[1] && !imageError;
