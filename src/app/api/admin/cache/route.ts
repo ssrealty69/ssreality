@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { invalidateCache } from '@/lib/redis';
 
 export const dynamic = 'force-dynamic';
@@ -22,6 +23,9 @@ export async function POST(req: NextRequest) {
     await invalidateCache('blogs:*');
     await invalidateCache('blog:*');
     await invalidateCache('property:*');
+
+    // Clear Next.js cache
+    revalidatePath('/', 'layout');
 
     return NextResponse.json({ success: true, message: 'Cache successfully cleared' });
   } catch (error: unknown) {
