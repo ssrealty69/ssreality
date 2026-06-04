@@ -46,11 +46,11 @@ export default async function HomePage() {
   ]);
 
   // Fallback logic for demo/empty state
-  const latestProperties = latestData;
-  const apartments = apartmentData;
-  const plots = plotData;
+  const latestProperties = latestData.length > 0 ? latestData : FALLBACK_PROPERTIES.slice(0, 4);
+  const apartments = apartmentData.length > 0 ? apartmentData : FALLBACK_PROPERTIES.filter(p => p.propertyType === 'apartment').slice(0, 4);
+  const plots = plotData.length > 0 ? plotData : FALLBACK_PROPERTIES.filter(p => p.propertyType === 'plot').slice(0, 4);
   const trueDeliveredData = deliveredData.filter((p: Property) => p.status === 'delivered');
-  const deliveredProperties = trueDeliveredData;
+  const deliveredProperties = trueDeliveredData.length > 0 ? trueDeliveredData : FALLBACK_PROPERTIES.filter(p => p.status === 'delivered');
 
   const faqSchema = {
     "@context": "https://schema.org",

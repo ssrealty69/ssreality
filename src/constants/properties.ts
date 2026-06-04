@@ -11,10 +11,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Sector 63', city: 'Noida', state: 'Uttar Pradesh', pincode: '201301' },
     features: { bedrooms: 3, bathrooms: 3, area: 1850, areaUnit: 'sqft', parking: true, furnished: false },
-    images: [
-      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: true,
     amenities: ['Gym', 'Swimming Pool', 'Power Backup', '24x7 Security'],
     brochureUrl: '/SS%20Realty%20Arch%20Property%20Brochure.pdf',
@@ -31,10 +28,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Knowledge Park', city: 'Greater Noida', state: 'Uttar Pradesh', pincode: '201310' },
     features: { bedrooms: 4, bathrooms: 4, area: 3200, areaUnit: 'sqft', parking: true, furnished: true },
-    images: [
-      'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: true,
     amenities: ['Private Garden', 'Clubhouse', 'Gym', 'Parking'],
     brochureUrl: '/Nivasa.pdf',
@@ -51,10 +45,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Sector 62', city: 'Noida', state: 'Uttar Pradesh', pincode: '201309' },
     features: { area: 1200, areaUnit: 'sqft', parking: true },
-    images: [
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: false,
     amenities: ['Power Backup', 'Security', 'Lift', 'Parking'],
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
@@ -70,10 +61,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Yamuna Expressway', city: 'Greater Noida', state: 'Uttar Pradesh', pincode: '201301' },
     features: { bedrooms: 2, bathrooms: 2, area: 1150, areaUnit: 'sqft', parking: true },
-    images: [
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: true,
     amenities: ['Play Area', 'Garden', 'Security', 'Water Supply'],
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
@@ -89,10 +77,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Delhi Ridge', city: 'New Delhi', state: 'Delhi', pincode: '110001' },
     features: { bedrooms: 5, bathrooms: 6, area: 4500, areaUnit: 'sqft', parking: true, furnished: true },
-    images: [
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: true,
     amenities: ['Private Pool', 'Gym', 'Home Theater', 'Landscaped Garden'],
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
@@ -108,10 +93,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Jewar Toll Plaza', city: 'Jewar', state: 'Uttar Pradesh', pincode: '203135' },
     features: { area: 150, areaUnit: 'sqyd', parking: false },
-    images: [
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: true,
     amenities: ['Gated Community', 'Upcoming Metro', 'Near Airport', '24x7 Security'],
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
@@ -127,10 +109,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Sector 102', city: 'Gurugram', state: 'Haryana', pincode: '122001' },
     features: { area: 200, areaUnit: 'sqyd', parking: false },
-    images: [
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1473081556163-2a17de81fc97?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: true,
     amenities: ['Power Connection', 'Water Supply', 'Wide Roads', 'Park'],
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
@@ -146,10 +125,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Sector 140', city: 'Noida', state: 'Uttar Pradesh', pincode: '201305' },
     features: { area: 120, areaUnit: 'sqyd', parking: true },
-    images: [
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: true,
     amenities: ['Corner Plot', 'Main Road Facing', 'Basement Allowed', 'Commercial Hub'],
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
@@ -165,10 +141,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Sector 18', city: 'Noida', state: 'Uttar Pradesh', pincode: '201301' },
     features: { bedrooms: 2, bathrooms: 2, area: 1200, areaUnit: 'sqft', parking: true, furnished: true },
-    images: [
-      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: false,
     amenities: ['Power Backup', 'Security', 'Lift', 'Parking', 'WiFi'],
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
@@ -184,10 +157,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     status: 'available',
     location: { address: 'Golf Course Extension', city: 'Gurugram', state: 'Haryana', pincode: '122001' },
     features: { area: 2500, areaUnit: 'sqft', parking: true },
-    images: [
-      'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=800&q=80'
-    ],
+    images: [],
     featured: false,
     amenities: ['Central AC', 'Power Backup', '24x7 Security', 'Pantry'],
     agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
