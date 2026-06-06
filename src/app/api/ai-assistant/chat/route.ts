@@ -226,7 +226,7 @@ SS REALTY COMPANY DETAILS:
 - Head Office: Plot No-2, Dalmia Farm, Jonapur, New Delhi, Delhi 110047
 - Regional Office: Noida (opened in 2016)
 - Contact Number: +91 93110 59100
-- Email: info@ssrealty.in
+- Email: info@ssrealty.org
 - Website: www.ssrealty.in
 
 PROPERTY DATABASE (use when showing properties):

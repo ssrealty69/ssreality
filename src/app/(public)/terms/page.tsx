@@ -265,7 +265,7 @@ export default function TermsPage() {
             </p>
             <div className="grid sm:grid-cols-3 gap-4">
               {[
-                { icon: Mail, label: 'Email', value: 'info@ssrealty.in', href: 'mailto:info@ssrealty.in' },
+                { icon: Mail, label: 'Email', value: 'info@ssrealty.org', href: 'mailto:info@ssrealty.org' },
                 { icon: Phone, label: 'Phone', value: '+91 93110 59100', href: 'tel:+919311059100' },
                 { icon: MapPin, label: 'Address', value: 'Jonapur, Delhi — 110047', href: null },
               ].map(({ icon: Icon, label, value, href }) => (

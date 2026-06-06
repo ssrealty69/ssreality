@@ -15,7 +15,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     featured: true,
     amenities: ['Gym', 'Swimming Pool', 'Power Backup', '24x7 Security'],
     brochureUrl: '/SS%20Realty%20Arch%20Property%20Brochure.pdf',
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 1250, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -32,7 +32,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     featured: true,
     amenities: ['Private Garden', 'Clubhouse', 'Gym', 'Parking'],
     brochureUrl: '/Nivasa.pdf',
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 890, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -48,7 +48,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     images: [],
     featured: false,
     amenities: ['Power Backup', 'Security', 'Lift', 'Parking'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 450, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -64,7 +64,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     images: [],
     featured: true,
     amenities: ['Play Area', 'Garden', 'Security', 'Water Supply'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 1560, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -80,7 +80,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     images: [],
     featured: true,
     amenities: ['Private Pool', 'Gym', 'Home Theater', 'Landscaped Garden'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 2100, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -96,7 +96,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     images: [],
     featured: true,
     amenities: ['Gated Community', 'Upcoming Metro', 'Near Airport', '24x7 Security'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 3400, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -112,7 +112,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     images: [],
     featured: true,
     amenities: ['Power Connection', 'Water Supply', 'Wide Roads', 'Park'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 1200, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -128,7 +128,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     images: [],
     featured: true,
     amenities: ['Corner Plot', 'Main Road Facing', 'Basement Allowed', 'Commercial Hub'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 950, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -144,7 +144,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     images: [],
     featured: false,
     amenities: ['Power Backup', 'Security', 'Lift', 'Parking', 'WiFi'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 1100, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   },
   {
@@ -160,7 +160,7 @@ export const FALLBACK_PROPERTIES: Property[] = [
     images: [],
     featured: false,
     amenities: ['Central AC', 'Power Backup', '24x7 Security', 'Pantry'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
     views: 670, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
   }
 ];

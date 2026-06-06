@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Target, Eye, Heart, Users, Award, CheckCircle2, Phone, Mail } from 'lucide-react';
+import JourneyTimeline from '@/components/public/JourneyTimeline';
 
 export const metadata: Metadata = {
   title: 'About Us | SS Realty',
-  description: 'Learn about SS Realty — Delhi NCR\'s trusted real estate partner with 15+ years of experience helping families find their dream homes.',
+  description: 'Learn about SS Realty — Delhi NCR\'s trusted real estate partner with 25+ years of experience helping families find their dream homes.',
 };
 
 // SSG — fully static
@@ -23,14 +24,6 @@ const values = [
   { icon: CheckCircle2, title: 'Integrity', desc: 'All our listings are verified, all our advice is unbiased, and our deals are transparent.' },
 ];
 
-const milestones = [
-  { year: '2008', event: 'SS Realty founded in Gurugram with a vision for transparent real estate.' },
-  { year: '2012', event: 'Expanded to 5 cities across Delhi NCR with 100+ listings.' },
-  { year: '2016', event: 'Achieved ₹100 Cr in property transactions. Opened Noida regional office.' },
-  { year: '2020', event: 'Launched digital platform serving NRI clients across the globe.' },
-  { year: '2024', event: '500+ properties, 2000+ happy clients, 10 cities across Delhi NCR.' },
-];
-
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[#FFFEF5]">
@@ -45,7 +38,7 @@ export default function AboutPage() {
             About <span className="text-[#C9A227]">SS Realty</span>
           </h1>
           <p className="text-[#d4c490] text-lg max-w-2xl">
-            15+ years of trust, transparency, and transforming property dreams into reality across Delhi NCR.
+            25+ years of trust, transparency, and transforming property dreams into reality across Delhi NCR.
           </p>
         </div>
       </div>
@@ -53,25 +46,25 @@ export default function AboutPage() {
       {/* Mission/Vision */}
       <section className="section-padding">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div className="grid md:grid-cols-2 gap-10 items-stretch">
             <div>
               <div className="gold-divider mb-5" />
               <h2 className="text-4xl font-[var(--font-playfair)] text-[#1A1800] mb-5">Our Story</h2>
               <p className="text-[#504e40] leading-relaxed mb-4">
-                Founded in 2008, SS Realty started with a simple mission — make real estate in Delhi NCR simple, transparent, and accessible to everyone. What began as a small office in Gurugram has grown into one of Delhi NCR&apos;s most trusted real estate brands.
+                Founded in 2008, SS Realty started with a simple mission — make real estate in Delhi NCR simple, transparent, and accessible to everyone. What began with plotting and land layout developments in Delhi has grown into one of Delhi NCR&apos;s most trusted real estate brands.
               </p>
               <p className="text-[#504e40] leading-relaxed mb-6">
-                We&apos;ve helped over 2,000 families find their dream homes, guided investors to high-ROI properties, and assisted NRIs in managing their Indian real estate portfolios — all with integrity and excellence.
+                We&apos;ve helped over 2,000 families find their dream homes, guided investors to high-ROI properties, and assisted clients in building wealth through real estate — all with integrity and excellence.
               </p>
               <div className="grid grid-cols-2 gap-4">
-                {[{ 
-                  icon: Target, 
-                  title: 'Our Mission', 
-                  desc: 'To deliver world-class real estate solutions that exceed customer expectations through innovation, quality construction, and ethical business practices.' 
-                }, { 
-                  icon: Eye, 
-                  title: 'Our Vision', 
-                  desc: 'To create sustainable, value-driven developments that enhance lives and set new benchmarks in the real estate industry.' 
+                {[{
+                  icon: Target,
+                  title: 'Our Mission',
+                  desc: 'To deliver world-class real estate solutions that exceed customer expectations through innovation, quality construction, and ethical business practices.'
+                }, {
+                  icon: Eye,
+                  title: 'Our Vision',
+                  desc: 'To create sustainable, value-driven developments that enhance lives and set new benchmarks in the real estate industry.'
                 }].map(({ icon: Icon, title, desc }) => (
                   <div key={title} className="bg-[#FFFBEB] rounded-xl p-4 border border-[#E8D5A3]">
                     <Icon size={20} className="text-[#C9A227] mb-2" />
@@ -81,14 +74,20 @@ export default function AboutPage() {
                 ))}
               </div>
             </div>
-            <div className="relative rounded-3xl overflow-hidden shadow-[var(--shadow-hover)] h-96">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80" alt="SS Realty office" className="w-full h-full object-cover" />
-              <div className="absolute bottom-5 left-5">
-                <div className="glass-card rounded-xl p-4">
-                  <p className="text-xs text-[#6b6450]">Established</p>
-                  <p className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">2008</p>
-                  <p className="text-xs text-[#C9A227] font-semibold">Chhatarpur, New Delhi</p>
+            <div className="relative w-full aspect-[4/3] md:aspect-auto md:h-full md:min-h-[420px]">
+              <div className="w-full h-full rounded-3xl overflow-hidden shadow-[var(--shadow-hover)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/SS Realty office, SS Realty 3BHK Flat in Gurgaon, 3BHK Flat in Sultanpur, SS Realty.png" alt="SS Realty office" className="w-full h-full object-cover object-center scale-105 transition-transform duration-500" />
+              </div>
+              <div className="absolute -top-4 -left-4 md:-top-10 md:-left-10 z-10">
+                {/* Minimal gradient golden ring wrapper (w-24 on mobile, w-36 on desktop) */}
+                <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gradient-to-br from-[#FFE5A3] via-[#C9A227] to-[#8F6F1B] p-[1.5px] shadow-xl transition-all duration-300 hover:scale-105">
+                  {/* Inner white transparent badge */}
+                  <div className="w-full h-full rounded-full bg-white/90 backdrop-blur-md flex flex-col justify-center items-center text-center p-1.5 md:p-3">
+                    <p className="text-[8px] md:text-[11px] uppercase tracking-wider text-[#6b6450] font-semibold mb-0.5">Established</p>
+                    <p className="text-lg md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] leading-none mb-0.5 md:mb-1">2008</p>
+                    <p className="text-[8px] md:text-[11px] font-bold text-[#C9A227] leading-tight px-1">Chhatarpur, New Delhi</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -118,26 +117,7 @@ export default function AboutPage() {
       </section>
 
       {/* Timeline */}
-      <section className="section-padding bg-[#1A1800]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="gold-divider mx-auto mb-5" />
-            <h2 className="text-4xl font-[var(--font-playfair)] text-white">Our <span className="text-[#C9A227]">Journey</span></h2>
-          </div>
-          <div className="relative">
-            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[#C9A227]/30" />
-            <div className="space-y-8">
-              {milestones.map(({ year, event }) => (
-                <div key={year} className="relative pl-16">
-                  <div className="absolute left-3.5 top-1 w-5 h-5 rounded-full bg-[#C9A227] border-4 border-[#1A1800] shadow-[0_0_0_2px_#C9A227]" />
-                  <span className="badge-gold text-[10px] mb-2 inline-block">{year}</span>
-                  <p className="text-[#a09060] text-sm leading-relaxed">{event}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <JourneyTimeline />
 
       {/* Team */}
       <section className="section-padding">
@@ -158,7 +138,7 @@ export default function AboutPage() {
                 <p className="text-xs text-[#6b6450] mt-1">{m.exp}</p>
                 <div className="flex justify-center gap-3 mt-4">
                   <a href="tel:+919311059100" className="w-8 h-8 rounded-lg bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-all"><Phone size={13} /></a>
-                  <a href="mailto:info@ssrealty.in" className="w-8 h-8 rounded-lg bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-all"><Mail size={13} /></a>
+                  <a href="mailto:info@ssrealty.org" className="w-8 h-8 rounded-lg bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-all"><Mail size={13} /></a>
                 </div>
               </div>
             ))}

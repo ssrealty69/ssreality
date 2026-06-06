@@ -148,9 +148,14 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="text-[#C9A227] mt-0.5 shrink-0" />
-                <span className="text-sm text-[#a09060]">
+                <a 
+                  href="https://share.google/DuHqosVcJ03udejB8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-[#a09060] hover:text-[#C9A227] transition-colors"
+                >
                   Plot No-2, Dalmia Farm, Jonapur,<br />New Delhi, Delhi 110047
-                </span>
+                </a>
               </li>
               <li>
                 <a href="tel:+919311059100" className="flex items-center gap-3 text-sm text-[#a09060] hover:text-[#C9A227] transition-colors">
@@ -159,9 +164,9 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:info@ssrealty.in" className="flex items-center gap-3 text-sm text-[#a09060] hover:text-[#C9A227] transition-colors">
+                <a href="mailto:info@ssrealty.org" className="flex items-center gap-3 text-sm text-[#a09060] hover:text-[#C9A227] transition-colors">
                   <Mail size={16} className="text-[#C9A227] shrink-0" />
-                  info@ssrealty.in
+                  info@ssrealty.org
                 </a>
               </li>
             </ul>

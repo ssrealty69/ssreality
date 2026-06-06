@@ -23,10 +23,10 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const contactInfo = [
-  { icon: MapPin, title: 'Office Address', detail: 'Plot No-2, Dalmia Farm, Jonapur, New Delhi 110047' },
-  { icon: Phone, title: 'Phone', detail: '+91 93110 59100' },
-  { icon: Mail, title: 'Email', detail: 'info@ssrealty.in' },
-  { icon: Clock, title: 'Working Hours', detail: 'Mon–Sat: 9:00 AM – 7:00 PM' },
+  { icon: MapPin, title: 'Office Address', detail: 'Plot No-2, Dalmia Farm, Jonapur, New Delhi 110047', href: 'https://share.google/DuHqosVcJ03udejB8' },
+  { icon: Phone, title: 'Phone', detail: '+91 93110 59100', href: 'tel:+919311059100' },
+  { icon: Mail, title: 'Email', detail: 'info@ssrealty.org', href: 'mailto:info@ssrealty.org' },
+  { icon: Clock, title: 'Working Hours', detail: 'Mon–Sat: 9:00 AM – 7:00 PM', href: null },
 ];
 
 export default function ContactPage() {
@@ -90,25 +90,55 @@ export default function ContactPage() {
         <div className="grid lg:grid-cols-[380px_1fr] gap-12">
           {/* Left — Info cards */}
           <div className="space-y-5">
-            {contactInfo.map(({ icon: Icon, title, detail }) => (
-              <div key={title} className="bg-white rounded-2xl p-5 border border-[#E8D5A3] flex items-start gap-4 hover:shadow-[var(--shadow-gold)] transition-shadow">
-                <div className="w-11 h-11 rounded-xl bg-[#C9A227]/10 flex items-center justify-center shrink-0">
-                  <Icon size={20} className="text-[#C9A227]" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-[#6b6450] uppercase tracking-wide mb-1">{title}</p>
-                  <p className="text-sm text-[#1A1800] font-medium">{detail}</p>
-                </div>
-              </div>
-            ))}
+            {contactInfo.map(({ icon: Icon, title, detail, href }) => {
+              const content = (
+                <>
+                  <div className="w-11 h-11 rounded-xl bg-[#C9A227]/10 flex items-center justify-center shrink-0">
+                    <Icon size={20} className="text-[#C9A227]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-[#6b6450] uppercase tracking-wide mb-1">{title}</p>
+                    <p className="text-sm text-[#1A1800] font-medium">{detail}</p>
+                  </div>
+                </>
+              );
 
-            {/* Map placeholder */}
-            <div className="rounded-2xl overflow-hidden border border-[#E8D5A3] h-48 bg-[#FFFBEB] flex items-center justify-center">
-              <div className="text-center text-[#a09060]">
-                <MapPin size={32} className="mx-auto mb-2 text-[#C9A227]" />
-                <p className="text-sm font-medium">Jonapur, New Delhi</p>
-                <p className="text-xs">Dalmia Farm, 110047</p>
-              </div>
+              const cardClass = "bg-white rounded-2xl p-5 border border-[#E8D5A3] flex items-start gap-4 hover:shadow-[var(--shadow-gold)] transition-shadow w-full text-left";
+
+              if (href) {
+                return (
+                  <a
+                    key={title}
+                    href={href}
+                    target={href.startsWith('http') ? "_blank" : undefined}
+                    rel={href.startsWith('http') ? "noopener noreferrer" : undefined}
+                    className={cardClass}
+                  >
+                    {content}
+                  </a>
+                );
+              }
+
+              return (
+                <div key={title} className={cardClass}>
+                  {content}
+                </div>
+              );
+            })}
+
+            {/* Map */}
+            <div className="rounded-2xl overflow-hidden border border-[#E8D5A3] h-64 bg-[#FFFBEB] relative hover:shadow-[var(--shadow-gold)] transition-shadow duration-300">
+              <iframe
+                src="https://maps.google.com/maps?q=cid:7130541707011407143&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={false}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="SS Realty Location Map"
+                className="absolute inset-0 w-full h-full"
+              />
             </div>
           </div>
 

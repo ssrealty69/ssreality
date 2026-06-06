@@ -42,7 +42,7 @@ const sampleProperties = [
       'https://images.unsplash.com/photo-1600566753190-17f0bb2a6c3e?w=1200&q=80'
     ],
     featured: true, amenities: ['Prime Location on Gwal Pahari Road', 'Premium Independent Floors', 'Modern Architecture & Elegant Design', 'High Investment Potential', 'Excellent Connectivity to Delhi & Gurugram', 'Modular Kitchen', 'Premium Fittings', '24/7 Water Supply'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
   },
   {
     title: 'Amaryllis – Premium 4BHK Luxury Floors',
@@ -57,7 +57,7 @@ const sampleProperties = [
       'https://images.unsplash.com/photo-1600566753086-00f18fb6f3ea?w=1200&q=80'
     ],
     featured: true, amenities: ['Prime Location on Gwal Pahari Road', 'Premium Independent Floors', 'Modern Architecture & Elegant Design', 'High Investment Potential', 'Excellent Connectivity to Delhi & Gurugram', 'Spacious Balconies', 'Private Parking', 'High-speed Lift'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
   },
   {
     title: '3BHK Luxury Builder Floor - Chhatarpur',
@@ -67,7 +67,7 @@ const sampleProperties = [
     features: { bedrooms: 3, bathrooms: 3, area: 130, areaUnit: 'sqyd', parking: true, furnished: true, floor: 3, totalFloors: 4 },
     images: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80'],
     featured: true, amenities: ['Metro Proximity', 'Modular Kitchen', 'Premium Fittings', 'Security'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
   },
   {
     title: '2BHK Luxury Apartments in Delhi NCR',
@@ -77,7 +77,7 @@ const sampleProperties = [
     features: { bedrooms: 2, bathrooms: 2, area: 80, areaUnit: 'sqyd', parking: true, furnished: false, floor: 2, totalFloors: 5 },
     images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80'],
     featured: false, amenities: ['Quality Fittings', 'Lift', 'Parking', 'CCTV'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
   },
   {
     title: 'Ojasw Lumina - Luxury Living',
@@ -87,7 +87,7 @@ const sampleProperties = [
     features: { bedrooms: 3, bathrooms: 3, area: 1550, areaUnit: 'sqft', parking: true, furnished: false },
     images: ['https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80'],
     featured: true, amenities: ['Club House', 'Gym', 'Security', 'Power Backup'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
   },
   {
     title: 'The Arch - Iconic Residencies',
@@ -97,7 +97,7 @@ const sampleProperties = [
     features: { bedrooms: 3, bathrooms: 3, area: 1800, areaUnit: 'sqft', parking: true, furnished: true },
     images: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80'],
     featured: true, amenities: ['Iconic Design', 'Premium Finish', 'Smart Home', '24/7 Concierge'],
-    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.in' },
+    agent: { name: 'SS Realty Team', phone: '+91 9311059100', email: 'info@ssrealty.org' },
   },
 ];
 
