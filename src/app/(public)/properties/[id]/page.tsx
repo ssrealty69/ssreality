@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function PropertyLandingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  
+
   let property: any = null;
   let relatedProperties: any[] = [];
 
@@ -86,23 +86,23 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
     if (mongoose.Types.ObjectId.isValid(id)) {
       property = await Property.findById(id).lean();
     }
-    
+
     if (property) {
       property = JSON.parse(JSON.stringify(property));
-      
-      relatedProperties = await Property.find({ 
-        propertyType: property.propertyType, 
-        _id: { $ne: property._id } 
+
+      relatedProperties = await Property.find({
+        propertyType: property.propertyType,
+        _id: { $ne: property._id }
       }).limit(3).lean();
-      
+
       if (relatedProperties.length < 3) {
-        const moreProps = await Property.find({ 
-          priceType: property.priceType, 
-          _id: { $ne: property._id, $nin: relatedProperties.map((p: any) => p._id) } 
+        const moreProps = await Property.find({
+          priceType: property.priceType,
+          _id: { $ne: property._id, $nin: relatedProperties.map((p: any) => p._id) }
         }).limit(3 - relatedProperties.length).lean();
         relatedProperties = [...relatedProperties, ...moreProps];
       }
-      
+
       // Fix deep serialization error: Convert all nested ObjectIds (like in highlights/nearby) and dates to primitives
       relatedProperties = JSON.parse(JSON.stringify(relatedProperties));
 
@@ -117,7 +117,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
     if (!property) {
       notFound();
     }
-    
+
     relatedProperties = FALLBACK_PROPERTIES.filter(p => p.propertyType === property.propertyType && p._id !== property._id).slice(0, 3);
     if (relatedProperties.length < 3) {
       const moreProps = FALLBACK_PROPERTIES.filter(p => p.priceType === property.priceType && p._id !== property._id && !relatedProperties.find(rp => rp._id === p._id));
@@ -202,7 +202,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               <span className="text-[#1A1800]/60">₹</span> {formatPrice(property.price)} {property.priceType === 'rent' ? '/month' : 'Onwards'}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2">
-              {property.features.bedrooms ? `${property.features.bedrooms} BHK ` : ''} 
+              {property.features.bedrooms ? `${property.features.bedrooms} BHK ` : ''}
               <span className="capitalize">{property.propertyType}s</span>
             </h1>
             <p className="text-xl mb-6">
@@ -235,12 +235,12 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="lg:w-1/3 relative h-[350px] rounded-xl overflow-hidden shadow-lg">
-              <ImageSlider 
+              <ImageSlider
                 images={
-                  property.interiorImages && property.interiorImages.length > 0 
-                    ? property.interiorImages 
+                  property.interiorImages && property.interiorImages.length > 0
+                    ? property.interiorImages
                     : (property.images && property.images.length > 0 ? property.images : ['/hero-nature.png'])
-                } 
+                }
               />
             </div>
 
@@ -329,7 +329,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                 )}
               </div>
 
-              <PropertyActions 
+              <PropertyActions
                 propertyId={property._id.toString()}
                 propertyTitle={property.title}
                 brochureUrl={property.brochureUrl}

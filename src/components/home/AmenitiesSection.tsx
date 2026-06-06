@@ -5,30 +5,33 @@ import Image from 'next/image';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 const sliderImages = [
-  "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=800&q=75", // Luxury Pool
-  "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=75", // Premium Gym
-  "https://images.unsplash.com/photo-1560448204-61dc36dc98c8?auto=format&fit=crop&w=800&q=75", // Luxury Lounge
+  "/World Class%20Amenities/Infinity%20Pool.jpg",
+  "/World Class%20Amenities/Gym.jpg",
+  "/World Class%20Amenities/Clubhouse.jpg",
 ];
 
 const amenities = [
-  { title: 'Gym', img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=200&q=70' },
-  { title: 'Cycling Track', img: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=200&q=70' },
-  { title: 'Billiards', img: 'https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=200&q=70' },
-  { title: 'Table Tennis', img: 'https://images.unsplash.com/photo-1608245449230-4ac19066d2d0?w=200&q=70' },
-  { title: 'Squash Court', img: 'https://images.unsplash.com/photo-1574271143515-5cddf8da19be?w=200&q=70' },
-  { title: 'Tennis Court', img: 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=200&q=70' },
-  { title: 'Open Dining', img: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=200&q=70' },
-  { title: 'Cafe & Bar', img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70' },
-  { title: 'Carrom', img: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=200&q=70' },
-  { title: 'Chess', img: 'https://images.unsplash.com/photo-1529699211952-734e80c4d42b?w=200&q=70' },
-  { title: 'Cardroom', img: 'https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=200&q=70' },
-  { title: 'Library', img: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=200&q=70' },
-  { title: 'Spa & Sauna', img: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=200&q=70' },
-  { title: 'Badminton', img: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=200&q=70' },
-  { title: 'Swimming Pool', img: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=200&q=70' },
-  { title: 'Garden', img: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=200&q=70' },
-  { title: '24x7 CCTV', img: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=200&q=70' },
-  { title: 'Yoga & Meditation', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=200&q=70' },
+  { title: 'Gym', img: '/World Class%20Amenities/Gym.jpg' },
+  { title: 'Clubhouse', img: '/World Class%20Amenities/Clubhouse.jpg' },
+  { title: 'Infinity Pool', img: '/World Class%20Amenities/Infinity%20Pool.jpg' },
+  { title: 'Spa', img: '/World Class%20Amenities/Spa.jpg' },
+  { title: 'Yoga Deck', img: '/World Class%20Amenities/Yoga%20Deck.jpg' },
+  { title: 'Garden', img: '/World Class%20Amenities/Garden.jpg' },
+  { title: 'Sky Garden', img: '/World Class%20Amenities/Sky%20Garden.jpg' },
+  { title: 'Kids Zone', img: '/World Class%20Amenities/Kids%20Zone.jpg' },
+  { title: 'Pet Park', img: '/World Class%20Amenities/Pet%20Park.jpg' },
+  { title: 'Badminton', img: '/World Class%20Amenities/Badminton.jpg' },
+  { title: 'Tennis Court', img: '/World Class%20Amenities/Tennis%20Court.jpg' },
+  { title: 'Table Tennis', img: '/World Class%20Amenities/Table%20Tennis.jpg' },
+  { title: 'Banquet', img: '/World Class%20Amenities/Banquet.jpg' },
+  { title: 'Theatre', img: '/World Class%20Amenities/Theatre.jpg' },
+  { title: 'Library', img: '/World Class%20Amenities/Library.jpg' },
+  { title: 'Lobby', img: '/World Class%20Amenities/Lobby.jpg' },
+  { title: 'Reception', img: '/World Class%20Amenities/Reception.jpg' },
+  { title: 'Lift Lobby', img: '/World Class%20Amenities/Lift%20Lobby.jpg' },
+  { title: 'Terrace', img: '/World Class%20Amenities/Terrace.jpg' },
+  { title: 'EV Charging', img: '/World Class%20Amenities/EV%20Charging.jpg' },
+  { title: 'Security Room', img: '/World Class%20Amenities/Security%20Room.jpg' },
 ];
 
 export default function AmenitiesSection() {
@@ -88,10 +91,10 @@ export default function AmenitiesSection() {
           </div>
 
           {/* Right Side: Amenities Grid */}
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-8">
+          <div className="grid grid-cols-3 md:grid-cols-7 gap-x-4 md:gap-x-6 gap-y-8 md:gap-y-12">
             {amenities.map((item, index) => (
               <div key={index} className="flex flex-col items-center group">
-                <div className="relative w-5/6 md:w-3/4 aspect-square rounded-2xl overflow-hidden mb-3 shadow-md border-2 border-transparent group-hover:border-[#C9A227] transition-all duration-300">
+                <div className="relative w-[90%] md:w-full aspect-square rounded-2xl md:rounded-3xl overflow-hidden mb-3 shadow-md border-2 border-transparent group-hover:border-[#C9A227] transition-all duration-300">
                   <Image
                     src={item.img}
                     alt={item.title}
