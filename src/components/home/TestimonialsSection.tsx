@@ -5,13 +5,13 @@ import { Star, Quote, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-reac
 
 const testimonials = [
   {
-    name: 'Priya Agarwal',
-    role: 'Teacher, Ghaziabad',
-    content: 'Maine SS Realty se Vasundhara, Ghaziabad mein 3BHK flat liya. Inki team ne society ke baare mein puri details di aur loan process mein bhi help ki. Bahut trustworthy hain.',
+    name: 'Rakesh Goyal',
+    role: 'IT Engineer, Gurugram',
+    content: 'Maine SS Realty ke saath Gurgaon mein 3BHK flat buy kiya. Legal papers se lekar possession tak inhone har step pe clear guide kiya. Highly recommended!',
     rating: 5,
-    initials: 'PA',
-    property: 'Purchased 3BHK Flat — Vasundhara, Ghaziabad',
-    videoUrl: '/priya-feedback.mp4',
+    initials: 'RG',
+    property: 'Purchased 3BHK Flat — Gurugram',
+    videoUrl: '/SS Realty Review, Gurgaon Best Real Estate SS Realty, SS Realty Client Testimonial Video.MP4',
   },
   {
     name: 'Vikram Singh',
@@ -142,7 +142,7 @@ function TestimonialCard({
           autoPlay
           playsInline
           preload="auto"
-          className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] object-cover rounded-[14.5px] z-[2] select-none"
+          className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] object-contain bg-black rounded-[14.5px] z-[2] select-none"
         />
 
         {/* Vignette overlay */}
