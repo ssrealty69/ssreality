@@ -11,7 +11,7 @@ const testimonials = [
     rating: 5,
     initials: 'RG',
     property: 'Purchased 3BHK Flat — Gurugram',
-    videoUrl: '/SS Realty Review, Gurgaon Best Real Estate SS Realty, SS Realty Client Testimonial Video.MP4',
+    videoUrl: '/rakesh-feedback.mp4',
   },
   {
     name: 'Vikram Singh',
@@ -20,7 +20,7 @@ const testimonials = [
     rating: 5,
     initials: 'VS',
     property: 'Purchased 2BHK Flat — Noida Sector 62',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-luxury-home-interior-41582-large.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
   },
   {
     name: 'Ramesh Yadav',
@@ -29,7 +29,7 @@ const testimonials = [
     rating: 5,
     initials: 'RY',
     property: 'Purchased Residential Land — Greater Noida West',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-keys-in-a-house-lock-40432-large.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
   },
   {
     name: 'Suresh Gupta',
@@ -38,7 +38,7 @@ const testimonials = [
     rating: 5,
     initials: 'SG',
     property: 'Purchased Commercial Shop — Rohini, Delhi',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-hand-turning-a-house-key-in-a-door-lock-40428-large.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
   },
   {
     name: 'Anita Sharma',
@@ -47,7 +47,7 @@ const testimonials = [
     rating: 5,
     initials: 'AS',
     property: 'Purchased Villa — Sohna Road, Gurugram',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-interior-of-a-modern-and-luxury-living-room-41585-large.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
   },
   {
     name: 'Deepak Tyagi',
@@ -56,7 +56,7 @@ const testimonials = [
     rating: 5,
     initials: 'DT',
     property: 'Purchased Farmhouse — Aravalli, Faridabad',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-family-playing-with-their-dog-in-the-garden-41588-large.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
   },
 ];
 
@@ -92,21 +92,26 @@ function TestimonialCard({
     const video = videoRef.current;
     if (!video) return;
 
+    // Fix React muted autoplay bug and force the browser to pre-render the first frame
+    video.defaultMuted = true;
+    video.muted = true;
+    video.load();
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.muted = true;
-          video.play().catch(() => { });
+          video.muted = !isPlaying;
+          video.play().catch(() => {});
         } else {
           video.pause();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.15 }
     );
 
     if (cardRef.current) observer.observe(cardRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [isPlaying]);
 
   // Unmute when user explicitly clicks Play
   useEffect(() => {

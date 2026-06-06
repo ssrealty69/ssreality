@@ -42,7 +42,6 @@ yarn-error.log*
 next-env.d.ts
 
 # large media files
-/public/*.MP4
-/public/*.mp4
+/public/SS Realty Review, Gurgaon Best Real Estate SS Realty, SS Realty Client Testimonial Video.MP4
 /public/*.MOV
 /public/*.mov
