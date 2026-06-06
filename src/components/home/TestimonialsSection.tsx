@@ -10,7 +10,7 @@ const testimonials = [
     content: 'Maine SS Realty ke saath Gurgaon mein 3BHK flat buy kiya. Legal papers se lekar possession tak inhone har step pe clear guide kiya. Highly recommended!',
     rating: 5,
     initials: 'RG',
-    property: 'Purchased 3BHK Flat — Gurugram',
+    property: 'Purchased 3BHK Flat — Sultanpur',
     videoUrl: '/rakesh-feedback.mp4',
   },
   {
@@ -101,7 +101,7 @@ function TestimonialCard({
       ([entry]) => {
         if (entry.isIntersecting) {
           video.muted = !isPlaying;
-          video.play().catch(() => {});
+          video.play().catch(() => { });
         } else {
           video.pause();
         }

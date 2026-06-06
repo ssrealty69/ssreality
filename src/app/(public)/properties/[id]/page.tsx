@@ -88,6 +88,8 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
     }
     
     if (property) {
+      property = JSON.parse(JSON.stringify(property));
+      
       relatedProperties = await Property.find({ 
         propertyType: property.propertyType, 
         _id: { $ne: property._id } 
