@@ -96,7 +96,7 @@ function TestimonialCard({
       ([entry]) => {
         if (entry.isIntersecting) {
           video.muted = true;
-          video.play().catch(() => {});
+          video.play().catch(() => { });
         } else {
           video.pause();
         }
@@ -114,7 +114,7 @@ function TestimonialCard({
     if (!video) return;
     if (isPlaying) {
       video.muted = false;
-      video.play().catch(() => {});
+      video.play().catch(() => { });
     } else {
       video.muted = true;
     }
@@ -286,7 +286,7 @@ function TestimonialsCarousel() {
       <div className="overflow-hidden py-4 -mx-3">
         <div
           className="flex transition-transform duration-500 ease-in-out"
-          style={{ 
+          style={{
             transform: `translateX(-${active * (100 / cardsPerView)}%)`,
           }}
           onTouchStart={handleTouchStart}
@@ -294,17 +294,17 @@ function TestimonialsCarousel() {
           onTouchEnd={handleTouchEnd}
         >
           {testimonials.map((t, i) => (
-            <div 
-              key={t.name} 
-              className="px-3 shrink-0 transition-all duration-300" 
-              style={{ 
+            <div
+              key={t.name}
+              className="px-3 shrink-0 transition-all duration-300"
+              style={{
                 width: `${100 / cardsPerView}%`,
-                userSelect: 'none' 
+                userSelect: 'none'
               }}
             >
-              <TestimonialCard 
-                t={t} 
-                i={i} 
+              <TestimonialCard
+                t={t}
+                i={i}
                 isPlaying={playingIndex === i}
                 onPlayToggle={() => {
                   setPlayingIndex((prev) => (prev === i ? null : i));
@@ -345,9 +345,8 @@ function TestimonialsCarousel() {
               onClick={() => {
                 setActive(i);
               }}
-              className={`rounded-full transition-all duration-300 ${
-                i === active ? 'w-6 h-2 bg-[#C9A227]' : 'w-2 h-2 bg-[#C9A227]/30'
-              }`}
+              className={`rounded-full transition-all duration-300 ${i === active ? 'w-6 h-2 bg-[#C9A227]' : 'w-2 h-2 bg-[#C9A227]/30'
+                }`}
             />
           ))}
         </div>
