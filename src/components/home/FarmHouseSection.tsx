@@ -195,96 +195,174 @@ export default function FarmHouseSection() {
             transparent 75%
           );
         }
-        @media (max-width: 768px) {
-          .fh-overlay-fog {
-            background: linear-gradient(to top,
-              rgba(11,10,6,0.95) 0%,
-              rgba(11,10,6,0.75) 50%,
-              transparent 80%
-            );
-          }
+        .fh-overlay-fog-mobile {
+          background: linear-gradient(to top,
+            rgba(11,10,6,0.97) 0%,
+            rgba(11,10,6,0.82) 38%,
+            rgba(11,10,6,0.25) 68%,
+            transparent 85%
+          );
         }
       `}</style>
 
+      {/* ───────────── MOBILE SLIDER (portrait images, < sm) ───────────── */}
       <div
-        className="relative w-full h-[420px] md:h-[540px] lg:h-[600px]"
+        className="relative w-full sm:hidden"
+        style={{ height: '580px' }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Background Image */}
+        {/* Mobile Portrait Background */}
         <div className={`absolute inset-0 ${isTransitioning ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}>
-          <div className="fh-img-enter absolute inset-0" key={`img-${current}`}>
-            {/* Desktop & Tablet Image */}
-            <Image
-              src={slide.img}
-              alt={slide.heading}
-              fill
-              className="hidden sm:block object-cover object-center"
-              priority
-              unoptimized
-            />
-            {/* Mobile Image */}
+          <div className="fh-img-enter absolute inset-0" key={`mob-img-${current}`}>
             <Image
               src={slide.mobileImg}
               alt={slide.heading}
               fill
-              className="block sm:hidden object-cover object-center"
+              className="object-cover object-top"
               priority
               unoptimized
             />
           </div>
         </div>
 
-        {/* Fog/Gradient Overlay */}
-        <div className="fh-overlay-fog absolute inset-0 z-10" />
+        {/* Mobile gradient fog — bottom-to-top so text is readable */}
+        <div className="fh-overlay-fog-mobile absolute inset-0 z-10" />
 
-        {/* Top-left subtle grain texture */}
+        {/* Grain texture */}
         <div className="absolute inset-0 z-10 opacity-[0.04]"
           style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'1\'/%3E%3C/svg%3E")' }} />
 
-        {/* Content Panel — right side on desktop, bottom on mobile */}
-        <div className="absolute inset-0 z-20 flex items-center justify-end px-6 md:px-14 lg:px-20">
+        {/* Mobile Content — bottom aligned */}
+        <div className="absolute inset-0 z-20 flex items-end px-5 pb-12">
           <div
-            key={`content-${current}`}
-            className={`fh-text-enter w-full md:w-[48%] lg:w-[42%] flex flex-col items-start gap-4 mt-auto md:mt-0 pb-10 md:pb-0 ${isTransitioning ? 'opacity-0' : ''}`}
+            key={`mob-content-${current}`}
+            className={`fh-text-enter w-full flex flex-col items-start gap-3 ${isTransitioning ? 'opacity-0' : ''}`}
           >
             {/* Badge */}
             <div className="fh-badge inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] animate-pulse inline-block" />
               <span className="text-[#E8C96A] text-[10px] font-bold tracking-[0.22em] uppercase">{slide.badge}</span>
             </div>
+            {/* Heading */}
+            <h2 className="text-2xl font-bold leading-tight bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
+              style={{ fontFamily: 'var(--font-playfair, Georgia, serif)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))' }}>
+              {slide.heading}
+            </h2>
+            <p className="font-semibold text-sm tracking-wide bg-gradient-to-r from-[#FFE59E] to-[#E8C96A] bg-clip-text text-transparent"
+              style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent', filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.9))' }}>
+              {slide.subheading}
+            </p>
+            {/* Decorative line */}
+            <div className="w-14 h-[2px] rounded-full" style={{ background: 'linear-gradient(90deg, #C9A227, #E8C96A, transparent)' }} />
+            {/* Description */}
+            <p className="text-white/75 text-xs leading-relaxed" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
+              {slide.desc}
+            </p>
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2">
+              {[slide.tag1, slide.tag2, slide.tag3].map((tag) => (
+                <span key={tag} className="px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white/80 border border-white/20 bg-white/5 backdrop-blur-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            {/* CTA */}
+            <button
+              onClick={() => setShowModal(true)}
+              className="fh-enquiry-btn mt-1 inline-flex items-center gap-2 px-5 py-3 rounded-full text-[#0B0A06] font-black text-xs uppercase tracking-widest shadow-xl cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Enquiry Now
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          </div>
+        </div>
 
-            {/* Main Heading */}
+        {/* Mobile Dot Indicators */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              aria-label={`Go to slide ${i + 1}`}
+              className={`rounded-full transition-all duration-500 ${
+                i === current ? 'fh-dot-active w-7 h-2' : 'w-2 h-2 bg-white/30 hover:bg-white/60'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Mobile Prev/Next */}
+        <button onClick={() => goTo((current - 1 + slides.length) % slides.length)} aria-label="Previous slide"
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full border border-white/20 bg-black/30 backdrop-blur-sm text-white/70 hover:text-[#C9A227] transition-all flex items-center justify-center">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <button onClick={() => goTo((current + 1) % slides.length)} aria-label="Next slide"
+          className="absolute right-3 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full border border-white/20 bg-black/30 backdrop-blur-sm text-white/70 hover:text-[#C9A227] transition-all flex items-center justify-center">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
+
+      {/* ───────────── DESKTOP / TABLET SLIDER (landscape images, sm+) ───────────── */}
+      <div
+        className="relative w-full hidden sm:block md:h-[540px] lg:h-[600px]" style={{ height: '480px' }}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* Desktop Background Image */}
+        <div className={`absolute inset-0 ${isTransitioning ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}>
+          <div className="fh-img-enter absolute inset-0" key={`desk-img-${current}`}>
+            <Image
+              src={slide.img}
+              alt={slide.heading}
+              fill
+              className="object-cover object-center"
+              priority
+              unoptimized
+            />
+          </div>
+        </div>
+
+        {/* Desktop Fog Overlay */}
+        <div className="fh-overlay-fog absolute inset-0 z-10" />
+
+        {/* Grain texture */}
+        <div className="absolute inset-0 z-10 opacity-[0.04]"
+          style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'1\'/%3E%3C/svg%3E")' }} />
+
+        {/* Desktop Content Panel — right side */}
+        <div className="absolute inset-0 z-20 flex items-center justify-end px-14 lg:px-20">
+          <div
+            key={`desk-content-${current}`}
+            className={`fh-text-enter w-[48%] lg:w-[42%] flex flex-col items-start gap-4 ${isTransitioning ? 'opacity-0' : ''}`}
+          >
+            {/* Badge */}
+            <div className="fh-badge inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] animate-pulse inline-block" />
+              <span className="text-[#E8C96A] text-[10px] font-bold tracking-[0.22em] uppercase">{slide.badge}</span>
+            </div>
+            {/* Heading */}
             <div>
-              <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight mb-2 bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
-                style={{ 
-                  fontFamily: 'var(--font-playfair, Georgia, serif)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  color: 'transparent',
-                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))'
-                }}>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-2 bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
+                style={{ fontFamily: 'var(--font-playfair, Georgia, serif)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))' }}>
                 {slide.heading}
               </h2>
               <p className="font-semibold text-sm md:text-base tracking-wide bg-gradient-to-r from-[#FFE59E] to-[#E8C96A] bg-clip-text text-transparent"
-                style={{
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  color: 'transparent',
-                  filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.9))'
-                }}>
+                style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent', filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.9))' }}>
                 {slide.subheading}
               </p>
             </div>
-
             {/* Decorative line */}
             <div className="w-16 h-[2px] rounded-full" style={{ background: 'linear-gradient(90deg, #C9A227, #E8C96A, transparent)' }} />
-
             {/* Description */}
             <p className="text-white/75 text-xs md:text-sm leading-relaxed max-w-sm" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
               {slide.desc}
             </p>
-
             {/* Tags */}
             <div className="flex flex-wrap gap-2">
               {[slide.tag1, slide.tag2, slide.tag3].map((tag) => (
@@ -293,7 +371,6 @@ export default function FarmHouseSection() {
                 </span>
               ))}
             </div>
-
             {/* CTA Button */}
             <button
               onClick={() => setShowModal(true)}
@@ -310,7 +387,7 @@ export default function FarmHouseSection() {
           </div>
         </div>
 
-        {/* Gradient Dot Indicators */}
+        {/* Desktop Dot Indicators */}
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
           {slides.map((_, i) => (
             <button
@@ -318,32 +395,20 @@ export default function FarmHouseSection() {
               onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
               className={`rounded-full transition-all duration-500 ${
-                i === current
-                  ? 'fh-dot-active w-8 h-2.5'
-                  : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/60'
+                i === current ? 'fh-dot-active w-8 h-2.5' : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/60'
               }`}
             />
           ))}
         </div>
 
-        {/* Prev / Next Arrow Buttons */}
-        <button
-          onClick={() => goTo((current - 1 + slides.length) % slides.length)}
-          aria-label="Previous slide"
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full border border-white/20 bg-black/30 backdrop-blur-sm text-white/70 hover:text-[#C9A227] hover:border-[#C9A227]/60 hover:bg-black/50 transition-all duration-300 flex items-center justify-center"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
+        {/* Desktop Prev/Next */}
+        <button onClick={() => goTo((current - 1 + slides.length) % slides.length)} aria-label="Previous slide"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full border border-white/20 bg-black/30 backdrop-blur-sm text-white/70 hover:text-[#C9A227] hover:border-[#C9A227]/60 hover:bg-black/50 transition-all duration-300 flex items-center justify-center">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <button
-          onClick={() => goTo((current + 1) % slides.length)}
-          aria-label="Next slide"
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full border border-white/20 bg-black/30 backdrop-blur-sm text-white/70 hover:text-[#C9A227] hover:border-[#C9A227]/60 hover:bg-black/50 transition-all duration-300 flex items-center justify-center"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
+        <button onClick={() => goTo((current + 1) % slides.length)} aria-label="Next slide"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full border border-white/20 bg-black/30 backdrop-blur-sm text-white/70 hover:text-[#C9A227] hover:border-[#C9A227]/60 hover:bg-black/50 transition-all duration-300 flex items-center justify-center">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
         </button>
       </div>
 
