@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 const sliderImages = [
-  "/World Class%20Amenities/Infinity%20Pool.jpg",
-  "/World Class%20Amenities/Gym.jpg",
-  "/World Class%20Amenities/Clubhouse.jpg",
+  "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%201.png",
+  "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%202.png",
+  "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.png",
+  "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%204.png",
 ];
 
 const amenities = [
@@ -37,6 +38,13 @@ const amenities = [
 export default function AmenitiesSection() {
   const [currentIdx, setCurrentIdx] = useState(0);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIdx((prev) => (prev + 1) % sliderImages.length);
+    }, 4000); // Auto slide every 4 seconds
+    return () => clearInterval(timer);
+  }, []);
+
   const nextSlide = () => {
     setCurrentIdx((prev) => (prev + 1) % sliderImages.length);
   };
@@ -60,15 +68,19 @@ export default function AmenitiesSection() {
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-center">
           {/* Left Side: Large Image with Slider controls */}
           <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group border-4 border-white">
-            <Image 
-              src={sliderImages[currentIdx]} 
-              alt="Premium Clubhouse Amenities" 
-              fill
-              className="object-cover transition-all duration-700 group-hover:scale-105"
-              sizes="(max-width: 1024px) 100vw, 33vw"
-              quality={80}
-              loading="lazy"
-            />
+            {sliderImages.map((img, idx) => (
+              <Image 
+                key={idx}
+                src={img} 
+                alt={`Premium Clubhouse Amenities ${idx + 1}`} 
+                fill
+                className={`object-cover transition-all duration-700 group-hover:scale-105 absolute inset-0 ${
+                  idx === currentIdx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                }`}
+                unoptimized
+                priority={idx === 0}
+              />
+            ))}
             {/* Slider arrows overlay */}
             <div className="absolute inset-0 flex items-center justify-between px-2 md:px-6 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
               <button 
@@ -100,9 +112,7 @@ export default function AmenitiesSection() {
                     alt={item.title}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    sizes="(max-width: 640px) 80px, (max-width: 1024px) 60px, 80px"
-                    loading="lazy"
-                    quality={70}
+                    unoptimized
                   />
                 </div>
                 <h3 className="text-xs md:text-sm font-semibold text-center text-[#1A1800] group-hover:text-[#C9A227] transition-colors leading-tight">
