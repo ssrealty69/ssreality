@@ -26,16 +26,9 @@ const features = [
 export default function ProjectHighlights() {
   return (
     <section className="py-24 relative overflow-hidden bg-[#F8FAFC]">
-      {/* 3D Moving Building Background */}
-      <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden opacity-[0.15]">
+      {/* Dotted Blueprint Grid Pattern */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden bg-[radial-gradient(rgba(201,162,39,0.1)_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-70">
         <style>{`
-          @keyframes slowPanZoomOpposite {
-            0%, 100% { transform: scale(1.15) translate(-10px, -5px); }
-            50% { transform: scale(1.05) translate(0px, 0px); }
-          }
-          .animate-pan-zoom-opposite {
-            animation: slowPanZoomOpposite 25s ease-in-out infinite;
-          }
           .card-3d {
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
           }
@@ -44,16 +37,8 @@ export default function ProjectHighlights() {
             box-shadow: 0 20px 45px rgba(201, 162, 39, 0.25);
           }
         `}</style>
-        <Image
-          src="/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%202.png"
-          alt="Luxury Building Layout Overlay"
-          fill
-          priority
-          unoptimized
-          className="object-cover animate-pan-zoom-opposite"
-        />
         {/* Soft luxury gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC]/90 via-transparent to-[#F8FAFC]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC] via-transparent to-[#F8FAFC]" />
       </div>
       
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24 relative z-10">
