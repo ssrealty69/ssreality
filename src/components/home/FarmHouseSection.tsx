@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 const slides = [
   {
     img: '/Farm House/Farm House Image 1.png',
+    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 1.png',
     badge: 'Exclusive Launch',
     heading: 'Your Private Sanctuary',
     subheading: 'Nestled in the Aravalli Foothills',
@@ -20,6 +21,7 @@ const slides = [
   },
   {
     img: '/Farm House/Farm House Image 2.png',
+    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 2.png',
     badge: 'Limited Availability',
     heading: 'Where Nature Meets Luxury',
     subheading: 'Premium Villas with Nature Trails',
@@ -30,6 +32,7 @@ const slides = [
   },
   {
     img: '/Farm House/Farm House Image 3.png',
+    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 3.png',
     badge: 'Investment Pick',
     heading: 'A Life Beyond the Ordinary',
     subheading: 'Luxury Farm Houses Near Delhi NCR',
@@ -40,6 +43,7 @@ const slides = [
   },
   {
     img: '/Farm House/Farm House Image 4.png',
+    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 4.png',
     badge: 'Ready to Move',
     heading: 'Legacy Living, Reimagined',
     subheading: 'Freehold Land with Stunning Hill Vistas',
@@ -210,11 +214,21 @@ export default function FarmHouseSection() {
         {/* Background Image */}
         <div className={`absolute inset-0 ${isTransitioning ? 'opacity-0' : 'opacity-100'} transition-opacity duration-500`}>
           <div className="fh-img-enter absolute inset-0" key={`img-${current}`}>
+            {/* Desktop & Tablet Image */}
             <Image
               src={slide.img}
               alt={slide.heading}
               fill
-              className="object-cover object-center"
+              className="hidden sm:block object-cover object-center"
+              priority
+              unoptimized
+            />
+            {/* Mobile Image */}
+            <Image
+              src={slide.mobileImg}
+              alt={slide.heading}
+              fill
+              className="block sm:hidden object-cover object-center"
               priority
               unoptimized
             />
