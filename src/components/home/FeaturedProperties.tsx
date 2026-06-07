@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import Link from 'next/link';
-import PropertyCard from '@/components/properties/PropertyCard';
+import PremiumPropertyCard from '@/components/properties/PremiumPropertyCard';
 import { ArrowRight } from 'lucide-react';
 import type { Property } from '@/types';
 
@@ -47,13 +47,13 @@ export default function FeaturedProperties({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="flex flex-col gap-8">
           {displayProperties.map((p, idx) => (
-            <PropertyCard key={p._id} property={p} priority={idx < 4} />
+            <PremiumPropertyCard key={p._id} property={p} priority={idx < 4} />
           ))}
         </div>
 
-        <div className="text-center mt-8">
+        <div className="text-center mt-10">
           <Link href={viewAllHref} className="btn-primary">
             View All Properties <ArrowRight size={16} />
           </Link>
@@ -62,4 +62,5 @@ export default function FeaturedProperties({
     </section>
   );
 }
+
 
