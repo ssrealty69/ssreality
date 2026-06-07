@@ -208,7 +208,7 @@ export default function FarmHouseSection() {
       {/* ───────────── MOBILE SLIDER (portrait images, < sm) ───────────── */}
       <div
         className="relative w-full sm:hidden"
-        style={{ height: '580px' }}
+        style={{ height: '680px' }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
