@@ -341,23 +341,23 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
         {/* --- HIGHLIGHTS SECTION --- */}
         {property.highlights && property.highlights.length > 0 && (
-          <section id="highlights" className="py-24 relative overflow-hidden bg-[#FFFEF5]">
+          <section id="highlights" className="py-12 md:py-16 relative overflow-hidden bg-[#FFFEF5]">
             {/* Animated Panning Background */}
             <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden opacity-[0.22]">
               <style>{`
                 @keyframes highlightsPan {
                   0%, 100% { transform: scale(1.05) translate(0px, 0px); }
-                  50% { transform: scale(1.15) translate(-10px, -5px); }
+                  50% { transform: scale(1.1) translate(-5px, -3px); }
                 }
                 .animate-highlights-pan {
-                  animation: highlightsPan 20s ease-in-out infinite;
+                  animation: highlightsPan 25s ease-in-out infinite;
                 }
-                .card-3d-highlight {
-                  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+                .card-premium-highlight {
+                  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
                 }
-                .card-3d-highlight:hover {
-                  transform: translateY(-6px) scale(1.01);
-                  box-shadow: 0 15px 35px rgba(201, 162, 39, 0.18);
+                .card-premium-highlight:hover {
+                  transform: translateY(-3px);
+                  box-shadow: 0 10px 25px -5px rgba(201, 162, 39, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
                 }
               `}</style>
               <Image
@@ -369,60 +369,40 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                 className="object-cover animate-highlights-pan"
               />
               {/* Soft luxury gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFEF5]/90 via-[#FFFEF5]/50 to-[#FFFEF5]/90" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFEF5]/90 via-[#FFFEF5]/60 to-[#FFFEF5]/90" />
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-              <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
+              <div className="text-center mb-10">
+                <h2 className="text-3xl md:text-4xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-3">
                   Project <span className="text-[#C9A227]">Highlights</span>
                 </h2>
-                <p className="text-[#6b6450] max-w-2xl mx-auto">
-                  Discover the premium features and unique highlights that make this property stand out.
-                </p>
+                <div className="w-16 h-[1.5px] bg-[#C9A227]/40 mx-auto" />
               </div>
 
-              <div className="grid lg:grid-cols-[1.2fr_1.8fr] gap-12 items-center">
-                {/* Left Side: Large 3D style Image Card */}
-                <div className="relative w-full aspect-[4/3] md:aspect-[1.1] rounded-3xl overflow-hidden shadow-2xl group border-4 border-white card-3d-highlight bg-white">
-                  <Image
-                    src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.png"}
-                    alt={property.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    unoptimized
-                  />
-                  {/* Soft gradient tag overlay inside the card */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none" />
-                  <div className="absolute bottom-6 left-6 text-white font-[var(--font-playfair)] z-10 text-xl font-bold">
-                    {property.title}
-                  </div>
-                </div>
-
-                {/* Right Side: One side Points */}
-                <div className="space-y-4">
-                  {property.highlights.map((highlight: any, i: number) => {
-                    const pointText = typeof highlight === 'string' ? highlight : highlight.title;
-                    if (!pointText) return null;
-                    return (
-                      <div 
-                        key={i} 
-                        className="group flex items-center gap-5 bg-white/85 border border-[#E8D5A3]/30 hover:border-[#C9A227]/60 hover:bg-[#FFFEF5] transition-all duration-300 p-5 rounded-2xl shadow-sm hover:shadow-md card-3d-highlight backdrop-blur-sm"
-                      >
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-300">
-                          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <div className="flex-1">
-                          <span className="text-base md:text-lg font-bold text-[#1A1800] tracking-wide transition-colors duration-300 group-hover:text-[#C9A227]">
-                            {pointText}
-                          </span>
-                        </div>
+              {/* Centered list of premium thin pointers */}
+              <div className="max-w-2xl mx-auto space-y-3">
+                {property.highlights.map((highlight: any, i: number) => {
+                  const pointText = typeof highlight === 'string' ? highlight : highlight.title;
+                  if (!pointText) return null;
+                  return (
+                    <div 
+                      key={i} 
+                      className="group flex items-center gap-4 bg-white/90 border border-[#E8D5A3]/25 hover:border-[#C9A227]/50 hover:bg-[#FFFEF5] transition-all duration-300 py-3.5 px-5 rounded-xl shadow-sm hover:shadow-md card-premium-highlight backdrop-blur-sm"
+                    >
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className="flex-1">
+                        <span className="text-sm md:text-base font-medium text-[#2D2A26] tracking-wide transition-colors duration-300 group-hover:text-[#1A1800]">
+                          {pointText}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>
