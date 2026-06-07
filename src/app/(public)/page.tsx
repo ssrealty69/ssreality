@@ -27,21 +27,18 @@ export const revalidate = 3600; // Cache the page for 1 hour
 
 export default async function HomePage() {
   let latestData: any[] = [];
-  let apartmentData: any[] = [];
   let plotData: any[] = [];
   let deliveredData: any[] = [];
 
   try {
     await connectDB();
-    const [latestRaw, apartmentRaw, plotRaw, deliveredRaw] = await Promise.all([
+    const [latestRaw, plotRaw, deliveredRaw] = await Promise.all([
       PropertyModel.find({ status: 'available' }).sort('-createdAt').limit(4).lean(),
-      PropertyModel.find({ propertyType: 'apartment', status: 'available' }).sort('-createdAt').limit(4).lean(),
       PropertyModel.find({ propertyType: 'plot', status: 'available' }).sort('-createdAt').limit(4).lean(),
       PropertyModel.find({ status: 'delivered' }).sort('-createdAt').limit(6).lean(),
     ]);
 
     latestData = JSON.parse(JSON.stringify(latestRaw));
-    apartmentData = JSON.parse(JSON.stringify(apartmentRaw));
     plotData = JSON.parse(JSON.stringify(plotRaw));
     deliveredData = JSON.parse(JSON.stringify(deliveredRaw));
   } catch (error) {
@@ -50,7 +47,6 @@ export default async function HomePage() {
 
   // Fallback logic for demo/empty state
   const latestProperties = latestData.length > 0 ? latestData : FALLBACK_PROPERTIES.slice(0, 4);
-  const apartments = apartmentData.length > 0 ? apartmentData : FALLBACK_PROPERTIES.filter(p => p.propertyType === 'apartment').slice(0, 4);
   const plots = plotData.length > 0 ? plotData : FALLBACK_PROPERTIES.filter(p => p.propertyType === 'plot').slice(0, 4);
   const trueDeliveredData = deliveredData.filter((p: Property) => p.status === 'delivered');
   const deliveredProperties = trueDeliveredData.length > 0 ? trueDeliveredData : FALLBACK_PROPERTIES.filter(p => p.status === 'delivered');
@@ -110,16 +106,6 @@ export default async function HomePage() {
         viewAllHref="/properties?sortBy=newest"
         badgeText="Fresh Listings"
         className="pt-12 pb-6 md:pt-16 md:pb-8"
-      />
-
-      {/* 2. Luxury Apartments Section */}
-      <FeaturedProperties 
-        title={<>Luxury <span className="text-[#C9A227]">Apartments</span></>}
-        subtitle="Discover premium flats and high-rise apartments designed for a modern and sophisticated lifestyle."
-        properties={apartments}
-        viewAllHref="/properties?propertyType=apartment"
-        badgeText="Urban Living"
-        className="py-6 md:py-8"
       />
 
       {/* 3. Freehold Lands Section */}
