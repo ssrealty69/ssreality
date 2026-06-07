@@ -25,11 +25,36 @@ const features = [
 
 export default function ProjectHighlights() {
   return (
-    <section className="py-20 bg-[#F8FAFC] relative overflow-hidden">
-      {/* Marble/Texture Background Overlay */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-        style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/marble-similar.png")' }} 
-      />
+    <section className="py-24 relative overflow-hidden bg-[#F8FAFC]">
+      {/* 3D Moving Building Background */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden opacity-[0.15]">
+        <style>{`
+          @keyframes slowPanZoomOpposite {
+            0%, 100% { transform: scale(1.15) translate(-10px, -5px); }
+            50% { transform: scale(1.05) translate(0px, 0px); }
+          }
+          .animate-pan-zoom-opposite {
+            animation: slowPanZoomOpposite 25s ease-in-out infinite;
+          }
+          .card-3d {
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+          }
+          .card-3d:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 45px rgba(201, 162, 39, 0.25);
+          }
+        `}</style>
+        <Image
+          src="/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%202.png"
+          alt="Luxury Building Layout Overlay"
+          fill
+          priority
+          unoptimized
+          className="object-cover animate-pan-zoom-opposite"
+        />
+        {/* Soft luxury gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#F8FAFC]/90 via-transparent to-[#F8FAFC]/90" />
+      </div>
       
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24 relative z-10">
         <div className="text-center mb-16">
@@ -44,7 +69,7 @@ export default function ProjectHighlights() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-x-8 md:gap-x-12 gap-y-10 md:gap-y-12">
           {features.map((feature, index) => (
             <div key={index} className="flex flex-col items-center group">
-              <div className="relative w-[90%] aspect-[16/11] rounded-2xl overflow-hidden mb-5 shadow-md border border-gray-50 group-hover:border-[#C9A227] transition-all duration-300 bg-white">
+              <div className="relative w-full aspect-square rounded-3xl overflow-hidden mb-5 shadow-md border-2 border-transparent group-hover:border-[#C9A227] transition-all duration-300 card-3d">
                 <Image
                   src={feature.img}
                   alt={feature.title}
