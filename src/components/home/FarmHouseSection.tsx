@@ -310,7 +310,7 @@ export default function FarmHouseSection() {
 
       {/* ───────────── DESKTOP / TABLET SLIDER (landscape images, sm+) ───────────── */}
       <div
-        className="relative w-full hidden sm:block md:h-[540px] lg:h-[600px]" style={{ height: '480px' }}
+        className="relative w-full hidden sm:block sm:h-[480px] md:h-[560px] lg:h-[620px]"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
