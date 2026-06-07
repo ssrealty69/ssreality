@@ -54,8 +54,38 @@ export default function AmenitiesSection() {
   };
 
   return (
-    <section id="amenities-section" className="py-20 bg-white relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="amenities-section" className="py-24 relative overflow-hidden bg-[#FFFEF5]">
+      {/* 3D Moving Building Background */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden opacity-[0.22]">
+        <style>{`
+          @keyframes slowPanZoom {
+            0%, 100% { transform: scale(1.05) translate(0px, 0px); }
+            50% { transform: scale(1.15) translate(-10px, -5px); }
+          }
+          .animate-pan-zoom {
+            animation: slowPanZoom 20s ease-in-out infinite;
+          }
+          .card-3d {
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+          }
+          .card-3d:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 45px rgba(201, 162, 39, 0.25);
+          }
+        `}</style>
+        <Image
+          src="/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.png"
+          alt="Luxury Building Background Overlay"
+          fill
+          priority
+          unoptimized
+          className="object-cover animate-pan-zoom"
+        />
+        {/* Soft luxury gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FFFEF5]/90 via-transparent to-[#FFFEF5]/90" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">
             World Class <span className="text-[#C9A227]">Amenities</span>
@@ -67,7 +97,7 @@ export default function AmenitiesSection() {
 
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-center">
           {/* Left Side: Large Image with Slider controls */}
-          <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group border-4 border-white">
+          <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group border-4 border-white card-3d">
             {sliderImages.map((img, idx) => (
               <Image 
                 key={idx}
@@ -106,7 +136,7 @@ export default function AmenitiesSection() {
           <div className="grid grid-cols-3 md:grid-cols-7 gap-x-4 md:gap-x-6 gap-y-8 md:gap-y-12">
             {amenities.map((item, index) => (
               <div key={index} className="flex flex-col items-center group">
-                <div className="relative w-[90%] md:w-full aspect-square rounded-2xl md:rounded-3xl overflow-hidden mb-3 shadow-md border-2 border-transparent group-hover:border-[#C9A227] transition-all duration-300">
+                <div className="relative w-[90%] md:w-full aspect-square rounded-2xl md:rounded-3xl overflow-hidden mb-3 shadow-md border-2 border-transparent group-hover:border-[#C9A227] transition-all duration-300 card-3d">
                   <Image
                     src={item.img}
                     alt={item.title}
