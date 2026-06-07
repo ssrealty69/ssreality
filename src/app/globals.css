@@ -43,6 +43,7 @@
   /* Fonts */
   --font-heading: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
+  --font-poppins: var(--font-poppins), sans-serif;
 
   /* Radius */
   --radius-sm: 0.375rem;

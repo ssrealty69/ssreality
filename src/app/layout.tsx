@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Inter, Playfair_Display, Poppins } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import Script from 'next/script';
@@ -20,6 +20,14 @@ const playfair = Playfair_Display({
   display: 'swap',
   preload: true,
   weight: ['700', '800'],
+});
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  variable: '--font-poppins',
+  display: 'swap',
+  preload: true,
+  weight: ['400', '500', '600', '700', '800'],
 });
 
 export const metadata: Metadata = {
@@ -63,7 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const settings = trackingData ? JSON.parse(JSON.stringify(trackingData)) : null;
 
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} scroll-smooth`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${poppins.variable} scroll-smooth`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/SS Realty Official Logo.png" />
         <link rel="apple-touch-icon" href="/SS Realty Official Logo.png" />

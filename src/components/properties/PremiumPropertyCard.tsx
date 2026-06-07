@@ -326,18 +326,18 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
           <div className="flex items-center gap-3">
             {/* Outlined Brochure/Enquire button */}
             <a 
-              href={waLink}
+              href={property.brochureUrl || waLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-950 hover:text-white transition-all duration-300 font-heading font-black text-xs uppercase tracking-widest rounded-xl flex items-center gap-1.5"
+              className="px-4 py-2.5 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-950 hover:text-white transition-all duration-300 font-poppins font-bold text-xs uppercase tracking-widest rounded-xl flex items-center gap-1.5"
             >
-              <PhoneCall size={13} /> Chat / Call
+              <Download size={13} /> Brochure
             </a>
 
             {/* View Details gold gradient button */}
             <Link 
               href={`/properties/${property._id}`}
-              className="px-5 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] hover:brightness-105 transition-all duration-300 font-heading font-black text-xs uppercase tracking-widest rounded-xl flex items-center gap-1.5 shadow-[0_4px_14px_rgba(201,162,39,0.25)] hover:shadow-[0_6px_20px_rgba(201,162,39,0.4)] active:scale-95"
+              className="px-5 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] hover:brightness-105 transition-all duration-300 font-poppins font-bold text-xs uppercase tracking-widest rounded-xl flex items-center gap-1.5 shadow-[0_4px_14px_rgba(201,162,39,0.25)] hover:shadow-[0_6px_20px_rgba(201,162,39,0.4)] active:scale-95"
             >
               <Eye size={13} /> View Details
             </Link>
