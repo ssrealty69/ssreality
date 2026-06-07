@@ -78,6 +78,7 @@ export default function AddProperty() {
       areaUnit: 'sqft',
       bedrooms: '',
       bathrooms: '',
+      registryAvailable: true,
       parking: false,
       furnished: false,
       floor: '',
@@ -95,6 +96,7 @@ export default function AddProperty() {
     worldClassAmenities: [] as string[],
     priceList: [{ type: '', size: '', price: '', negotiable: false }] as { type: string; size: string; price: string; negotiable?: boolean }[],
     images: [''] as string[], // Only banner image remains here (as images[0])
+    mobileBannerUrl: '',
     interiorImages: [] as string[],
     galleryImages: [] as string[],
     videoUrl: '',
@@ -316,6 +318,10 @@ export default function AddProperty() {
               <input type="number" name="features.totalUnits" value={formData.features.totalUnits} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 542" />
             </div>
             <div className="flex items-center gap-2 mt-6">
+              <input type="checkbox" id="registryAvailable" name="features.registryAvailable" checked={formData.features.registryAvailable} onChange={handleChange} className="w-5 h-5 text-[#C9A227] rounded" />
+              <label htmlFor="registryAvailable" className="text-sm font-medium text-gray-700 font-bold">Registry Available</label>
+            </div>
+            <div className="flex items-center gap-2 mt-6">
               <input type="checkbox" id="parking" name="features.parking" checked={formData.features.parking} onChange={handleChange} className="w-5 h-5 text-[#C9A227] rounded" />
               <label htmlFor="parking" className="text-sm font-medium text-gray-700">Parking Available</label>
             </div>
@@ -464,6 +470,16 @@ export default function AddProperty() {
                   newImages[0] = url;
                   return { ...prev, images: newImages };
                 });
+              }}
+            />
+
+            {/* Mobile Banner Image Uploader */}
+            <MediaUpload
+              label="Mobile Banner Image (Hero Background)"
+              description="Optional: This image will be used specifically on mobile devices for the top hero background."
+              value={formData.mobileBannerUrl}
+              onChange={(url) => {
+                setFormData(prev => ({ ...prev, mobileBannerUrl: url }));
               }}
             />
 

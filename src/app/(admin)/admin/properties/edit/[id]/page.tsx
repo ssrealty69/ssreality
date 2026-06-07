@@ -85,6 +85,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
       areaUnit: 'sqft',
       bedrooms: '',
       bathrooms: '',
+      registryAvailable: true,
       parking: false,
       furnished: false,
       floor: '',
@@ -102,6 +103,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
     worldClassAmenities: [] as string[],
     priceList: [{ type: '', size: '', price: '', negotiable: false }] as { type: string; size: string; price: string; negotiable?: boolean }[],
     images: [''] as string[], // Only banner image remains here (as images[0])
+    mobileBannerUrl: '',
     interiorImages: [] as string[],
     galleryImages: [] as string[],
     videoUrl: '',
@@ -153,6 +155,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
               areaUnit: prop.features?.areaUnit || 'sqft',
               bedrooms: prop.features?.bedrooms !== undefined && prop.features?.bedrooms !== null ? prop.features.bedrooms.toString() : '',
               bathrooms: prop.features?.bathrooms !== undefined && prop.features?.bathrooms !== null ? prop.features.bathrooms.toString() : '',
+              registryAvailable: prop.features?.registryAvailable !== undefined ? prop.features.registryAvailable : true,
               parking: prop.features?.parking || false,
               furnished: prop.features?.furnished || false,
               floor: prop.features?.floor !== undefined && prop.features?.floor !== null ? prop.features.floor.toString() : '',
@@ -170,6 +173,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
             worldClassAmenities: prop.worldClassAmenities || [],
             priceList: prop.priceList && prop.priceList.length > 0 ? prop.priceList : [{ type: '', size: '', price: '', negotiable: false }],
             images: prop.images && prop.images.length > 0 ? [prop.images[0]] : [''],
+            mobileBannerUrl: prop.mobileBannerUrl || '',
             interiorImages: prop.interiorImages && prop.interiorImages.length > 0
               ? prop.interiorImages
               : (prop.images && prop.images.length > 1 ? [prop.images[1]] : []),
@@ -415,6 +419,10 @@ export default function EditProperty({ params }: EditPropertyProps) {
               <input type="number" name="features.totalUnits" value={formData.features.totalUnits} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 542" />
             </div>
             <div className="flex items-center gap-2 mt-6">
+              <input type="checkbox" id="registryAvailable" name="features.registryAvailable" checked={formData.features.registryAvailable} onChange={handleChange} className="w-5 h-5 text-[#C9A227] rounded" />
+              <label htmlFor="registryAvailable" className="text-sm font-medium text-gray-700 font-bold">Registry Available</label>
+            </div>
+            <div className="flex items-center gap-2 mt-6">
               <input type="checkbox" id="parking" name="features.parking" checked={formData.features.parking} onChange={handleChange} className="w-5 h-5 text-[#C9A227] rounded" />
               <label htmlFor="parking" className="text-sm font-medium text-gray-700">Parking Available</label>
             </div>
@@ -563,6 +571,16 @@ export default function EditProperty({ params }: EditPropertyProps) {
                   newImages[0] = url;
                   return { ...prev, images: newImages };
                 });
+              }}
+            />
+
+            {/* Mobile Banner Image Uploader */}
+            <MediaUpload
+              label="Mobile Banner Image (Hero Background)"
+              description="Optional: This image will be used specifically on mobile devices for the top hero background."
+              value={formData.mobileBannerUrl}
+              onChange={(url) => {
+                setFormData(prev => ({ ...prev, mobileBannerUrl: url }));
               }}
             />
 

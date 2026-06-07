@@ -21,10 +21,12 @@ export interface Property {
     areaUnit: 'sqft' | 'sqmt' | 'acre' | 'sqyd';
     parking?: boolean;
     furnished?: boolean;
+    registryAvailable?: boolean;
     floor?: number;
     totalFloors?: number;
   };
   images: string[];
+  mobileBannerUrl?: string;
   interiorImages?: string[];
   galleryImages?: string[];
   brochureUrl?: string;

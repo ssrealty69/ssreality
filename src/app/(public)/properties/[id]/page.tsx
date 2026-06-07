@@ -195,14 +195,28 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
       {/* --- HERO SECTION --- */}
       <div className="relative w-full h-[80vh] min-h-[500px]">
-        {/* Background */}
-        <Image
-          src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.png"}
-          alt={property.title}
-          fill
-          className="object-cover"
-          priority
-        />
+        {/* Desktop & Tablet Background */}
+        <div className={property.mobileBannerUrl ? "hidden md:block absolute inset-0" : "absolute inset-0"}>
+          <Image
+            src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.png"}
+            alt={property.title}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+        {/* Mobile Background */}
+        {property.mobileBannerUrl && (
+          <div className="block md:hidden absolute inset-0">
+            <Image
+              src={property.mobileBannerUrl}
+              alt={`${property.title} - Mobile Banner`}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
         {/* Pink/Red Gradient Overlay similar to screenshot 1 */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1800]/40 via-[#1A1800]/15 to-transparent" />
 
@@ -227,6 +241,12 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
             {property.features.reraApproved && (
               <div className="flex items-center gap-2 text-sm font-semibold text-white">
                 Rera Approved <CheckCircle2 size={16} className="text-[#25D366]" fill="white" />
+              </div>
+            )}
+
+            {property.features.registryAvailable !== false && (
+              <div className="flex items-center gap-2 text-sm font-semibold text-white mt-1.5">
+                Registry Available <CheckCircle2 size={16} className="text-[#25D366]" fill="white" />
               </div>
             )}
           </div>
@@ -335,6 +355,17 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                     </div>
                     <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
                       Rera Appr. <CheckCircle2 size={14} className="text-[#25D366] ml-1 inline" fill="white" />
+                    </div>
+                  </div>
+                )}
+
+                {property.features.registryAvailable !== false && (
+                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
+                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
+                      <CheckCircle2 size={18} />
+                    </div>
+                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
+                      Registry Avail. <CheckCircle2 size={14} className="text-[#25D366] ml-1 inline" fill="white" />
                     </div>
                   </div>
                 )}

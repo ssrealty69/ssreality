@@ -34,7 +34,7 @@ export async function PUT(
     
     // Clean up highlights and nearby elements
     if (body.highlights) {
-      body.highlights = body.highlights.filter((h: any) => h.title.trim() !== '' && h.description.trim() !== '');
+      body.highlights = body.highlights.filter((h: any) => typeof h === 'string' && h.trim() !== '');
     }
     if (body.nearby) {
       body.nearby = body.nearby.filter((n: any) => n.name.trim() !== '' && n.distance.trim() !== '');

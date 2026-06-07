@@ -22,6 +22,7 @@ export interface IProperty extends Document {
     areaUnit: 'sqft' | 'sqmt' | 'acre' | 'sqyd';
     parking?: boolean;
     furnished?: boolean;
+    registryAvailable?: boolean;
     floor?: number;
     totalFloors?: number;
     towers?: number;
@@ -29,6 +30,7 @@ export interface IProperty extends Document {
     reraApproved?: boolean;
   };
   images: string[];
+  mobileBannerUrl?: string;
   interiorImages?: string[];
   galleryImages?: string[];
   videoUrl?: string;
@@ -97,6 +99,7 @@ const PropertySchema = new Schema<IProperty>(
       areaUnit: { type: String, enum: ['sqft', 'sqmt', 'acre', 'sqyd'], default: 'sqft' },
       parking: { type: Boolean, default: false },
       furnished: { type: Boolean, default: false },
+      registryAvailable: { type: Boolean, default: true },
       floor: { type: Number },
       totalFloors: { type: Number },
       towers: { type: Number },
@@ -104,6 +107,7 @@ const PropertySchema = new Schema<IProperty>(
       reraApproved: { type: Boolean, default: false },
     },
     images: [{ type: String }],
+    mobileBannerUrl: { type: String, default: '' },
     interiorImages: [{ type: String }],
     galleryImages: [{ type: String }],
     videoUrl: { type: String },
