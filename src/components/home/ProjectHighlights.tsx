@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Image from 'next/image';
 
 const categories = [
@@ -57,64 +57,74 @@ export default function ProjectHighlights() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
-      className="py-24 relative overflow-hidden bg-[#0A0B0E] border-y border-white/[0.05]"
+      className="py-24 relative overflow-hidden bg-[#F3EDE4] border-y border-orange-100"
       style={{
-        // Set dynamic mouse coordinate variables for the spotlight border beam effect
         ['--mouse-x' as any]: `${coords.x}px`,
         ['--mouse-y' as any]: `${coords.y}px`,
       }}
     >
-      {/* Dynamic Dark Mode Grid and Glow Orbs */}
+      {/* Luxury Moving Pattern and Depth Glows */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
-        {/* CSS Keyframes for modern micro-animations */}
+        {/* CSS Keyframes for slow background panning */}
         <style>{`
-          @keyframes float-slow-1 {
-            0%, 100% { transform: translate(0px, 0px) scale(1); }
-            50% { transform: translate(40px, -60px) scale(1.1); }
+          @keyframes bg-pan-slow {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 100px 100px; }
           }
-          @keyframes float-slow-2 {
-            0%, 100% { transform: translate(0px, 0px) scale(1.05); }
-            50% { transform: translate(-60px, 40px) scale(0.95); }
+          @keyframes bg-pan-opposite {
+            0% { background-position: 0px 0px; }
+            100% { background-position: -60px -60px; }
+          }
+          @keyframes float-slow {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.08); }
           }
           @keyframes fadeInStagger {
-            from { opacity: 0; transform: translateY(16px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
           }
-          .animate-float-1 {
-            animation: float-slow-1 22s ease-in-out infinite;
+          .animate-bg-pan {
+            animation: bg-pan-slow 35s linear infinite;
           }
-          .animate-float-2 {
-            animation: float-slow-2 28s ease-in-out infinite;
+          .animate-bg-pan-opp {
+            animation: bg-pan-opposite 25s linear infinite;
+          }
+          .animate-float {
+            animation: float-slow 20s ease-in-out infinite;
           }
           .card-stagger {
             opacity: 0;
-            animation: fadeInStagger 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeInStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
           }
           .card-3d {
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
           }
           .card-3d:hover {
-            transform: translateY(-8px) scale(1.02);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(184, 134, 11, 0.08);
           }
         `}</style>
 
-        {/* Ambient Moving Gold Orbs */}
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-[#C9A227]/12 to-transparent blur-3xl animate-float-1" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[700px] h-[700px] rounded-full bg-gradient-to-tr from-[#C9A227]/8 to-transparent blur-3xl animate-float-2" />
+        {/* Dynamic Glowing luxury gold gradients */}
+        <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#C9A227]/10 blur-3xl animate-float" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#C9A227]/8  blur-3xl animate-float" style={{ animationDelay: '-10s' }} />
 
-        {/* Technical/Fine luxury mesh background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:60px_60px] opacity-80" />
+        {/* Slowly Scrolling Grid Pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(201,162,39,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(201,162,39,0.02)_1px,transparent_1px)] bg-[size:100px_100px] animate-bg-pan opacity-90" />
         
-        {/* Dynamic center radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,162,39,0.08),transparent_70%)]" />
+        {/* Slowly Scrolling Dots Pattern (in opposite direction to create depth) */}
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(201,162,39,0.06)_1.5px,transparent_1.5px)] bg-[size:25px_25px] animate-bg-pan-opp" />
 
-        {/* Mouse interactive spotlight glow behind the cards */}
+        {/* Center lighting soft overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4),transparent_80%)]" />
+
+        {/* Mouse interactive spotlight gold glow */}
         {isHovering && (
           <div 
-            className="absolute w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(201,162,39,0.08)_0%,transparent_70%)] pointer-events-none transition-opacity duration-500"
+            className="absolute w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(201,162,39,0.05)_0%,transparent_70%)] pointer-events-none transition-opacity duration-300"
             style={{
-              left: `${coords.x - 300}px`,
-              top: `${coords.y - 300}px`,
+              left: `${coords.x - 250}px`,
+              top: `${coords.y - 250}px`,
             }}
           />
         )}
@@ -124,15 +134,15 @@ export default function ProjectHighlights() {
         
         {/* Header Block */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/15 border border-[#C9A227]/25 text-[#C9A227] text-[10px] font-bold tracking-[0.25em] uppercase mb-4 shadow-sm shadow-[#C9A227]/5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/12 border border-[#C9A227]/25 text-[#A67C1E] text-[10px] font-bold tracking-[0.25em] uppercase mb-4 shadow-sm shadow-[#C9A227]/5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] inline-block animate-pulse" />
             Premium Specifications
           </div>
-          <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">
             Project <span className="text-[#C9A227]">Highlights</span>
           </h2>
           <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/60 to-transparent mx-auto mb-6" />
-          <p className="text-slate-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed font-light">
+          <p className="text-[#6b6450] max-w-2xl mx-auto text-sm md:text-base leading-relaxed font-light">
             Discover the exceptional features and premium specifications that define our project. Crafted to deliver an unparalleled living experience for you and your family.
           </p>
         </div>
@@ -145,8 +155,8 @@ export default function ProjectHighlights() {
               onClick={() => setActiveTab(cat.id)}
               className={`px-5 py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 border ${
                 activeTab === cat.id
-                  ? 'bg-[#C9A227] text-white border-[#C9A227] shadow-lg shadow-[#C9A227]/20 scale-105'
-                  : 'bg-white/[0.02] text-slate-400 border-white/[0.08] hover:border-[#C9A227]/40 hover:text-white hover:bg-white/[0.05]'
+                  ? 'bg-[#C9A227] text-white border-[#C9A227] shadow-lg shadow-[#C9A227]/15 scale-105'
+                  : 'bg-white/80 text-[#6b6450] border-orange-100 hover:border-[#C9A227]/40 hover:text-[#C9A227] hover:bg-white'
               }`}
             >
               {cat.label}
@@ -159,11 +169,11 @@ export default function ProjectHighlights() {
           {filteredFeatures.map((feature, index) => (
             <div 
               key={`${activeTab}-${index}`}
-              style={{ animationDelay: `${(index % 6) * 60}ms` }}
-              className="flex flex-col items-center p-4 bg-white/[0.02] backdrop-blur-md rounded-2xl border border-white/[0.06] hover:border-[#C9A227]/30 hover:bg-white/[0.04] transition-all duration-300 group card-3d card-stagger cursor-pointer"
+              style={{ animationDelay: `${(index % 6) * 50}ms` }}
+              className="flex flex-col items-center p-3.5 bg-white/70 backdrop-blur-sm rounded-2xl border border-orange-100/50 hover:border-[#C9A227]/40 hover:bg-white transition-all duration-300 group card-3d card-stagger cursor-pointer"
             >
               {/* Image Frame */}
-              <div className="relative w-full aspect-[16/11] rounded-xl overflow-hidden mb-4 shadow-md border border-white/[0.05] group-hover:border-transparent transition-all duration-300 bg-[#121316]">
+              <div className="relative w-full aspect-[16/11] rounded-xl overflow-hidden mb-4 shadow-sm border border-gray-100/40 group-hover:border-transparent transition-all duration-300 bg-white">
                 <Image
                   src={feature.img}
                   alt={feature.title}
@@ -174,7 +184,7 @@ export default function ProjectHighlights() {
               </div>
               
               {/* Title */}
-              <p className="text-[10px] md:text-xs font-bold text-center text-slate-300 group-hover:text-[#C9A227] transition-colors duration-300 leading-tight uppercase tracking-wider min-h-[32px] flex items-center justify-center px-1">
+              <p className="text-[10px] md:text-xs font-bold text-center text-[#334155] group-hover:text-[#C9A227] transition-colors duration-300 leading-tight uppercase tracking-wider min-h-[32px] flex items-center justify-center px-1">
                 {feature.title}
               </p>
             </div>
