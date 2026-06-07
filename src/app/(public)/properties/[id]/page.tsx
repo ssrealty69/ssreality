@@ -350,6 +350,46 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           </div>
         </section>
 
+        {/* --- PRICING & CONFIGURATIONS SECTION --- */}
+        {property.priceList && property.priceList.length > 0 && (
+          <section id="pricing" className="py-12 border-t border-gray-100">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#C9A227]/10 rounded-full mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#C9A227] animate-pulse" />
+                <span className="text-[10px] font-black text-[#C9A227] uppercase tracking-[0.2em]">Available Layouts</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#1A1800] mb-3 font-[var(--font-playfair)]">
+                Configurations & <span className="text-[#C9A227]">Pricing</span>
+              </h2>
+              <div className="w-20 h-1 bg-[#C9A227] mx-auto mb-4 rounded-full" />
+            </div>
+
+            <div className="max-w-4xl mx-auto bg-white rounded-3xl border border-gray-150 shadow-xl overflow-hidden">
+              <div className="grid grid-cols-3 bg-[#1A1800] text-[#F0D060] px-6 py-4 text-xs sm:text-sm font-black uppercase tracking-wider">
+                <div>Configuration</div>
+                <div>Area / Size</div>
+                <div className="text-right">Price</div>
+              </div>
+              <div className="divide-y divide-gray-150">
+                {property.priceList.map((item: any, idx: number) => (
+                  <div key={idx} className="grid grid-cols-3 px-6 py-5 text-sm sm:text-base text-gray-700 font-semibold items-center hover:bg-amber-50/20 transition-colors">
+                    <div className="text-gray-900 font-bold">{item.type}</div>
+                    <div className="text-gray-500">{item.size}</div>
+                    <div className="text-right flex flex-col items-end">
+                      <span className="text-[#B8860B] font-extrabold text-base sm:text-lg">{item.price}</span>
+                      {item.negotiable && (
+                        <span className="text-[9px] sm:text-[10px] font-black text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200 uppercase tracking-widest mt-1.5 leading-none shrink-0">
+                          Negotiable
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* --- HIGHLIGHTS SECTION --- */}
         {property.highlights && property.highlights.length > 0 && (
           <section id="highlights" className="py-12 md:py-16 relative bg-[#FFFEF5]">
