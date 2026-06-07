@@ -15,6 +15,7 @@ import { MapPin, Building, Activity, Layers, BedDouble, Hash, Maximize2, CheckCi
 import PropertyActions from '@/components/properties/PropertyActions';
 import PropertyEnquiryForm from '@/components/properties/PropertyEnquiryForm';
 import ViewPropertyTracker from '@/components/tracking/ViewPropertyTracker';
+import DeliveredProperties from '@/components/home/DeliveredProperties';
 
 import { FALLBACK_PROPERTIES } from '@/constants/properties';
 
@@ -80,6 +81,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
   let property: any = null;
   let relatedProperties: any[] = [];
+  let deliveredProperties: any[] = [];
 
   try {
     await connectDB();
@@ -90,22 +92,30 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
     if (property) {
       property = JSON.parse(JSON.stringify(property));
 
+      // Only show available properties in similar section
       relatedProperties = await Property.find({
         propertyType: property.propertyType,
+        status: 'available',
         _id: { $ne: property._id }
-      }).limit(3).lean();
+      }).limit(4).lean();
 
-      if (relatedProperties.length < 3) {
+      if (relatedProperties.length < 4) {
         const moreProps = await Property.find({
           priceType: property.priceType,
+          status: 'available',
           _id: { $ne: property._id, $nin: relatedProperties.map((p: any) => p._id) }
-        }).limit(3 - relatedProperties.length).lean();
+        }).limit(4 - relatedProperties.length).lean();
         relatedProperties = [...relatedProperties, ...moreProps];
       }
 
-      // Fix deep serialization error: Convert all nested ObjectIds (like in highlights/nearby) and dates to primitives
-      relatedProperties = JSON.parse(JSON.stringify(relatedProperties));
+      // Fetch all delivered properties for the landmarks section
+      deliveredProperties = await Property.find({
+        status: 'delivered'
+      }).lean();
 
+      // Fix deep serialization error
+      relatedProperties = JSON.parse(JSON.stringify(relatedProperties));
+      deliveredProperties = JSON.parse(JSON.stringify(deliveredProperties));
     }
   } catch (error) {
     console.error("MongoDB Connection Error in Frontend:", error);
@@ -118,11 +128,12 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
       notFound();
     }
 
-    relatedProperties = FALLBACK_PROPERTIES.filter(p => p.propertyType === property.propertyType && p._id !== property._id).slice(0, 3);
-    if (relatedProperties.length < 3) {
-      const moreProps = FALLBACK_PROPERTIES.filter(p => p.priceType === property.priceType && p._id !== property._id && !relatedProperties.find(rp => rp._id === p._id));
-      relatedProperties = [...relatedProperties, ...moreProps].slice(0, 3);
+    relatedProperties = FALLBACK_PROPERTIES.filter(p => p.propertyType === property.propertyType && p._id !== property._id && (p.status === 'available' || !p.status)).slice(0, 4);
+    if (relatedProperties.length < 4) {
+      const moreProps = FALLBACK_PROPERTIES.filter(p => p.priceType === property.priceType && p._id !== property._id && (p.status === 'available' || !p.status) && !relatedProperties.find((rp: any) => rp._id === p._id));
+      relatedProperties = [...relatedProperties, ...moreProps].slice(0, 4);
     }
+    deliveredProperties = [];
   }
 
   // JSON-LD Structured Data for Property (Google Rich Cards compliant with image and price)
@@ -442,7 +453,14 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           </section>
         )}
 
-        {/* --- LOCATION ADVANTAGE --- */}
+      </div>
+
+      {/* --- DELIVERED LANDMARKS SECTION (full-width, outside container) --- */}
+      {deliveredProperties.length > 0 && (
+        <DeliveredProperties properties={deliveredProperties} />
+      )}
+
+      <div className="max-w-7xl mx-auto px-4">
         {property.nearby && property.nearby.length > 0 && (
           <section id="location" className="py-16">
             <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-10">
