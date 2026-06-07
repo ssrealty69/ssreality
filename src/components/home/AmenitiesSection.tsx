@@ -115,9 +115,9 @@ export default function AmenitiesSection() {
                     unoptimized
                   />
                 </div>
-                <h3 className="text-[12px] md:text-xs font-black text-center text-[#334155] group-hover:text-[#C9A227] transition-colors leading-tight uppercase tracking-tight max-w-[110px]">
+                <p className="text-[12px] md:text-xs font-black text-center text-[#334155] group-hover:text-[#C9A227] transition-colors leading-tight uppercase tracking-tight max-w-[110px]">
                   {item.title}
-                </h3>
+                </p>
               </div>
             ))}
           </div>
