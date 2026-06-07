@@ -49,6 +49,12 @@ export interface IProperty extends Document {
     email: string;
     image?: string;
   };
+  priceList?: {
+    type: string;
+    size: string;
+    price: string;
+    negotiable?: boolean;
+  }[];
   views: number;
   seo?: {
     title: string;
@@ -106,6 +112,14 @@ const PropertySchema = new Schema<IProperty>(
     featured: { type: Boolean, default: false, index: true },
     amenities: [{ type: String }],
     worldClassAmenities: [{ type: String }],
+    priceList: [
+      {
+        type: { type: String },
+        size: { type: String },
+        price: { type: String },
+        negotiable: { type: Boolean, default: false }
+      }
+    ],
     highlights: [{ type: String }],
     nearby: [
       {

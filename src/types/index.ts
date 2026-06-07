@@ -53,6 +53,7 @@ export interface Property {
     type: string;
     size: string;
     price: string;
+    negotiable?: boolean;
   }[];
   agent: {
     name: string;

@@ -279,11 +279,18 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
             <div className="text-right">Price</div>
           </div>
           <div className="divide-y divide-gray-100">
-            {configList.map((item: { type: string; size: string; price: string }, idx: number) => (
+            {configList.map((item: { type: string; size: string; price: string; negotiable?: boolean }, idx: number) => (
               <div key={idx} className="grid grid-cols-3 px-4 py-3 text-xs text-gray-700 font-semibold items-center">
                 <div className="text-gray-900 truncate pr-2">{item.type}</div>
                 <div className="text-gray-500 truncate pr-2">{item.size}</div>
-                <div className="text-right text-[#B8860B] font-bold">{item.price}</div>
+                <div className="text-right flex flex-col items-end">
+                  <span className="text-[#B8860B] font-bold">{item.price}</span>
+                  {item.negotiable && (
+                    <span className="text-[8px] font-black text-green-700 bg-green-50 px-1 py-0.5 rounded border border-green-200 uppercase tracking-widest mt-0.5 leading-none shrink-0 scale-95 origin-right">
+                      Negotiable
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
