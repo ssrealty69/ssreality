@@ -124,6 +124,7 @@ export default function AddProperty() {
       // Clean up empty dynamic fields before sending
       const payload = {
         ...formData,
+        price: formData.price ? parseFloat(formData.price as string) : 0,
         images: formData.images.filter(img => img.trim() !== ''),
         interiorImages: formData.interiorImages.filter(img => img.trim() !== ''),
         galleryImages: formData.galleryImages.filter(img => img.trim() !== ''),
@@ -132,6 +133,7 @@ export default function AddProperty() {
         priceList: formData.priceList.filter(p => p.type.trim() !== '' && p.price.trim() !== ''),
         features: {
           ...formData.features,
+          area: formData.features.area ? parseFloat(formData.features.area as string) : 0,
           bedrooms: formData.features.bedrooms ? parseInt(formData.features.bedrooms as string) : undefined,
           bathrooms: formData.features.bathrooms ? parseInt(formData.features.bathrooms as string) : undefined,
           floor: formData.features.floor ? parseInt(formData.features.floor as string) : undefined,

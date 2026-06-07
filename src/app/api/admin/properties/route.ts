@@ -37,6 +37,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, data: property }, { status: 201 });
   } catch (error: unknown) {
     console.error('Error creating property:', error);
-    return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Server Error';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
