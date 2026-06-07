@@ -237,7 +237,7 @@ export default function FarmHouseSection() {
         <div className="absolute inset-0 z-20 flex items-end px-5 pb-10">
           <div
             key={`mob-content-${current}`}
-            className={`fh-text-enter w-full flex flex-col items-start gap-2 ${isTransitioning ? 'opacity-0' : ''}`}
+            className={`fh-text-enter w-full flex flex-col items-center text-center gap-2 ${isTransitioning ? 'opacity-0' : ''}`}
           >
             {/* Badge */}
             <div className="fh-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 backdrop-blur-sm">
@@ -253,9 +253,13 @@ export default function FarmHouseSection() {
               style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent', filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.9))' }}>
               {slide.subheading}
             </p>
-            {/* Decorative line */}
-            <div className="w-10 h-[1.5px] rounded-full" style={{ background: 'linear-gradient(90deg, #C9A227, #E8C96A, transparent)' }} />
-            {/* CTA */}
+            {/* Decorative line — centered */}
+            <div className="w-10 h-[1.5px] rounded-full mx-auto" style={{ background: 'linear-gradient(90deg, transparent, #C9A227, #E8C96A, transparent)' }} />
+            {/* Short description — first sentence only */}
+            <p className="text-white/70 text-[11px] leading-relaxed max-w-[260px]" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}>
+              {slide.desc.split('.')[0]}.
+            </p>
+            {/* CTA — centered */}
             <button
               onClick={() => setShowModal(true)}
               className="fh-enquiry-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[#0B0A06] font-black text-[11px] uppercase tracking-widest shadow-xl cursor-pointer"
