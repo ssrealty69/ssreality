@@ -15,6 +15,7 @@ const StatsSection = dynamic(() => import('@/components/home/StatsSection'), { s
 const ServicesSection = dynamic(() => import('@/components/home/ServicesSection'), { ssr: true });
 const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection'), { ssr: true });
 const DeliveredProperties = dynamic(() => import('@/components/home/DeliveredProperties'), { ssr: true });
+const FarmHouseSection = dynamic(() => import('@/components/home/FarmHouseSection'), { ssr: true });
 
 
 export const metadata: Metadata = {
@@ -130,6 +131,8 @@ export default async function HomePage() {
         badgeText="Investment Gold"
         className="pt-6 pb-12 md:pt-8 md:pb-16"
       />
+
+      <FarmHouseSection />
 
       <ProjectHighlights />
       <AmenitiesSection />
