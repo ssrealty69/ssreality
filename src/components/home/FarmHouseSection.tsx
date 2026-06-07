@@ -181,11 +181,25 @@ export default function FarmHouseSection() {
 
             {/* Main Heading */}
             <div>
-              <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-1"
-                style={{ fontFamily: 'var(--font-playfair, Georgia, serif)', textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}>
+              <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight mb-2 bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
+                style={{ 
+                  fontFamily: 'var(--font-playfair, Georgia, serif)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  color: 'transparent',
+                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))'
+                }}>
                 {slide.heading}
               </h2>
-              <p className="text-[#C9A227] font-semibold text-sm md:text-base tracking-wide">{slide.subheading}</p>
+              <p className="font-semibold text-sm md:text-base tracking-wide bg-gradient-to-r from-[#FFE59E] to-[#E8C96A] bg-clip-text text-transparent"
+                style={{
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  color: 'transparent',
+                  filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.9))'
+                }}>
+                {slide.subheading}
+              </p>
             </div>
 
             {/* Decorative line */}
