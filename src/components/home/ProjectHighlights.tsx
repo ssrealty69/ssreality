@@ -54,7 +54,7 @@ export default function ProjectHighlights() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-x-8 md:gap-x-12 gap-y-10 md:gap-y-12">
           {features.map((feature, index) => (
             <div key={index} className="flex flex-col items-center group">
-              <div className="relative w-full aspect-square rounded-3xl overflow-hidden mb-5 shadow-md border-2 border-transparent group-hover:border-[#C9A227] transition-all duration-300 card-3d">
+              <div className="relative w-[90%] aspect-[16/11] rounded-2xl overflow-hidden mb-5 shadow-md border border-gray-50 group-hover:border-[#C9A227] transition-all duration-300 card-3d bg-white">
                 <Image
                   src={feature.img}
                   alt={feature.title}
