@@ -33,10 +33,12 @@ export default function ProjectHighlights() {
       
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1A1800] mb-4">
-            Project Highlights
+          <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">
+            Project <span className="text-[#C9A227]">Highlights</span>
           </h2>
-          <div className="w-16 h-1 bg-[#C9A227] mx-auto opacity-30" />
+          <p className="text-[#6b6450] max-w-2xl mx-auto">
+            Discover the exceptional features and premium specifications that define our project. Crafted to deliver an unparalleled living experience for you and your family.
+          </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-6 gap-x-8 md:gap-x-12 gap-y-10 md:gap-y-12">
