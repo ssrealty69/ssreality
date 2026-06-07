@@ -341,44 +341,60 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
         {/* --- HIGHLIGHTS SECTION --- */}
         {property.highlights && property.highlights.length > 0 && (
-          <section id="highlights" className="py-16">
-            <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-10">
-              {property.title} - <span className="text-[#C9A227]">Highlights</span>
-            </h2>
+          <section id="highlights" className="py-24 relative overflow-hidden bg-[#1A1800]">
+            {/* Animated Panning Background */}
+            <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden opacity-[0.25]">
+              <style>{`
+                @keyframes highlightsPan {
+                  0%, 100% { transform: scale(1.05) translate(0px, 0px); }
+                  50% { transform: scale(1.15) translate(-15px, -8px); }
+                }
+                .animate-highlights-pan {
+                  animation: highlightsPan 25s ease-in-out infinite;
+                }
+              `}</style>
+              <Image
+                src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.png"}
+                alt="Highlights Background"
+                fill
+                priority
+                unoptimized
+                className="object-cover animate-highlights-pan"
+              />
+              {/* Dark luxury gradient overlay to ensure text is readable */}
+              <div className="absolute inset-0 bg-gradient-to-b from-[#1A1800]/95 via-[#1A1800]/80 to-[#1A1800]/95" />
+            </div>
 
-            <div className="flex flex-col md:flex-row rounded-xl overflow-hidden shadow-lg border border-[#FFFEF5]">
-              {/* Left Box (Cream) */}
-              <div className="md:w-1/2 bg-[#1A1800] p-8 md:p-12 space-y-6 text-[#E8D5A3]">
-                {property.highlights.slice(0, Math.ceil(property.highlights.length / 2)).map((highlight: any, i: number) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="mt-1 flex-shrink-0">
-                      <div className="w-5 h-5 rounded-full bg-[#C9A227]/20 flex items-center justify-center">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#C9A227]"></div>
+            <div className="max-w-4xl mx-auto px-4 relative z-10">
+              <h2 className="text-3xl md:text-4xl text-center font-medium text-white mb-16">
+                Project <span className="text-[#C9A227]">Highlights</span>
+              </h2>
+
+              <div className="space-y-6">
+                {property.highlights.map((highlight: any, i: number) => {
+                  const pointText = typeof highlight === 'string' ? highlight : highlight.title;
+                  if (!pointText) return null;
+                  return (
+                    <div 
+                      key={i} 
+                      className="group flex items-center gap-6 bg-white/5 border border-white/10 hover:border-[#C9A227]/40 hover:bg-white/10 transition-all duration-300 p-5 md:p-6 rounded-2xl shadow-lg backdrop-blur-sm"
+                    >
+                      <div className="flex-shrink-0">
+                        <CheckCircle2 size={32} className="text-[#25D366] group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 
+                          className="text-lg md:text-xl font-bold text-white tracking-wide"
+                          style={{
+                            textShadow: '1px 1px 2px rgba(0,0,0,0.8), 0 0 10px rgba(201,162,39,0.3)'
+                          }}
+                        >
+                          {pointText}
+                        </h3>
                       </div>
                     </div>
-                    <div>
-                      <strong className="text-white block mb-1">{highlight.title}</strong>
-                      <p className="text-white/90 leading-relaxed font-medium text-sm">{highlight.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Right Box (Golden) */}
-              <div className="md:w-1/2 bg-gradient-to-br from-[#E8D5A3] via-[#C9A227] to-[#A88721] p-8 md:p-12 space-y-6 text-[#1A1800] shadow-[inset_0_0_20px_rgba(255,255,255,0.3)]">
-                {property.highlights.slice(Math.ceil(property.highlights.length / 2)).map((highlight: any, i: number) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="mt-1 flex-shrink-0">
-                      <div className="w-5 h-5 rounded-full bg-white/30 flex items-center justify-center">
-                        <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
-                      </div>
-                    </div>
-                    <div>
-                      <strong className="block mb-1">{highlight.title}</strong>
-                      <p className="text-sm">{highlight.description}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </section>

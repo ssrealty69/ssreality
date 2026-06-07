@@ -36,11 +36,7 @@ export interface IProperty extends Document {
   googleMapsUrl?: string;
   featured: boolean;
   amenities: string[];
-  highlights?: {
-    title: string;
-    description: string;
-    image?: string;
-  }[];
+  highlights?: string[];
   nearby?: {
     type: string;
     name: string;
@@ -108,13 +104,7 @@ const PropertySchema = new Schema<IProperty>(
     googleMapsUrl: { type: String, default: '' },
     featured: { type: Boolean, default: false, index: true },
     amenities: [{ type: String }],
-    highlights: [
-      {
-        title: { type: String },
-        description: { type: String },
-        image: { type: String },
-      },
-    ],
+    highlights: [{ type: String }],
     nearby: [
       {
         type: { type: String },

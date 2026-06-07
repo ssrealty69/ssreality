@@ -54,7 +54,7 @@ export default function AddProperty() {
     videoUrl: '',
     brochureUrl: '',
     googleMapsUrl: '',
-    highlights: [{ title: '', description: '' }],
+    highlights: [''],
     nearby: [{ type: 'landmark', name: '', distance: '' }],
     featured: false
   });
@@ -79,7 +79,7 @@ export default function AddProperty() {
         images: formData.images.filter(img => img.trim() !== ''),
         interiorImages: formData.interiorImages.filter(img => img.trim() !== ''),
         galleryImages: formData.galleryImages.filter(img => img.trim() !== ''),
-        highlights: formData.highlights.filter(h => h.title.trim() !== '' && h.description.trim() !== ''),
+        highlights: formData.highlights.filter(h => typeof h === 'string' && h.trim() !== ''),
         nearby: formData.nearby.filter(n => n.name.trim() !== '' && n.distance.trim() !== ''),
         features: {
           ...formData.features,
@@ -403,29 +403,18 @@ export default function AddProperty() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
           <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Project Highlights</h2>
           {formData.highlights.map((highlight, index) => (
-            <div key={index} className="flex gap-4 items-start">
-              <div className="flex-1 space-y-2">
+            <div key={index} className="flex gap-4 items-center">
+              <div className="flex-1">
                 <input 
                   type="text" 
-                  placeholder="Highlight Title (e.g. Finger Print Scanner)" 
-                  value={highlight.title}
+                  placeholder="Highlight Point (e.g. World Class Amenities)" 
+                  value={highlight as unknown as string}
                   onChange={(e) => {
                     const newHighlights = [...formData.highlights];
-                    newHighlights[index].title = e.target.value;
+                    newHighlights[index] = e.target.value as any;
                     setFormData({ ...formData, highlights: newHighlights });
                   }}
                   className="w-full border border-gray-300 rounded-lg p-2 outline-none"
-                />
-                <textarea 
-                  placeholder="Short Description" 
-                  value={highlight.description}
-                  onChange={(e) => {
-                    const newHighlights = [...formData.highlights];
-                    newHighlights[index].description = e.target.value;
-                    setFormData({ ...formData, highlights: newHighlights });
-                  }}
-                  className="w-full border border-gray-300 rounded-lg p-2 outline-none"
-                  rows={2}
                 />
               </div>
               <button 
@@ -434,7 +423,7 @@ export default function AddProperty() {
                   const newHighlights = formData.highlights.filter((_, i) => i !== index);
                   setFormData({ ...formData, highlights: newHighlights });
                 }}
-                className="p-2 text-red-500 hover:bg-red-50 rounded-lg mt-1"
+                className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
               >
                 <Trash2 size={20} />
               </button>
@@ -442,7 +431,7 @@ export default function AddProperty() {
           ))}
           <button 
             type="button" 
-            onClick={() => setFormData({ ...formData, highlights: [...formData.highlights, { title: '', description: '' }] })}
+            onClick={() => setFormData({ ...formData, highlights: [...formData.highlights, '' as any] })}
             className="flex items-center gap-2 text-[#C9A227] font-medium hover:text-[#B8860B]"
           >
             <Plus size={18} /> Add Highlight
