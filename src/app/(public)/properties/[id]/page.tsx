@@ -341,9 +341,9 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
         {/* --- HIGHLIGHTS SECTION --- */}
         {property.highlights && property.highlights.length > 0 && (
-          <section id="highlights" className="py-12 md:py-16 relative overflow-hidden bg-[#FFFEF5]">
-            {/* Animated Panning Background */}
-            <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden opacity-[0.22]">
+          <section id="highlights" className="py-12 md:py-16 relative bg-[#FFFEF5]">
+            {/* Animated Panning Background — rounded card style */}
+            <div className="absolute inset-x-4 sm:inset-x-8 inset-y-3 z-0 select-none pointer-events-none rounded-3xl overflow-hidden opacity-[0.30]">
               <style>{`
                 @keyframes highlightsPan {
                   0%, 100% { transform: scale(1.05) translate(0px, 0px); }
@@ -361,15 +361,15 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                 }
               `}</style>
               <Image
-                src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.png"}
-                alt="Highlights Background"
+                src="/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.png"
+                alt="Luxury Building Background"
                 fill
                 priority
                 unoptimized
                 className="object-cover animate-highlights-pan"
               />
               {/* Soft luxury gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFEF5]/90 via-[#FFFEF5]/60 to-[#FFFEF5]/90" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFEF5]/80 via-transparent to-[#FFFEF5]/80" />
             </div>
 
             <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
