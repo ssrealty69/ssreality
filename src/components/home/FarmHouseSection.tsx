@@ -233,50 +233,38 @@ export default function FarmHouseSection() {
         <div className="absolute inset-0 z-10 opacity-[0.04]"
           style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\' opacity=\'1\'/%3E%3C/svg%3E")' }} />
 
-        {/* Mobile Content — bottom aligned */}
-        <div className="absolute inset-0 z-20 flex items-end px-5 pb-12">
+        {/* Mobile Content — bottom aligned, minimal for image visibility */}
+        <div className="absolute inset-0 z-20 flex items-end px-5 pb-10">
           <div
             key={`mob-content-${current}`}
-            className={`fh-text-enter w-full flex flex-col items-start gap-3 ${isTransitioning ? 'opacity-0' : ''}`}
+            className={`fh-text-enter w-full flex flex-col items-start gap-2 ${isTransitioning ? 'opacity-0' : ''}`}
           >
             {/* Badge */}
-            <div className="fh-badge inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] animate-pulse inline-block" />
-              <span className="text-[#E8C96A] text-[10px] font-bold tracking-[0.22em] uppercase">{slide.badge}</span>
+            <div className="fh-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 backdrop-blur-sm">
+              <span className="w-1 h-1 rounded-full bg-[#C9A227] animate-pulse inline-block" />
+              <span className="text-[#E8C96A] text-[9px] font-bold tracking-[0.2em] uppercase">{slide.badge}</span>
             </div>
             {/* Heading */}
-            <h2 className="text-2xl font-bold leading-tight bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
+            <h2 className="text-xl font-bold leading-snug bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
               style={{ fontFamily: 'var(--font-playfair, Georgia, serif)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))' }}>
               {slide.heading}
             </h2>
-            <p className="font-semibold text-sm tracking-wide bg-gradient-to-r from-[#FFE59E] to-[#E8C96A] bg-clip-text text-transparent"
+            <p className="font-semibold text-xs tracking-wide bg-gradient-to-r from-[#FFE59E] to-[#E8C96A] bg-clip-text text-transparent"
               style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', color: 'transparent', filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.9))' }}>
               {slide.subheading}
             </p>
             {/* Decorative line */}
-            <div className="w-14 h-[2px] rounded-full" style={{ background: 'linear-gradient(90deg, #C9A227, #E8C96A, transparent)' }} />
-            {/* Description */}
-            <p className="text-white/75 text-xs leading-relaxed" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
-              {slide.desc}
-            </p>
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2">
-              {[slide.tag1, slide.tag2, slide.tag3].map((tag) => (
-                <span key={tag} className="px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white/80 border border-white/20 bg-white/5 backdrop-blur-sm">
-                  {tag}
-                </span>
-              ))}
-            </div>
+            <div className="w-10 h-[1.5px] rounded-full" style={{ background: 'linear-gradient(90deg, #C9A227, #E8C96A, transparent)' }} />
             {/* CTA */}
             <button
               onClick={() => setShowModal(true)}
-              className="fh-enquiry-btn mt-1 inline-flex items-center gap-2 px-5 py-3 rounded-full text-[#0B0A06] font-black text-xs uppercase tracking-widest shadow-xl cursor-pointer"
+              className="fh-enquiry-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[#0B0A06] font-black text-[11px] uppercase tracking-widest shadow-xl cursor-pointer"
             >
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
               Enquiry Now
-              <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </button>
