@@ -496,13 +496,97 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           </section>
         )}
 
-        {/* --- AMENITIES --- */}
+        {/* --- AMENITIES (Project Amenities) --- */}
         {property.amenities && property.amenities.length > 0 && (
-          <section id="amenities" className="py-16">
-            <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-10">
-              {property.title} - <span className="text-[#C9A227]">Amenities</span>
-            </h2>
-            <AmenitiesGrid amenities={property.amenities} />
+          <section id="amenities" className="py-14">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#C9A227]/10 rounded-full mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#C9A227] animate-pulse" />
+                <span className="text-[10px] font-black text-[#C9A227] uppercase tracking-[0.2em]">Premium Living</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#1A1800] mb-3 font-[var(--font-playfair)]">
+                Project <span className="text-[#C9A227]">Amenities</span>
+              </h2>
+              <div className="w-20 h-1 bg-[#C9A227] mx-auto mb-4 rounded-full" />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {property.amenities.map((amenity: string, idx: number) => (
+                <div
+                  key={idx}
+                  className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                >
+                  <div className="relative h-32 overflow-hidden bg-gray-100">
+                    <img
+                      src={`/Project Amenities/${amenity}.jpg`}
+                      alt={amenity}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={e => {
+                        const el = e.currentTarget;
+                        el.style.display = 'none';
+                        const parent = el.parentElement;
+                        if (parent) {
+                          parent.classList.add('flex', 'items-center', 'justify-center');
+                          const icon = document.createElement('span');
+                          icon.textContent = '✦';
+                          icon.className = 'text-[#C9A227] text-3xl';
+                          parent.appendChild(icon);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="bg-[#1A1800] px-3 py-2 text-center">
+                    <span className="text-[9px] sm:text-[11px] font-black text-[#F0D060] uppercase tracking-wide leading-tight line-clamp-2 block">{amenity}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* --- WORLD CLASS AMENITIES --- */}
+        {property.worldClassAmenities && property.worldClassAmenities.length > 0 && (
+          <section id="world-class-amenities" className="py-14 border-t border-gray-100">
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#C9A227]/10 rounded-full mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#C9A227] animate-pulse" />
+                <span className="text-[10px] font-black text-[#C9A227] uppercase tracking-[0.2em]">Luxury Lifestyle</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#1A1800] mb-3 font-[var(--font-playfair)]">
+                World Class <span className="text-[#C9A227]">Amenities</span>
+              </h2>
+              <div className="w-20 h-1 bg-[#C9A227] mx-auto mb-4 rounded-full" />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {property.worldClassAmenities.map((amenity: string, idx: number) => (
+                <div
+                  key={idx}
+                  className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                >
+                  <div className="relative h-32 overflow-hidden bg-gray-100">
+                    <img
+                      src={`/World Class Amenities/${amenity}.jpg`}
+                      alt={amenity}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={e => {
+                        const el = e.currentTarget;
+                        el.style.display = 'none';
+                        const parent = el.parentElement;
+                        if (parent) {
+                          parent.classList.add('flex', 'items-center', 'justify-center');
+                          const icon = document.createElement('span');
+                          icon.textContent = '★';
+                          icon.className = 'text-[#C9A227] text-3xl';
+                          parent.appendChild(icon);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="bg-gradient-to-r from-[#C9A227] to-[#B8860B] px-3 py-2 text-center">
+                    <span className="text-[9px] sm:text-[11px] font-black text-[#1A1800] uppercase tracking-wide leading-tight line-clamp-2 block">{amenity}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </section>
         )}
 

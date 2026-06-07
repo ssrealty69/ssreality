@@ -31,6 +31,7 @@ export interface Property {
   googleMapsUrl?: string;
   featured: boolean;
   amenities: string[];
+  worldClassAmenities?: string[];
   highlights?: {
     title: string;
     description: string;

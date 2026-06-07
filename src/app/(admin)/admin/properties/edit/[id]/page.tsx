@@ -8,11 +8,54 @@ import toast from 'react-hot-toast';
 import { MediaUpload, PdfUpload, MultiImageUpload } from '@/components/admin/MediaUpload';
 import { SeoControlPanel } from '@/components/admin/SeoControlPanel';
 
-const PREDEFINED_AMENITIES = [
-  'Gym', 'Cycling Track', 'Billiards', 'Table Tennis', 'Squash Court', 
-  'Tennis Court', 'Open Dining', 'Cafe & Bar', 'Carrom', 'Chess', 
-  'Cardroom', 'Library', 'Spa & Sauna', 'Badminton', 'Swimming Pool', 
-  'Garden', '24x7 CCTV', 'Yoga & Meditation', 'Power Backup', 'Security', 'Lift', 'Clubhouse'
+// Auto-selected by default — from /public/Project Amenities folder
+const PROJECT_AMENITIES = [
+  '24X7 CCTV & SECURITY',
+  '3D WALL MOULDING DESIGN',
+  'BRANDED LIFT',
+  'CAR PARKING',
+  'DIGITAL DOOR LOCK',
+  'FANCY FANS IN LIVING AREA',
+  'FIRE SAFETY SYSTEM',
+  'GEYSERS (IN ALL WASHROOMS)',
+  'HAVELLS WIRE FITTING',
+  'JAGUAR BAITH FITTINGS',
+  "KID'S PLAY AREA ON TERRACE",
+  'KOHLER BATH FITTINGS',
+  'MODULAR KITCHEN WITH CHIMNEY, HOB & MICROWAVE',
+  'MODULAR LIGHTNING STAIRS',
+  'MODULAR WARDROBES (ALL BEDROOMS)',
+  'MYGATE APP-BASED (ENTRY SYSTEM)',
+  'TERRACE GARDEN',
+  'UPVC WINDOWS',
+  'WANITY UNIT & MIRRORS',
+  'WATER PURIFIER RO',
+  'WELCOME LOUNGE',
+];
+
+// Not pre-selected — from /public/World Class Amenities folder (excluding building images)
+const WORLD_CLASS_AMENITIES = [
+  'Badminton',
+  'Banquet',
+  'Clubhouse',
+  'EV Charging',
+  'Garden',
+  'Gym',
+  'Infinity Pool',
+  'Kids Zone',
+  'Library',
+  'Lift Lobby',
+  'Lobby',
+  'Pet Park',
+  'Reception',
+  'Security Room',
+  'Sky Garden',
+  'Spa',
+  'Table Tennis',
+  'Tennis Court',
+  'Terrace',
+  'Theatre',
+  'Yoga Deck',
 ];
 
 interface EditPropertyProps {
@@ -56,6 +99,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
       email: '',
     },
     amenities: [] as string[],
+    worldClassAmenities: [] as string[],
     images: [''] as string[], // Only banner image remains here (as images[0])
     interiorImages: [] as string[],
     galleryImages: [] as string[],
@@ -122,6 +166,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
               email: prop.agent?.email || '',
             },
             amenities: prop.amenities || [],
+            worldClassAmenities: prop.worldClassAmenities || [],
             images: prop.images && prop.images.length > 0 ? [prop.images[0]] : [''],
             interiorImages: prop.interiorImages && prop.interiorImages.length > 0
               ? prop.interiorImages
@@ -234,6 +279,24 @@ export default function EditProperty({ params }: EditPropertyProps) {
         return { ...prev, amenities: [...prev.amenities, amenity] };
       }
     });
+  };
+
+  const handleWorldClassAmenityToggle = (amenity: string) => {
+    setFormData(prev => {
+      if (prev.worldClassAmenities.includes(amenity)) {
+        return { ...prev, worldClassAmenities: prev.worldClassAmenities.filter(a => a !== amenity) };
+      } else {
+        return { ...prev, worldClassAmenities: [...prev.worldClassAmenities, amenity] };
+      }
+    });
+  };
+
+  const selectAllWorldClass = () => {
+    setFormData(prev => ({ ...prev, worldClassAmenities: [...WORLD_CLASS_AMENITIES] }));
+  };
+
+  const clearAllWorldClass = () => {
+    setFormData(prev => ({ ...prev, worldClassAmenities: [] }));
   };
 
   if (fetching) {
@@ -478,22 +541,94 @@ export default function EditProperty({ params }: EditPropertyProps) {
           </button>
         </div>
 
-        {/* Amenities Checklist */}
+        {/* PROJECT AMENITIES — Auto-selected, from /public/Project Amenities */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
-          <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">World Class Amenities</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {PREDEFINED_AMENITIES.map(amenity => (
-              <div key={amenity} className="flex items-center gap-2">
-                <input 
-                  type="checkbox" 
-                  id={`amenity-${amenity}`}
-                  checked={formData.amenities.includes(amenity)}
-                  onChange={() => handleAmenityToggle(amenity)}
-                  className="w-4 h-4 text-[#C9A227] rounded focus:ring-[#C9A227]"
-                />
-                <label htmlFor={`amenity-${amenity}`} className="text-sm text-gray-700 cursor-pointer">{amenity}</label>
-              </div>
-            ))}
+          <div className="flex items-center justify-between border-b pb-2">
+            <h2 className="text-lg font-bold text-[#1A1800]">Amenities</h2>
+            <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-3 py-1">Auto-selected · Uncheck to remove</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {PROJECT_AMENITIES.map(amenity => {
+              const imgPath = `/Project Amenities/${amenity}.jpg`;
+              const isChecked = formData.amenities.includes(amenity);
+              return (
+                <label
+                  key={amenity}
+                  htmlFor={`proj-amenity-${amenity}`}
+                  className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    isChecked ? 'border-[#C9A227] bg-[#FFFBEF]' : 'border-gray-100 bg-gray-50 opacity-60'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    id={`proj-amenity-${amenity}`}
+                    checked={isChecked}
+                    onChange={() => handleAmenityToggle(amenity)}
+                    className="w-4 h-4 text-[#C9A227] rounded accent-[#C9A227] shrink-0"
+                  />
+                  <img
+                    src={imgPath}
+                    alt={amenity}
+                    className="w-10 h-10 rounded-lg object-cover shrink-0 border border-gray-200"
+                    onError={e => (e.currentTarget.style.display = 'none')}
+                  />
+                  <span className="text-xs font-semibold text-gray-700 leading-tight uppercase tracking-wide">{amenity}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* WORLD CLASS AMENITIES — Not pre-selected, from /public/World Class Amenities */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
+          <div className="flex items-center justify-between border-b pb-2">
+            <h2 className="text-lg font-bold text-[#1A1800]">World Class Amenities</h2>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={selectAllWorldClass}
+                className="text-xs font-bold px-3 py-1.5 bg-[#C9A227] text-[#1A1800] rounded-lg hover:bg-[#B8860B] transition-colors"
+              >
+                Select All
+              </button>
+              <button
+                type="button"
+                onClick={clearAllWorldClass}
+                className="text-xs font-bold px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {WORLD_CLASS_AMENITIES.map(amenity => {
+              const imgPath = `/World Class Amenities/${amenity}.jpg`;
+              const isChecked = formData.worldClassAmenities.includes(amenity);
+              return (
+                <label
+                  key={amenity}
+                  htmlFor={`wca-${amenity}`}
+                  className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                    isChecked ? 'border-[#C9A227] bg-[#FFFBEF]' : 'border-gray-100 bg-gray-50'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    id={`wca-${amenity}`}
+                    checked={isChecked}
+                    onChange={() => handleWorldClassAmenityToggle(amenity)}
+                    className="w-4 h-4 text-[#C9A227] rounded accent-[#C9A227] shrink-0"
+                  />
+                  <img
+                    src={imgPath}
+                    alt={amenity}
+                    className="w-10 h-10 rounded-lg object-cover shrink-0 border border-gray-200"
+                    onError={e => (e.currentTarget.style.display = 'none')}
+                  />
+                  <span className="text-xs font-semibold text-gray-700 leading-tight">{amenity}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
 
