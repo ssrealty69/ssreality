@@ -1,3 +1,4 @@
+import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -260,9 +261,10 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-6">
             {property.title} - <span className="text-[#C9A227]">Overview</span>
           </h2>
-          <p className="text-center text-[#1A1800]/70 max-w-4xl mx-auto mb-10 text-lg">
-            {property.description}
-          </p>
+          <div 
+            className="text-center text-[#1A1800]/70 max-w-4xl mx-auto mb-10 text-lg [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-[#1A1800] [&_h2]:mt-6 [&_h2]:mb-3 [&_strong]:text-[#1A1800] [&_strong]:font-bold [&_p]:mb-4 last:[&_p]:mb-0 font-medium leading-relaxed"
+            dangerouslySetInnerHTML={{ __html: property.description }}
+          />
 
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="lg:w-1/3 relative h-[350px] rounded-xl overflow-hidden shadow-lg">
@@ -338,38 +340,64 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                     </div>
                   </div>
                 ) : null}
-
-                <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                  <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                    <Maximize2 size={18} />
+                 <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
+                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
+                      <Maximize2 size={18} />
+                    </div>
+                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
+                      {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Sq.Yd' : property.features.areaUnit}
+                    </div>
                   </div>
-                  <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                    {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Sq.Yd' : property.features.areaUnit}
+              </div>
+
+              {property.priceList && property.priceList.length > 0 && (
+                <div className="mb-8">
+                  <h4 className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-black text-[#C9A227] mb-3 pl-1">
+                    Available Configurations & Pricing
+                  </h4>
+                  <div className="space-y-3">
+                    {property.priceList.map((item: any, idx: number) => {
+                      const displaySize = /^[0-9\s.,]+$/.test(item.size) 
+                        ? `${item.size} ${property.features.areaUnit === 'sqyd' ? 'Sq.Yd' : property.features.areaUnit}` 
+                        : item.size;
+
+                      return (
+                        <div key={idx} className="grid grid-cols-3 gap-2 sm:gap-3">
+                          {/* Unit Type / Name */}
+                          <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
+                            <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
+                              <BedDouble size={16} className="sm:w-[18px] sm:h-[18px] text-white" />
+                            </div>
+                            <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
+                              {item.type}
+                            </div>
+                          </div>
+
+                          {/* Area / Size */}
+                          <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
+                            <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
+                              <Maximize2 size={16} className="sm:w-[18px] sm:h-[18px] text-white" />
+                            </div>
+                            <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
+                              {displaySize}
+                            </div>
+                          </div>
+
+                          {/* Price */}
+                          <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
+                            <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
+                              <span className="text-xs sm:text-base font-extrabold text-white">₹</span>
+                            </div>
+                            <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
+                              {item.price} {item.negotiable ? '(Negotiable)' : ''}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-
-                {property.features.reraApproved && (
-                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                      <CheckCircle2 size={18} />
-                    </div>
-                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                      Rera Appr. <CheckCircle2 size={14} className="text-[#25D366] ml-1 inline" fill="white" />
-                    </div>
-                  </div>
-                )}
-
-                {property.features.registryAvailable !== false && (
-                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                      <CheckCircle2 size={18} />
-                    </div>
-                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                      Registry Avail. <CheckCircle2 size={14} className="text-[#25D366] ml-1 inline" fill="white" />
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
 
               <PropertyActions
                 propertyId={property._id.toString()}
@@ -381,110 +409,73 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           </div>
         </section>
 
-        {/* --- PRICING & CONFIGURATIONS SECTION --- */}
-        {property.priceList && property.priceList.length > 0 && (
-          <section id="pricing" className="py-12 border-t border-gray-100">
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#C9A227]/10 rounded-full mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#C9A227] animate-pulse" />
-                <span className="text-[10px] font-black text-[#C9A227] uppercase tracking-[0.2em]">Available Layouts</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1A1800] mb-3 font-[var(--font-playfair)]">
-                Configurations & <span className="text-[#C9A227]">Pricing</span>
-              </h2>
-              <div className="w-20 h-1 bg-[#C9A227] mx-auto mb-4 rounded-full" />
-            </div>
-
-            <div className="max-w-4xl mx-auto bg-white rounded-3xl border border-gray-150 shadow-xl overflow-hidden">
-              <div className="grid grid-cols-3 bg-[#1A1800] text-[#F0D060] px-6 py-4 text-xs sm:text-sm font-black uppercase tracking-wider">
-                <div>Configuration</div>
-                <div>Area / Size</div>
-                <div className="text-right">Price</div>
-              </div>
-              <div className="divide-y divide-gray-150">
-                {property.priceList.map((item: any, idx: number) => (
-                  <div key={idx} className="grid grid-cols-3 px-6 py-5 text-sm sm:text-base text-gray-700 font-semibold items-center hover:bg-amber-50/20 transition-colors">
-                    <div className="text-gray-900 font-bold">{item.type}</div>
-                    <div className="text-gray-500">{item.size}</div>
-                    <div className="text-right flex flex-col items-end">
-                      <span className="text-[#B8860B] font-extrabold text-base sm:text-lg">{item.price}</span>
-                      {item.negotiable && (
-                        <span className="text-[9px] sm:text-[10px] font-black text-green-700 bg-green-50 px-2 py-0.5 rounded border border-green-200 uppercase tracking-widest mt-1.5 leading-none shrink-0">
-                          Negotiable
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
         {/* --- HIGHLIGHTS SECTION --- */}
         {property.highlights && property.highlights.length > 0 && (
-          <section id="highlights" className="py-12 md:py-16 relative bg-[#FFFEF5]">
-            {/* Animated Panning Background — rounded card style */}
-            <div className="absolute inset-x-4 sm:inset-x-8 inset-y-3 z-0 select-none pointer-events-none rounded-3xl overflow-hidden opacity-[0.30]">
-              <style>{`
-                @keyframes highlightsPan {
-                  0%, 100% { transform: scale(1.05) translate(0px, 0px); }
-                  50% { transform: scale(1.1) translate(-5px, -3px); }
-                }
-                .animate-highlights-pan {
-                  animation: highlightsPan 25s ease-in-out infinite;
-                }
-                .card-premium-highlight {
-                  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
-                }
-                .card-premium-highlight:hover {
-                  transform: translateY(-3px);
-                  box-shadow: 0 10px 25px -5px rgba(201, 162, 39, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
-                }
-              `}</style>
-              <Image
-                src="/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.png"
-                alt="Luxury Building Background"
-                fill
-                priority
-                unoptimized
-                className="object-cover animate-highlights-pan"
-              />
-              {/* Soft luxury gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#FFFEF5]/80 via-transparent to-[#FFFEF5]/80" />
-            </div>
+          <section id="highlights" className="py-16 md:py-24 relative bg-[#FFFEF5] overflow-hidden border-t border-b border-amber-100/30">
+            {/* Ambient gold glow in background */}
+            <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-[#C9A227]/5 blur-3xl pointer-events-none select-none" />
+            <div className="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-[#C9A227]/5 blur-3xl pointer-events-none select-none" />
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl md:text-4xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-3">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="text-center mb-12 md:mb-16">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#C9A227]/10 rounded-full mb-3">
+                  <span className="w-2 h-2 rounded-full bg-[#C9A227] animate-pulse" />
+                  <span className="text-[10px] font-black text-[#C9A227] uppercase tracking-[0.2em]">Key Features</span>
+                </div>
+                <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-3">
                   Project <span className="text-[#C9A227]">Highlights</span>
                 </h2>
-                <div className="w-16 h-[1.5px] bg-[#C9A227]/40 mx-auto" />
+                <div className="w-20 h-1 bg-[#C9A227] mx-auto rounded-full" />
               </div>
 
-              {/* Centered list of premium thin pointers */}
-              <div className="max-w-2xl mx-auto space-y-3">
-                {property.highlights.map((highlight: any, i: number) => {
-                  const pointText = typeof highlight === 'string' ? highlight : highlight.title;
-                  if (!pointText) return null;
-                  return (
-                    <div 
-                      key={i} 
-                      className="group flex items-center gap-4 bg-white/90 border border-[#E8D5A3]/25 hover:border-[#C9A227]/50 hover:bg-[#FFFEF5] transition-all duration-300 py-3.5 px-5 rounded-xl shadow-sm hover:shadow-md card-premium-highlight backdrop-blur-sm"
-                    >
-                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                        </svg>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
+                {/* Left side: Premium Rounded Image */}
+                <div className="lg:col-span-5 relative w-full aspect-[4/3] sm:aspect-[16/11] lg:aspect-square rounded-[32px] overflow-hidden shadow-2xl border-4 border-white group/highlight">
+                  <Image
+                    src={property.highlightsImageUrl || "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.png"}
+                    alt="Project Highlights Background"
+                    fill
+                    priority
+                    unoptimized
+                    className="object-cover group-hover/highlight:scale-105 transition-transform duration-1000"
+                  />
+                  {/* Subtle inner shadow overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+                </div>
+
+                {/* Right side: Bullet Points */}
+                <div className="lg:col-span-7 space-y-3.5">
+                  <style>{`
+                    .card-premium-highlight {
+                      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+                    }
+                    .card-premium-highlight:hover {
+                      transform: translateY(-2px);
+                      box-shadow: 0 10px 25px -5px rgba(201, 162, 39, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+                    }
+                  `}</style>
+                  {property.highlights.map((highlight: any, i: number) => {
+                    const pointText = typeof highlight === 'string' ? highlight : highlight.title;
+                    if (!pointText) return null;
+                    return (
+                      <div 
+                        key={i} 
+                        className="group flex items-center gap-4 bg-white border border-[#E8D5A3]/25 hover:border-[#C9A227]/50 hover:bg-[#FFFDF6] transition-all duration-300 py-4 px-5 rounded-2xl shadow-sm card-premium-highlight"
+                      >
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                        <div className="flex-1">
+                          <span className="text-sm md:text-base font-semibold text-[#2D2A26] tracking-wide transition-colors duration-300 group-hover:text-[#1A1800]">
+                            {pointText}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <span className="text-sm md:text-base font-medium text-[#2D2A26] tracking-wide transition-colors duration-300 group-hover:text-[#1A1800]">
-                          {pointText}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </section>
@@ -540,7 +531,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="lg:w-1/2 relative h-[450px] rounded-[32px] overflow-hidden shadow-2xl border-4 border-white group">
                 <Image
-                  src="/ss_realty_project_location_map.png"
+                  src={property.locationMapUrl || "/ss_realty_project_location_map.png"}
                   alt="Project Location Map"
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-1000"

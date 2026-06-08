@@ -2,11 +2,13 @@
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Plus, Trash2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash2, Loader2, Edit, Check } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { MediaUpload, PdfUpload, MultiImageUpload } from '@/components/admin/MediaUpload';
 import { SeoControlPanel } from '@/components/admin/SeoControlPanel';
+import { RichTextEditor } from '@/components/admin/RichTextEditor';
+import { parsePriceText, formatPriceForEdit } from '@/lib/utils';
 
 // Auto-selected by default — from /public/Project Amenities folder
 const PROJECT_AMENITIES = [
@@ -110,6 +112,8 @@ export default function EditProperty({ params }: EditPropertyProps) {
     brochureUrl: '',
     googleMapsUrl: '',
     highlights: [''],
+    highlightsImageUrl: '',
+    locationMapUrl: '',
     nearby: [{ type: 'landmark', name: '', distance: '' }],
     featured: false
   });
@@ -141,7 +145,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
           setFormData({
             title: prop.title || '',
             description: prop.description || '',
-            price: prop.price !== undefined ? prop.price.toString() : '',
+            price: prop.price !== undefined ? formatPriceForEdit(prop.price) : '',
             priceType: prop.priceType || 'sale',
             propertyType: prop.propertyType || 'apartment',
             status: prop.status || 'available',
@@ -171,21 +175,25 @@ export default function EditProperty({ params }: EditPropertyProps) {
             },
             amenities: prop.amenities || [],
             worldClassAmenities: prop.worldClassAmenities || [],
-            priceList: prop.priceList && prop.priceList.length > 0 ? prop.priceList : [{ type: '', size: '', price: '', negotiable: false }],
+            priceList: prop.priceList && prop.priceList.length > 0 
+               ? prop.priceList.map((p: any) => ({ ...p, isEditing: false })) 
+               : [{ type: '', size: '', price: '', negotiable: false, isEditing: true }],
             images: prop.images && prop.images.length > 0 ? [prop.images[0]] : [''],
             mobileBannerUrl: prop.mobileBannerUrl || '',
             interiorImages: prop.interiorImages && prop.interiorImages.length > 0
               ? prop.interiorImages
-              : (prop.images && prop.images.length > 1 ? [prop.images[1]] : []),
+              : (prop.images && prop.images.length > 1 ? prop.images.slice(1) : []),
             galleryImages: prop.galleryImages && prop.galleryImages.length > 0
               ? prop.galleryImages
-              : (prop.images && prop.images.length > 2 ? prop.images.slice(2) : []),
+              : [],
             videoUrl: prop.videoUrl || '',
             brochureUrl: prop.brochureUrl || '',
             googleMapsUrl: prop.googleMapsUrl || '',
             highlights: prop.highlights && prop.highlights.length > 0 
               ? prop.highlights.map((h: any) => typeof h === 'string' ? h : h.title || '') 
               : [''],
+            highlightsImageUrl: prop.highlightsImageUrl || '',
+            locationMapUrl: prop.locationMapUrl || '',
             nearby: prop.nearby && prop.nearby.length > 0 ? prop.nearby : [{ type: 'landmark', name: '', distance: '' }],
             featured: prop.featured || false
           });
@@ -217,13 +225,15 @@ export default function EditProperty({ params }: EditPropertyProps) {
       // Clean up empty dynamic fields before sending
       const payload = {
         ...formData,
-        price: formData.price ? parseFloat(formData.price as string) : 0,
+        price: formData.price ? parsePriceText(formData.price as string) : 0,
         images: formData.images.filter(img => img.trim() !== ''),
         interiorImages: formData.interiorImages.filter(img => img.trim() !== ''),
         galleryImages: formData.galleryImages.filter(img => img.trim() !== ''),
         highlights: formData.highlights.filter(h => typeof h === 'string' && h.trim() !== ''),
         nearby: formData.nearby.filter(n => n.name.trim() !== '' && n.distance.trim() !== ''),
-        priceList: formData.priceList.filter(p => p.type.trim() !== '' && p.price.trim() !== ''),
+        priceList: formData.priceList
+          .filter(p => p.type.trim() !== '' && p.price.trim() !== '')
+          .map(({ isEditing, ...rest }: any) => rest),
         features: {
           ...formData.features,
           area: formData.features.area ? parseFloat(formData.features.area as string) : 0,
@@ -340,12 +350,16 @@ export default function EditProperty({ params }: EditPropertyProps) {
               <input type="text" name="title" required value={formData.title} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#C9A227] outline-none" placeholder="e.g. Luxury 4BHK Villa in Noida" />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea name="description" required rows={4} value={formData.description} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#C9A227] outline-none" placeholder="Property description..."></textarea>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+              <RichTextEditor
+                value={formData.description}
+                onChange={(val) => setFormData(prev => ({ ...prev, description: val }))}
+                placeholder="Property description..."
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
-              <input type="number" name="price" required value={formData.price} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#C9A227] outline-none" />
+              <input type="text" name="price" required value={formData.price} onChange={handleChange} placeholder="e.g. 1.25 Cr or 75 L" className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#C9A227] outline-none" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Price Type</label>
@@ -381,7 +395,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
         </div>
 
         {/* Location & Features */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
           <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Location & Features</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-3">
@@ -437,109 +451,191 @@ export default function EditProperty({ params }: EditPropertyProps) {
               <label htmlFor="reraApproved" className="text-sm font-medium text-gray-700 font-bold">RERA Approved</label>
             </div>
           </div>
-        </div>
 
-        {/* Apartment Configurations (BHKs & Pricing) */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between border-b pb-2">
-            <div>
-              <h2 className="text-lg font-bold text-[#1A1800]">Apartment Configurations & Pricing</h2>
-              <p className="text-xs text-gray-500 mt-0.5">Add configurations like 3BHK, 4BHK Duplex, etc., with their individual size and prices.</p>
+          <hr className="border-gray-200 my-6" />
+
+          {/* Apartment Configurations (BHKs & Pricing) */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between border-b pb-2">
+              <div>
+                <h3 className="text-md font-bold text-[#1A1800]">Apartment Configurations & Pricing</h3>
+                <p className="text-xs text-gray-500 mt-0.5">Add configurations like 3BHK, 4BHK Duplex, etc., with their individual size and prices.</p>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => setFormData({ ...formData, priceList: [...formData.priceList, { type: '', size: '', price: '', negotiable: false, isEditing: true }] })}
+                className="flex items-center gap-1 text-xs bg-[#C9A227] hover:bg-[#B8860B] text-[#1A1800] font-bold px-3 py-1.5 rounded-lg transition-colors"
+              >
+                <Plus size={14} /> Add Configuration
+              </button>
             </div>
-            <button 
-              type="button" 
-              onClick={() => setFormData({ ...formData, priceList: [...formData.priceList, { type: '', size: '', price: '', negotiable: false }] })}
-              className="flex items-center gap-1 text-xs bg-[#C9A227] hover:bg-[#B8860B] text-[#1A1800] font-bold px-3 py-1.5 rounded-lg transition-colors"
-            >
-              <Plus size={14} /> Add Configuration
-            </button>
-          </div>
 
-          <div className="space-y-4">
-            {formData.priceList.map((config, index) => (
-              <div key={index} className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50 relative items-end">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Unit Type / Name</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. 3BHK, 4BHK Duplex" 
-                    value={config.type}
-                    onChange={(e) => {
-                      const newList = [...formData.priceList];
-                      newList[index] = { ...newList[index], type: e.target.value };
-                      setFormData({ ...formData, priceList: newList });
-                    }}
-                    required
-                    className="w-full border border-gray-300 rounded-lg p-2.5 bg-white text-sm outline-none focus:ring-2 focus:ring-[#C9A227]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Area / Size</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. 250 Sq. Yd. or 1800 Sq. Ft." 
-                    value={config.size}
-                    onChange={(e) => {
-                      const newList = [...formData.priceList];
-                      newList[index] = { ...newList[index], size: e.target.value };
-                      setFormData({ ...formData, priceList: newList });
-                    }}
-                    required
-                    className="w-full border border-gray-300 rounded-lg p-2.5 bg-white text-sm outline-none focus:ring-2 focus:ring-[#C9A227]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1">Price</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. 18.00 L, 1.5 Cr" 
-                    value={config.price}
-                    onChange={(e) => {
-                      const newList = [...formData.priceList];
-                      newList[index] = { ...newList[index], price: e.target.value };
-                      setFormData({ ...formData, priceList: newList });
-                    }}
-                    required
-                    className="w-full border border-gray-300 rounded-lg p-2.5 bg-white text-sm outline-none focus:ring-2 focus:ring-[#C9A227]"
-                  />
-                </div>
-                <div className="flex items-center justify-between gap-2">
-                  <label className="flex items-center gap-2 cursor-pointer select-none py-2 shrink-0">
-                    <input 
-                      type="checkbox" 
-                      checked={config.negotiable || false}
-                      onChange={(e) => {
-                        const newList = [...formData.priceList];
-                        newList[index] = { ...newList[index], negotiable: e.target.checked };
-                        setFormData({ ...formData, priceList: newList });
-                      }}
-                      className="w-4 h-4 text-[#C9A227] rounded accent-[#C9A227]"
-                    />
-                    <span className="text-xs font-bold text-gray-700">Price Negotiable</span>
-                  </label>
-                  
-                  {formData.priceList.length > 1 && (
-                    <button 
-                      type="button" 
-                      onClick={() => {
-                        const newList = formData.priceList.filter((_, i) => i !== index);
-                        setFormData({ ...formData, priceList: newList });
-                      }}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg shrink-0 self-center"
-                      title="Remove Configuration"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+            <div className="space-y-4">
+              {formData.priceList.map((config, index) => (
+                config.isEditing !== false ? (
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end relative py-1">
+                    <div className="md:col-span-3">
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">Unit Type / Name</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. 3BHK, 4BHK Duplex" 
+                        value={config.type}
+                        onChange={(e) => {
+                          const newList = [...formData.priceList];
+                          newList[index] = { ...newList[index], type: e.target.value };
+                          setFormData({ ...formData, priceList: newList });
+                        }}
+                        required
+                        className="w-full border border-gray-300 rounded-full px-4 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-[#C9A227]"
+                      />
+                    </div>
+                    <div className="md:col-span-3">
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">Area / Size</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. 250 Sq. Yd. or 1800 Sq. F" 
+                        value={config.size}
+                        onChange={(e) => {
+                          const newList = [...formData.priceList];
+                          newList[index] = { ...newList[index], size: e.target.value };
+                          setFormData({ ...formData, priceList: newList });
+                        }}
+                        required
+                        className="w-full border border-gray-300 rounded-full px-4 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-[#C9A227]"
+                      />
+                    </div>
+                    <div className="md:col-span-3">
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">Price</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. 18.00 L, 1.5 Cr" 
+                        value={config.price}
+                        onChange={(e) => {
+                          const newList = [...formData.priceList];
+                          newList[index] = { ...newList[index], price: e.target.value };
+                          setFormData({ ...formData, priceList: newList });
+                        }}
+                        required
+                        className="w-full border border-gray-300 rounded-full px-4 py-2 bg-white text-sm outline-none focus:ring-2 focus:ring-[#C9A227]"
+                      />
+                    </div>
+                    <div className="md:col-span-3 flex items-center justify-between gap-2 py-2 shrink-0">
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input 
+                          type="checkbox" 
+                          checked={config.negotiable || false}
+                          onChange={(e) => {
+                            const newList = [...formData.priceList];
+                            newList[index] = { ...newList[index], negotiable: e.target.checked };
+                            setFormData({ ...formData, priceList: newList });
+                          }}
+                          className="w-4 h-4 text-[#C9A227] rounded accent-[#C9A227]"
+                        />
+                        <span className="text-xs font-bold text-slate-700">Price Negotiable</span>
+                      </label>
+                      
+                      <div className="flex items-center gap-1.5">
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            if (!config.type.trim() || !config.price.trim()) {
+                              toast.error('Unit Type and Price are required before saving.');
+                              return;
+                            }
+                            const newList = [...formData.priceList];
+                            newList[index] = { ...newList[index], isEditing: false };
+                            setFormData({ ...formData, priceList: newList });
+                          }}
+                          className="flex items-center gap-1 text-xs bg-green-50 hover:bg-green-100 text-green-700 font-bold px-3 py-1.5 rounded-full border border-green-200 transition-colors shrink-0"
+                          title="Save Configuration"
+                        >
+                          <Check size={14} />
+                          <span>Save</span>
+                        </button>
+                        
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            const newList = formData.priceList.filter((_, i) => i !== index);
+                            setFormData({ ...formData, priceList: newList });
+                          }}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-full shrink-0 transition-colors"
+                          title="Remove Configuration"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center relative py-2 border-b border-gray-100 last:border-0">
+                    <div className="md:col-span-3">
+                      <span className="block text-[10px] uppercase tracking-wider font-semibold text-gray-400 mb-0.5">Unit Type / Name</span>
+                      <span className="text-sm font-bold text-slate-800 bg-slate-50 px-3.5 py-2 rounded-full border border-slate-100 block truncate">
+                        {config.type || '—'}
+                      </span>
+                    </div>
+                    <div className="md:col-span-3">
+                      <span className="block text-[10px] uppercase tracking-wider font-semibold text-gray-400 mb-0.5">Area / Size</span>
+                      <span className="text-sm font-semibold text-slate-700 bg-slate-50 px-3.5 py-2 rounded-full border border-slate-100 block truncate">
+                        {config.size || '—'}
+                      </span>
+                    </div>
+                    <div className="md:col-span-3">
+                      <span className="block text-[10px] uppercase tracking-wider font-semibold text-gray-400 mb-0.5">Price</span>
+                      <span className="text-sm font-semibold text-slate-700 bg-slate-50 px-3.5 py-2 rounded-full border border-slate-100 block truncate">
+                        {config.price || '—'}
+                      </span>
+                    </div>
+                    <div className="md:col-span-3 flex items-center justify-between gap-3 shrink-0">
+                      <div>
+                        <span className="block text-[10px] uppercase tracking-wider font-semibold text-gray-400 mb-0.5">Status</span>
+                        {config.negotiable ? (
+                          <span className="inline-block text-[10px] font-black text-green-700 bg-green-50 px-2.5 py-1 rounded-full border border-green-200 uppercase tracking-wider">
+                            Negotiable
+                          </span>
+                        ) : (
+                          <span className="inline-block text-[10px] font-black text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200 uppercase tracking-wider">
+                            Fixed Price
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 pt-4">
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            const newList = [...formData.priceList];
+                            newList[index] = { ...newList[index], isEditing: true };
+                            setFormData({ ...formData, priceList: newList });
+                          }}
+                          className="p-2 text-[#C9A227] hover:bg-amber-50 rounded-full transition-colors shrink-0"
+                          title="Edit Configuration"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            const newList = formData.priceList.filter((_, i) => i !== index);
+                            setFormData({ ...formData, priceList: newList });
+                          }}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors shrink-0"
+                          title="Remove Configuration"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              ))}
 
-            {formData.priceList.length === 0 && (
-              <div className="text-center py-6 text-sm text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                No configurations added yet. Click "Add Configuration" to add pricing for different sizes.
-              </div>
-            )}
+              {formData.priceList.length === 0 && (
+                <div className="text-center py-6 text-sm text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                  No configurations added yet. Click "Add Configuration" to add pricing for different sizes.
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -621,6 +717,13 @@ export default function EditProperty({ params }: EditPropertyProps) {
         {/* Location Advantage (Nearby) */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
           <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Location Advantages (Nearby)</h2>
+          
+          <MediaUpload
+            label="Location Advantage Section Map Image"
+            description="Upload a custom location plan or layout map image to display on the left side of the Location Advantage section."
+            value={formData.locationMapUrl || ''}
+            onChange={(url) => setFormData(prev => ({ ...prev, locationMapUrl: url }))}
+          />
           {formData.nearby.map((place, index) => (
             <div key={index} className="flex gap-4 items-start">
               <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -762,7 +865,17 @@ export default function EditProperty({ params }: EditPropertyProps) {
         {/* Project Highlights */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
           <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Project Highlights</h2>
-          {formData.highlights.map((highlight, index) => (
+
+          <MediaUpload
+            label="Highlights Section Background Image"
+            description="Upload an image to display as the background for the highlights section on the property page. Displays in a luxury glass overlay."
+            value={formData.highlightsImageUrl}
+            onChange={(url) => setFormData(prev => ({ ...prev, highlightsImageUrl: url }))}
+          />
+
+          <div className="space-y-3 pt-2">
+            <label className="block text-sm font-medium text-gray-700">Highlight Points</label>
+            {formData.highlights.map((highlight, index) => (
             <div key={index} className="flex gap-4 items-center">
               <div className="flex-1">
                 <input 
@@ -789,10 +902,11 @@ export default function EditProperty({ params }: EditPropertyProps) {
               </button>
             </div>
           ))}
+          </div>
           <button 
             type="button" 
             onClick={() => setFormData({ ...formData, highlights: [...formData.highlights, '' as any] })}
-            className="flex items-center gap-2 text-[#C9A227] font-medium hover:text-[#B8860B]"
+            className="flex items-center gap-2 text-[#C9A227] font-medium hover:text-[#B8860B] mt-2"
           >
             <Plus size={18} /> Add Highlight
           </button>

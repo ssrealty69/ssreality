@@ -40,6 +40,8 @@ export interface IProperty extends Document {
   amenities: string[];
   worldClassAmenities?: string[];
   highlights?: string[];
+  highlightsImageUrl?: string;
+  locationMapUrl?: string;
   nearby?: {
     type: string;
     name: string;
@@ -106,16 +108,16 @@ const PropertySchema = new Schema<IProperty>(
       totalUnits: { type: Number },
       reraApproved: { type: Boolean, default: false },
     },
-    images: [{ type: String }],
+    images: [String],
     mobileBannerUrl: { type: String, default: '' },
-    interiorImages: [{ type: String }],
-    galleryImages: [{ type: String }],
+    interiorImages: [String],
+    galleryImages: [String],
     videoUrl: { type: String },
     brochureUrl: { type: String },
     googleMapsUrl: { type: String, default: '' },
     featured: { type: Boolean, default: false, index: true },
-    amenities: [{ type: String }],
-    worldClassAmenities: [{ type: String }],
+    amenities: [String],
+    worldClassAmenities: [String],
     priceList: [
       {
         type: { type: String },
@@ -124,7 +126,9 @@ const PropertySchema = new Schema<IProperty>(
         negotiable: { type: Boolean, default: false }
       }
     ],
-    highlights: [{ type: String }],
+    highlights: [String],
+    highlightsImageUrl: { type: String, default: '' },
+    locationMapUrl: { type: String, default: '' },
     nearby: [
       {
         type: { type: String },
@@ -150,6 +154,10 @@ const PropertySchema = new Schema<IProperty>(
 PropertySchema.index({ 'location.city': 1, propertyType: 1, status: 1 });
 PropertySchema.index({ price: 1, priceType: 1 });
 PropertySchema.index({ title: 'text', description: 'text', 'location.address': 'text' });
+
+if (process.env.NODE_ENV === 'development' && mongoose.models.Property) {
+  delete mongoose.models.Property;
+}
 
 const Property: Model<IProperty> =
   mongoose.models.Property || mongoose.model<IProperty>('Property', PropertySchema);

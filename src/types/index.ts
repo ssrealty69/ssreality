@@ -34,11 +34,9 @@ export interface Property {
   featured: boolean;
   amenities: string[];
   worldClassAmenities?: string[];
-  highlights?: {
-    title: string;
-    description: string;
-    image?: string;
-  }[];
+  highlights?: string[];
+  highlightsImageUrl?: string;
+  locationMapUrl?: string;
   nearby?: {
     type: string;
     name: string;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Property from '@/models/Property';
 import { invalidateCache } from '@/lib/redis';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,6 +53,10 @@ export async function PUT(
     await invalidateCache(`property:${id}`);
     await invalidateCache('properties:*');
 
+    // Invalidate Next.js static pages cache
+    revalidatePath(`/properties/${id}`);
+    revalidatePath('/');
+
     return NextResponse.json({ success: true, data: property });
   } catch (error: any) {
     console.error("Error updating property:", error);
@@ -74,6 +79,10 @@ export async function DELETE(
     // Invalidate Redis caches
     await invalidateCache(`property:${id}`);
     await invalidateCache('properties:*');
+
+    // Invalidate Next.js static pages cache
+    revalidatePath(`/properties/${id}`);
+    revalidatePath('/');
 
     return NextResponse.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {

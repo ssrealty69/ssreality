@@ -44,22 +44,22 @@ export default function PropertyCard({ property, priority = false, actionText, o
           src={mainImage}
           alt={`${property.title} - ${property.location.city}`}
           fill
-          className={`object-cover transition-all duration-700 ${isHovered && hasSecondImage ? 'opacity-0 scale-110' : 'opacity-100'}`}
+          className={`object-cover transition-opacity duration-700 ${isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'}`}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw"
-          quality={85}
+          quality={90}
           priority={priority}
           loading={priority ? 'eager' : 'lazy'}
         />
 
-        {/* Hover Image */}
+        {/* Hover Image — pure opacity crossfade (no scale = no blur) */}
         {property.images?.[1] && !hoverImageError && (
           <Image
             src={hoverImage}
             alt={`${property.title} - View 2`}
             fill
-            className={`object-cover transition-all duration-700 ${isHovered ? 'opacity-100 scale-105' : 'opacity-0'}`}
+            className={`object-cover transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw"
-            quality={85}
+            quality={90}
             onError={() => setHoverImageError(true)}
           />
         )}

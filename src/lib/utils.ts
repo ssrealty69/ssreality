@@ -67,3 +67,44 @@ export const AMENITIES = [
   'Power Backup', 'Lift', 'Parking', 'Intercom', 'CCTV',
   'Play Area', 'Jogging Track', 'Temple', 'Indoor Games',
 ];
+
+export function parsePriceText(text: string): number {
+  if (!text) return 0;
+  
+  // Remove currency symbols, commas, spaces, and trailing periods
+  let cleanText = text.replace(/[₹\s,]/g, '').toLowerCase();
+  
+  // Check for Crore (cr, crore)
+  if (cleanText.includes('cr')) {
+    const numPart = parseFloat(cleanText.split('cr')[0]);
+    return isNaN(numPart) ? 0 : Math.round(numPart * 10000000);
+  }
+  
+  // Check for Lakh (l, lakh)
+  if (cleanText.includes('l')) {
+    const numPart = parseFloat(cleanText.split('l')[0]);
+    return isNaN(numPart) ? 0 : Math.round(numPart * 100000);
+  }
+  
+  // Check for Thousand (k, thousand)
+  if (cleanText.includes('k')) {
+    const numPart = parseFloat(cleanText.split('k')[0]);
+    return isNaN(numPart) ? 0 : Math.round(numPart * 1000);
+  }
+  
+  // Default to standard float parsing
+  const parsed = parseFloat(cleanText);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+export function formatPriceForEdit(price: number): string {
+  if (!price) return '';
+  if (price >= 10000000) {
+    const val = price / 10000000;
+    return `${val.toFixed(val % 1 === 0 ? 0 : 2)} Cr`;
+  } else if (price >= 100000) {
+    const val = price / 100000;
+    return `${val.toFixed(val % 1 === 0 ? 0 : 2)} L`;
+  }
+  return price.toString();
+}

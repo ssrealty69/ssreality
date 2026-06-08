@@ -16,7 +16,7 @@ const PropertySchema = new mongoose.Schema({
   features: { bedrooms: Number, bathrooms: Number, area: Number, areaUnit: String, parking: Boolean, furnished: Boolean, floor: Number, totalFloors: Number, towers: Number, totalUnits: Number, reraApproved: Boolean },
   images: [String], videoUrl: String, brochureUrl: String, featured: Boolean, amenities: [String],
   agent: { name: String, phone: String, email: String },
-  highlights: [{ title: String, description: String }],
+  highlights: [String],
   nearby: [{ type: { type: String }, name: String, distance: String }]
 }, { timestamps: true });
 
@@ -79,8 +79,9 @@ async function seed() {
       propData.features.reraApproved = Math.random() > 0.5;
       propData.videoUrl = "https://www.youtube.com/watch?v=M-j_LvEK2ZA";
       propData.highlights = [
-        { title: "Premium Location", description: "Located in the heart of the city with excellent connectivity." },
-        { title: "World Class Amenities", description: "Enjoy a lifestyle of luxury with our state-of-the-art facilities." }
+        "Premium Location on Gwal Pahari Road",
+        "World Class Amenities & Elegant Design",
+        "High Investment Potential & Excellent Connectivity"
       ];
       propData.nearby = [
         { type: "landmark", name: "City Center Mall", distance: "2.5 Km" },

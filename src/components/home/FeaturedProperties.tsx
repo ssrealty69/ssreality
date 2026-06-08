@@ -15,10 +15,10 @@ interface FeaturedPropertiesProps {
   className?: string;
 }
 
-export default function FeaturedProperties({ 
-  title, 
-  subtitle, 
-  properties, 
+export default function FeaturedProperties({
+  title,
+  subtitle,
+  properties,
   viewAllHref,
   badgeText = "Fresh Listings",
   className = "section-padding"

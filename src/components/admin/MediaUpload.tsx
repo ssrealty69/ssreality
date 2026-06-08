@@ -79,9 +79,17 @@ export function MediaUpload({ label, description, value, onChange, folder = 'ss-
 
   return (
     <div className="space-y-3 p-5 rounded-2xl border border-gray-100 bg-gray-50/30 transition-all hover:bg-gray-50/60 duration-300">
-      <div>
-        <label className="block text-sm font-bold text-gray-800">{label}</label>
-        {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
+      <div className="flex items-center justify-between">
+        <div>
+          <label className="block text-sm font-bold text-gray-800">{label}</label>
+          {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
+        </div>
+        {value && (
+          <span className="flex items-center gap-1 text-[10px] font-bold text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full shrink-0">
+            <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+            Image Saved
+          </span>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
@@ -130,6 +138,7 @@ export function MediaUpload({ label, description, value, onChange, folder = 'ss-
                 src={value} 
                 alt="Upload Preview" 
                 className="w-full h-24 object-cover rounded-lg shadow-sm bg-gray-50 border border-gray-100 transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => { e.currentTarget.style.opacity = '0.3'; e.currentTarget.title = 'Image failed to load'; }}
               />
               <button 
                 type="button"
@@ -445,6 +454,12 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
         <div>
           <label className="block text-sm font-bold text-gray-800">{label}</label>
           {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
+          {images.filter(u => u.trim() !== '').length > 0 && (
+            <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full w-fit">
+              <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+              {images.filter(u => u.trim() !== '').length} photo{images.filter(u => u.trim() !== '').length !== 1 ? 's' : ''} saved
+            </span>
+          )}
         </div>
         
         <div className="flex items-center gap-2">
@@ -486,52 +501,65 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
       </div>
 
       {/* Grid of uploaded images / link inputs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {images.map((url, index) => (
-          <div key={index} className="flex flex-col border border-gray-200 rounded-xl bg-white overflow-hidden shadow-sm hover:shadow transition-shadow relative group">
-            {/* Image Preview Container */}
-            <div className="h-28 bg-gray-50 flex items-center justify-center overflow-hidden relative shadow-inner">
-              {url ? (
-                <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={url} 
-                    alt={`Gallery ${index + 1}`} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-90 group-hover:opacity-100 hover:scale-110 shadow transition-all duration-200"
-                    title="Remove Photo"
-                  >
-                    <Trash2 size={12} />
-                  </button>
-                </>
-              ) : (
-                <div className="flex flex-col items-center text-gray-300 gap-1">
-                  <ImageIcon size={28} />
-                  <span className="text-[9px] font-bold text-gray-400">Empty Field Link</span>
-                </div>
-              )}
-              <span className="absolute bottom-2 left-2 px-1.5 py-0.5 bg-black/60 text-white text-[9px] font-bold rounded">
-                Photo #{index + 1}
-              </span>
-            </div>
-
-            {/* Link Text Input Fallback */}
-            <div className="p-2 border-t border-gray-100 bg-gray-50/30">
-              <input 
-                type="url"
-                value={url}
-                onChange={(e) => handleManualUrlChange(index, e.target.value)}
-                placeholder="https://example.com/gallery.jpg"
-                className="w-full border border-gray-300 rounded-md px-2.5 py-1 text-[10px] outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
-              />
-            </div>
+      {images.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-3 py-10 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+          <div className="p-3 rounded-full bg-gray-100">
+            <ImageIcon size={28} className="text-gray-300" />
           </div>
-        ))}
-      </div>
+          <div className="text-center">
+            <p className="text-sm font-bold text-gray-400">No images uploaded yet</p>
+            <p className="text-[11px] text-gray-400 mt-0.5">Click &ldquo;Upload Photos&rdquo; above to add images</p>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {images.map((url, index) => (
+            <div key={index} className="flex flex-col border border-gray-200 rounded-xl bg-white overflow-hidden shadow-sm hover:shadow transition-shadow relative group">
+              {/* Image Preview Container */}
+              <div className="h-28 bg-gray-50 flex items-center justify-center overflow-hidden relative shadow-inner">
+                {url ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={url} 
+                      alt={`Gallery ${index + 1}`} 
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      onError={(e) => { e.currentTarget.style.opacity = '0.3'; }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-90 group-hover:opacity-100 hover:scale-110 shadow transition-all duration-200"
+                      title="Remove Photo"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                    <span className="absolute bottom-2 left-2 px-1.5 py-0.5 bg-black/60 text-white text-[9px] font-bold rounded">
+                      Photo #{index + 1}
+                    </span>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center text-gray-300 gap-1">
+                    <ImageIcon size={28} />
+                    <span className="text-[9px] font-bold text-gray-400">Paste URL below</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Link Text Input Fallback */}
+              <div className="p-2 border-t border-gray-100 bg-gray-50/30">
+                <input 
+                  type="url"
+                  value={url}
+                  onChange={(e) => handleManualUrlChange(index, e.target.value)}
+                  placeholder="https://example.com/gallery.jpg"
+                  className="w-full border border-gray-300 rounded-md px-2.5 py-1 text-[10px] outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

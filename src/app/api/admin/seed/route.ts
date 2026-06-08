@@ -41,8 +41,9 @@ export async function POST(req: NextRequest) {
       propData.videoUrl = 'https://www.youtube.com/watch?v=M-j_LvEK2ZA';
 
       propData.highlights = [
-        { title: 'Premium Location', description: 'Located in the heart of the city with excellent connectivity.' },
-        { title: 'World Class Amenities', description: 'Enjoy a lifestyle of luxury with our state-of-the-art facilities.' },
+        'Premium Location on Gwal Pahari Road',
+        'World Class Amenities & Elegant Design',
+        'High Investment Potential & Excellent Connectivity'
       ];
 
       propData.nearby = [

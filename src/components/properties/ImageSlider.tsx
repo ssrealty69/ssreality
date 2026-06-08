@@ -104,7 +104,7 @@ export default function ImageSlider({ images }: ImageSliderProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={idx === 0}
               loading={idx === 0 ? 'eager' : 'lazy'}
-              quality={80}
+              quality={90}
             />
           </div>
         ) : (
