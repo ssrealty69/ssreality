@@ -63,8 +63,11 @@ export interface Property {
   };
   views: number;
   seo?: {
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
+    keywords?: string;
+    focusKeyword?: string;
+    canonicalUrl?: string;
   };
   createdAt: string;
   updatedAt: string;

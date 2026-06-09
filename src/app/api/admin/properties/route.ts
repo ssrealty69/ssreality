@@ -18,10 +18,25 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
     const properties = await Property.find({}).sort('-createdAt').lean();
-    return NextResponse.json({ success: true, data: properties });
+    return NextResponse.json(
+      { success: true, data: properties },
+      {
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error fetching properties:', error);
-    return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: 'Server Error' },
+      {
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+        },
+      }
+    );
   }
 }
 

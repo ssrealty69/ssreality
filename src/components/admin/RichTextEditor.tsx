@@ -65,7 +65,7 @@ export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorP
         suppressContentEditableWarning
         onInput={handleInput}
         className="w-full min-h-[180px] p-3 outline-none text-sm text-gray-800 overflow-y-auto"
-        placeholder={placeholder}
+        data-placeholder={placeholder}
         style={{
           minHeight: '180px',
         }}
@@ -74,7 +74,7 @@ export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorP
       {/* Placeholder Style */}
       <style jsx global>{`
         [contenteditable]:empty:before {
-          content: attr(placeholder);
+          content: attr(data-placeholder);
           color: #9ca3af;
           cursor: text;
           pointer-events: none;

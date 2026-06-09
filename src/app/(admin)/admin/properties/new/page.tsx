@@ -74,6 +74,9 @@ export default function AddProperty() {
       address: '',
       city: '',
       state: '',
+      pincode: '',
+      lat: '',
+      lng: '',
     },
     features: {
       area: '',
@@ -93,6 +96,7 @@ export default function AddProperty() {
       name: '',
       phone: '',
       email: '',
+      image: '',
     },
     amenities: [...PROJECT_AMENITIES] as string[], // Auto-selected by default
     worldClassAmenities: [] as string[],
@@ -146,6 +150,11 @@ export default function AddProperty() {
           totalFloors: formData.features.totalFloors ? parseInt(formData.features.totalFloors as string) : undefined,
           towers: formData.features.towers ? parseInt(formData.features.towers as string) : undefined,
           totalUnits: formData.features.totalUnits ? parseInt(formData.features.totalUnits as string) : undefined,
+        },
+        location: {
+          ...formData.location,
+          lat: formData.location.lat ? parseFloat(formData.location.lat as string) : undefined,
+          lng: formData.location.lng ? parseFloat(formData.location.lng as string) : undefined,
         },
         seo: seoData
       };
@@ -308,6 +317,18 @@ export default function AddProperty() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
               <input type="text" name="location.state" required value={formData.location.state} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
+              <input type="text" name="location.pincode" value={formData.location.pincode} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 201301" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+              <input type="number" step="any" name="location.lat" value={formData.location.lat} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 28.5355" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+              <input type="number" step="any" name="location.lng" value={formData.location.lng} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 77.3910" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
@@ -824,6 +845,14 @@ export default function AddProperty() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input type="email" name="agent.email" required value={formData.agent.email} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
+            </div>
+            <div className="md:col-span-3 pt-2">
+              <MediaUpload
+                label="Agent Photo"
+                description="Upload agent's profile image."
+                value={formData.agent.image || ''}
+                onChange={(url) => setFormData(prev => ({ ...prev, agent: { ...prev.agent, image: url } }))}
+              />
             </div>
           </div>
         </div>

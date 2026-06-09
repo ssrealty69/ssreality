@@ -15,12 +15,35 @@ export async function GET(
     await connectDB();
     const property = await Property.findById(id).lean();
     if (!property) {
-      return NextResponse.json({ success: false, error: 'Property not found' }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: 'Property not found' },
+        {
+          status: 404,
+          headers: {
+            'Cache-Control': 'no-store, max-age=0, must-revalidate',
+          },
+        }
+      );
     }
-    return NextResponse.json({ success: true, data: property });
+    return NextResponse.json(
+      { success: true, data: property },
+      {
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+        },
+      }
+    );
   } catch (error) {
     console.error("Error fetching property:", error);
-    return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: 'Server Error' },
+      {
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-store, max-age=0, must-revalidate',
+        },
+      }
+    );
   }
 }
 

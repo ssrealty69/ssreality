@@ -81,6 +81,9 @@ export default function EditProperty({ params }: EditPropertyProps) {
       address: '',
       city: '',
       state: '',
+      pincode: '',
+      lat: '',
+      lng: '',
     },
     features: {
       area: '',
@@ -100,10 +103,11 @@ export default function EditProperty({ params }: EditPropertyProps) {
       name: '',
       phone: '',
       email: '',
+      image: '',
     },
     amenities: [] as string[],
     worldClassAmenities: [] as string[],
-    priceList: [{ type: '', size: '', price: '', negotiable: false }] as { type: string; size: string; price: string; negotiable?: boolean }[],
+    priceList: [{ type: '', size: '', price: '', negotiable: false }] as { type: string; size: string; price: string; negotiable?: boolean; isEditing?: boolean }[],
     images: [''] as string[], // Only banner image remains here (as images[0])
     mobileBannerUrl: '',
     interiorImages: [] as string[],
@@ -131,7 +135,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
   useEffect(() => {
     async function loadProperty() {
       try {
-        const res = await fetch(`/api/admin/properties/${id}`);
+        const res = await fetch(`/api/admin/properties/${id}`, { cache: 'no-store' });
         if (!res.ok) {
           toast.error('Property not found');
           router.push('/admin/properties');
@@ -153,6 +157,9 @@ export default function EditProperty({ params }: EditPropertyProps) {
               address: prop.location?.address || '',
               city: prop.location?.city || '',
               state: prop.location?.state || '',
+              pincode: prop.location?.pincode || '',
+              lat: prop.location?.lat !== undefined && prop.location?.lat !== null ? prop.location.lat.toString() : '',
+              lng: prop.location?.lng !== undefined && prop.location?.lng !== null ? prop.location.lng.toString() : '',
             },
             features: {
               area: prop.features?.area !== undefined ? prop.features.area.toString() : '',
@@ -172,6 +179,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
               name: prop.agent?.name || '',
               phone: prop.agent?.phone || '',
               email: prop.agent?.email || '',
+              image: prop.agent?.image || '',
             },
             amenities: prop.amenities || [],
             worldClassAmenities: prop.worldClassAmenities || [],
@@ -243,6 +251,11 @@ export default function EditProperty({ params }: EditPropertyProps) {
           totalFloors: formData.features.totalFloors ? parseInt(formData.features.totalFloors as string) : undefined,
           towers: formData.features.towers ? parseInt(formData.features.towers as string) : undefined,
           totalUnits: formData.features.totalUnits ? parseInt(formData.features.totalUnits as string) : undefined,
+        },
+        location: {
+          ...formData.location,
+          lat: formData.location.lat ? parseFloat(formData.location.lat as string) : undefined,
+          lng: formData.location.lng ? parseFloat(formData.location.lng as string) : undefined,
         },
         seo: seoData
       };
@@ -413,6 +426,18 @@ export default function EditProperty({ params }: EditPropertyProps) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
               <input type="text" name="location.state" required value={formData.location.state} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
+              <input type="text" name="location.pincode" value={formData.location.pincode} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 201301" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+              <input type="number" step="any" name="location.lat" value={formData.location.lat} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 28.5355" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+              <input type="number" step="any" name="location.lng" value={formData.location.lng} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 77.3910" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
@@ -929,6 +954,14 @@ export default function EditProperty({ params }: EditPropertyProps) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
               <input type="email" name="agent.email" required value={formData.agent.email} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
+            </div>
+            <div className="md:col-span-3 pt-2">
+              <MediaUpload
+                label="Agent Photo"
+                description="Upload agent's profile image."
+                value={formData.agent.image || ''}
+                onChange={(url) => setFormData(prev => ({ ...prev, agent: { ...prev.agent, image: url } }))}
+              />
             </div>
           </div>
         </div>

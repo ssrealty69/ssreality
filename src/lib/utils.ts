@@ -5,6 +5,7 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 export function formatPrice(price: number, currency: string = '₹'): string {
+  if (price === 0) return 'Price on Request';
   if (price >= 10000000) {
     return `${currency}${(price / 10000000).toFixed(2)} Cr`;
   } else if (price >= 100000) {
@@ -98,7 +99,8 @@ export function parsePriceText(text: string): number {
 }
 
 export function formatPriceForEdit(price: number): string {
-  if (!price) return '';
+  if (price === undefined || price === null) return '';
+  if (price === 0) return 'Price on Request';
   if (price >= 10000000) {
     const val = price / 10000000;
     return `${val.toFixed(val % 1 === 0 ? 0 : 2)} Cr`;

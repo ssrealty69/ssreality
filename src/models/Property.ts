@@ -61,8 +61,11 @@ export interface IProperty extends Document {
   }[];
   views: number;
   seo?: {
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
+    keywords?: string;
+    focusKeyword?: string;
+    canonicalUrl?: string;
   };
   createdAt: Date;
   updatedAt: Date;
@@ -146,6 +149,9 @@ const PropertySchema = new Schema<IProperty>(
     seo: {
       title: { type: String },
       description: { type: String },
+      keywords: { type: String },
+      focusKeyword: { type: String },
+      canonicalUrl: { type: String },
     },
   },
   { timestamps: true }
