@@ -87,13 +87,6 @@ export default function AmenitiesSection() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1A1800]/95 text-[#C9A227] text-[10px] md:text-xs font-black uppercase tracking-widest mb-6 border border-[#C9A227]/40 shadow-[0_4px_12px_rgba(201,162,39,0.15)] select-none">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C9A227] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C9A227]"></span>
-            </span>
-            Upcoming Project Showcase
-          </span>
           <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">
             World Class <span className="text-[#C9A227]">Amenities</span>
           </h2>
@@ -105,6 +98,12 @@ export default function AmenitiesSection() {
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-center">
           {/* Left Side: Large Image with Slider controls */}
           <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group border-4 border-white card-3d">
+            {/* Diagonal Corner Ribbon */}
+            <div className="absolute top-0 right-0 w-[140px] h-[140px] overflow-hidden pointer-events-none z-20">
+              <div className="absolute top-[28px] right-[-32px] w-[180px] py-1.5 bg-gradient-to-r from-[#A87F18] via-[#F3D982] to-[#B8860B] text-[#1A1800] text-[9px] font-black uppercase tracking-widest text-center rotate-45 shadow-[0_2px_8px_rgba(0,0,0,0.35)] border-y border-white/20 select-none">
+                Upcoming Project
+              </div>
+            </div>
             {sliderImages.map((img, idx) => (
               <Image 
                 key={idx}
