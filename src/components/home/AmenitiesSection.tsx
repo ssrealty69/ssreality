@@ -87,6 +87,13 @@ export default function AmenitiesSection() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1A1800]/95 text-[#C9A227] text-[10px] md:text-xs font-black uppercase tracking-widest mb-6 border border-[#C9A227]/40 shadow-[0_4px_12px_rgba(201,162,39,0.15)] select-none">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C9A227] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C9A227]"></span>
+            </span>
+            Upcoming Project Showcase
+          </span>
           <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">
             World Class <span className="text-[#C9A227]">Amenities</span>
           </h2>
