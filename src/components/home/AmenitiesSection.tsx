@@ -105,15 +105,15 @@ export default function AmenitiesSection() {
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-center">
           {/* Left Side: Large Image with Slider controls */}
           <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group border-4 border-white card-3d">
-            {/* Floating Glassmorphic Launch Badge */}
-            <div className="absolute bottom-6 left-6 z-20 backdrop-blur-md bg-[#1A1800]/90 border border-[#C9A227]/40 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-[0_12px_24px_rgba(0,0,0,0.3)] animate-float select-none">
+            {/* Floating Golden Gradient Launch Badge */}
+            <div className="absolute bottom-6 left-6 z-20 bg-gradient-to-tr from-[#A87F18] via-[#FBBF24] to-[#C9A227] border border-white/50 px-4 py-2.5 rounded-2xl flex items-center gap-3 shadow-[0_8px_24px_rgba(201,162,39,0.35)] animate-float select-none">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
               </span>
               <div className="flex flex-col text-left">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#C9A227] leading-none mb-1.5">Upcoming Project</span>
-                <span className="text-[9px] font-bold text-white/80 leading-none">Luxury Concept Preview</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#1A1800] leading-none mb-1">Upcoming Project</span>
+                <span className="text-[9px] font-extrabold text-[#1A1800]/85 leading-none">Luxury Concept Preview</span>
               </div>
             </div>
             {sliderImages.map((img, idx) => (
