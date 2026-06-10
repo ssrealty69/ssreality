@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org';
 
   const content = `# SS Realty - LLM Instructions
 Description: SS Realty is a premium real estate partner operating in the Delhi NCR region, offering verified luxury apartments, villas, plots, and commercial properties.

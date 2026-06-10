@@ -17,8 +17,8 @@ export interface Property {
   features: {
     bedrooms?: number;
     bathrooms?: number;
-    area: number;
-    areaUnit: 'sqft' | 'sqmt' | 'acre' | 'sqyd';
+    area?: number;
+    areaUnit?: 'sqft' | 'sqmt' | 'acre' | 'sqyd';
     parking?: boolean;
     furnished?: boolean;
     registryAvailable?: boolean;

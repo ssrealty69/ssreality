@@ -61,7 +61,7 @@ export async function PUT(
       body.highlights = body.highlights.filter((h: any) => typeof h === 'string' && h.trim() !== '');
     }
     if (body.nearby) {
-      body.nearby = body.nearby.filter((n: any) => n.name.trim() !== '' && n.distance.trim() !== '');
+      body.nearby = body.nearby.filter((n: any) => n.name.trim() !== '');
     }
     if (body.images) {
       body.images = body.images.filter((img: string) => img.trim() !== '');

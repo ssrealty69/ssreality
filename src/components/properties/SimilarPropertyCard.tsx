@@ -11,12 +11,14 @@ interface SimilarPropertyCardProps {
 }
 
 export default function SimilarPropertyCard({ property }: SimilarPropertyCardProps) {
-  const mainImage = property.images?.[0] || '/SS Realty.png';
+  const mainImage = (property.interiorImages && property.interiorImages.length > 0)
+    ? property.interiorImages[0]
+    : property.images?.[0] || '/SS Realty.png';
   
   return (
     <article className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full group transition-all duration-300 hover:shadow-md hover:border-[#C9A227]/30">
       {/* Image Container */}
-      <div className="relative h-40 sm:h-48 overflow-hidden">
+      <div className="relative w-full aspect-[4/3] overflow-hidden">
         <Image
           src={mainImage}
           alt={property.title}
@@ -40,18 +42,24 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
         </h3>
 
         {/* Minimal Specs */}
-        <div className="grid grid-cols-1 gap-1.5 mb-3 sm:mb-4">
-          <div className="flex items-center gap-1.5 text-gray-500">
-            <BedDouble size={14} className="text-[#C9A227]" />
-            <span className="text-[11px] sm:text-[13px] font-medium">{property.features.bedrooms} BHK</span>
+        {(property.features.bedrooms || property.features.area) ? (
+          <div className="grid grid-cols-1 gap-1.5 mb-3 sm:mb-4">
+            {property.features.bedrooms ? (
+              <div className="flex items-center gap-1.5 text-gray-500">
+                <BedDouble size={14} className="text-[#C9A227]" />
+                <span className="text-[11px] sm:text-[13px] font-medium">{property.features.bedrooms} BHK</span>
+              </div>
+            ) : null}
+            {property.features.area ? (
+              <div className="flex items-center gap-1.5 text-gray-500">
+                <Maximize2 size={14} className="text-[#C9A227]" />
+                <span className="text-[11px] sm:text-[13px] font-medium line-clamp-1">
+                  {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Sq. Yd' : property.features.areaUnit}
+                </span>
+              </div>
+            ) : null}
           </div>
-          <div className="flex items-center gap-1.5 text-gray-500">
-            <Maximize2 size={14} className="text-[#C9A227]" />
-            <span className="text-[11px] sm:text-[13px] font-medium line-clamp-1">
-              {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Sq. Yd' : property.features.areaUnit}
-            </span>
-          </div>
-        </div>
+        ) : null}
 
         {/* View Details Button */}
         <Link 

@@ -227,7 +227,7 @@ SS REALTY COMPANY DETAILS:
 - Regional Office: Noida (opened in 2016)
 - Contact Number: +91 93110 59100
 - Email: info@ssrealty.org
-- Website: www.ssrealty.in
+- Website: www.ssrealty.org
 
 PROPERTY DATABASE (use when showing properties):
 ${propertyContext}`;

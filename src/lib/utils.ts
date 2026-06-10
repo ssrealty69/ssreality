@@ -72,30 +72,44 @@ export const AMENITIES = [
 export function parsePriceText(text: string): number {
   if (!text) return 0;
   
-  // Remove currency symbols, commas, spaces, and trailing periods
-  let cleanText = text.replace(/[₹\s,]/g, '').toLowerCase();
+  // Remove currency symbols, commas, spaces
+  let cleanText = text.replace(/[₹,]/g, '').trim().toLowerCase();
   
-  // Check for Crore (cr, crore)
-  if (cleanText.includes('cr')) {
-    const numPart = parseFloat(cleanText.split('cr')[0]);
-    return isNaN(numPart) ? 0 : Math.round(numPart * 10000000);
+  // Check if it's explicitly "price on request" or similar non-numeric phrases
+  if (cleanText.includes('request') || cleanText.includes('call') || cleanText.includes('contact') || cleanText.includes('ask')) {
+    return 0;
   }
   
-  // Check for Lakh (l, lakh)
-  if (cleanText.includes('l')) {
-    const numPart = parseFloat(cleanText.split('l')[0]);
-    return isNaN(numPart) ? 0 : Math.round(numPart * 100000);
+  // Find the first decimal number in the clean text
+  const numMatch = cleanText.match(/\d+(\.\d+)?/);
+  if (!numMatch) return 0;
+  
+  const numPart = parseFloat(numMatch[0]);
+  if (isNaN(numPart)) return 0;
+  
+  // Determine multiplier
+  if (cleanText.includes('cr') || cleanText.includes('crore')) {
+    return Math.round(numPart * 10000000);
+  }
+  if (cleanText.includes('l') || cleanText.includes('lakh') || cleanText.includes('lac')) {
+    return Math.round(numPart * 100000);
+  }
+  if (cleanText.includes('k') || cleanText.includes('thousand')) {
+    return Math.round(numPart * 1000);
   }
   
-  // Check for Thousand (k, thousand)
-  if (cleanText.includes('k')) {
-    const numPart = parseFloat(cleanText.split('k')[0]);
-    return isNaN(numPart) ? 0 : Math.round(numPart * 1000);
+  // If no units, check if the number is already a large integer (e.g., 12500000 vs 1.25)
+  // If it's a small decimal/integer (< 1000) and they typed e.g. "1.25", they probably meant 1.25 Crore
+  if (numPart < 1000) {
+    if (numPart >= 5 && numPart < 100) {
+      // e.g. 75 -> 75 Lakhs
+      return Math.round(numPart * 100000);
+    }
+    // e.g. 1.25 or 3.5 -> Crores
+    return Math.round(numPart * 10000000);
   }
   
-  // Default to standard float parsing
-  const parsed = parseFloat(cleanText);
-  return isNaN(parsed) ? 0 : parsed;
+  return Math.round(numPart);
 }
 
 export function formatPriceForEdit(price: number): string {

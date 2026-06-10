@@ -18,12 +18,12 @@ async function getProperties(): Promise<Property[]> {
     await connectDB();
     const dbProperties = await PropertyModel.find({ status: 'available' }).sort('-createdAt').limit(50).lean() as any[];
     if (!dbProperties || dbProperties.length === 0) {
-      return JSON.parse(JSON.stringify(FALLBACK_PROPERTIES));
+      return [];
     }
     return JSON.parse(JSON.stringify(dbProperties));
   } catch (error) {
     console.error("Direct db fetch for properties failed:", error);
-    return JSON.parse(JSON.stringify(FALLBACK_PROPERTIES));
+    return [];
   }
 }
 

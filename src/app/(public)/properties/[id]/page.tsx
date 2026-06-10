@@ -77,6 +77,51 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
+function formatPropertyHeading(priceList: any[], propertyType: string): string {
+  const pluralType = propertyType.endsWith('y')
+    ? propertyType.slice(0, -1) + 'ies'
+    : propertyType + 's';
+  const capitalizedPluralType = pluralType.charAt(0).toUpperCase() + pluralType.slice(1);
+
+  if (!priceList || priceList.length === 0) {
+    return capitalizedPluralType;
+  }
+
+  const types = priceList
+    .map(item => item.type?.trim())
+    .filter(Boolean);
+
+  if (types.length === 0) {
+    return capitalizedPluralType;
+  }
+
+  // Format type spacing and capitalization (e.g. "3bhk" -> "3 BHK", "Duplex 3bhk" -> "Duplex 3 BHK")
+  const formattedTypes = types.map(t => {
+    let formatted = t.replace(/(\d+)\s*(BHK)/i, '$1 BHK');
+    formatted = formatted.replace(/bhk/i, 'BHK');
+    return formatted;
+  });
+
+  const uniqueTypes = Array.from(new Set(formattedTypes));
+
+  let configPart = '';
+  if (uniqueTypes.length === 1) {
+    configPart = uniqueTypes[0];
+  } else if (uniqueTypes.length === 2) {
+    configPart = `${uniqueTypes[0]} & ${uniqueTypes[1]}`;
+  } else {
+    configPart = `${uniqueTypes.slice(0, -1).join(', ')} & ${uniqueTypes[uniqueTypes.length - 1]}`;
+  }
+
+  const hasPropertyType = configPart.toLowerCase().includes(propertyType.toLowerCase());
+
+  if (hasPropertyType) {
+    return configPart;
+  }
+
+  return `${configPart} ${capitalizedPluralType}`;
+}
+
 export default async function PropertyLandingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
@@ -122,19 +167,9 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
     console.error("MongoDB Connection Error in Frontend:", error);
   }
 
-  // Fallback to local data if DB connection failed or property not found in DB
+  // Return 404 if property not found in DB
   if (!property) {
-    property = FALLBACK_PROPERTIES.find((p) => p._id === id);
-    if (!property) {
-      notFound();
-    }
-
-    relatedProperties = FALLBACK_PROPERTIES.filter(p => p.propertyType === property.propertyType && p._id !== property._id && (p.status === 'available' || !p.status)).slice(0, 4);
-    if (relatedProperties.length < 4) {
-      const moreProps = FALLBACK_PROPERTIES.filter(p => p.priceType === property.priceType && p._id !== property._id && (p.status === 'available' || !p.status) && !relatedProperties.find((rp: any) => rp._id === p._id));
-      relatedProperties = [...relatedProperties, ...moreProps].slice(0, 4);
-    }
-    deliveredProperties = [];
+    notFound();
   }
 
   // JSON-LD Structured Data for Property (Google Rich Cards compliant with image and price)
@@ -143,8 +178,8 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
       '@context': 'https://schema.org',
       '@type': 'Product',
       name: property.title,
-      image: property.images && property.images.length > 0 ? property.images : ['https://ssrealty.in/SS%20Realty%20Official%20Logo.png'],
-      description: property.description || `Premium ${property.features.bedrooms} BHK ${property.propertyType} for sale/rent at ${property.location.address}, ${property.location.city}.`,
+      image: property.images && property.images.length > 0 ? property.images : ['https://ssrealty.org/SS%20Realty%20Official%20Logo.png'],
+      description: property.description || `Premium ${property.features.bedrooms ? `${property.features.bedrooms} BHK ` : ''}${property.propertyType} for sale/rent at ${property.location.address}, ${property.location.city}.`,
       sku: property._id ? property._id.toString() : id,
       brand: {
         '@type': 'Brand',
@@ -157,7 +192,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         priceValidUntil: '2028-12-31',
         itemCondition: 'https://schema.org/NewCondition',
         availability: 'https://schema.org/InStock',
-        url: `https://ssrealty.in/properties/${property._id ? property._id.toString() : id}`
+        url: `https://ssrealty.org/properties/${property._id ? property._id.toString() : id}`
       }
     },
     {
@@ -165,7 +200,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
       '@type': property.propertyType === 'flat' || property.propertyType === 'apartment' ? 'Apartment' : 'SingleFamilyResidence',
       name: property.title,
       description: property.description,
-      image: property.images && property.images.length > 0 ? property.images : ['https://ssrealty.in/SS%20Realty%20Official%20Logo.png'],
+      image: property.images && property.images.length > 0 ? property.images : ['https://ssrealty.org/SS%20Realty%20Official%20Logo.png'],
       address: {
         '@type': 'PostalAddress',
         streetAddress: property.location.address,
@@ -173,21 +208,40 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         addressRegion: 'Haryana / NCR',
         addressCountry: 'IN'
       },
-      numberOfBedrooms: property.features.bedrooms || 3,
+      ...(property.features.bedrooms ? { numberOfBedrooms: property.features.bedrooms } : {}),
       numberOfBathrooms: property.features.bathrooms || 3,
-      floorSize: {
-        '@type': 'QuantitativeValue',
-        value: property.features.area,
-        unitText: property.features.areaUnit === 'sqyd' ? 'Square Yards' : 'Square Feet'
-      }
+      ...(property.features.area ? {
+        floorSize: {
+          '@type': 'QuantitativeValue',
+          value: property.features.area,
+          unitText: (property.features.areaUnit || 'sqft') === 'sqyd' ? 'Square Yards' : 'Square Feet'
+        }
+      } : {})
     }
   ];
 
   const waMessage = encodeURIComponent(`Hi! I'm interested in ${property.title}. Please share details.`);
   const waLink = `https://api.whatsapp.com/send?phone=+919311059100&text=${waMessage}`;
 
+  // Get all gallery images to display, excluding the main hero banner image (which is property.images[0])
+  const heroImage = property.images && property.images.length > 0 ? property.images[0] : null;
+  const galleryImages = (property.galleryImages && property.galleryImages.length > 0
+    ? property.galleryImages
+    : property.images || []
+  ).filter((imgUrl: string) => imgUrl !== heroImage);
+
   return (
     <div className="font-sans bg-white pb-20">
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        @keyframes custom-smooth-blink {
+          0%, 100% { opacity: 0.8; border-color: rgba(201, 162, 39, 0.45); box-shadow: 0 0 8px rgba(201, 162, 39, 0.2); }
+          50% { opacity: 1; border-color: rgba(201, 162, 39, 0.95); box-shadow: 0 0 16px rgba(201, 162, 39, 0.55); }
+        }
+        .animate-smooth-blink {
+          animation: custom-smooth-blink 3s ease-in-out infinite;
+        }
+      `}} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}
@@ -219,37 +273,56 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           </div>
         )}
         {/* Pink/Red Gradient Overlay similar to screenshot 1 */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1800]/40 via-[#1A1800]/15 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent md:from-[#1A1800]/50 md:via-[#1A1800]/20 md:to-transparent" />
 
-        {/* Hero Content Box */}
-        <div className="absolute inset-0 max-w-7xl mx-auto px-4 flex flex-col justify-end pb-20">
-          <div className="border border-white/40 bg-white/10 backdrop-blur-sm rounded-xl p-6 md:p-8 max-w-xl text-white">
-            <div className="inline-block bg-white text-[#1A1800] font-bold px-3 py-1 rounded-full text-sm mb-4">
-              <span className="text-[#1A1800]/60">₹</span> {formatPrice(property.price)} {property.priceType === 'rent' ? '/month' : 'Onwards'}
+        {/* Hero Content Box - Centered vertically but padded top to clear header */}
+        <div className="absolute inset-0 max-w-7xl mx-auto px-4 flex flex-col justify-end pb-16 items-center text-center md:justify-center md:pb-0 md:items-start md:text-left pt-24 md:pt-16">
+          <div className="max-w-xl text-white flex flex-col items-center md:items-start">
+            {/* Price Badge - Gold outlined glowing style like Farmhouse Exclusive Launch badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 backdrop-blur-sm mb-5 shadow-[0_0_8px_rgba(201,162,39,0.4)] animate-smooth-blink">
+              <span className="w-2 h-2 rounded-full bg-gradient-to-br from-[#FFE59E] via-[#E8C96A] to-[#C9A227] shadow-[0_0_10px_#E8C96A] inline-block shrink-0 animate-pulse" />
+              <span className="text-[#E8C96A] text-[10px] md:text-xs font-bold tracking-[0.22em] uppercase">
+                ₹ {formatPrice(property.price)} {property.priceType === 'rent' ? '/month' : 'Onwards'}
+              </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-2">
-              {property.features.bedrooms ? `${property.features.bedrooms} BHK ` : ''}
-              <span className="capitalize">{property.propertyType}s</span>
+
+            {/* Title - Serif Playfair font with gold gradient */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-2 bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
+              style={{
+                fontFamily: 'var(--font-playfair, Georgia, serif)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))'
+              }}>
+              <span className="capitalize">{formatPropertyHeading(property.priceList, property.propertyType)}</span>
             </h1>
-            <p className="text-xl mb-6">
+
+            {/* Subtitle - Gold gradient matching Farmhouse design */}
+            <p className="font-semibold text-lg md:text-xl tracking-wide bg-gradient-to-r from-[#FFE59E] to-[#E8C96A] bg-clip-text text-transparent mb-6"
+              style={{
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+                filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.9))'
+              }}>
               {property.location.address}, {property.location.city}
             </p>
 
-            <div className="inline-flex items-center gap-2 bg-[#C9A227] text-[#1A1800] px-4 py-2 rounded-md font-bold text-sm mb-4">
-              Area {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Sq.Yd' : property.features.areaUnit} <Maximize size={16} />
+            {/* Tags - Farmhouse pill style */}
+            <div className="flex flex-wrap gap-2.5 justify-center md:justify-start">
+
+              {property.features.reraApproved && (
+                <span className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white/90 border border-white/20 bg-white/5 backdrop-blur-sm flex items-center gap-1.5">
+                  Rera Approved <CheckCircle2 size={12} className="text-[#25D366]" fill="white" />
+                </span>
+              )}
+              {property.features.registryAvailable !== false && (
+                <span className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white/90 border border-white/20 bg-white/5 backdrop-blur-sm flex items-center gap-1.5">
+                  Registry Available <CheckCircle2 size={12} className="text-[#25D366]" fill="white" />
+                </span>
+              )}
             </div>
-
-            {property.features.reraApproved && (
-              <div className="flex items-center gap-2 text-sm font-semibold text-white">
-                Rera Approved <CheckCircle2 size={16} className="text-[#25D366]" fill="white" />
-              </div>
-            )}
-
-            {property.features.registryAvailable !== false && (
-              <div className="flex items-center gap-2 text-sm font-semibold text-white mt-1.5">
-                Registry Available <CheckCircle2 size={16} className="text-[#25D366]" fill="white" />
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -257,17 +330,31 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
       <div className="max-w-7xl mx-auto px-4">
 
         {/* --- OVERVIEW SECTION --- */}
-        <section id="overview" className="py-16">
-          <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-6">
-            {property.title} - <span className="text-[#C9A227]">Overview</span>
-          </h2>
-          <div 
-            className="text-center text-[#1A1800]/70 max-w-4xl mx-auto mb-10 text-lg [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-[#1A1800] [&_h2]:mt-6 [&_h2]:mb-3 [&_strong]:text-[#1A1800] [&_strong]:font-bold [&_p]:mb-4 last:[&_p]:mb-0 font-medium leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: property.description }}
-          />
+        <section id="overview" className="py-16 relative">
+          {/* Subtle gold blur highlight in the background */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#C9A227]/4 rounded-full blur-[90px] pointer-events-none -z-10" />
+
+          <div className="w-full bg-gradient-to-br from-white to-[#FDFBF7] border border-[#E8D5A3]/30 rounded-[32px] p-6 sm:p-10 md:p-12 shadow-[0_15px_45px_-10px_rgba(201,162,39,0.08)] relative overflow-hidden mb-16">
+            {/* Elegant luxury gold label */}
+            <div className="text-center mb-6">
+              <span className="text-[10px] font-black text-[#C9A227] uppercase tracking-[0.3em] mb-2 block">
+                The Residence
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-bold font-[var(--font-playfair)] text-[#1A1800] leading-tight">
+                {property.title} — <span className="bg-gradient-to-r from-[#C9A227] to-[#B8860B] bg-clip-text text-transparent">Overview</span>
+              </h2>
+              <div className="w-16 h-0.5 bg-[#C9A227]/40 mx-auto mt-4 rounded-full" />
+            </div>
+
+            <div
+              className="text-center text-[#1A1800]/85 text-base sm:text-lg [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-[#1A1800] [&_h2]:mt-6 [&_h2]:mb-3 [&_strong]:text-[#C9A227] [&_strong]:font-black [&_p]:mb-5 last:[&_p]:mb-0 font-medium leading-relaxed max-w-none"
+              dangerouslySetInnerHTML={{ __html: property.description }}
+            />
+          </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="lg:w-1/3 relative h-[350px] rounded-xl overflow-hidden shadow-lg">
+            {/* Left side: Premium Image Slider */}
+            <div className="lg:w-1/3 relative h-[350px] rounded-xl overflow-hidden shadow-lg shrink-0">
               <ImageSlider
                 images={
                   property.interiorImages && property.interiorImages.length > 0
@@ -277,127 +364,111 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               />
             </div>
 
-            <div className="lg:w-2/3">
-              <div className="grid grid-cols-2 md:grid-cols-2 gap-3 mb-8">
-                <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                  <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                    <MapPin size={18} />
+            {/* Right side: Specs & Pricing info */}
+            <div className="lg:w-2/3 flex flex-col justify-between">
+              <div>
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-3 mb-8">
+                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
+                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform shrink-0">
+                      <MapPin size={18} />
+                    </div>
+                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
+                      {property.location.city}
+                    </div>
                   </div>
-                  <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                    {property.location.city}
+
+                  {property.features.towers ? (
+                    <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
+                      <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform shrink-0">
+                        <Building size={18} />
+                      </div>
+                      <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
+                        {property.features.towers} Towers
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
+                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform shrink-0">
+                      <Zap size={18} />
+                    </div>
+                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight capitalize">
+                      {property.status}
+                    </div>
                   </div>
+
+                  {property.features.totalFloors ? (
+                    <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
+                      <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform shrink-0">
+                        <Layers size={18} />
+                      </div>
+                      <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
+                        G + {property.features.totalFloors} Floors
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {property.features.totalUnits ? (
+                    <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
+                      <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform shrink-0">
+                        <Hash size={18} />
+                      </div>
+                      <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
+                        {property.features.totalUnits} Units
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
 
-                {property.features.towers ? (
-                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                      <Building size={18} />
-                    </div>
-                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                      {property.features.towers} Towers
-                    </div>
-                  </div>
-                ) : null}
+                {property.priceList && property.priceList.length > 0 && (
+                  <div className="mb-8">
+                    <h4 className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-black text-[#C9A227] mb-3 pl-1">
+                      Available Configurations & Pricing
+                    </h4>
+                    <div className="space-y-3">
+                      {property.priceList.map((item: any, idx: number) => {
+                        const displaySize = /^[0-9\s.,]+$/.test(item.size)
+                          ? `${item.size} ${property.features.areaUnit === 'sqyd' ? 'Sq.Yd' : property.features.areaUnit}`
+                          : item.size;
 
-                <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                  <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                    <Zap size={18} />
-                  </div>
-                  <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight capitalize">
-                    {property.status}
-                  </div>
-                </div>
+                        return (
+                          <div key={idx} className="grid grid-cols-3 gap-2 sm:gap-3">
+                            {/* Unit Type / Name */}
+                            <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
+                              <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
+                                <BedDouble size={16} className="sm:w-[18px] sm:h-[18px] text-white" />
+                              </div>
+                              <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
+                                {item.type}
+                              </div>
+                            </div>
 
-                {property.features.totalFloors ? (
-                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                      <Layers size={18} />
-                    </div>
-                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                      G + {property.features.totalFloors} Floors
-                    </div>
-                  </div>
-                ) : null}
+                            {/* Area / Size */}
+                            <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
+                              <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
+                                <Maximize2 size={16} className="sm:w-[18px] sm:h-[18px] text-white" />
+                              </div>
+                              <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
+                                {displaySize}
+                              </div>
+                            </div>
 
-                {property.features.bedrooms ? (
-                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                      <BedDouble size={18} />
-                    </div>
-                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                      {property.features.bedrooms} BHK
-                    </div>
-                  </div>
-                ) : null}
-
-                {property.features.totalUnits ? (
-                  <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                      <Hash size={18} />
-                    </div>
-                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                      {property.features.totalUnits} Units
+                            {/* Price */}
+                            <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
+                              <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
+                                <span className="text-xs sm:text-base font-extrabold text-white">₹</span>
+                              </div>
+                              <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
+                                {item.price} {item.negotiable ? '(Negotiable)' : ''}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                ) : null}
-                 <div className="flex group bg-white border border-[#E8D5A3]/40 rounded-xl overflow-hidden shadow-sm hover:shadow-[var(--shadow-gold-sm)] transition-all duration-300 hover:-translate-y-0.5">
-                    <div className="w-10 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#FFFEF5] to-[#FDFBF0] border-r border-[#E8D5A3]/30 text-[#C9A227] group-hover:scale-110 transition-transform">
-                      <Maximize2 size={18} />
-                    </div>
-                    <div className="flex-1 px-2.5 sm:px-4 py-3 text-[#1A1800] text-[11px] sm:text-sm font-bold flex items-center leading-tight">
-                      {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Sq.Yd' : property.features.areaUnit}
-                    </div>
-                  </div>
+                )}
               </div>
-
-              {property.priceList && property.priceList.length > 0 && (
-                <div className="mb-8">
-                  <h4 className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-black text-[#C9A227] mb-3 pl-1">
-                    Available Configurations & Pricing
-                  </h4>
-                  <div className="space-y-3">
-                    {property.priceList.map((item: any, idx: number) => {
-                      const displaySize = /^[0-9\s.,]+$/.test(item.size) 
-                        ? `${item.size} ${property.features.areaUnit === 'sqyd' ? 'Sq.Yd' : property.features.areaUnit}` 
-                        : item.size;
-
-                      return (
-                        <div key={idx} className="grid grid-cols-3 gap-2 sm:gap-3">
-                          {/* Unit Type / Name */}
-                          <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
-                            <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
-                              <BedDouble size={16} className="sm:w-[18px] sm:h-[18px] text-white" />
-                            </div>
-                            <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
-                              {item.type}
-                            </div>
-                          </div>
-
-                          {/* Area / Size */}
-                          <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
-                            <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
-                              <Maximize2 size={16} className="sm:w-[18px] sm:h-[18px] text-white" />
-                            </div>
-                            <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
-                              {displaySize}
-                            </div>
-                          </div>
-
-                          {/* Price */}
-                          <div className="flex group bg-[#FFFEFC] border border-[#E8D5A3]/50 rounded-xl overflow-hidden shadow-sm hover:shadow-[0_8px_20px_-3px_rgba(201,162,39,0.15)] transition-all duration-300 hover:-translate-y-0.5">
-                            <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
-                              <span className="text-xs sm:text-base font-extrabold text-white">₹</span>
-                            </div>
-                            <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
-                              {item.price} {item.negotiable ? '(Negotiable)' : ''}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
 
               <PropertyActions
                 propertyId={property._id.toString()}
@@ -458,8 +529,8 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                     const pointText = typeof highlight === 'string' ? highlight : highlight.title;
                     if (!pointText) return null;
                     return (
-                      <div 
-                        key={i} 
+                      <div
+                        key={i}
                         className="group flex items-center gap-4 bg-white border border-[#E8D5A3]/25 hover:border-[#C9A227]/50 hover:bg-[#FFFDF6] transition-all duration-300 py-4 px-5 rounded-2xl shadow-sm card-premium-highlight"
                       >
                         <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-300">
@@ -482,14 +553,14 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         )}
 
         {/* --- GALLERY SECTION --- */}
-        {((property.galleryImages && property.galleryImages.length > 0) || (property.images && property.images.length > 0)) && (
+        {galleryImages.length > 0 && (
           <section id="gallery" className="py-16">
             <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-10">
               {property.title} - <span className="text-[#C9A227]">Gallery</span>
             </h2>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[200px]">
-              {(property.galleryImages && property.galleryImages.length > 0 ? property.galleryImages : property.images).map((imgUrl: string, idx: number) => (
+              {galleryImages.map((imgUrl: string, idx: number) => (
                 <div key={idx} className={`relative rounded-lg overflow-hidden border border-[#C9A227]/20 shadow-sm shadow-[#E8D5A3]/30 ${idx === 1 || idx === 3 ? 'row-span-2' : ''}`}>
                   <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover hover:scale-110 transition-transform duration-500" />
                 </div>
@@ -498,29 +569,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           </section>
         )}
 
-        {/* --- RELATED PROPERTIES SECTION --- */}
-        {relatedProperties.length > 0 && (
-          <section id="related-properties" className="py-16 overflow-hidden">
-            <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-10">
-              Similar <span className="text-[#C9A227]">Properties</span>
-            </h2>
-
-            <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 px-2" style={{ scrollbarWidth: 'none' }}>
-              {relatedProperties.map((relatedProp: any) => (
-                <div key={relatedProp._id.toString()} className="min-w-[calc(50%-12px)] md:min-w-[calc(25%-18px)] snap-start flex-shrink-0">
-                  <SimilarPropertyCard property={relatedProp} />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
       </div>
-
-      {/* --- DELIVERED LANDMARKS SECTION (full-width, outside container) --- */}
-      {deliveredProperties.length > 0 && (
-        <DeliveredProperties properties={deliveredProperties} />
-      )}
 
       <div className="max-w-7xl mx-auto px-4">
         {property.nearby && property.nearby.length > 0 && (
@@ -544,7 +593,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                     <div className="w-10 h-10 shrink-0 rounded-full bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227]">
                       <MapPin size={18} />
                     </div>
-                    <span className="text-[#1A1800] text-sm font-semibold">{loc.distance} - {loc.name}</span>
+                    <span className="text-[#1A1800] text-sm font-semibold">{loc.distance ? `${loc.distance} - ` : ''}{loc.name}</span>
                   </div>
                 ))}
               </div>
@@ -591,6 +640,32 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
             <WorldClassAmenitiesGrid amenities={property.worldClassAmenities} />
           </section>
         )}
+
+        {/* --- RELATED PROPERTIES SECTION --- */}
+        {relatedProperties.length > 0 && (
+          <section id="related-properties" className="py-16 overflow-hidden">
+            <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-10">
+              Similar <span className="text-[#C9A227]">Properties</span>
+            </h2>
+
+            <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 px-2" style={{ scrollbarWidth: 'none' }}>
+              {relatedProperties.map((relatedProp: any) => (
+                <div key={relatedProp._id.toString()} className="min-w-[calc(50%-12px)] md:min-w-[calc(25%-18px)] snap-start flex-shrink-0">
+                  <SimilarPropertyCard property={relatedProp} />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+      </div>
+
+      {/* --- DELIVERED LANDMARKS SECTION (full-width, outside container) --- */}
+      {deliveredProperties.length > 0 && (
+        <DeliveredProperties properties={deliveredProperties} />
+      )}
+
+      <div className="max-w-7xl mx-auto px-4">
 
         <div className="bg-[#C9A227] rounded-xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 shadow-lg mb-16">
           <h3 className="text-2xl text-white font-medium text-center md:text-left">Ready to Book or Need More Details?</h3>

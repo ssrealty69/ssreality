@@ -18,8 +18,8 @@ export interface IProperty extends Document {
   features: {
     bedrooms?: number;
     bathrooms?: number;
-    area: number;
-    areaUnit: 'sqft' | 'sqmt' | 'acre' | 'sqyd';
+    area?: number;
+    areaUnit?: 'sqft' | 'sqmt' | 'acre' | 'sqyd';
     parking?: boolean;
     furnished?: boolean;
     registryAvailable?: boolean;
@@ -100,7 +100,7 @@ const PropertySchema = new Schema<IProperty>(
     features: {
       bedrooms: { type: Number },
       bathrooms: { type: Number },
-      area: { type: Number, required: true },
+      area: { type: Number },
       areaUnit: { type: String, enum: ['sqft', 'sqmt', 'acre', 'sqyd'], default: 'sqft' },
       parking: { type: Boolean, default: false },
       furnished: { type: Boolean, default: false },

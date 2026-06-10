@@ -62,7 +62,7 @@ export default function DeliveredLandmarksClient({ initialProperties }: Delivere
       agent: {
         name: "Admin",
         phone: "0000000000",
-        email: "admin@ssrealty.in"
+        email: "admin@ssrealty.org"
       },
       images: [],
       amenities: ["", "", "", ""]

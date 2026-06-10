@@ -29,7 +29,7 @@ function fetchWithUA(userAgent, filename) {
           console.log(`[${filename}] Found coordinates:`, coordsMatch[0]);
         }
         
-        if (data.includes("Jonapur") || data.includes("Dalmia") || data.includes("ssrealty.in") || data.includes("Chattarpur")) {
+        if (data.includes("Jonapur") || data.includes("Dalmia") || data.includes("ssrealty.org") || data.includes("Chattarpur")) {
           console.log(`[${filename}] Found relevant keywords!`);
         }
         resolve();

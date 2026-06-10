@@ -45,11 +45,11 @@ export default async function HomePage() {
     console.error("Error fetching homepage data directly from MongoDB:", error);
   }
 
-  // Fallback logic for demo/empty state
-  const latestProperties = latestData.length > 0 ? latestData : FALLBACK_PROPERTIES.slice(0, 4);
-  const plots = plotData.length > 0 ? plotData : FALLBACK_PROPERTIES.filter(p => p.propertyType === 'plot').slice(0, 4);
+  // Only show properties that are actually listed in the database (no fallbacks to mock properties)
+  const latestProperties = latestData;
+  const plots = plotData;
   const trueDeliveredData = deliveredData.filter((p: Property) => p.status === 'delivered');
-  const deliveredProperties = trueDeliveredData.length > 0 ? trueDeliveredData : FALLBACK_PROPERTIES.filter(p => p.status === 'delivered');
+  const deliveredProperties = trueDeliveredData;
 
   const faqSchema = {
     "@context": "https://schema.org",

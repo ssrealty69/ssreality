@@ -110,7 +110,7 @@ export default function EMICalculator() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: formData.name,
-            email: 'loan-enquiry@ssrealty.in', // Placeholder as email is not asked in EMI form
+            email: 'loan-enquiry@ssrealty.org', // Placeholder as email is not asked in EMI form
             phone: phone,
             subject: 'New Home Loan Enquiry (EMI Calculator)',
             message: `

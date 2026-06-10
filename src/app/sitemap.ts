@@ -5,7 +5,7 @@ import Blog from '@/models/Blog';
 import { Question } from '@/models/Question';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org';
 
   // Yahan apne dynamic pages add kar sakte ho (database se bhi fetch kar sakte ho)
   const staticPages: MetadataRoute.Sitemap = [

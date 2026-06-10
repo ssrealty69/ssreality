@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { UploadCloud, X, FileText, Loader2, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
+import { UploadCloud, X, FileText, Loader2, Image as ImageIcon, Plus, Trash2, GripVertical, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface MediaUploadProps {
@@ -379,6 +379,9 @@ interface MultiImageUploadProps {
 
 export function MultiImageUpload({ label, description, images, onChange, folder = 'ss-realty/properties' }: MultiImageUploadProps) {
   const [uploading, setUploading] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [canDrag, setCanDrag] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (files: FileList) => {
@@ -446,6 +449,56 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
 
   const handleAddManualInput = () => {
     onChange([...images, '']);
+  }; 
+
+  // Drag and drop logic
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', index.toString());
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setCanDrag(false);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    const sourceIndex = draggedIndex;
+    if (sourceIndex === null || sourceIndex === targetIndex) return;
+
+    const updated = [...images];
+    const [draggedItem] = updated.splice(sourceIndex, 1);
+    updated.splice(targetIndex, 0, draggedItem);
+
+    onChange(updated);
+    handleDragEnd();
+    toast.success('Images reordered');
+  };
+
+  const handleMove = (index: number, direction: 'left' | 'right') => {
+    const targetIndex = direction === 'left' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= images.length) return;
+
+    const updated = [...images];
+    const temp = updated[index];
+    updated[index] = updated[targetIndex];
+    updated[targetIndex] = temp;
+
+    onChange(updated);
+    toast.success('Images reordered');
   };
 
   return (
@@ -511,10 +564,23 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
             <p className="text-[11px] text-gray-400 mt-0.5">Click &ldquo;Upload Photos&rdquo; above to add images</p>
           </div>
         </div>
-      ) : (
+      ) : ( 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {images.map((url, index) => (
-            <div key={index} className="flex flex-col border border-gray-200 rounded-xl bg-white overflow-hidden shadow-sm hover:shadow transition-shadow relative group">
+            <div 
+              key={index} 
+              draggable={canDrag}
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDragEnd={handleDragEnd}
+              onDrop={(e) => handleDrop(e, index)}
+              className={`flex flex-col border rounded-xl bg-white overflow-hidden shadow-sm hover:shadow transition-all relative group duration-300 ${
+                draggedIndex === index ? 'opacity-30 border-dashed border-[#C9A227] scale-[0.98]' : 'border-gray-200'
+              } ${
+                dragOverIndex === index ? 'border-[#C9A227] scale-[1.03] ring-4 ring-[#C9A227]/15 shadow-md' : ''
+              }`}
+            >
               {/* Image Preview Container */}
               <div className="h-28 bg-gray-50 flex items-center justify-center overflow-hidden relative shadow-inner">
                 {url ? (
@@ -522,14 +588,47 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img 
                       src={url} 
-                      alt={`Gallery ${index + 1}`} 
+                      alt={`${label} ${index + 1}`} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       onError={(e) => { e.currentTarget.style.opacity = '0.3'; }}
                     />
+                    
+                    {/* Drag & Reorder buttons inside a sleek glass pill in top-left */}
+                    <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white rounded-lg p-0.5 shadow-md z-10">
+                      <div 
+                        onMouseDown={() => setCanDrag(true)}
+                        onMouseUp={() => setCanDrag(false)}
+                        onTouchStart={() => setCanDrag(true)}
+                        onTouchEnd={() => setCanDrag(false)}
+                        className="p-1 hover:bg-white/20 rounded cursor-grab active:cursor-grabbing transition-colors duration-200"
+                        title="Drag handle to reorder"
+                      >
+                        <GripVertical size={14} />
+                      </div>
+                      <button
+                        type="button"
+                        disabled={index === 0}
+                        onClick={(e) => { e.stopPropagation(); handleMove(index, 'left'); }}
+                        className="p-1 hover:bg-white/20 rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors duration-200"
+                        title="Move earlier"
+                      >
+                        <ChevronLeft size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={index === images.length - 1}
+                        onClick={(e) => { e.stopPropagation(); handleMove(index, 'right'); }}
+                        className="p-1 hover:bg-white/20 rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors duration-200"
+                        title="Move later"
+                      >
+                        <ChevronRight size={14} />
+                      </button>
+                    </div>
+
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(index)}
-                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-90 group-hover:opacity-100 hover:scale-110 shadow transition-all duration-200"
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-90 group-hover:opacity-100 hover:scale-110 shadow transition-all duration-200 z-10"
                       title="Remove Photo"
                     >
                       <Trash2 size={12} />
@@ -539,10 +638,53 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
                     </span>
                   </>
                 ) : (
-                  <div className="flex flex-col items-center text-gray-300 gap-1">
-                    <ImageIcon size={28} />
-                    <span className="text-[9px] font-bold text-gray-400">Paste URL below</span>
-                  </div>
+                  <>
+                    {/* Drag controls for empty inputs so they can also be rearranged */}
+                    <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white rounded-lg p-0.5 shadow-md z-10">
+                      <div 
+                        onMouseDown={() => setCanDrag(true)}
+                        onMouseUp={() => setCanDrag(false)}
+                        onTouchStart={() => setCanDrag(true)}
+                        onTouchEnd={() => setCanDrag(false)}
+                        className="p-1 hover:bg-white/20 rounded cursor-grab active:cursor-grabbing transition-colors duration-200"
+                        title="Drag handle to reorder"
+                      >
+                        <GripVertical size={14} />
+                      </div>
+                      <button
+                        type="button"
+                        disabled={index === 0}
+                        onClick={(e) => { e.stopPropagation(); handleMove(index, 'left'); }}
+                        className="p-1 hover:bg-white/20 rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors duration-200"
+                        title="Move earlier"
+                      >
+                        <ChevronLeft size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={index === images.length - 1}
+                        onClick={(e) => { e.stopPropagation(); handleMove(index, 'right'); }}
+                        className="p-1 hover:bg-white/20 rounded disabled:opacity-30 disabled:hover:bg-transparent transition-colors duration-200"
+                        title="Move later"
+                      >
+                        <ChevronRight size={14} />
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-90 hover:scale-110 shadow transition-all duration-200 z-10"
+                      title="Remove Field"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+
+                    <div className="flex flex-col items-center text-gray-300 gap-1">
+                      <ImageIcon size={28} />
+                      <span className="text-[9px] font-bold text-gray-400">Paste URL below</span>
+                    </div>
+                  </>
                 )}
               </div>
 

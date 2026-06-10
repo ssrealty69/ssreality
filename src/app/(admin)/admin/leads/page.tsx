@@ -235,7 +235,7 @@ export default function AdminLeadsPage() {
           'Phone': `+91 ${e.phone}`,
           'Property Name': e.propertyTitle,
           'Property ID': e.propertyId,
-          'Property URL': `https://ssrealtyteams.com${e.propertyUrl}`,
+          'Property URL': `https://ssrealty.org${e.propertyUrl}`,
           'Requirement / Message': e.requirement || 'Looking for details, price plans and site visit.',
           'Status': e.status,
         }));

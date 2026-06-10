@@ -214,7 +214,9 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
 
     // Fallback configurations derived from details
     const bhkStr = property.features.bedrooms ? `${property.features.bedrooms} BHK Apartment` : 'Premium Unit';
-    const areaStr = `${property.features.area} ${property.features.areaUnit === 'sqyd' ? 'Sq. Yd.' : property.features.areaUnit.toUpperCase()}`;
+    const areaStr = property.features.area 
+      ? `${property.features.area} ${(property.features.areaUnit || 'sqft') === 'sqyd' ? 'Sq. Yd.' : (property.features.areaUnit || 'sqft').toUpperCase()}` 
+      : '';
     const priceStr = formatPrice(property.price);
 
     return [
@@ -248,7 +250,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
     >
       {/* ── IMAGE SECTION (LEFT) ── Optimized to aspect-video (16:9) with ambient blur background to prevent cropping or solid black/gray letterboxes */}
       <div
-        className="w-full md:w-[360px] lg:w-[400px] xl:w-[440px] aspect-video relative shrink-0 overflow-hidden "
+        className="w-full md:w-[360px] lg:w-[400px] xl:w-[440px] aspect-[4/3] md:aspect-video relative shrink-0 overflow-hidden "
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -278,7 +280,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               src={src}
               alt={`${property.title} - Image ${idx + 1}`}
               fill
-              className="object-contain z-10"
+              className="object-cover md:object-contain z-10"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 440px"
               priority={priority && idx === 0}
               loading={priority && idx === 0 ? 'eager' : 'lazy'}
@@ -411,7 +413,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
 
         {/* Nearby / Location Highlights */}
         {property.nearby && property.nearby.length > 0 && (
-          <div className="mb-4 flex items-center gap-1.5 flex-wrap text-xs text-gray-600">
+          <div className="hidden md:flex mb-4 items-center gap-1.5 flex-wrap text-xs text-gray-600">
             <span className="font-bold text-[#1A1800] shrink-0">Nearby:</span>
             {property.nearby.slice(0, 3).map((nb, i) => (
               <span key={i} className="bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full font-medium text-[11px]">

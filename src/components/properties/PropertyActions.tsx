@@ -102,9 +102,9 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
         )}
 
         {/* WhatsApp Button */}
-        <a 
-          href={waLink} 
-          target="_blank" 
+        <a
+          href={waLink}
+          target="_blank"
           rel="noopener noreferrer"
           className="flex-1 relative overflow-hidden bg-gradient-to-br from-[#1B4332] via-[#2D6A4F] to-[#081C15] text-white py-4 rounded-2xl flex justify-center items-center gap-3 shadow-[0_10px_20px_-5px_rgba(27,67,50,0.4)] hover:shadow-[0_15px_35px_rgba(27,67,50,0.5)] transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 group cursor-pointer"
         >
@@ -115,7 +115,7 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
         </a>
 
         {/* Enquire Now Popup Trigger Button */}
-        <button 
+        <button
           onClick={() => setShowModal(true)}
           className="flex-1 relative overflow-hidden bg-[#1A1800] text-white py-4 rounded-2xl flex justify-center items-center gap-3 border border-[#C9A227]/30 shadow-2xl hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 group cursor-pointer"
         >
@@ -132,16 +132,16 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
         {showModal && (
           <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
             {/* Dark blur overlay */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => { if (!loading) setShowModal(false); }}
               className="fixed inset-0 bg-[#1A1800]/80 backdrop-blur-sm"
             />
-            
+
             {/* Modal Container */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -150,7 +150,7 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
               {/* Premium Top Header bar */}
               <div className="pt-6 px-6 pb-4 relative bg-[#1A1800] border-b border-[#C9A227]/30 text-center">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#C9A227] to-transparent opacity-65" />
-                <button 
+                <button
                   onClick={() => setShowModal(false)}
                   disabled={loading}
                   className="absolute top-4 right-4 text-white/40 hover:text-[#C9A227] transition-colors cursor-pointer"
@@ -158,7 +158,7 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
                   <X size={18} />
                 </button>
                 <span className="text-[9px] font-black text-[#C9A227] uppercase tracking-[0.25em] block">Exclusive Enquiry</span>
-                <h3 
+                <h3
                   className="text-md sm:text-lg text-white font-extrabold tracking-tight mt-1 truncate px-4"
                   style={{ color: '#ffffff' }}
                 >
@@ -181,14 +181,14 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
                     {/* Full Name */}
                     <div className="space-y-1">
                       <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         placeholder="Your full name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:border-[#C9A227] text-xs font-bold text-black outline-none transition-all placeholder:text-gray-400"
                         style={inputStyle}
-                        required 
+                        required
                         disabled={loading}
                       />
                     </div>
@@ -197,20 +197,20 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
                     <div className="space-y-1">
                       <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
                       <div className="flex rounded-xl overflow-hidden border border-gray-200 focus-within:border-[#C9A227] bg-white transition-all">
-                        <span 
+                        <span
                           className="px-3 flex items-center justify-center text-xs font-black text-gray-400 border-r border-gray-200 shrink-0 select-none"
                           style={{ backgroundColor: '#f3f4f6' }}
                         >
                           +91
                         </span>
-                        <input 
-                          type="tel" 
+                        <input
+                          type="tel"
                           placeholder="XXXXXXXXXX"
                           value={phone}
                           onChange={(e) => handlePhoneChange(e.target.value)}
                           className="w-full px-4 py-2.5 bg-white text-xs font-bold text-black outline-none placeholder:text-gray-400"
                           style={inputStyle}
-                          required 
+                          required
                           disabled={loading}
                         />
                       </div>
@@ -219,7 +219,7 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
                     {/* Requirement/Message text area */}
                     <div className="space-y-1">
                       <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Requirement Details</label>
-                      <textarea 
+                      <textarea
                         placeholder="Describe your requirement (e.g. Budget, BHK preference, Preferred timing to call)"
                         value={requirement}
                         onChange={(e) => setRequirement(e.target.value)}

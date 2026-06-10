@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     'SS Realty', 'real estate', 'property in Delhi NCR', 'apartments for sale',
     'villas', 'plots', 'commercial property', 'buy property', 'rent property',
   ],
-  authors: [{ name: 'SS Realty Teams', url: 'https://ssrealty.in' }],
+  authors: [{ name: 'SS Realty Teams', url: 'https://ssrealty.org' }],
   creator: 'SS Realty Teams',
   openGraph: {
     type: 'website',
@@ -97,7 +97,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: 'SS Realty',
-              url: process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in',
+              url: process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org',
               logo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || ''}/SS%20Realty%20Official%20Logo.png`,
               description: 'Premium real estate and property services in Delhi NCR.',
               contactPoint: {
@@ -222,8 +222,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 '@context': 'https://schema.org',
                 '@type': 'Organization',
                 name: 'SS Realty',
-                url: process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in',
-                logo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.in'}/SS Realty Official Logo.png`,
+                url: process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org',
+                logo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org'}/SS Realty Official Logo.png`,
                 description: 'SS Realty — Your trusted real estate partner in Delhi NCR. Find premium apartments, villas, plots and commercial properties for sale and rent.',
                 contactPoint: {
                   '@type': 'ContactPoint',

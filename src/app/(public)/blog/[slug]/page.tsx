@@ -48,7 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const seoTitle = blog.seo?.title || blog.title;
   const seoDesc = blog.seo?.description || blog.excerpt;
   const seoKeywords = blog.seo?.keywords || blog.tags?.join(', ') || '';
-  const canonicalUrl = blog.seo?.canonicalUrl || `https://ssrealty.com/blog/${slug}`;
+  const canonicalUrl = blog.seo?.canonicalUrl || `https://ssrealty.org/blog/${slug}`;
 
   return {
     title: seoTitle,
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: seoTitle,
       description: seoDesc,
-      url: `https://ssrealty.in/blog/${slug}`,
+      url: `https://ssrealty.org/blog/${slug}`,
       type: 'article',
       images: [{ url: blog.coverImage }],
     },
@@ -94,20 +94,20 @@ export default async function BlogPostPage({ params }: Props) {
     author: {
       '@type': 'Person',
       name: blog.author?.name || 'SS Realty Expert',
-      url: 'https://ssrealty.in',
+      url: 'https://ssrealty.org',
     },
     publisher: {
       '@type': 'Organization',
       name: 'SS Realty',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://ssrealty.in/SS%20Realty%20Official%20Logo.png',
+        url: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
       },
     },
     description: blog.excerpt,
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://ssrealty.in/blog/${slug}`,
+      '@id': `https://ssrealty.org/blog/${slug}`,
     },
   };
 

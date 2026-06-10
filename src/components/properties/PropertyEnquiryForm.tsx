@@ -40,7 +40,7 @@ export default function PropertyEnquiryForm({ propertyId, propertyTitle, waLink 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: name,
-          email: email.trim() || 'enquiry-bottom@ssrealty.in', // Fallback email to pass backend validation
+          email: email.trim() || 'enquiry-bottom@ssrealty.org', // Fallback email to pass backend validation
           phone: phone,
           subject: `Property Bottom Enquiry: ${propertyTitle}`,
           propertyId: propertyId,

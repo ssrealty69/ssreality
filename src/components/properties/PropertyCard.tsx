@@ -98,22 +98,30 @@ export default function PropertyCard({ property, priority = false, actionText, o
         </p>
 
         {/* Specs Icons - Even more Compact */}
-        <div className="flex items-center gap-2.5 mb-3 py-1 border-y border-gray-50">
-          <div className="flex items-center gap-1 text-[#1E293B]">
-            <BedDouble size={14} className="text-[#334155]" />
-            <span className="text-xs font-semibold">{property.features.bedrooms || 0}</span>
+        {(property.features.bedrooms || property.features.bathrooms || property.features.area) ? (
+          <div className="flex items-center gap-2.5 mb-3 py-1 border-y border-gray-50">
+            {property.features.bedrooms ? (
+              <div className="flex items-center gap-1 text-[#1E293B]">
+                <BedDouble size={14} className="text-[#334155]" />
+                <span className="text-xs font-semibold">{property.features.bedrooms}</span>
+              </div>
+            ) : null}
+            {property.features.bathrooms ? (
+              <div className="flex items-center gap-1 text-[#1E293B]">
+                <Bath size={14} className="text-[#334155]" />
+                <span className="text-xs font-semibold">{property.features.bathrooms}</span>
+              </div>
+            ) : null}
+            {property.features.area ? (
+              <div className="flex items-center gap-1 text-[#1E293B]">
+                <Maximize2 size={14} className="text-[#334155]" />
+                <span className="text-xs font-semibold whitespace-nowrap">
+                  {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Yd' : property.features.areaUnit}
+                </span>
+              </div>
+            ) : null}
           </div>
-          <div className="flex items-center gap-1 text-[#1E293B]">
-            <Bath size={14} className="text-[#334155]" />
-            <span className="text-xs font-semibold">{property.features.bathrooms || 0}</span>
-          </div>
-          <div className="flex items-center gap-1 text-[#1E293B]">
-            <Maximize2 size={14} className="text-[#334155]" />
-            <span className="text-xs font-semibold whitespace-nowrap">
-              {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Yd' : property.features.areaUnit}
-            </span>
-          </div>
-        </div>
+        ) : null}
 
         {/* Features List - Show customized count of amenities */}
         <div className="space-y-0.5 mb-4 flex-grow">

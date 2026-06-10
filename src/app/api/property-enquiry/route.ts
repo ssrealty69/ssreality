@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
               <div style="padding:28px 30px;color:#1a1800;">
                 <div style="background:#fff8e1;border:1px solid #c9a227;border-radius:8px;padding:14px 18px;margin-bottom:20px;">
                   <p style="margin:0;font-size:11px;font-weight:800;text-transform:uppercase;color:#6b6450;letter-spacing:1px;">Property</p>
-                  <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://ssrealtyteams.com'}/properties/${sanitizedPropId}" style="color:#c9a227;font-size:16px;font-weight:800;text-decoration:none;">${sanitizedTitle}</a>
+                  <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'https://ssrealty.org'}/properties/${sanitizedPropId}" style="color:#c9a227;font-size:16px;font-weight:800;text-decoration:none;">${sanitizedTitle}</a>
                   <p style="margin:4px 0 0;font-size:11px;color:#a08050;">ID: ${sanitizedPropId}</p>
                 </div>
 

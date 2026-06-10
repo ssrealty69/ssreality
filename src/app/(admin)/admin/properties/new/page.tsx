@@ -137,13 +137,35 @@ export default function AddProperty() {
         interiorImages: formData.interiorImages.filter(img => img.trim() !== ''),
         galleryImages: formData.galleryImages.filter(img => img.trim() !== ''),
         highlights: formData.highlights.filter(h => typeof h === 'string' && h.trim() !== ''),
-        nearby: formData.nearby.filter(n => n.name.trim() !== '' && n.distance.trim() !== ''),
+        nearby: formData.nearby
+          .filter(n => n.name.trim() !== '')
+          .map(n => {
+            const rawVal = n.name.trim();
+            let distance = '';
+            let name = rawVal;
+            
+            if (rawVal.includes(' - ')) {
+              const parts = rawVal.split(' - ');
+              distance = parts[0].trim();
+              name = parts.slice(1).join(' - ').trim();
+            } else if (rawVal.includes('-')) {
+              const parts = rawVal.split('-');
+              distance = parts[0].trim();
+              name = parts.slice(1).join('-').trim();
+            }
+
+            return {
+              type: n.type || 'landmark',
+              name,
+              distance
+            };
+          }),
         priceList: formData.priceList
           .filter(p => p.type.trim() !== '' && p.price.trim() !== '')
           .map(({ isEditing, ...rest }: any) => rest),
         features: {
           ...formData.features,
-          area: formData.features.area ? parseFloat(formData.features.area as string) : 0,
+          area: formData.features.area ? parseFloat(formData.features.area as string) : undefined,
           bedrooms: formData.features.bedrooms ? parseInt(formData.features.bedrooms as string) : undefined,
           bathrooms: formData.features.bathrooms ? parseInt(formData.features.bathrooms as string) : undefined,
           floor: formData.features.floor ? parseInt(formData.features.floor as string) : undefined,
@@ -318,30 +340,7 @@ export default function AddProperty() {
               <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
               <input type="text" name="location.state" required value={formData.location.state} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
-              <input type="text" name="location.pincode" value={formData.location.pincode} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 201301" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
-              <input type="number" step="any" name="location.lat" value={formData.location.lat} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 28.5355" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
-              <input type="number" step="any" name="location.lng" value={formData.location.lng} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 77.3910" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Area</label>
-              <input type="number" name="features.area" required value={formData.features.area} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
-              <input type="number" name="features.bedrooms" value={formData.features.bedrooms} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Bathrooms</label>
-              <input type="number" name="features.bathrooms" value={formData.features.bathrooms} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" />
-            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Towers</label>
               <input type="number" name="features.towers" value={formData.features.towers} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 outline-none" placeholder="e.g. 6" />
@@ -642,28 +641,18 @@ export default function AddProperty() {
           />
           {formData.nearby.map((place, index) => (
             <div key={index} className="flex gap-4 items-start">
-              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="flex-1">
                 <input 
                   type="text" 
-                  placeholder="Distance (e.g. 6.8 Km)" 
-                  value={place.distance}
-                  onChange={(e) => {
-                    const newNearby = [...formData.nearby];
-                    newNearby[index].distance = e.target.value;
-                    setFormData({ ...formData, nearby: newNearby });
-                  }}
-                  className="w-full border border-gray-300 rounded-lg p-2 outline-none"
-                />
-                <input 
-                  type="text" 
-                  placeholder="Place Name (e.g. Gurugram University)" 
+                  placeholder="Distance & Place Name (e.g., 6.8 Km - Gurugram University)" 
                   value={place.name}
                   onChange={(e) => {
                     const newNearby = [...formData.nearby];
                     newNearby[index].name = e.target.value;
+                    newNearby[index].distance = '';
                     setFormData({ ...formData, nearby: newNearby });
                   }}
-                  className="w-full border border-gray-300 rounded-lg p-2 outline-none"
+                  className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:ring-2 focus:ring-[#C9A227]"
                 />
               </div>
               <button 

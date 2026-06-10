@@ -143,7 +143,7 @@ export function SeoControlPanel({ data, onChange, defaultTitle = '', defaultExce
           {/* Breadcrumbs */}
           <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-1 font-sans">
             <Globe size={11} className="text-gray-400" />
-            <span>https://ssrealty.com</span>
+            <span>https://ssrealty.org</span>
             <span className="text-gray-400">›</span>
             <span>blog</span>
             <span className="text-gray-400">›</span>
@@ -254,7 +254,7 @@ export function SeoControlPanel({ data, onChange, defaultTitle = '', defaultExce
             type="url"
             value={data.canonicalUrl}
             onChange={(e) => updateField('canonicalUrl', e.target.value)}
-            placeholder="https://ssrealty.com/blog/your-slug"
+            placeholder="https://ssrealty.org/blog/your-slug"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
           />
         </div>

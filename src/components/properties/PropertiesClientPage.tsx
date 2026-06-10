@@ -131,7 +131,7 @@ export default function PropertiesClientPage({ initialProperties = [] }: { initi
   // Mobile filter panel state
   const [mobileSection, setMobileSection] = useState<'sort'|'price'|'type'|'location'|'price_t'>('sort');
 
-  const [properties, setProperties] = useState<Property[]>(initialProperties.length > 0 ? initialProperties : FALLBACK_PROPERTIES);
+  const [properties, setProperties] = useState<Property[]>(initialProperties);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
