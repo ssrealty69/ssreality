@@ -62,8 +62,15 @@ export default function AmenitiesSection() {
             0%, 100% { transform: scale(1.05) translate(0px, 0px); }
             50% { transform: scale(1.15) translate(-10px, -5px); }
           }
+          @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+          }
           .animate-pan-zoom {
             animation: slowPanZoom 20s ease-in-out infinite;
+          }
+          .animate-float {
+            animation: float 4s ease-in-out infinite;
           }
           .card-3d {
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
@@ -98,10 +105,15 @@ export default function AmenitiesSection() {
         <div className="grid lg:grid-cols-[1fr_2fr] gap-12 items-center">
           {/* Left Side: Large Image with Slider controls */}
           <div className="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl group border-4 border-white card-3d">
-            {/* Diagonal Corner Ribbon */}
-            <div className="absolute top-0 right-0 w-[140px] h-[140px] overflow-hidden pointer-events-none z-20">
-              <div className="absolute top-[28px] right-[-32px] w-[180px] py-1.5 bg-gradient-to-r from-[#A87F18] via-[#F3D982] to-[#B8860B] text-[#1A1800] text-[9px] font-black uppercase tracking-widest text-center rotate-45 shadow-[0_2px_8px_rgba(0,0,0,0.35)] border-y border-white/20 select-none">
-                Upcoming Project
+            {/* Floating Glassmorphic Launch Badge */}
+            <div className="absolute bottom-6 left-6 z-20 backdrop-blur-md bg-[#1A1800]/90 border border-[#C9A227]/40 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-[0_12px_24px_rgba(0,0,0,0.3)] animate-float select-none">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F59E0B] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#F59E0B]"></span>
+              </span>
+              <div className="flex flex-col text-left">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#C9A227] leading-none mb-1.5">Upcoming Project</span>
+                <span className="text-[9px] font-bold text-white/80 leading-none">Luxury Concept Preview</span>
               </div>
             </div>
             {sliderImages.map((img, idx) => (
