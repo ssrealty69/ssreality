@@ -118,7 +118,8 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
             parameters: payload,
             sessionId: sessionIdRef.current,
             page: typeof window !== 'undefined' ? window.location.href : ''
-          })
+          }),
+          keepalive: true
         });
       } catch (err) {
         // Fail silently on analytics endpoints to prevent breaking user experiences
