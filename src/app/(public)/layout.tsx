@@ -2,9 +2,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FloatingWhatsApp from '@/components/layout/FloatingWhatsApp';
 import MobileBottomNav from '@/components/layout/MobileBottomNav';
-import dynamic from 'next/dynamic';
-
-const VirtualSalesAssistant = dynamic(() => import('@/components/ai-assistant/VirtualSalesAssistant'), { ssr: false });
+import VirtualSalesAssistantWrapper from '@/components/ai-assistant/VirtualSalesAssistantWrapper';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,7 +12,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <Footer />
       <MobileBottomNav />
       <FloatingWhatsApp />
-      <VirtualSalesAssistant />
+      <VirtualSalesAssistantWrapper />
     </>
   );
 }
