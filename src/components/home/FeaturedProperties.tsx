@@ -48,8 +48,8 @@ export default function FeaturedProperties({
         </div>
 
         <div className="flex flex-col gap-8">
-          {displayProperties.map((p, idx) => (
-            <PremiumPropertyCard key={p._id} property={p} priority={idx < 4} />
+          {displayProperties.map((p) => (
+            <PremiumPropertyCard key={p._id} property={p} />
           ))}
         </div>
 

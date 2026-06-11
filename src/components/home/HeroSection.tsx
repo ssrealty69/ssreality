@@ -9,8 +9,12 @@ export default function HeroSection() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Lazy-load YouTube iframe: load after a short delay or interaction
+  // Lazy-load YouTube iframe: load after a short delay or interaction (desktop only)
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return;
+    }
+    
     const timer = setTimeout(() => setLoadVideo(true), 1500);
     
     const handleInteraction = () => setLoadVideo(true);

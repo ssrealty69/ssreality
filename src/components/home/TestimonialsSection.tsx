@@ -86,24 +86,24 @@ function TestimonialCard({
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const [isIntersecting, setIsIntersecting] = useState(false);
 
-  // IntersectionObserver — play when card enters viewport, pause when it leaves
+  // IntersectionObserver — set source and play/pause based on visibility
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    // Fix React muted autoplay bug and force the browser to pre-render the first frame
-    video.defaultMuted = true;
-    video.muted = true;
-    video.load();
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.muted = !isPlaying;
-          video.play().catch(() => { });
+          setIsIntersecting(true);
+          const video = videoRef.current;
+          if (video) {
+            video.muted = !isPlaying;
+            video.play().catch(() => { });
+          }
         } else {
-          video.pause();
+          const video = videoRef.current;
+          if (video) {
+            video.pause();
+          }
         }
       },
       { threshold: 0.15 }
@@ -112,6 +112,17 @@ function TestimonialCard({
     if (cardRef.current) observer.observe(cardRef.current);
     return () => observer.disconnect();
   }, [isPlaying]);
+
+  // Handle playing changes when isIntersecting becomes true
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !isIntersecting) return;
+
+    // When the component becomes visible and the src is loaded, try playing
+    video.defaultMuted = true;
+    video.muted = !isPlaying;
+    video.play().catch(() => { });
+  }, [isIntersecting, isPlaying]);
 
   // Unmute when user explicitly clicks Play
   useEffect(() => {
@@ -141,12 +152,11 @@ function TestimonialCard({
         {/* Video — z-[2] so it sits above the black bg and below overlays */}
         <video
           ref={videoRef}
-          src={t.videoUrl}
+          src={isIntersecting ? t.videoUrl : undefined}
           loop
           muted
-          autoPlay
           playsInline
-          preload="auto"
+          preload="none"
           className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] object-contain bg-black rounded-[14.5px] z-[2] select-none"
         />
 

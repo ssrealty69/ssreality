@@ -115,7 +115,7 @@ export default function ScrollTriggerModal({ isOpen, onClose, onOpenChat }: Scro
                 transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <Image
-                  src="/mascot-popup.png"
+                  src="/mascot-popup.webp"
                   alt="SS Realty Mascot"
                   width={280}
                   height={420}

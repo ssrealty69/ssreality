@@ -24,7 +24,23 @@ export default function VirtualSalesAssistant() {
   const [secondModalTriggered, setSecondModalTriggered] = useState(false);
 
   // Only run after hydration
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    
+    // Prefetch heavy dynamic components during browser idle time
+    const prefetch = () => {
+      import('./ScrollTriggerModal').catch(() => {});
+      import('./ChatWindow').catch(() => {});
+    };
+
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(prefetch);
+      } else {
+        setTimeout(prefetch, 4000);
+      }
+    }
+  }, []);
 
   // Show greeting bubble + trigger wave after 1.2s on every mount
   useEffect(() => {

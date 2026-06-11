@@ -107,23 +107,38 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
 
     // D. Database server-side EventLog debug trace
     if (settings.enableEventLog) {
-      try {
-        await fetch('/api/tracking/event', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            eventName,
-            parameters: payload,
-            sessionId: sessionIdRef.current,
-            page: typeof window !== 'undefined' ? window.location.href : ''
-          }),
-          keepalive: true
-        });
-      } catch (err) {
-        // Fail silently on analytics endpoints to prevent breaking user experiences
-        console.error('Error logging event to database:', err);
+      const url = '/api/tracking/event';
+      const bodyStr = JSON.stringify({
+        eventName,
+        parameters: payload,
+        sessionId: sessionIdRef.current,
+        page: typeof window !== 'undefined' ? window.location.href : ''
+      });
+
+      let sent = false;
+      if (typeof window !== 'undefined' && window.navigator && window.navigator.sendBeacon) {
+        try {
+          const blob = new Blob([bodyStr], { type: 'application/json' });
+          sent = window.navigator.sendBeacon(url, blob);
+        } catch (e) {
+          // Fallback to fetch on failure
+        }
+      }
+
+      if (!sent) {
+        try {
+          await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: bodyStr,
+            keepalive: true
+          });
+        } catch (err) {
+          // Fail silently on analytics endpoints to prevent breaking user experiences
+          console.error('Error logging event to database:', err);
+        }
       }
     }
   };

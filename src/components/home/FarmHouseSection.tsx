@@ -9,8 +9,8 @@ import toast from 'react-hot-toast';
 
 const slides = [
   {
-    img: '/Farm House/Farm House Image 1.png',
-    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 1.png',
+    img: '/Farm House/Farm House Image 1.webp',
+    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 1.webp',
     badge: 'Exclusive Launch',
     heading: 'Your Private Sanctuary',
     subheading: 'Nestled in the Aravalli Foothills',
@@ -20,8 +20,8 @@ const slides = [
     tag3: '2 Acres+',
   },
   {
-    img: '/Farm House/Farm House Image 2.png',
-    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 2.png',
+    img: '/Farm House/Farm House Image 2.webp',
+    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 2.webp',
     badge: 'Limited Availability',
     heading: 'Where Nature Meets Luxury',
     subheading: 'Premium Villas with Nature Trails',
@@ -31,8 +31,8 @@ const slides = [
     tag3: 'Nature Trails',
   },
   {
-    img: '/Farm House/Farm House Image 3.png',
-    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 3.png',
+    img: '/Farm House/Farm House Image 3.webp',
+    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 3.webp',
     badge: 'Investment Pick',
     heading: 'A Life Beyond the Ordinary',
     subheading: 'Luxury Farm Houses Near Delhi NCR',
@@ -42,8 +42,8 @@ const slides = [
     tag3: 'Gated Community',
   },
   {
-    img: '/Farm House/Farm House Image 4.png',
-    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 4.png',
+    img: '/Farm House/Farm House Image 4.webp',
+    mobileImg: '/Farm House/Farm House Villa for sale in Delhi NCR, Farm House Villa for sale in Gwal Pahari, Image Mobile 4.webp',
     badge: 'Ready to Move',
     heading: 'Legacy Living, Reimagined',
     subheading: 'Freehold Land with Stunning Hill Vistas',
@@ -220,8 +220,8 @@ export default function FarmHouseSection() {
               alt={slide.heading}
               fill
               className="object-cover object-top"
-              priority
-              unoptimized
+              sizes="100vw"
+              quality={80}
             />
           </div>
         </div>
@@ -314,8 +314,8 @@ export default function FarmHouseSection() {
               alt={slide.heading}
               fill
               className="object-cover object-center"
-              priority
-              unoptimized
+              sizes="100vw"
+              quality={80}
             />
           </div>
         </div>
@@ -440,12 +440,12 @@ export default function FarmHouseSection() {
               {/* Image Header: Always the first image of the farm house */}
               <div className="relative h-48 w-full overflow-hidden">
                 <Image 
-                  src="/Farm House/Farm House Image 1.png" 
+                  src="/Farm House/Farm House Image 1.webp" 
                   alt="Luxury Farm House Collection" 
                   fill
                   className="object-cover"
-                  priority
-                  unoptimized
+                  sizes="(max-width: 600px) 100vw, 448px"
+                  quality={80}
                 />
                 {/* Dark gradient overlay on image */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0B0A06] via-[#0B0A06]/40 to-transparent" />

@@ -5,34 +5,34 @@ import Image from 'next/image';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 const sliderImages = [
-  "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%201.png",
-  "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%202.png",
-  "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.png",
-  "/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%204.png",
+  "/World Class Amenities/Luxury 3BHK & 4BHK Premium Floor Building 1.webp",
+  "/World Class Amenities/Luxury 3BHK & 4BHK Premium Floor Building 2.webp",
+  "/World Class Amenities/Luxury 3BHK & 4BHK Premium Floor Building 3.webp",
+  "/World Class Amenities/Luxury 3BHK & 4BHK Premium Floor Building 4.webp",
 ];
 
 const amenities = [
-  { title: 'Gym', img: '/World Class%20Amenities/Gym.jpg' },
-  { title: 'Clubhouse', img: '/World Class%20Amenities/Clubhouse.jpg' },
-  { title: 'Infinity Pool', img: '/World Class%20Amenities/Infinity%20Pool.jpg' },
-  { title: 'Spa', img: '/World Class%20Amenities/Spa.jpg' },
-  { title: 'Yoga Deck', img: '/World Class%20Amenities/Yoga%20Deck.jpg' },
-  { title: 'Garden', img: '/World Class%20Amenities/Garden.jpg' },
-  { title: 'Sky Garden', img: '/World Class%20Amenities/Sky%20Garden.jpg' },
-  { title: 'Kids Zone', img: '/World Class%20Amenities/Kids%20Zone.jpg' },
-  { title: 'Pet Park', img: '/World Class%20Amenities/Pet%20Park.jpg' },
-  { title: 'Badminton', img: '/World Class%20Amenities/Badminton.jpg' },
-  { title: 'Tennis Court', img: '/World Class%20Amenities/Tennis%20Court.jpg' },
-  { title: 'Table Tennis', img: '/World Class%20Amenities/Table%20Tennis.jpg' },
-  { title: 'Banquet', img: '/World Class%20Amenities/Banquet.jpg' },
-  { title: 'Theatre', img: '/World Class%20Amenities/Theatre.jpg' },
-  { title: 'Library', img: '/World Class%20Amenities/Library.jpg' },
-  { title: 'Lobby', img: '/World Class%20Amenities/Lobby.jpg' },
-  { title: 'Reception', img: '/World Class%20Amenities/Reception.jpg' },
-  { title: 'Lift Lobby', img: '/World Class%20Amenities/Lift%20Lobby.jpg' },
-  { title: 'Terrace', img: '/World Class%20Amenities/Terrace.jpg' },
-  { title: 'EV Charging', img: '/World Class%20Amenities/EV%20Charging.jpg' },
-  { title: 'Security Room', img: '/World Class%20Amenities/Security%20Room.jpg' },
+  { title: 'Gym', img: '/World Class Amenities/Gym.webp' },
+  { title: 'Clubhouse', img: '/World Class Amenities/Clubhouse.jpg' },
+  { title: 'Infinity Pool', img: '/World Class Amenities/Infinity Pool.jpg' },
+  { title: 'Spa', img: '/World Class Amenities/Spa.jpg' },
+  { title: 'Yoga Deck', img: '/World Class Amenities/Yoga Deck.webp' },
+  { title: 'Garden', img: '/World Class Amenities/Garden.webp' },
+  { title: 'Sky Garden', img: '/World Class Amenities/Sky Garden.webp' },
+  { title: 'Kids Zone', img: '/World Class Amenities/Kids Zone.webp' },
+  { title: 'Pet Park', img: '/World Class Amenities/Pet Park.webp' },
+  { title: 'Badminton', img: '/World Class Amenities/Badminton.jpg' },
+  { title: 'Tennis Court', img: '/World Class Amenities/Tennis Court.webp' },
+  { title: 'Table Tennis', img: '/World Class Amenities/Table Tennis.jpg' },
+  { title: 'Banquet', img: '/World Class Amenities/Banquet.webp' },
+  { title: 'Theatre', img: '/World Class Amenities/Theatre.jpg' },
+  { title: 'Library', img: '/World Class Amenities/Library.webp' },
+  { title: 'Lobby', img: '/World Class Amenities/Lobby.jpg' },
+  { title: 'Reception', img: '/World Class Amenities/Reception.jpg' },
+  { title: 'Lift Lobby', img: '/World Class Amenities/Lift Lobby.jpg' },
+  { title: 'Terrace', img: '/World Class Amenities/Terrace.jpg' },
+  { title: 'EV Charging', img: '/World Class Amenities/EV Charging.webp' },
+  { title: 'Security Room', img: '/World Class Amenities/Security Room.webp' },
 ];
 
 export default function AmenitiesSection() {
@@ -81,12 +81,12 @@ export default function AmenitiesSection() {
           }
         `}</style>
         <Image
-          src="/World Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.png"
+          src="/World Class Amenities/Luxury 3BHK & 4BHK Premium Floor Building 3.webp"
           alt="Luxury Building Background Overlay"
           fill
-          priority
-          unoptimized
           className="object-cover animate-pan-zoom"
+          sizes="100vw"
+          quality={60}
         />
         {/* Soft luxury gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#FFFEF5]/90 via-transparent to-[#FFFEF5]/90" />
@@ -122,8 +122,8 @@ export default function AmenitiesSection() {
                 className={`object-cover transition-all duration-700 group-hover:scale-105 absolute inset-0 ${
                   idx === currentIdx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
                 }`}
-                unoptimized
-                priority={idx === 0}
+                sizes="(max-width: 1024px) 50vw, 33vw"
+                quality={82}
               />
             ))}
             {/* Slider arrows overlay */}
@@ -157,7 +157,8 @@ export default function AmenitiesSection() {
                     alt={item.title}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    unoptimized
+                    sizes="(max-width: 768px) 33vw, 14vw"
+                    quality={78}
                   />
                 </div>
                 <p className="text-[12px] md:text-xs font-black text-center text-[#334155] group-hover:text-[#C9A227] transition-colors leading-tight uppercase tracking-tight max-w-[110px]">

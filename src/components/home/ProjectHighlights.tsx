@@ -12,24 +12,24 @@ const categories = [
 ];
 
 const features = [
-  { title: 'Welcome Lounge', img: '/Project%20Amenities/WELCOME%20LOUNGE.jpg', category: 'interiors' },
-  { title: 'Water Purifier RO', img: '/Project%20Amenities/WATER%20PURIFIER%20RO.jpg', category: 'kitchen-bath' },
-  { title: 'uPVC Windows', img: '/Project%20Amenities/UPVC%20WINDOWS.jpg', category: 'leisure' },
-  { title: 'Terrace Garden', img: '/Project%20Amenities/TERRACE%20GARDEN.jpg', category: 'leisure' },
-  { title: 'MyGate App-Based (Entry System)', img: '/Project%20Amenities/MYGATE%20APP-BASED%20%28ENTRY%20SYSTEM%29.jpg', category: 'tech' },
-  { title: 'Modular Wardrobes (All Bedrooms)', img: '/Project%20Amenities/MODULAR%20WARDROBES%20%28ALL%20BEDROOMS%29.jpg', category: 'interiors' },
-  { title: 'Modular Lightning Stairs', img: '/Project%20Amenities/MODULAR%20LIGHTNING%20STAIRS.jpg', category: 'leisure' },
-  { title: 'Modular Kitchen with Chimney, Hob & Microwave', img: '/Project%20Amenities/MODULAR%20KITCHEN%20WITH%20CHIMNEY%2C%20HOB%20%26%20MICROWAVE.jpg', category: 'kitchen-bath' },
-  { title: 'Kohler Bath Fittings', img: '/Project%20Amenities/KOHLER%20BATH%20FITTINGS.jpg', category: 'kitchen-bath' },
-  { title: "Kid's Play Area on Terrace", img: '/Project%20Amenities/KID’S%20PLAY%20AREA%20ON%20TERRACE.jpg', category: 'leisure' },
-  { title: 'Geysers (In All Washrooms)', img: '/Project%20Amenities/GEYSERS%20%28IN%20ALL%20WASHROOMS%29.jpg', category: 'kitchen-bath' },
-  { title: 'Fire Safety System', img: '/Project%20Amenities/FIRE%20SAFETY%20SYSTEM.jpg', category: 'tech' },
-  { title: 'Fancy Fans in Living Area', img: '/Project%20Amenities/FANCY%20FANS%20IN%20LIVING%20AREA.jpg', category: 'interiors' },
-  { title: 'Digital Door Lock', img: '/Project%20Amenities/DIGITAL%20DOOR%20LOCK.jpg', category: 'tech' },
-  { title: 'Car Parking', img: '/Project%20Amenities/CAR%20PARKING.jpg', category: 'leisure' },
-  { title: 'Branded Lift', img: '/Project%20Amenities/BRANDED%20LIFT.jpg', category: 'leisure' },
-  { title: '3D Wall Moulding Design', img: '/Project%20Amenities/3D%20WALL%20MOULDING%20DESIGN.jpg', category: 'interiors' },
-  { title: '24x7 CCTV & Security', img: '/Project%20Amenities/24X7%20CCTV%20%26%20SECURITY.jpg', category: 'tech' },
+  { title: 'Welcome Lounge', img: '/Project Amenities/WELCOME LOUNGE.jpg', category: 'interiors' },
+  { title: 'Water Purifier RO', img: '/Project Amenities/WATER PURIFIER RO.jpg', category: 'kitchen-bath' },
+  { title: 'uPVC Windows', img: '/Project Amenities/UPVC WINDOWS.jpg', category: 'leisure' },
+  { title: 'Terrace Garden', img: '/Project Amenities/TERRACE GARDEN.webp', category: 'leisure' },
+  { title: 'MyGate App-Based (Entry System)', img: '/Project Amenities/MYGATE APP-BASED (ENTRY SYSTEM).jpg', category: 'tech' },
+  { title: 'Modular Wardrobes (All Bedrooms)', img: '/Project Amenities/MODULAR WARDROBES (ALL BEDROOMS).jpg', category: 'interiors' },
+  { title: 'Modular Lightning Stairs', img: '/Project Amenities/MODULAR LIGHTNING STAIRS.jpg', category: 'leisure' },
+  { title: 'Modular Kitchen with Chimney, Hob & Microwave', img: '/Project Amenities/MODULAR KITCHEN WITH CHIMNEY, HOB & MICROWAVE.jpg', category: 'kitchen-bath' },
+  { title: 'Kohler Bath Fittings', img: '/Project Amenities/KOHLER BATH FITTINGS.jpg', category: 'kitchen-bath' },
+  { title: "Kid's Play Area on Terrace", img: "/Project Amenities/KID'S PLAY AREA ON TERRACE.jpg", category: 'leisure' },
+  { title: 'Geysers (In All Washrooms)', img: '/Project Amenities/GEYSERS (IN ALL WASHROOMS).jpg', category: 'kitchen-bath' },
+  { title: 'Fire Safety System', img: '/Project Amenities/FIRE SAFETY SYSTEM.jpg', category: 'tech' },
+  { title: 'Fancy Fans in Living Area', img: '/Project Amenities/FANCY FANS IN LIVING AREA.jpg', category: 'interiors' },
+  { title: 'Digital Door Lock', img: '/Project Amenities/DIGITAL DOOR LOCK.jpg', category: 'tech' },
+  { title: 'Car Parking', img: '/Project Amenities/CAR PARKING.jpg', category: 'leisure' },
+  { title: 'Branded Lift', img: '/Project Amenities/BRANDED LIFT.jpg', category: 'leisure' },
+  { title: '3D Wall Moulding Design', img: '/Project Amenities/3D WALL MOULDING DESIGN.jpg', category: 'interiors' },
+  { title: '24x7 CCTV & Security', img: '/Project Amenities/24X7 CCTV & SECURITY.jpg', category: 'tech' },
 ];
 
 export default function ProjectHighlights() {
@@ -283,7 +283,8 @@ export default function ProjectHighlights() {
                   alt={feature.title}
                   fill
                   className="object-cover group-hover:scale-[1.04] transition-transform duration-500"
-                  unoptimized
+                  sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 16vw"
+                  quality={80}
                 />
               </div>
               

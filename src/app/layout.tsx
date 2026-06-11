@@ -11,7 +11,7 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
   preload: true,
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '600'],       // Only preload critical weights
 });
 
 const playfair = Playfair_Display({
@@ -19,15 +19,15 @@ const playfair = Playfair_Display({
   variable: '--font-playfair',
   display: 'swap',
   preload: true,
-  weight: ['700', '800'],
+  weight: ['700'],              // Only preload the weight used for headings
 });
 
 const poppins = Poppins({
   subsets: ['latin'],
   variable: '--font-poppins',
-  display: 'swap',
-  preload: true,
-  weight: ['400', '500', '600', '700', '800'],
+  display: 'optional',          // optional: uses fallback if font not cached, eliminates layout shift
+  preload: false,               // Don't preload decorative font — load lazily
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
@@ -76,14 +76,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="icon" href="/SS Realty Official Logo.png" />
         <link rel="apple-touch-icon" href="/SS Realty Official Logo.png" />
         <link rel="shortcut icon" href="/SS Realty Official Logo.png" />
-        {/* Preconnect to external origins for faster resource loading */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Preconnect to critical image CDNs (full TCP+TLS handshake early) */}
-        <link rel="preconnect" href="https://images.unsplash.com" />
-        <link rel="preconnect" href="https://res.cloudinary.com" />
-        <link rel="preconnect" href="https://img.youtube.com" />
-        {/* DNS-prefetch for less critical origins */}
+        {/* DNS-prefetch for external resources to reduce DNS resolution overhead without blocking TCP/TLS handshakes */}
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://img.youtube.com" />
         <link rel="dns-prefetch" href="https://www.youtube.com" />
         {/* Mobile performance viewport */}
         <meta name="theme-color" content="#1A1800" />
@@ -126,7 +122,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {settings.googleTagManagerId && (
               <Script
                 id="gtm-script"
-                strategy="afterInteractive"
+                strategy="lazyOnload"
                 dangerouslySetInnerHTML={{
                   __html: `
                     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -143,7 +139,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {settings.metaPixelId && (
               <Script
                 id="fb-pixel"
-                strategy="afterInteractive"
+                strategy="lazyOnload"
                 dangerouslySetInnerHTML={{
                   __html: `
                     !function(f,b,e,v,n,t,s)
@@ -166,12 +162,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <>
                 <Script
                   id="gtag-load"
-                  strategy="afterInteractive"
+                  strategy="lazyOnload"
                   src={`https://www.googletagmanager.com/gtag/js?id=${settings.googleAdsConversionId || settings.ga4MeasurementId}`}
                 />
                 <Script
                   id="gtag-init"
-                  strategy="afterInteractive"
+                  strategy="lazyOnload"
                   dangerouslySetInnerHTML={{
                     __html: `
                       window.dataLayer = window.dataLayer || [];

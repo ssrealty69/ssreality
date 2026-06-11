@@ -27,10 +27,9 @@ export default function MascotAvatar({
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       >
         <Image
-          src="/mascot-leaning.png"
+          src="/mascot-leaning.webp"
           alt="SS Realty AI Mascot"
           fill
-          unoptimized
           sizes="(max-width: 640px) 64px, 80px"
           className="object-contain w-full h-full drop-shadow-xl"
           priority
@@ -64,7 +63,7 @@ export default function MascotAvatar({
         className="w-full h-full flex items-center justify-center"
       >
         <Image
-          src="/mascot-main.png"
+          src="/mascot-main.webp"
           alt="SS Realty AI Mascot — Aria"
           width={240}
           height={360}

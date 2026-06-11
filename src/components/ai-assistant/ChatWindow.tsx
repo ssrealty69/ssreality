@@ -56,7 +56,7 @@ function MiniAvatar() {
   return (
     <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border-2 border-[#E8AF30]"
       style={{ background: '#FFF9E0' }}>
-      <Image src="/mascot-profile.png" alt="Aria" width={32} height={32} className="object-cover w-full h-full" />
+      <Image src="/mascot-profile.webp" alt="Aria" width={32} height={32} className="object-cover w-full h-full" />
     </div>
   );
 }
@@ -473,8 +473,8 @@ export default function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
             initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 240, damping: 25 }}>
             <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
-              <Image src="/mascot-peeking-final.png" alt="SS Realty Mascot"
-                width={100} height={100} unoptimized className="object-contain"
+              <Image src="/mascot-peeking-final.webp" alt="SS Realty Mascot"
+                width={100} height={100} className="object-contain"
                 style={{ filter: 'drop-shadow(0 6px 12px rgba(232,175,48,0.25))' }} priority />
             </motion.div>
           </motion.div>
@@ -496,7 +496,7 @@ export default function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
             <div className="flex-shrink-0 px-4 py-3 flex items-center gap-3"
               style={{ background: 'linear-gradient(135deg, #1A1800 0%, #2d2900 100%)' }}>
               <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 border-2 border-[#E8AF30]" style={{ background: '#FFF9E0' }}>
-                <Image src="/mascot-profile.png" alt="Aria" width={36} height={36} className="object-cover w-full h-full" />
+                <Image src="/mascot-profile.webp" alt="Aria" width={36} height={36} className="object-cover w-full h-full" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-extrabold text-[13.5px] leading-none truncate"
