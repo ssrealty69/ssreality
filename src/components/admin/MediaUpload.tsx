@@ -40,7 +40,12 @@ export function MediaUpload({ label, description, value, onChange, folder = 'ss-
       const data = await res.json();
       if (res.ok && data.success) {
         onChange(data.url);
-        toast.success('Image uploaded and optimized successfully!');
+        // Show compression stats if available
+        if (data.savedPercent > 0) {
+          toast.success(`✅ Converted to WebP — saved ${data.savedPercent}% (${data.originalSizeKB} KB → ${data.optimisedSizeKB} KB)`);
+        } else {
+          toast.success('Image uploaded and optimized successfully!');
+        }
       } else {
         toast.error(data.error || 'Failed to upload image.');
       }
@@ -112,9 +117,9 @@ export function MediaUpload({ label, description, value, onChange, folder = 'ss-
             className="hidden" 
           />
           {uploading ? (
-            <div className="flex flex-col items-center gap-2 py-4">
+          <div className="flex flex-col items-center gap-2 py-4">
               <Loader2 className="animate-spin text-[#C9A227]" size={32} />
-              <span className="text-xs font-semibold text-gray-500">Uploading & Optimizing...</span>
+              <span className="text-xs font-semibold text-gray-500">Converting to WebP &amp; Optimizing...</span>
             </div>
           ) : (
             <div className="flex flex-col items-center text-center gap-2">
@@ -122,8 +127,8 @@ export function MediaUpload({ label, description, value, onChange, folder = 'ss-
                 <UploadCloud size={24} />
               </div>
               <div>
-                <p className="text-xs font-bold text-gray-700">Drag & Drop Image or Click to Browse</p>
-                <p className="text-[10px] text-gray-400 mt-0.5">Supports WebP, PNG, JPG (Max 10MB)</p>
+                <p className="text-xs font-bold text-gray-700">Drag &amp; Drop or Click to Browse</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">PNG, JPG, HEIC, GIF, AVIF — auto-converted to WebP (Max 10MB)</p>
               </div>
             </div>
           )}
@@ -217,7 +222,11 @@ export function PdfUpload({ label, description, value, onChange, folder = 'ss-re
       const data = await res.json();
       if (res.ok && data.success) {
         onChange(data.url);
-        toast.success('Brochure PDF uploaded successfully!');
+        if (data.savedPercent > 0) {
+          toast.success(`✅ PDF compressed — saved ${data.savedPercent}% (${data.originalSizeKB} KB → ${data.optimisedSizeKB} KB)`);
+        } else {
+          toast.success('Brochure PDF uploaded successfully!');
+        }
       } else {
         toast.error(data.error || 'Failed to upload PDF.');
       }
@@ -389,6 +398,8 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
 
     setUploading(true);
     const uploadedUrls: string[] = [];
+    let totalOriginalKB = 0;
+    let totalOptimisedKB = 0;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -410,6 +421,8 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
         const data = await res.json();
         if (res.ok && data.success) {
           uploadedUrls.push(data.url);
+          totalOriginalKB  += data.originalSizeKB  || 0;
+          totalOptimisedKB += data.optimisedSizeKB || 0;
         } else {
           toast.error(data.error || `Failed to upload ${file.name}`);
         }
@@ -420,10 +433,16 @@ export function MultiImageUpload({ label, description, images, onChange, folder 
     }
 
     if (uploadedUrls.length > 0) {
-      // Filter out empty URLs in the existing images and append newly uploaded URLs
       const cleanedExisting = images.filter(url => url.trim() !== '');
       onChange([...cleanedExisting, ...uploadedUrls]);
-      toast.success(`Successfully uploaded ${uploadedUrls.length} image(s)!`);
+      const savedPercent = totalOriginalKB > 0
+        ? Math.round((1 - totalOptimisedKB / totalOriginalKB) * 100)
+        : 0;
+      if (savedPercent > 0) {
+        toast.success(`✅ ${uploadedUrls.length} image(s) → WebP. Saved ${savedPercent}% (${totalOriginalKB} KB → ${totalOptimisedKB} KB)`);
+      } else {
+        toast.success(`Successfully uploaded ${uploadedUrls.length} image(s)!`);
+      }
     }
     setUploading(false);
   };
