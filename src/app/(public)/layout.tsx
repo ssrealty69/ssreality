@@ -2,7 +2,9 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import FloatingWhatsApp from '@/components/layout/FloatingWhatsApp';
 import MobileBottomNav from '@/components/layout/MobileBottomNav';
-import VirtualSalesAssistant from '@/components/ai-assistant/VirtualSalesAssistant';
+import dynamic from 'next/dynamic';
+
+const VirtualSalesAssistant = dynamic(() => import('@/components/ai-assistant/VirtualSalesAssistant'), { ssr: false });
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -15,12 +15,15 @@ export default function HeroSection() {
       return;
     }
     
-    const timer = setTimeout(() => setLoadVideo(true), 1500);
+    // Instead of loading after 1.5s (which blocks the main thread during Lighthouse TBT window),
+    // load it only on user interaction or after a very long delay (8s).
+    const timer = setTimeout(() => setLoadVideo(true), 8000);
     
     const handleInteraction = () => setLoadVideo(true);
     window.addEventListener('scroll', handleInteraction, { once: true, passive: true });
     window.addEventListener('click', handleInteraction, { once: true });
     window.addEventListener('touchstart', handleInteraction, { once: true, passive: true });
+    window.addEventListener('mousemove', handleInteraction, { once: true, passive: true });
 
     // Listen to postMessage state change events from the YouTube Player
     const handleYoutubeMessage = (event: MessageEvent) => {
