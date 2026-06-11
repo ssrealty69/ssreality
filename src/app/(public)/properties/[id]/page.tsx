@@ -645,7 +645,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         {relatedProperties.length > 0 && (
           <section id="related-properties" className="py-16 overflow-hidden">
             <h2 className="text-3xl text-center font-medium text-[#1A1800] mb-10">
-              Similar <span className="text-[#C9A227]">Properties</span>
+              Similar <span className="text-[#A07A10]">Properties</span>
             </h2>
 
             <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 px-2" style={{ scrollbarWidth: 'none' }}>

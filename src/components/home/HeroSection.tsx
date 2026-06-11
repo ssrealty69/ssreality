@@ -131,7 +131,7 @@ export default function HeroSection() {
         <div className="flex justify-center mb-16 w-full">
           <Link 
             href="/properties" 
-            className="inline-flex items-center justify-center px-8 py-3.5 bg-[#F97316] text-white font-bold rounded-xl hover:bg-[#EA580C] hover:scale-[1.03] transition-all duration-300 shadow-[0_4px_14px_0_rgba(249,115,22,0.39)] text-[15px] cursor-pointer"
+            className="inline-flex items-center justify-center px-8 py-3.5 bg-[#C2410C] text-white font-bold rounded-xl hover:bg-[#9A3412] hover:scale-[1.03] transition-all duration-300 shadow-[0_4px_14px_0_rgba(194,65,12,0.45)] text-[15px] cursor-pointer"
           >
             Explore Properties Free
           </Link>

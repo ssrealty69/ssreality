@@ -67,7 +67,7 @@ export default function PropertyCard({ property, priority = false, actionText, o
         {/* New Badge (Top Left) */}
         {isNew && (
           <div className="absolute top-4 left-4 z-10">
-            <span className="px-3 py-1 bg-[#F97316] text-white text-[10px] font-black rounded-md shadow-lg uppercase tracking-widest animate-bounce-slow">
+            <span className="px-3 py-1 bg-[#C2410C] text-white text-[10px] font-black rounded-md shadow-lg uppercase tracking-widest animate-bounce-slow">
               New
             </span>
           </div>

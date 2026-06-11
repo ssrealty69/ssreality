@@ -243,9 +243,9 @@ export default function ProjectHighlights() {
             Premium Specifications
           </div>
           <h2 className="text-3xl md:text-5xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">
-            Project <span className="text-[#C9A227]">Highlights</span>
+            Project <span className="text-[#A07A10]">Highlights</span>
           </h2>
-          <p className="text-[#6b6450] max-w-2xl mx-auto mb-6 text-sm md:text-base leading-relaxed">
+          <p className="text-[#5a4a30] max-w-2xl mx-auto mb-6 text-sm md:text-base leading-relaxed">
             Discover the exceptional features and premium specifications that define our project. Crafted to deliver an unparalleled living experience for you and your family.
           </p>
           <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#C9A227]/60 to-transparent mx-auto" />
@@ -260,7 +260,7 @@ export default function ProjectHighlights() {
               className={`px-5 py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 border ${
                 activeTab === cat.id
                   ? 'bg-[#C9A227] text-white border-[#C9A227] shadow-lg shadow-[#C9A227]/15 scale-105'
-                  : 'bg-white/80 text-[#6b6450] border-orange-100 hover:border-[#C9A227]/40 hover:text-[#C9A227] hover:bg-white'
+                  : 'bg-white/80 text-[#5a4a30] border-orange-100 hover:border-[#C9A227]/40 hover:text-[#7A5C00] hover:bg-white'
               }`}
             >
               {cat.label}

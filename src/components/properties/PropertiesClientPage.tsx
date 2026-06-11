@@ -270,7 +270,7 @@ export default function PropertiesClientPage({ initialProperties = [] }: { initi
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="gold-divider mb-5" />
           <h1 className="text-4xl md:text-6xl font-[var(--font-playfair)] text-white mb-4">
-            Explore <span className="text-[#C9A227]">Properties</span>
+              Explore <span className="text-[#A07A10]">Properties</span>
           </h1>
           <p className="text-[#d4c490] text-lg max-w-2xl">
             Find your dream home or investment from our curated collection of premium properties across Delhi NCR.

@@ -1,9 +1,32 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { MessageCircle } from 'lucide-react';
 
 export default function FloatingWhatsApp() {
+  const [shouldRender, setShouldRender] = useState(false);
   const waLink = "https://wa.me/919311059100?text=Hello SS Realty, I am interested in your properties. Please share more details.";
+
+  useEffect(() => {
+    // Render on interaction or after 4 seconds
+    const handleInteraction = () => setShouldRender(true);
+    const timer = setTimeout(() => setShouldRender(true), 4000);
+
+    window.addEventListener('scroll', handleInteraction, { once: true, passive: true });
+    window.addEventListener('click', handleInteraction, { once: true });
+    window.addEventListener('touchstart', handleInteraction, { once: true, passive: true });
+    window.addEventListener('mousemove', handleInteraction, { once: true, passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleInteraction);
+      window.removeEventListener('click', handleInteraction);
+      window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('mousemove', handleInteraction);
+    };
+  }, []);
+
+  if (!shouldRender) return null;
 
   return (
     <a

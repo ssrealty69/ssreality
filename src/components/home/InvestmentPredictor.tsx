@@ -602,7 +602,7 @@ export default function InvestmentPredictor() {
                   <BarChart2 size={16} className="text-[#C9A227]" />
                   {timeframe}-Year Price Trajectory (INR / sq.ft.)
                 </h3>
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                <p className="text-[10px] text-gray-600 font-bold uppercase tracking-wider mt-0.5">
                   Comparative appreciation projection ({startYear} – {startYear + timeframe})
                 </p>
               </div>
@@ -614,7 +614,7 @@ export default function InvestmentPredictor() {
                   className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
                     timeframe === 5
                       ? 'bg-[#C9A227] text-white shadow-sm'
-                      : 'text-gray-400 hover:text-[#B8860B]'
+                      : 'text-gray-600 hover:text-[#B8860B]'
                   }`}
                 >
                   5 Years
@@ -624,7 +624,7 @@ export default function InvestmentPredictor() {
                   className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
                     timeframe === 10
                       ? 'bg-[#C9A227] text-white shadow-sm'
-                      : 'text-gray-400 hover:text-[#B8860B]'
+                      : 'text-gray-600 hover:text-[#B8860B]'
                   }`}
                 >
                   10 Years
@@ -842,8 +842,8 @@ export default function InvestmentPredictor() {
                   <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
                     <span>Projected 5-Year CAGR (%)</span>
                     <div className="space-x-2">
-                      <span className="text-[#B8860B] font-black">+{locA.cagr}%</span>
-                      <span className="text-gray-400">vs</span>
+                      <span className="text-[#6B4C00] font-black">+{locA.cagr}%</span>
+                      <span className="text-gray-500">vs</span>
                       <span className="text-gray-600 font-black">+{locB.cagr}%</span>
                     </div>
                   </div>
@@ -862,8 +862,8 @@ export default function InvestmentPredictor() {
                   <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
                     <span>Connectivity & Metro Index</span>
                     <div className="space-x-2">
-                      <span className="text-[#B8860B] font-black">{locA.connectivity}/10</span>
-                      <span className="text-gray-400">vs</span>
+                      <span className="text-[#6B4C00] font-black">{locA.connectivity}/10</span>
+                      <span className="text-gray-500">vs</span>
                       <span className="text-gray-600 font-black">{locB.connectivity}/10</span>
                     </div>
                   </div>
@@ -882,8 +882,8 @@ export default function InvestmentPredictor() {
                   <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
                     <span>Physical Infrastructure Score</span>
                     <div className="space-x-2">
-                      <span className="text-[#B8860B] font-black">{locA.infrastructure}/10</span>
-                      <span className="text-gray-400">vs</span>
+                      <span className="text-[#6B4C00] font-black">{locA.infrastructure}/10</span>
+                      <span className="text-gray-500">vs</span>
                       <span className="text-gray-600 font-black">{locB.infrastructure}/10</span>
                     </div>
                   </div>
@@ -902,8 +902,8 @@ export default function InvestmentPredictor() {
                   <div className="flex items-center justify-between text-[11px] font-bold text-gray-700">
                     <span>Livability & Green Index</span>
                     <div className="space-x-2">
-                      <span className="text-[#B8860B] font-black">{locA.livability}/10</span>
-                      <span className="text-gray-400">vs</span>
+                      <span className="text-[#6B4C00] font-black">{locA.livability}/10</span>
+                      <span className="text-gray-500">vs</span>
                       <span className="text-gray-600 font-black">{locB.livability}/10</span>
                     </div>
                   </div>

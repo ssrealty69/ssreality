@@ -100,7 +100,7 @@ export default async function HomePage() {
       
       {/* 1. Newly Added Section */}
       <FeaturedProperties 
-        title={<>Newly Added <span className="text-[#C9A227]">Properties</span></>}
+        title={<>Newly Added <span className="text-[#A07A10]">Properties</span></>}
         subtitle="Stay ahead with the latest residential and commercial opportunities recently posted by our expert team."
         properties={latestProperties}
         viewAllHref="/properties?sortBy=newest"
@@ -110,7 +110,7 @@ export default async function HomePage() {
 
       {/* 3. Freehold Lands Section */}
       <FeaturedProperties 
-        title={<>Freehold <span className="text-[#C9A227]">Lands & Plots</span></>}
+        title={<>Freehold <span className="text-[#A07A10]">Lands &amp; Plots</span></>}
         subtitle="Build your dream home on our premium residential and freehold plots in strategic locations across NCR."
         properties={plots}
         viewAllHref="/properties?propertyType=plot"
