@@ -198,17 +198,8 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               : "opacity-0 z-0 pointer-events-none"
               }`}
           >
-
-            <Image
-              src={src}
-              alt=""
-              fill
-              className="object-cover blur-2xl opacity-40 scale-105 pointer-events-none"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 440px"
-              priority={priority && idx === 0}
-              loading={priority && idx === 0 ? 'eager' : 'lazy'}
-              quality={40}
-            />
+            {/* Background colour fill — no extra image download, no forced reflow */}
+            <div className="absolute inset-0 bg-gray-900" />
 
             <Image
               src={src}
@@ -218,7 +209,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 440px"
               priority={priority && idx === 0}
               loading={priority && idx === 0 ? 'eager' : 'lazy'}
-              quality={90}
+              quality={70}
             />
           </div>
         ))}
@@ -275,19 +266,22 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
           {constructionStatus}
         </div>
 
-        {/* Dot Indicators (bottom-center) */}
+        {/* Dot Indicators (bottom-center) — composited transform-based width, min touch area 44px */}
         {images.length > 1 && (
           <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-20 pointer-events-auto">
             {images.map((_, idx) => (
               <button
                 key={idx}
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCurrentImageIndex(idx); }}
-                className={`h-1.5 rounded-full transition-all duration-300 shadow-sm ${idx === currentImageIndex
-                  ? 'bg-[#C9A227] w-5'
-                  : 'bg-white/70 hover:bg-white w-1.5'
-                  }`}
+                className="relative p-[13px] -m-[13px] rounded-full"
                 aria-label={`Go to slide ${idx + 1}`}
-              />
+              >
+                <span
+                  className={`block h-1.5 rounded-full transition-all duration-300 shadow-sm ${
+                    idx === currentImageIndex ? 'bg-[#C9A227] w-5' : 'bg-white/70 hover:bg-white w-1.5'
+                  }`}
+                />
+              </button>
             ))}
           </div>
         )}
@@ -373,7 +367,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               SSR
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase text-gray-400 tracking-wider">Listing Agent</p>
+              <p className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Listing Agent</p>
               <p className="text-xs font-bold text-gray-800">{property.agent?.name || 'SS Realty Agent'}</p>
             </div>
           </div>
@@ -391,6 +385,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
             {/* View Details gold gradient button */}
             <Link
               href={`/properties/${property._id}`}
+              aria-label={`View details for ${property.title}`}
               className="px-5 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] hover:brightness-105 transition-all duration-300 font-poppins font-bold text-xs uppercase tracking-widest rounded-xl flex items-center gap-1.5 shadow-[0_4px_14px_rgba(201,162,39,0.25)] hover:shadow-[0_6px_20px_rgba(201,162,39,0.4)] active:scale-95"
             >
               <Eye size={13} /> View Details

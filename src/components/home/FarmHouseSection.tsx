@@ -99,16 +99,16 @@ export default function FarmHouseSection() {
           to { opacity: 1; transform: scale(1); }
         }
         @keyframes fh-shimmer {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+          0%, 100% { opacity: 0.8; }
+          50% { opacity: 1; }
         }
         @keyframes fh-pulse-glow {
-          0%, 100% { box-shadow: 0 0 20px rgba(201,162,39,0.3), 0 0 40px rgba(201,162,39,0.1); }
-          50% { box-shadow: 0 0 35px rgba(201,162,39,0.5), 0 0 70px rgba(201,162,39,0.2); }
+          0%, 100% { opacity: 0.85; }
+          50% { opacity: 1; }
         }
         @keyframes fh-badge-glow {
-          0%, 100% { box-shadow: 0 0 8px rgba(201,162,39,0.4); }
-          50% { box-shadow: 0 0 20px rgba(201,162,39,0.7); }
+          0%, 100% { opacity: 0.8; }
+          50% { opacity: 1; }
         }
         .fh-text-enter {
           animation: fh-fade-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -118,9 +118,9 @@ export default function FarmHouseSection() {
         }
         .fh-enquiry-btn {
           background: linear-gradient(135deg, #C9A227 0%, #E8C96A 40%, #C9A227 70%, #A67C1E 100%);
-          background-size: 200% 200%;
-          animation: fh-shimmer 3s ease infinite, fh-pulse-glow 3s ease-in-out infinite;
+          animation: fh-pulse-glow 3s ease-in-out infinite;
           transition: transform 0.2s ease, letter-spacing 0.2s ease;
+          will-change: transform, opacity;
         }
         .fh-enquiry-btn:hover {
           transform: scale(1.04) translateY(-2px);
@@ -128,11 +128,10 @@ export default function FarmHouseSection() {
         }
         .fh-badge {
           animation: fh-badge-glow 2.5s ease-in-out infinite;
+          will-change: opacity;
         }
         .fh-dot-active {
           background: linear-gradient(90deg, #C9A227, #E8C96A, #C9A227);
-          background-size: 200% 100%;
-          animation: fh-shimmer 2s linear infinite;
         }
         .fh-overlay-fog {
           background: linear-gradient(to left,
@@ -222,17 +221,19 @@ export default function FarmHouseSection() {
           </div>
         </div>
 
-        {/* Mobile Dot Indicators */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+        {/* Mobile Dot Indicators — touch-friendly padding wrapper */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
-              className={`rounded-full transition-all duration-500 ${
-                i === current ? 'fh-dot-active w-7 h-2' : 'w-2 h-2 bg-white/30 hover:bg-white/60'
-              }`}
-            />
+              className="relative p-3 -m-1 rounded-full"
+            >
+              <span className={`block rounded-full transition-all duration-500 ${
+                i === current ? 'w-7 h-2 bg-gradient-to-r from-[#C9A227] to-[#E8C96A]' : 'w-2 h-2 bg-white/30 hover:bg-white/60'
+              }`} />
+            </button>
           ))}
         </div>
 
@@ -326,17 +327,19 @@ export default function FarmHouseSection() {
           </div>
         </div>
 
-        {/* Desktop Dot Indicators */}
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+        {/* Desktop Dot Indicators — touch-friendly padding wrapper */}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
-              className={`rounded-full transition-all duration-500 ${
-                i === current ? 'fh-dot-active w-8 h-2.5' : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/60'
-              }`}
-            />
+              className="relative p-3 -m-1 rounded-full"
+            >
+              <span className={`block rounded-full transition-all duration-500 ${
+                i === current ? 'w-8 h-2.5 bg-gradient-to-r from-[#C9A227] to-[#E8C96A]' : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/60'
+              }`} />
+            </button>
           ))}
         </div>
 

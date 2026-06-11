@@ -65,10 +65,11 @@ export default function MascotAvatar({
         <Image
           src="/mascot-main.webp"
           alt="SS Realty AI Mascot — Aria"
-          width={240}
-          height={360}
+          width={84}
+          height={126}
           priority
           className="object-contain w-full h-full"
+          sizes="(max-width: 640px) 60px, (max-width: 768px) 72px, 84px"
           style={{
             filter: 'drop-shadow(0 6px 12px rgba(232,175,48,0.3)) drop-shadow(0 2px 4px rgba(0,0,0,0.15))',
           }}

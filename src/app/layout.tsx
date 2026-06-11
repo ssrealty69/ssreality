@@ -76,6 +76,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="icon" href="/SS Realty Official Logo.png" />
         <link rel="apple-touch-icon" href="/SS Realty Official Logo.png" />
         <link rel="shortcut icon" href="/SS Realty Official Logo.png" />
+        {/* Preconnect to speed up 3rd-party connections before browser discovers them */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* DNS-prefetch for external resources to reduce DNS resolution overhead without blocking TCP/TLS handshakes */}
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />

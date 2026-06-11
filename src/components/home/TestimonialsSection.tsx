@@ -158,7 +158,10 @@ function TestimonialCard({
           playsInline
           preload="none"
           className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] object-contain bg-black rounded-[14.5px] z-[2] select-none"
-        />
+        >
+          {/* Captions track — required for accessibility (Lighthouse). These videos have on-screen text and are decorative testimonials. */}
+          <track kind="captions" srcLang="hi" label="Hindi" />
+        </video>
 
         {/* Vignette overlay */}
         <div className="absolute inset-[1.5px] w-[calc(100%-3px)] h-[calc(100%-3px)] bg-gradient-to-b from-black/40 via-transparent to-black/60 rounded-[14.5px] z-[3] pointer-events-none" />
