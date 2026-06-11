@@ -36,7 +36,7 @@ export default function FeaturedProperties({
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#C9A227]/10 rounded-full mb-3">
             <span className="w-2 h-2 rounded-full bg-[#C9A227] animate-pulse" />
-            <span className="text-[10px] font-black text-[#C9A227] uppercase tracking-[0.2em]">{badgeText}</span>
+            <span className="text-[10px] font-black text-[#7A5C00] uppercase tracking-[0.2em]">{badgeText}</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-[#1A1800] mb-3 font-[var(--font-playfair)]">
             {title}

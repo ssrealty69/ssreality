@@ -177,12 +177,12 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-white/8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-[#6b6050]">
+          <p className="text-xs text-[#9a8060]">
             © {year} SS Realty. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/privacy" className="text-xs text-[#6b6050] hover:text-[#C9A227] transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="text-xs text-[#6b6050] hover:text-[#C9A227] transition-colors">Terms of Service</Link>
+            <Link href="/privacy" className="text-xs text-[#9a8060] hover:text-[#C9A227] transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="text-xs text-[#9a8060] hover:text-[#C9A227] transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

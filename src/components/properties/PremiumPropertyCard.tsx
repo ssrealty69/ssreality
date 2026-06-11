@@ -292,7 +292,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
 
         {/* Top-Right Ribbon/Tag */}
         <div className="absolute top-5 right-5 z-10 shrink-0">
-          <span className="px-3 py-1 bg-[#C9A227]/10 text-[#C9A227] text-[10px] font-black tracking-widest rounded-full uppercase">
+          <span className="px-3 py-1 bg-[#C9A227]/10 text-[#7A5C00] text-[10px] font-black tracking-widest rounded-full uppercase">
             {property.priceType === 'rent' ? 'For Rent' : 'New Launch'}
           </span>
         </div>
@@ -304,7 +304,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               {property.title}
             </h3>
             {/* Rating badge */}
-            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/10 text-amber-600 rounded text-[11px] font-black shrink-0">
+            <div className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-500/10 text-amber-800 rounded text-[11px] font-black shrink-0">
               <Star size={10} className="fill-amber-500 text-amber-500" />
               <span>{rating}</span>
             </div>
@@ -327,7 +327,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
                 <div className="text-gray-900 truncate pr-2">{item.type}</div>
                 <div className="text-gray-500 truncate pr-2">{item.size}</div>
                 <div className="text-right flex flex-col items-end">
-                  <span className="text-[#B8860B] font-bold">{item.price}</span>
+                  <span className="text-[#6B4C00] font-bold">{item.price}</span>
                   {item.negotiable && (
                     <span className="text-[8px] font-black text-green-700 bg-green-50 px-1 py-0.5 rounded border border-green-200 uppercase tracking-widest mt-0.5 leading-none shrink-0 scale-95 origin-right">
                       Negotiable
@@ -349,7 +349,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               </span>
             ))}
             {property.nearby.length > 3 && (
-              <span className="text-[10px] font-bold text-[#C9A227] shrink-0">+{property.nearby.length - 3} more</span>
+              <span className="text-[10px] font-bold text-[#7A5C00] shrink-0">+{property.nearby.length - 3} more</span>
             )}
           </div>
         )}

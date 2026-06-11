@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     deviceSizes: [360, 480, 640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 31536000,                      // Cache images for 1 year
-    qualities: [70, 75, 80, 85, 90, 100],           // Optimized quality — saves ~30% vs 85
+    qualities: [50, 60, 65, 70, 75, 80],           // Lower quality saves ~40% vs before
     dangerouslyAllowSVG: false,
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },

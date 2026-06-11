@@ -395,28 +395,28 @@ export default function DeliveredProperties({ properties }: DeliveredPropertiesP
           
         </div>
 
-        {/* Custom Premium Golden Pagination Indicators - Visible on all viewports */}
-        <div className="flex justify-center items-center gap-2 mt-6 select-none">
+        {/* Custom Premium Golden Pagination Indicators */}
+        <div className="flex justify-center items-center gap-1 mt-6 select-none">
           {Array.from({ length: numDots }).map((_, idx) => (
             <button
               key={idx}
               onClick={() => {
                 const container = document.getElementById('delivered-landmarks-slider');
-                const item = container?.firstElementChild as HTMLElement;
-                if (container && item) {
-                  // For the last dot, scroll to the absolute end
+                if (container) {
                   if (idx === numDots - 1) {
                     container.scrollTo({ left: container.scrollWidth, behavior: 'smooth' });
                   } else {
-                    const cardWidth = item.offsetWidth + 24;
-                    container.scrollTo({ left: idx * cardWidth, behavior: 'smooth' });
+                    // Use 280+24 = 304 as a safe card-width estimate to avoid forced reflow (offsetWidth)
+                    container.scrollTo({ left: idx * 304, behavior: 'smooth' });
                   }
                   setActiveIndex(idx);
                 }
               }}
-              className={`h-1.5 rounded-full transition-all duration-300 ${activeIndex === idx ? 'w-6 bg-[#AA7C11]' : 'w-1.5 bg-[#C9A227]/30 hover:bg-[#C9A227]/50'}`}
               aria-label={`Go to slide ${idx + 1}`}
-            />
+              className="relative p-3 -m-1 rounded-full"
+            >
+              <span className={`block h-1.5 rounded-full transition-all duration-300 ${activeIndex === idx ? 'w-6 bg-[#AA7C11]' : 'w-1.5 bg-[#C9A227]/30 hover:bg-[#C9A227]/50'}`} />
+            </button>
           ))}
         </div>
 

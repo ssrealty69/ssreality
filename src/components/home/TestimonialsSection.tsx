@@ -193,8 +193,9 @@ function TestimonialCard({
 
       {/* Author & Property details below the video card */}
       <div className="text-center px-2 mt-1">
-        <h4 className="font-bold text-[#1A1800] text-sm tracking-tight">{t.name}</h4>
-        <p className="text-xs text-[#6b6450] mt-0.5">{t.role}</p>
+        {/* p with role=heading keeps visual style but fixes heading hierarchy warning */}
+        <p className="font-bold text-[#1A1800] text-sm tracking-tight" role="heading" aria-level={4}>{t.name}</p>
+        <p className="text-xs text-[#5a5240] mt-0.5">{t.role}</p>
         <p className="inline-block text-[10px] text-[#9a6f08] font-bold tracking-wider mt-2 bg-[#C9A227]/10 border border-[#C9A227]/25 px-2.5 py-0.5 rounded-full truncate max-w-full">
           {t.property}
         </p>

@@ -104,7 +104,7 @@ export default function ImageSlider({ images }: ImageSliderProps) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={idx === 0}
               loading={idx === 0 ? 'eager' : 'lazy'}
-              quality={90}
+              quality={70}
             />
           </div>
         ) : (
@@ -133,16 +133,18 @@ export default function ImageSlider({ images }: ImageSliderProps) {
           </button>
 
           {/* Dots */}
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1 z-20">
             {displayImages.map((_, idx) => (
-              <button 
+              <button
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
-                className={`h-2 rounded-full transition-all duration-300 shadow-md ${
-                  idx === currentIndex ? 'bg-[#C9A227] w-6' : 'bg-white/80 hover:bg-white w-2'
-                }`}
                 aria-label={`Go to slide ${idx + 1}`}
-              />
+                className="relative p-3 -m-1 rounded-full"
+              >
+                <span className={`block h-2 rounded-full transition-all duration-300 shadow-md ${
+                  idx === currentIndex ? 'bg-[#C9A227] w-6' : 'bg-white/80 hover:bg-white w-2'
+                }`} />
+              </button>
             ))}
           </div>
         </>

@@ -375,13 +375,13 @@ export default function InvestmentPredictor() {
         
         {/* Title Block */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <span className="px-3.5 py-1.5 bg-[#C9A227]/10 border border-[#E8D5A3]/40 text-[#B8860B] rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+          <span className="px-3.5 py-1.5 bg-[#C9A227]/10 border border-[#E8D5A3]/40 text-[#6B4C00] rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
             Interactive AI Telemetry
           </span>
           <h2 className="text-3xl md:text-5xl font-black font-[var(--font-playfair)] text-[#1A1800] tracking-tight leading-[1.15]">
             Delhi NCR <span className="text-[#C9A227]">Investment Predictor</span> & Comparison
           </h2>
-          <p className="text-[#6b6450] text-sm md:text-base leading-relaxed">
+          <p className="text-[#5a5040] text-sm md:text-base leading-relaxed">
             Choose any two emerging residential, commercial, or airport corridor micro-markets in Delhi NCR to dynamically compare 5-year price trajectories, infrastructure ratings, and growth drivers.
           </p>
         </div>
@@ -392,7 +392,7 @@ export default function InvestmentPredictor() {
             
             {/* Selector Location A */}
             <div className="space-y-2 relative">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+              <label className="text-[10px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#C9A227]" />
                 Compare Location A (Anchor)
               </label>
@@ -480,8 +480,8 @@ export default function InvestmentPredictor() {
 
             {/* Selector Location B */}
             <div className="space-y-2 relative">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-gray-400" />
+              <label className="text-[10px] font-black text-gray-600 uppercase tracking-widest flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-gray-500" />
                 Compare Location B (Benchmark)
               </label>
               <div className="relative">
@@ -923,7 +923,7 @@ export default function InvestmentPredictor() {
             {/* Growth Drivers bullets split */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white border border-[#E8D5A3]/25 rounded-3xl p-5 shadow-sm">
               <div className="space-y-3">
-                <h4 className="text-[11px] font-black text-[#C9A227] uppercase tracking-wider leading-none">
+                <h4 className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider leading-none">
                   {locA.name.split(',')[0]} Key Drivers
                 </h4>
                 <ul className="space-y-2 text-[10px] text-gray-600 font-semibold leading-relaxed">
@@ -937,7 +937,7 @@ export default function InvestmentPredictor() {
               </div>
 
               <div className="space-y-3">
-                <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-wider leading-none">
+                <h4 className="text-[11px] font-black text-gray-600 uppercase tracking-wider leading-none">
                   {locB.name.split(',')[0]} Key Drivers
                 </h4>
                 <ul className="space-y-2 text-[10px] text-gray-600 font-semibold leading-relaxed">
