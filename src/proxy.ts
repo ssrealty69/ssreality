@@ -13,6 +13,7 @@ export function proxy(request: NextRequest) {
 
 
 
+
     const token = request.cookies.get('admin_token');
 
     if (!token || token.value !== 'authenticated') {
