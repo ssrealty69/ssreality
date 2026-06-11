@@ -1,19 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Edit2, Trash2, Search, ArrowRight, CheckCircle, XCircle } from 'lucide-react';
+import { Edit2, Trash2, Search } from 'lucide-react';
+
+interface Question {
+  _id: string;
+  title: string;
+  authorName: string;
+  status: 'published' | 'pending' | 'rejected';
+  createdAt: string;
+  answers?: { _id: string }[];
+}
 
 export default function AdminQuestionsPage() {
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    fetchQuestions();
-  }, [search]);
-
-  const fetchQuestions = async () => {
+  const fetchQuestions = useCallback(async () => {
     try {
       setLoading(true);
       const res = await fetch(`/api/admin/qa/questions?search=${search}`);
@@ -26,7 +31,11 @@ export default function AdminQuestionsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search]);
+
+  useEffect(() => {
+    fetchQuestions();
+  }, [fetchQuestions]);
 
   const deleteQuestion = async (id: string) => {
     if (!confirm('Are you sure you want to delete this question?')) return;

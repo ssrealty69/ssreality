@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useCallback, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -20,11 +20,7 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    fetchQuestion();
-  }, [unwrappedParams.id]);
-
-  const fetchQuestion = async () => {
+  const fetchQuestion = useCallback(async () => {
     try {
       const res = await fetch(`/api/admin/qa/questions/${unwrappedParams.id}`);
       const data = await res.json();
@@ -43,7 +39,11 @@ export default function EditQuestionPage({ params }: { params: Promise<{ id: str
     } finally {
       setLoading(false);
     }
-  };
+  }, [unwrappedParams.id]);
+
+  useEffect(() => {
+    fetchQuestion();
+  }, [fetchQuestion]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

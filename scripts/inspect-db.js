@@ -15,11 +15,12 @@ const Property = mongoose.models.Property || mongoose.model('Property', Property
 async function inspect() {
   try {
     await mongoose.connect(uri);
-    const prop = await Property.findOne({ title: /Amaryllis/i }).lean();
+    const prop = await Property.findById('6a21066d9c435ca44605f91d').lean();
     if (prop) {
-      console.log(JSON.stringify(prop, null, 2));
+      console.log("Found property:", prop.title);
+      console.log("Data:", JSON.stringify(prop, null, 2));
     } else {
-      console.log("Amaryllis property not found");
+      console.log("Property not found with ID 6a21066d9c435ca44605f91d");
     }
     process.exit(0);
   } catch (err) {

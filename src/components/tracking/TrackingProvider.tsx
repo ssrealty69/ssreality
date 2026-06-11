@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useRef, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 
 
@@ -40,6 +40,12 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
   const entryTimeRef = useRef<number>(Date.now());
   const lastPathRef = useRef<string>('');
 
+  // Keep a ref to settings so event handlers always read the latest value
+  // without needing to be re-created (avoids stale closures)
+  const settingsRef = useRef<TrackingSettingsData | null>(settings);
+  useEffect(() => {
+    settingsRef.current = settings;
+  }, [settings]);
 
   // 1. Generate unique session ID on client mount
   useEffect(() => {
@@ -53,9 +59,10 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
     }
   }, []);
 
-  // 2. Core tracking function
-  const fireEvent = async (eventName: string, params: Record<string, any> = {}) => {
-    if (!settings || !settings.isEnabled) return;
+  // 2. Core tracking function — stable reference via useCallback + settingsRef
+  const fireEvent = useCallback(async (eventName: string, params: Record<string, any> = {}) => {
+    const currentSettings = settingsRef.current;
+    if (!currentSettings || !currentSettings.isEnabled) return;
 
     const payload = {
       ...params,
@@ -63,11 +70,8 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
       timestamp: new Date().toISOString()
     };
 
-    console.log(`📡 [Retargeting Event]: Firing "${eventName}" with parameters:`, payload);
-
     // A. Meta (Facebook) Pixel Event
-    if (typeof window !== 'undefined' && (window as any).fbq && settings.metaPixelId) {
-      // If it's a standard event name, fire standard track. Otherwise trackCustom.
+    if (typeof window !== 'undefined' && (window as any).fbq && currentSettings.metaPixelId) {
       const standardEvents = [
         'ViewContent', 'Search', 'AddToCart', 'AddToWishlist', 'InitiateCheckout',
         'AddPaymentInfo', 'Purchase', 'Lead', 'CompleteRegistration', 'Contact'
@@ -91,22 +95,22 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
 
     // C. Google Ads Global Tag conversion / GA4 direct fire
     if (typeof window !== 'undefined' && (window as any).gtag) {
-      if (settings.googleAdsConversionId) {
+      if (currentSettings.googleAdsConversionId) {
         (window as any).gtag('event', eventName, {
-          send_to: settings.googleAdsConversionId,
+          send_to: currentSettings.googleAdsConversionId,
           ...payload
         });
       }
-      if (settings.ga4MeasurementId) {
+      if (currentSettings.ga4MeasurementId) {
         (window as any).gtag('event', eventName, {
-          send_to: settings.ga4MeasurementId,
+          send_to: currentSettings.ga4MeasurementId,
           ...payload
         });
       }
     }
 
-    // D. Database server-side EventLog debug trace
-    if (settings.enableEventLog) {
+    // D. Database server-side EventLog debug trace — only when explicitly enabled
+    if (currentSettings.enableEventLog) {
       const url = '/api/tracking/event';
       const bodyStr = JSON.stringify({
         eventName,
@@ -116,11 +120,11 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
       });
 
       let sent = false;
-      if (typeof window !== 'undefined' && window.navigator && window.navigator.sendBeacon) {
+      if (typeof window !== 'undefined' && window.navigator?.sendBeacon) {
         try {
           const blob = new Blob([bodyStr], { type: 'application/json' });
           sent = window.navigator.sendBeacon(url, blob);
-        } catch (e) {
+        } catch {
           // Fallback to fetch on failure
         }
       }
@@ -129,21 +133,18 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
         try {
           await fetch(url, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: bodyStr,
             keepalive: true
           });
-        } catch (err) {
-          // Fail silently on analytics endpoints to prevent breaking user experiences
-          console.error('Error logging event to database:', err);
+        } catch {
+          // Fail silently — analytics errors must never break user experience
         }
       }
     }
-  };
+  }, []); // stable — reads settings via settingsRef
 
-  // 3. Inject TrackingHelper globally on window object so traditional JS scripts can use it
+  // 3. Inject TrackingHelper globally on window object
   useEffect(() => {
     if (typeof window !== 'undefined' && settings?.isEnabled) {
       (window as any).TrackingHelper = {
@@ -153,7 +154,7 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
         }
       };
     }
-  }, [settings]);
+  }, [settings, fireEvent]);
 
   // 4. Track Route Navigation & Stay Duration
   useEffect(() => {
@@ -162,12 +163,11 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
     const currentTime = Date.now();
     const currentPath = pathname || '/';
 
-    // A. Log PageLeave event for previous page if we have one
+    // Log PageLeave event for previous page if we have one
     if (lastPathRef.current && lastPathRef.current !== currentPath) {
       const stayDurationMs = currentTime - entryTimeRef.current;
       const stayDurationSeconds = Math.round(stayDurationMs / 1000);
-      
-      // Only fire if the duration is realistic (positive and less than 12 hours)
+
       if (stayDurationSeconds > 0 && stayDurationSeconds < 43200) {
         fireEvent('PageLeave', {
           page_path: lastPathRef.current,
@@ -176,27 +176,33 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
       }
     }
 
-    // B. Track PageView for the new page
+    // Track PageView for the new page
     fireEvent('PageView', {
       page_title: typeof document !== 'undefined' ? document.title : 'SS Realty',
       page_location: typeof window !== 'undefined' ? window.location.href : '',
       page_path: currentPath,
     });
 
-    // C. Update references for the next navigation
     lastPathRef.current = currentPath;
     entryTimeRef.current = currentTime;
-  }, [pathname, settings?.isEnabled]);
+  }, [pathname, settings?.isEnabled, fireEvent]);
 
   // 5. Track Stay Duration when leaving the tab or closing the page
+  //    Use fireEventRef so the handler always calls the latest fireEvent
+  //    without needing to re-register the event listener on every render
+  const fireEventRef = useRef(fireEvent);
+  useEffect(() => {
+    fireEventRef.current = fireEvent;
+  }, [fireEvent]);
+
   useEffect(() => {
     const handleExit = () => {
       if (document.visibilityState === 'hidden' && lastPathRef.current) {
         const stayDurationMs = Date.now() - entryTimeRef.current;
         const stayDurationSeconds = Math.round(stayDurationMs / 1000);
-        
+
         if (stayDurationSeconds > 0 && stayDurationSeconds < 43200) {
-          fireEvent('PageLeave', {
+          fireEventRef.current('PageLeave', {
             page_path: lastPathRef.current,
             duration_seconds: stayDurationSeconds,
           });
@@ -211,8 +217,7 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
       window.removeEventListener('visibilitychange', handleExit);
       window.removeEventListener('beforeunload', handleExit);
     };
-  }, []);
-
+  }, []); // intentionally [] — handlers use refs to stay fresh
 
   const value = { fireEvent };
 

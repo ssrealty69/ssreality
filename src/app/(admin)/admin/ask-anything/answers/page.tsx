@@ -1,19 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Edit2, Trash2, Search, ArrowRight, CheckCircle, XCircle } from 'lucide-react';
+import { Edit2, Trash2, Search } from 'lucide-react';
+
+interface Answer {
+  _id: string;
+  content: string;
+  authorName: string;
+  isAdmin?: boolean;
+  status: 'published' | 'pending' | 'rejected';
+  createdAt: string;
+  questionId?: { _id: string; slug: string; title: string } | null;
+}
 
 export default function AdminAnswersPage() {
-  const [answers, setAnswers] = useState<any[]>([]);
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    fetchAnswers();
-  }, [search]);
-
-  const fetchAnswers = async () => {
+  const fetchAnswers = useCallback(async () => {
     try {
       setLoading(true);
       const res = await fetch(`/api/admin/qa/answers?search=${search}`);
@@ -26,7 +32,11 @@ export default function AdminAnswersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [search]);
+
+  useEffect(() => {
+    fetchAnswers();
+  }, [fetchAnswers]);
 
   const deleteAnswer = async (id: string) => {
     if (!confirm('Are you sure you want to delete this answer?')) return;
