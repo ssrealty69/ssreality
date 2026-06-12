@@ -231,7 +231,6 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
       ? property.interiorImages
       : property.images || []);
   const galleryImages = galleryImagesSource.filter((imgUrl: string) => imgUrl !== heroImage);
-  const displayGalleryImages = galleryImages.slice(0, 5);
 
   return (
     <div className="font-sans bg-white pb-20">
@@ -567,36 +566,27 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               {property.title} - <span className="text-[#C9A227]">Gallery</span>
             </h2>
 
-            {displayGalleryImages.length >= 5 ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 md:grid-rows-2 gap-2 md:gap-3 h-[350px] md:h-[400px] lg:h-[450px]">
-                {/* Main large image */}
-                <div className="col-span-2 row-span-2 relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group">
-                  <Image src={displayGalleryImages[0]} alt="Gallery Main" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                </div>
-                {/* Smaller images */}
-                <div className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group h-[170px] md:h-auto">
-                  <Image src={displayGalleryImages[1]} alt="Gallery 1" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                </div>
-                <div className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group h-[170px] md:h-auto">
-                  <Image src={displayGalleryImages[2]} alt="Gallery 2" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                </div>
-                <div className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group h-[170px] md:h-auto">
-                  <Image src={displayGalleryImages[3]} alt="Gallery 3" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                </div>
-                {/* 5th image with overlay if more exist */}
-                <div className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group h-[170px] md:h-auto">
-                  <Image src={displayGalleryImages[4]} alt="Gallery 4" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                  {galleryImages.length > 5 && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center transition-colors group-hover:bg-black/50 backdrop-blur-sm cursor-pointer">
-                      <span className="text-white text-xl md:text-2xl font-bold tracking-wider">+{galleryImages.length - 5}</span>
-                    </div>
-                  )}
-                </div>
+            {galleryImages.length >= 4 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 auto-rows-[150px] md:auto-rows-[190px] lg:auto-rows-[220px]">
+                {galleryImages.map((imgUrl: string, idx: number) => (
+                  <div 
+                    key={idx} 
+                    className={`relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group ${
+                      idx === 0 ? 'col-span-2 row-span-2' : ''
+                    }`}
+                  >
+                    <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                  </div>
+                ))}
               </div>
             ) : (
-              <div className={`grid grid-cols-2 ${displayGalleryImages.length === 1 ? 'md:grid-cols-1' : displayGalleryImages.length === 2 ? 'md:grid-cols-2' : displayGalleryImages.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-4'} gap-2 md:gap-3 h-[250px] md:h-[350px] lg:h-[400px]`}>
-                {displayGalleryImages.map((imgUrl: string, idx: number) => (
-                  <div key={idx} className={`relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group ${displayGalleryImages.length === 3 && idx === 0 ? 'col-span-2 md:col-span-1' : ''}`}>
+              <div className={`grid gap-2 md:gap-3 h-[250px] md:h-[350px] lg:h-[400px] ${
+                galleryImages.length === 1 ? 'grid-cols-1' :
+                galleryImages.length === 2 ? 'grid-cols-2' :
+                'grid-cols-2 md:grid-cols-3'
+              }`}>
+                {galleryImages.map((imgUrl: string, idx: number) => (
+                  <div key={idx} className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group">
                     <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                   </div>
                 ))}
