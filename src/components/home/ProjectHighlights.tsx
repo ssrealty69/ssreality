@@ -21,7 +21,7 @@ const features = [
   { title: 'Modular Lightning Stairs', img: '/Project Amenities/MODULAR LIGHTNING STAIRS.jpg', category: 'leisure' },
   { title: 'Modular Kitchen with Chimney, Hob & Microwave', img: '/Project Amenities/MODULAR KITCHEN WITH CHIMNEY, HOB & MICROWAVE.jpg', category: 'kitchen-bath' },
   { title: 'Kohler Bath Fittings', img: '/Project Amenities/KOHLER BATH FITTINGS.jpg', category: 'kitchen-bath' },
-  { title: "Kid's Play Area on Terrace", img: "/Project Amenities/KIDS PLAY AREA ON TERRACE.jpg", category: 'leisure' },
+  { title: "Kid's Play Area on Terrace", img: "/Project Amenities/kids-play-area.jpg", category: 'leisure' },
   { title: 'Geysers (In All Washrooms)', img: '/Project Amenities/GEYSERS (IN ALL WASHROOMS).jpg', category: 'kitchen-bath' },
   { title: 'Fire Safety System', img: '/Project Amenities/FIRE SAFETY SYSTEM.jpg', category: 'tech' },
   { title: 'Fancy Fans in Living Area', img: '/Project Amenities/FANCY FANS IN LIVING AREA.jpg', category: 'interiors' },
