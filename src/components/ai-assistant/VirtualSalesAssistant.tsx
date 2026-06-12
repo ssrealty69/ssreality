@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import MascotAvatar from './MascotAvatar';
@@ -8,28 +8,21 @@ import SpeechBubble from './SpeechBubble';
 
 // Lazy-load heavy components (client-only, safe since this component itself is 'use client')
 const ChatWindow = dynamic(() => import('./ChatWindow'), { ssr: false });
-const ScrollTriggerModal = dynamic(() => import('./ScrollTriggerModal'), { ssr: false });
 
-const SCROLL_TRIGGER_PX = 700;  // ~2-3 sections
 const BUBBLE_AUTO_HIDE_MS = 7000; // auto-dismiss greeting bubble
 
 export default function VirtualSalesAssistant() {
   const [chatOpen, setChatOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [bubbleVisible, setBubbleVisible] = useState(false);
   const [isWaving, setIsWaving] = useState(false);
   const [mounted, setMounted] = useState(false);
-  // Track first and second modal triggers (in-memory)
-  const [firstModalTriggered, setFirstModalTriggered] = useState(false);
-  const [secondModalTriggered, setSecondModalTriggered] = useState(false);
 
   // Only run after hydration
   useEffect(() => {
     setMounted(true);
     
-    // Prefetch heavy dynamic components during browser idle time
+    // Prefetch ChatWindow during browser idle time
     const prefetch = () => {
-      import('./ScrollTriggerModal').catch(() => {});
       import('./ChatWindow').catch(() => {});
     };
 
@@ -55,38 +48,7 @@ export default function VirtualSalesAssistant() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [mounted]);
 
-  // Scroll trigger — fires twice per page load (first at 700px, second after amenities section)
-  const handleScroll = useCallback(() => {
-    if (typeof window === 'undefined') return;
-    
-    // First trigger: scrolling past 700px
-    if (!firstModalTriggered && window.scrollY >= SCROLL_TRIGGER_PX) {
-      setFirstModalTriggered(true);
-      setModalOpen(true);
-      setBubbleVisible(false);
-      return;
-    }
 
-    // Second trigger: scrolling past the bottom of the World Class Amenities section
-    if (firstModalTriggered && !secondModalTriggered) {
-      const amenitiesEl = document.getElementById('amenities-section');
-      if (amenitiesEl) {
-        const rect = amenitiesEl.getBoundingClientRect();
-        // rect.bottom < 100 means the bottom of amenities is past the upper part of the viewport
-        if (rect.bottom < 100) {
-          setSecondModalTriggered(true);
-          setModalOpen(true);
-          setBubbleVisible(false);
-        }
-      }
-    }
-  }, [firstModalTriggered, secondModalTriggered]);
-
-  useEffect(() => {
-    if (!mounted || (firstModalTriggered && secondModalTriggered)) return;
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [mounted, handleScroll, firstModalTriggered, secondModalTriggered]);
 
   const handleMascotClick = () => {
     setBubbleVisible(false);
@@ -97,12 +59,7 @@ export default function VirtualSalesAssistant() {
 
   return (
     <>
-      {/* ── Scroll Trigger Modal ── */}
-      <ScrollTriggerModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onOpenChat={() => { setModalOpen(false); setChatOpen(true); }}
-      />
+
 
       {/* ── Chat Window ── */}
       <ChatWindow
