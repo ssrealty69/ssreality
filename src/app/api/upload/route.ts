@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cloudinary } from '@/lib/cloudinary';
-import { convertToWebP, type ImagePreset } from '@/lib/image-processor';
+import { type ImagePreset } from '@/lib/image-processor';
 
 // ─── Constants ────────────────────────────────────────────────────────────
 
@@ -19,6 +19,7 @@ const IMAGE_TYPES = new Set([
   'image/heif',
   'image/bmp',
   'image/tiff',
+  'image/svg+xml',
 ]);
 
 /** Folder → sharp preset mapping */
