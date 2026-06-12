@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 export const dynamic = 'force-static';
 
 const team = [
-  { name: 'Suresh Sharma', role: 'Founder & CEO', initials: 'SS', color: '#C9A227', exp: '20+ years experience' },
-  { name: 'Sneha Patil', role: 'Head of Sales', initials: 'SP', color: '#B8860B', exp: 'Residential expert' },
-  { name: 'Rahul Mehta', role: 'Commercial Lead', initials: 'RM', color: '#9a6f08', exp: 'Commercial specialist' },
+  { name: 'Yogesh Tanwar', role: 'Founder & CEO', initials: 'SS', color: '#C9A227', exp: '17+ years experience' },
+  { name: 'Ayaan', role: 'Head of Sales', initials: 'SP', color: '#B8860B', exp: 'Residential expert' },
+  { name: 'Nikhil', role: 'Head of Department', initials: 'RM', color: '#9a6f08', exp: 'Commercial specialist' },
   { name: 'Priya Desai', role: 'Legal Advisor', initials: 'PD', color: '#C9A227', exp: 'Property law expert' },
 ];
 

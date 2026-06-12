@@ -65,7 +65,7 @@ export default function ProjectVideo({ title, videoUrl }: { title: string, video
             </div>
           </div>
           
-          <div className="absolute bottom-6 left-0 right-0 text-center px-4">
+          <div className="absolute bottom-6 left-0 right-0 text-center px-4 hidden md:block">
             <p className="text-[10px] uppercase tracking-[0.3em] text-[#F0D060] font-black mb-1 opacity-80">Virtual Tour</p>
             <h2 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg font-[var(--font-playfair)]">
               {title} Walkthrough
