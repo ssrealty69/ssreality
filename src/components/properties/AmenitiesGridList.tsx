@@ -152,9 +152,9 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
                   scale: 1.03,
                   boxShadow: "0 30px 60px -15px rgba(201,162,39,0.22)"
                 }}
-                className="w-[170px] sm:w-[210px] md:w-[240px] h-[90%] bg-white p-2 md:p-3 shadow-[0_8px_25px_rgba(0,0,0,0.08)] flex flex-col border border-gray-150 rounded-xs group [transform-style:preserve-3d] cursor-pointer"
+                className="w-[170px] sm:w-[210px] md:w-[240px] bg-white p-2 md:p-3 shadow-[0_8px_25px_rgba(0,0,0,0.08)] flex flex-col border border-gray-150 rounded-xs group [transform-style:preserve-3d] cursor-pointer"
               >
-                <div className="relative flex-1 min-h-0 overflow-hidden bg-gray-100 rounded-xs mb-2 md:mb-3 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(25px)] group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]">
+                <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-gray-100 rounded-xs mb-2 md:mb-3 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(25px)] group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]">
                   <AmenityImage
                     src={`/Project Amenities/${col.items[0].replace(/'/g, "")}.jpg`}
                     alt={col.items[0]}
@@ -170,11 +170,11 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
               </motion.div>
             ) : (
               // Double item column stack
-              <div className="w-[140px] sm:w-[180px] md:w-[200px] h-[90%] flex flex-col justify-between">
+              <div className="w-[130px] sm:w-[150px] md:w-[170px] h-[90%] flex flex-col justify-center gap-4">
                 {col.items.map((item, subIdx) => (
                   <div
                     key={subIdx}
-                    className={`${getRotation(subIdx + 1)} w-full h-[47%] [perspective:1000px]`}
+                    className={`${getRotation(subIdx + 1)} w-full [perspective:1000px]`}
                   >
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95, y: 15 }}
@@ -189,9 +189,9 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
                         scale: 1.03,
                         boxShadow: "0 20px 40px -8px rgba(201,162,39,0.18)"
                       }}
-                      className="w-full h-full bg-white p-1.5 md:p-2.5 shadow-[0_6px_20px_rgba(0,0,0,0.07)] flex flex-col border border-gray-150 rounded-xs group [transform-style:preserve-3d] cursor-pointer"
+                      className="w-full bg-white p-1.5 md:p-2.5 shadow-[0_6px_20px_rgba(0,0,0,0.07)] flex flex-col border border-gray-150 rounded-xs group [transform-style:preserve-3d] cursor-pointer"
                     >
-                      <div className="relative flex-grow min-h-0 overflow-hidden bg-gray-100 rounded-xs mb-1.5 md:mb-2 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(20px)] group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
+                      <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-gray-100 rounded-xs mb-1.5 md:mb-2 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(20px)] group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
                         <AmenityImage
                           src={`/Project Amenities/${item.replace(/'/g, "")}.jpg`}
                           alt={item}
@@ -294,9 +294,9 @@ export function WorldClassAmenitiesGrid({ amenities = [] }: { amenities?: string
                   scale: 1.03,
                   boxShadow: "0 30px 60px -15px rgba(201,162,39,0.22)"
                 }}
-                className="w-[170px] sm:w-[210px] md:w-[240px] h-[90%] bg-white p-2 md:p-3 shadow-[0_8px_25px_rgba(0,0,0,0.08)] flex flex-col border border-gray-150 rounded-xs group [transform-style:preserve-3d] cursor-pointer"
+                className="w-[170px] sm:w-[210px] md:w-[240px] bg-white p-2 md:p-3 shadow-[0_8px_25px_rgba(0,0,0,0.08)] flex flex-col border border-gray-150 rounded-xs group [transform-style:preserve-3d] cursor-pointer"
               >
-                <div className="relative flex-1 min-h-0 overflow-hidden bg-gray-100 rounded-xs mb-2 md:mb-3 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(25px)] group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]">
+                <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-gray-100 rounded-xs mb-2 md:mb-3 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(25px)] group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]">
                   <AmenityImage
                     src={`/World Class Amenities/${col.items[0]}.jpg`}
                     alt={col.items[0]}
@@ -312,11 +312,11 @@ export function WorldClassAmenitiesGrid({ amenities = [] }: { amenities?: string
               </motion.div>
             ) : (
               // Double item column stack
-              <div className="w-[140px] sm:w-[180px] md:w-[200px] h-[90%] flex flex-col justify-between">
+              <div className="w-[130px] sm:w-[150px] md:w-[170px] h-[90%] flex flex-col justify-center gap-4">
                 {col.items.map((item, subIdx) => (
                   <div
                     key={subIdx}
-                    className={`${getRotation(subIdx + 1)} w-full h-[47%] [perspective:1000px]`}
+                    className={`${getRotation(subIdx + 1)} w-full [perspective:1000px]`}
                   >
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95, y: 15 }}
@@ -331,9 +331,9 @@ export function WorldClassAmenitiesGrid({ amenities = [] }: { amenities?: string
                         scale: 1.03,
                         boxShadow: "0 20px 40px -8px rgba(201,162,39,0.18)"
                       }}
-                      className="w-full h-full bg-white p-1.5 md:p-2.5 shadow-[0_6px_20px_rgba(0,0,0,0.07)] flex flex-col border border-gray-150 rounded-xs group [transform-style:preserve-3d] cursor-pointer"
+                      className="w-full bg-white p-1.5 md:p-2.5 shadow-[0_6px_20px_rgba(0,0,0,0.07)] flex flex-col border border-gray-150 rounded-xs group [transform-style:preserve-3d] cursor-pointer"
                     >
-                      <div className="relative flex-grow min-h-0 overflow-hidden bg-gray-100 rounded-xs mb-1.5 md:mb-2 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(20px)] group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
+                      <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-gray-100 rounded-xs mb-1.5 md:mb-2 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(20px)] group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
                         <AmenityImage
                           src={`/World Class Amenities/${item}.jpg`}
                           alt={item}
