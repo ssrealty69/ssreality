@@ -39,7 +39,7 @@ const quickLinks = [
 const companyLinks = [
   { href: '/about', label: 'About Us' },
   { href: '/blog', label: 'Blog & News' },
-  { href: '/contact', label: 'Contact Us' },
+  { href: '/contact-us', label: 'Contact Us' },
   { href: '/careers', label: 'Careers' },
 ];
 
@@ -66,7 +66,7 @@ export default function Footer() {
               </h3>
               <p className="text-[#5c4004] text-sm mt-1">Talk to our experts today — free consultation.</p>
             </div>
-            <Link href="/contact"
+            <Link href="/contact-us"
               className="flex items-center gap-2 bg-[#1A1800] text-[#C9A227] font-semibold px-6 py-3 rounded-xl hover:bg-[#282618] transition-colors whitespace-nowrap"
             >
               Contact Us <ArrowRight size={16} />

@@ -122,7 +122,7 @@ export default function Navbar() {
               <Phone size={15} className="text-[#C9A227]" />
               +91 93110 59100
             </a>
-            <Link href="/contact" className="relative group overflow-hidden bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-extrabold text-[12px] uppercase tracking-tighter py-2.5 px-6 rounded-xl shadow-[0_4px_20px_rgba(201,162,39,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 border border-[#1A1800]/10">
+            <Link href="/contact-us" className="relative group overflow-hidden bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-extrabold text-[12px] uppercase tracking-tighter py-2.5 px-6 rounded-xl shadow-[0_4px_20px_rgba(201,162,39,0.3)] transition-all duration-500 hover:scale-105 active:scale-95 border border-[#1A1800]/10">
               {/* SHINE EFFECT */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
               <span className="relative z-10 flex items-center gap-2">
@@ -204,7 +204,7 @@ export default function Navbar() {
               ))}
             </div>
             <div className="p-5 bg-black/40 border-t border-white/5 backdrop-blur-md">
-              <Link href="/contact" onClick={() => setOpen(false)} className="relative group overflow-hidden bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-black w-full text-center text-base py-4 rounded-2xl shadow-[0_10px_30px_rgba(201,162,39,0.4)] active:scale-95 transition-all flex items-center justify-center gap-2">
+              <Link href="/contact-us" onClick={() => setOpen(false)} className="relative group overflow-hidden bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-black w-full text-center text-base py-4 rounded-2xl shadow-[0_10px_30px_rgba(201,162,39,0.4)] active:scale-95 transition-all flex items-center justify-center gap-2">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_3s_infinite]" />
                 Get Free Consultation
                 <ArrowRight size={18} />

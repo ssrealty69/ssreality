@@ -85,7 +85,7 @@ export const FALLBACK_BLOGS: any[] = [
         <h2 class="mt-12 mb-6">Repatriation of Funds</h2>
         <p>When selling the property, NRIs can repatriate the original investment amount. Capital gains, after applicable taxes, can also be repatriated through an NRO account.</p>
 
-        <p class="my-8 p-4 bg-amber-50 border-l-4 border-yellow-500 rounded-r-xl">Ready to invest in India? Our dedicated NRI desk at SS Realty provides end-to-end assistance — from property selection to home loan facilitation and registration. <a href="/contact" class="text-yellow-600 font-bold underline">Contact our NRI Desk today</a>.</p>
+        <p class="my-8 p-4 bg-amber-50 border-l-4 border-yellow-500 rounded-r-xl">Ready to invest in India? Our dedicated NRI desk at SS Realty provides end-to-end assistance — from property selection to home loan facilitation and registration. <a href="/contact-us" class="text-yellow-600 font-bold underline">Contact our NRI Desk today</a>.</p>
 
         <h2 class="mt-12 mb-6">Why Invest in Delhi NCR as an NRI?</h2>
         <ul class="space-y-3 mb-8">
@@ -156,7 +156,7 @@ export const FALLBACK_BLOGS: any[] = [
           <li>✅ Dedicated covered parking &amp; power backup</li>
         </ul>
 
-        <p class="my-8 p-4 bg-amber-50 border-l-4 border-yellow-500 rounded-r-xl">Experience the future of luxury living. <a href="/properties" class="text-yellow-600 font-bold underline">Explore our Gwal Pahari listings</a> or <a href="/contact" class="text-yellow-600 font-bold underline">schedule a site visit</a> today.</p>
+        <p class="my-8 p-4 bg-amber-50 border-l-4 border-yellow-500 rounded-r-xl">Experience the future of luxury living. <a href="/properties" class="text-yellow-600 font-bold underline">Explore our Gwal Pahari listings</a> or <a href="/contact-us" class="text-yellow-600 font-bold underline">schedule a site visit</a> today.</p>
       </div>
     `,
     image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80',
@@ -229,7 +229,7 @@ export const FALLBACK_BLOGS: any[] = [
           <li><strong>Warranty & AMC:</strong> Ensure Annual Maintenance Contracts cover all smart systems.</li>
         </ol>
 
-        <p class="my-8 p-4 bg-[#FFFBEB] border-l-4 border-[#C9A227] rounded-r-xl">All SS Realty NIVASA series properties come pre-wired for smart home integration. <a href="/contact" class="text-[#C9A227] font-bold underline">Talk to our team</a> to explore smart-ready homes in Gwal Pahari.</p>
+        <p class="my-8 p-4 bg-[#FFFBEB] border-l-4 border-[#C9A227] rounded-r-xl">All SS Realty NIVASA series properties come pre-wired for smart home integration. <a href="/contact-us" class="text-[#C9A227] font-bold underline">Talk to our team</a> to explore smart-ready homes in Gwal Pahari.</p>
       </div>
     `,
     image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=1200&q=80',
@@ -287,7 +287,7 @@ export const FALLBACK_BLOGS: any[] = [
         <p><strong>For High Growth:</strong> Retail spaces near Jewar Airport township zone offer the highest appreciation potential over a 5-year horizon.</p>
         <p><strong>For Diversification:</strong> Warehousing and logistics parks near the Yamuna Expressway are increasingly popular with institutional investors.</p>
 
-        <p class="my-8 p-4 bg-[#FFFBEB] border-l-4 border-[#C9A227] rounded-r-xl">Interested in commercial investment along Noida Expressway? <a href="/contact" class="text-[#C9A227] font-bold underline">Speak to our commercial investment specialist</a> at SS Realty for curated listings and ROI analysis.</p>
+        <p class="my-8 p-4 bg-[#FFFBEB] border-l-4 border-[#C9A227] rounded-r-xl">Interested in commercial investment along Noida Expressway? <a href="/contact-us" class="text-[#C9A227] font-bold underline">Speak to our commercial investment specialist</a> at SS Realty for curated listings and ROI analysis.</p>
       </div>
     `,
     image: 'https://images.unsplash.com/photo-1574362848149-11496d93a7c7?auto=format&fit=crop&w=1200&q=80',
@@ -372,7 +372,7 @@ export const FALLBACK_BLOGS: any[] = [
           <li>🚩 Significant variance between carpet area and super built-up area</li>
         </ul>
 
-        <p class="my-8 p-4 bg-[#FFFBEB] border-l-4 border-[#C9A227] rounded-r-xl">At SS Realty, every listing undergoes a thorough legal and structural audit before we present it to buyers. <a href="/properties" class="text-[#C9A227] font-bold underline">Browse our verified builder floor listings</a> or <a href="/contact" class="text-[#C9A227] font-bold underline">speak to our legal advisory team</a> today.</p>
+        <p class="my-8 p-4 bg-[#FFFBEB] border-l-4 border-[#C9A227] rounded-r-xl">At SS Realty, every listing undergoes a thorough legal and structural audit before we present it to buyers. <a href="/properties" class="text-[#C9A227] font-bold underline">Browse our verified builder floor listings</a> or <a href="/contact-us" class="text-[#C9A227] font-bold underline">speak to our legal advisory team</a> today.</p>
       </div>
     `,
     image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',

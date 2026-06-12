@@ -237,7 +237,7 @@ function FloorViewContent({
           </p>
 
           <a
-            href="/contact"
+            href="/contact-us"
             className="w-full relative group overflow-hidden bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-extrabold py-3.5 rounded-xl shadow-md transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 text-sm cursor-pointer"
           >
             Contact SS Realty

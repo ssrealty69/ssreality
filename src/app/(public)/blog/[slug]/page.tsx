@@ -302,7 +302,7 @@ export default async function BlogPostPage({ params }: Props) {
               <Link href="/properties" className="bg-[#C9A227] text-[#1A1800] font-bold px-10 py-4 rounded-xl hover:bg-white hover:text-[#1A1800] transition-all transform hover:-translate-y-1">
                 Browse Properties
               </Link>
-              <Link href="/contact" className="bg-transparent text-white border border-white/30 font-bold px-10 py-4 rounded-xl hover:bg-white/10 transition-all">
+              <Link href="/contact-us" className="bg-transparent text-white border border-white/30 font-bold px-10 py-4 rounded-xl hover:bg-white/10 transition-all">
                 Contact Us
               </Link>
             </div>
