@@ -249,15 +249,16 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
       <ViewPropertyTracker property={property} />
 
       {/* --- HERO SECTION --- */}
-      <div className="relative w-full h-[80vh] min-h-[500px]">
+      <div className="relative w-full" style={{ height: 'calc(100svh - 0px)', minHeight: '520px', maxHeight: '700px' }}>
         {/* Desktop & Tablet Background */}
         <div className={property.mobileBannerUrl ? "hidden md:block absolute inset-0" : "absolute inset-0"}>
           <Image
             src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.png"}
             alt={property.title}
             fill
-            className="object-cover"
+            className="object-cover object-center"
             priority
+            sizes="100vw"
           />
         </div>
         {/* Mobile Background */}
@@ -267,62 +268,63 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               src={property.mobileBannerUrl}
               alt={`${property.title} - Mobile Banner`}
               fill
-              className="object-cover"
+              className="object-cover object-center"
               priority
             />
           </div>
         )}
-        {/* Pink/Red Gradient Overlay similar to screenshot 1 */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent md:from-[#1A1800]/50 md:via-[#1A1800]/20 md:to-transparent" />
 
-        {/* Hero Content Box - Centered vertically but padded top to clear header */}
-        <div className="absolute inset-0 max-w-7xl mx-auto px-4 flex flex-col justify-end pb-16 items-center text-center md:justify-center md:pb-0 md:items-start md:text-left pt-24 md:pt-16">
-          <div className="max-w-xl text-white flex flex-col items-center md:items-start">
-            {/* Price Badge - Gold outlined glowing style like Farmhouse Exclusive Launch badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 backdrop-blur-sm mb-5 shadow-[0_0_8px_rgba(201,162,39,0.4)] animate-smooth-blink">
-              <span className="w-2 h-2 rounded-full bg-gradient-to-br from-[#FFE59E] via-[#E8C96A] to-[#C9A227] shadow-[0_0_10px_#E8C96A] inline-block shrink-0 animate-pulse" />
-              <span className="text-[#E8C96A] text-[10px] md:text-xs font-bold tracking-[0.22em] uppercase">
+        {/* Strong dark overlay — ensures text is readable on any image */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+        {/* Extra bottom scrim for text area */}
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/70 to-transparent" />
+
+        {/* Hero Content Box */}
+        <div className="absolute inset-0 max-w-7xl mx-auto px-5 sm:px-8 flex flex-col justify-end pb-12 md:pb-16 items-start" style={{ paddingTop: '80px' }}>
+          <div className="max-w-2xl text-white flex flex-col items-start">
+
+            {/* Price Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C9A227]/70 bg-black/30 backdrop-blur-sm mb-4 shadow-[0_0_12px_rgba(201,162,39,0.35)] animate-smooth-blink">
+              <span className="w-2 h-2 rounded-full bg-[#F0D060] shadow-[0_0_8px_#E8C96A] inline-block shrink-0 animate-pulse" />
+              <span className="text-[#F0D060] text-[11px] md:text-xs font-bold tracking-[0.2em] uppercase">
                 ₹ {formatPrice(property.price)} {property.priceType === 'rent' ? '/month' : 'Onwards'}
               </span>
             </div>
 
-            {/* Title - Serif Playfair font with gold gradient */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-2 bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
+            {/* Title — solid white with drop-shadow for readability on any background */}
+            <h1
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-3 text-white capitalize"
               style={{
                 fontFamily: 'var(--font-playfair, Georgia, serif)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                color: 'transparent',
-                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.95))'
-              }}>
-              <span className="capitalize">{formatPropertyHeading(property.priceList, property.propertyType)}</span>
+                textShadow: '0 2px 16px rgba(0,0,0,0.9), 0 4px 32px rgba(0,0,0,0.7)'
+              }}
+            >
+              {formatPropertyHeading(property.priceList, property.propertyType)}
             </h1>
 
-            {/* Subtitle - Gold gradient matching Farmhouse design */}
-            <p className="font-semibold text-lg md:text-xl tracking-wide bg-gradient-to-r from-[#FFE59E] to-[#E8C96A] bg-clip-text text-transparent mb-6"
-              style={{
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                color: 'transparent',
-                filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.9))'
-              }}>
+            {/* Location subtitle */}
+            <p
+              className="font-medium text-base md:text-lg text-white/90 mb-6 flex items-center gap-2"
+              style={{ textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}
+            >
+              <MapPin size={16} className="text-[#F0D060] shrink-0" />
               {property.location.address}, {property.location.city}
             </p>
 
-            {/* Tags - Farmhouse pill style */}
-            <div className="flex flex-wrap gap-2.5 justify-center md:justify-start">
-
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2.5">
               {property.features.reraApproved && (
-                <span className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white/90 border border-white/20 bg-white/5 backdrop-blur-sm flex items-center gap-1.5">
-                  Rera Approved <CheckCircle2 size={12} className="text-[#25D366]" fill="white" />
+                <span className="px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider text-white border border-white/30 bg-black/30 backdrop-blur-sm flex items-center gap-1.5 shadow">
+                  Rera Approved <CheckCircle2 size={12} className="text-[#4ADE80]" />
                 </span>
               )}
               {property.features.registryAvailable !== false && (
-                <span className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-white/90 border border-white/20 bg-white/5 backdrop-blur-sm flex items-center gap-1.5">
-                  Registry Available <CheckCircle2 size={12} className="text-[#25D366]" fill="white" />
+                <span className="px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider text-white border border-white/30 bg-black/30 backdrop-blur-sm flex items-center gap-1.5 shadow">
+                  Registry Available <CheckCircle2 size={12} className="text-[#4ADE80]" />
                 </span>
               )}
             </div>
+
           </div>
         </div>
       </div>
