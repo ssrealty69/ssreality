@@ -10,7 +10,20 @@ export default function BrochuresPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPdf, setSelectedPdf] = useState('/SS%20Realty%20Arch%20Property%20Brochure.pdf');
+  const [isMobile, setIsMobile] = useState(false);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(
+        window.innerWidth < 768 || 
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      );
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -140,18 +153,31 @@ export default function BrochuresPage() {
 
           {/* Iframe/Object for actual PDF content (toolbar hidden) */}
           <div className="flex-1 w-full bg-[#FFFEF5] overflow-y-auto overflow-x-hidden relative touch-pan-y [-webkit-overflow-scrolling:touch]">
-            <object
-              key={selectedPdf}
-              data={`${selectedPdf}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
-              type="application/pdf"
-              className="w-full h-full min-h-[75vh] md:min-h-full block border-none"
-            >
+            {isMobile ? (
               <iframe
-                src={`${selectedPdf}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                key={`mobile-${selectedPdf}`}
+                src={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                  selectedPdf.startsWith('http') 
+                    ? selectedPdf 
+                    : `https://ssrealty.org${selectedPdf.startsWith('/') ? '' : '/'}${selectedPdf}`
+                )}&embedded=true`}
                 className="w-full h-full min-h-[75vh] md:min-h-full block border-none"
                 title="SS Realty Brochure"
               />
-            </object>
+            ) : (
+              <object
+                key={`desktop-${selectedPdf}`}
+                data={`${selectedPdf}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                type="application/pdf"
+                className="w-full h-full min-h-[75vh] md:min-h-full block border-none"
+              >
+                <iframe
+                  src={`${selectedPdf}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                  className="w-full h-full min-h-[75vh] md:min-h-full block border-none"
+                  title="SS Realty Brochure"
+                />
+              </object>
+            )}
           </div>
         </div>
       </div>
