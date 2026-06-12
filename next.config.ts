@@ -23,11 +23,6 @@ const nextConfig: NextConfig = {
   compress: true,                                   // Enable gzip compression
   poweredByHeader: false,                           // Remove X-Powered-By header
   reactStrictMode: true,
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
-  },
 
   // ─── Experimental ────────────────────────────────────────────────────────
   experimental: {
