@@ -2,6 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cloudinary } from '@/lib/cloudinary';
 import { type ImagePreset } from '@/lib/image-processor';
 
+// ─── Critical: Force this route to always be server-rendered, NEVER cached ──
+// Without this, Vercel CDN can cache even error responses as static pages.
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
+// ─── No-cache helper ──────────────────────────────────────────────────────
+/** All API responses must never be cached by Vercel CDN or browsers */
+function noCache(body: object, status = 200): NextResponse {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Surrogate-Control': 'no-store',
+    },
+  });
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────
 
 /** Max raw upload size the server will accept (before conversion) */
@@ -41,21 +59,27 @@ export async function POST(req: NextRequest) {
     const cookieToken = req.cookies.get('admin_token')?.value;
     const adminSecret = process.env.ADMIN_SECRET;
 
+    console.log('[Upload] Auth check — cookie:', cookieToken ? 'present' : 'missing', '| secret header:', secret ? 'present' : 'missing', '| ADMIN_SECRET set:', !!adminSecret);
+
     const isAuthorized =
       (secret && adminSecret && secret === adminSecret) ||
       cookieToken === 'authenticated';
 
     if (!isAuthorized) {
-      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+      console.warn('[Upload] Unauthorized request');
+      return noCache({ success: false, error: 'Unauthorized' }, 401);
     }
 
     // ── Parse form ──────────────────────────────────────────────────────
+    console.log('[Upload] Parsing formData...');
     const formData = await req.formData();
-    const file      = formData.get('file') as File;
+    const file      = formData.get('file') as File | null;
     const rawFolder = (formData.get('folder') as string) || 'ss-realty';
 
+    console.log('[Upload] File:', file ? `${file.name} (${file.type}, ${file.size} bytes)` : 'MISSING', '| Folder:', rawFolder);
+
     if (!file) {
-      return NextResponse.json({ success: false, error: 'No file provided' }, { status: 400 });
+      return noCache({ success: false, error: 'No file provided' }, 400);
     }
 
     // ── Folder whitelist ────────────────────────────────────────────────
@@ -64,9 +88,9 @@ export async function POST(req: NextRequest) {
 
     // ── File-size guard ─────────────────────────────────────────────────
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
+      return noCache(
         { success: false, error: `File too large. Max 50 MB. Your file: ${(file.size / 1024 / 1024).toFixed(1)} MB` },
-        { status: 400 }
+        400
       );
     }
 
@@ -75,23 +99,23 @@ export async function POST(req: NextRequest) {
     const isImage = IMAGE_TYPES.has(file.type);
 
     if (!isImage && !isPdf) {
-      return NextResponse.json(
+      return noCache(
         { success: false, error: `Invalid file type: ${file.type}. Allowed: JPEG, PNG, WebP, AVIF, GIF, HEIC, BMP, TIFF, PDF` },
-        { status: 400 }
+        400
       );
     }
 
     // ── Read bytes ──────────────────────────────────────────────────────
+    console.log('[Upload] Reading file bytes...');
     const bytes  = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const originalSizeKB = Math.round(file.size / 1024);
 
     // ════════════════════════════════════════════════════════════════════
-    // BRANCH A — IMAGE: Convert to WebP via sharp, then upload to Cloudinary
+    // BRANCH A — IMAGE: Upload to Cloudinary (Cloudinary handles resize+WebP)
+    // Sharp is bypassed to prevent Vercel Serverless OOM crashes.
     // ════════════════════════════════════════════════════════════════════
     if (isImage) {
-      // Bypassing local sharp processing to prevent Vercel Serverless out-of-memory / segfault crashes.
-      // Delegating all resizing and WebP conversion to Cloudinary instead.
       const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
       // Set Cloudinary transformation limits based on preset
@@ -103,6 +127,17 @@ export async function POST(req: NextRequest) {
       } else if (preset === 'thumbnail') {
         maxWidth = 600;
         maxHeight = 450;
+      }
+
+      console.log('[Upload] Uploading image to Cloudinary — folder:', folder, '| maxWidth:', maxWidth);
+
+      // Verify Cloudinary config is present
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const apiKey    = process.env.CLOUDINARY_API_KEY;
+      const apiSecret = process.env.CLOUDINARY_API_SECRET;
+      if (!cloudName || !apiKey || !apiSecret) {
+        console.error('[Upload] MISSING Cloudinary env vars! cloud_name:', cloudName, '| api_key:', !!apiKey, '| api_secret:', !!apiSecret);
+        return noCache({ success: false, error: 'Server configuration error: Cloudinary credentials missing' }, 500);
       }
 
       const result = await cloudinary.uploader.upload(base64, {
@@ -117,10 +152,12 @@ export async function POST(req: NextRequest) {
         ],
       });
 
+      console.log('[Upload] Image uploaded successfully — url:', result.secure_url);
+
       const finalSizeKB  = Math.round(result.bytes / 1024);
       const savedPercent = Math.round((1 - result.bytes / file.size) * 100);
 
-      return NextResponse.json({
+      return noCache({
         success:        true,
         url:            result.secure_url,
         publicId:       result.public_id,
@@ -128,7 +165,7 @@ export async function POST(req: NextRequest) {
         width:          result.width,
         height:         result.height,
         originalSizeKB,
-        convertedSizeKB:   finalSizeKB, // we skipped intermediate sharp
+        convertedSizeKB:   finalSizeKB,
         optimisedSizeKB:   finalSizeKB,
         savedPercent:      Math.max(0, savedPercent),
         message: `Converted & optimised by Cloudinary. Saved ${Math.max(0, savedPercent)}% (${originalSizeKB} KB → ${finalSizeKB} KB)`,
@@ -136,31 +173,26 @@ export async function POST(req: NextRequest) {
     }
 
     // ════════════════════════════════════════════════════════════════════
-    // BRANCH B — PDF: Upload as raw resource with Cloudinary compression
-    // Cloudinary supports PDF linearization + image downsampling for PDFs
+    // BRANCH B — PDF: Upload as raw resource
     // ════════════════════════════════════════════════════════════════════
+    console.log('[Upload] Uploading PDF to Cloudinary — folder:', folder);
     const pdfBase64 = `data:application/pdf;base64,${buffer.toString('base64')}`;
 
     const pdfResult = await cloudinary.uploader.upload(pdfBase64, {
       folder,
-      resource_type: 'raw',       // PDFs must use 'raw' (not 'image')
+      resource_type: 'raw',
       unique_filename: true,
       use_filename: false,
-      // Cloudinary PDF optimizations via eager transformation
-      // (generates a compressed version on upload)
-      eager: [
-        {
-          // fl_attachment allows browsers to download, fl_lossy permits lossy compression
-          flags: 'attachment',
-        },
-      ],
+      eager: [{ flags: 'attachment' }],
       eager_async: false,
     });
+
+    console.log('[Upload] PDF uploaded successfully — url:', pdfResult.secure_url);
 
     const pdfFinalSizeKB  = Math.round(pdfResult.bytes / 1024);
     const pdfSavedPercent = Math.round((1 - pdfResult.bytes / file.size) * 100);
 
-    return NextResponse.json({
+    return noCache({
       success:        true,
       url:            pdfResult.secure_url,
       publicId:       pdfResult.public_id,
@@ -172,9 +204,10 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : 'Upload failed';
-    console.error('[Upload API Error]', error);
-    const safeMsg = process.env.NODE_ENV === 'production' ? 'Upload failed. Please try again.' : msg;
-    return NextResponse.json({ success: false, error: safeMsg }, { status: 500 });
+    // Always log the full error — visible in Vercel Function logs
+    console.error('[Upload API Error] Full error:', error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[Upload API Error] Message:', msg);
+    return noCache({ success: false, error: `Upload failed: ${msg}` }, 500);
   }
 }
