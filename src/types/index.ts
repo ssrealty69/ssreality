@@ -43,6 +43,7 @@ export interface Property {
     distance?: string;
   }[];
   projectDetails?: {
+    projectName?: string;
     totalArea?: string;
     towers?: string;
     floors?: string;
