@@ -224,9 +224,18 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               <Award size={10} /> RERA
             </span>
           )}
-          <span className="px-2.5 py-1 bg-white/90 backdrop-blur-md text-[#1A1800] text-[10px] font-black tracking-wider rounded-md shadow-md uppercase">
-            VERIFIED
-          </span>
+
+          {/* VERIFIED + Project Name — joined pill */}
+          <div className="flex items-stretch shadow-md rounded-md overflow-hidden backdrop-blur-md">
+            <span className="px-2.5 py-1 bg-white/90 text-[#1A1800] text-[10px] font-black tracking-wider uppercase">
+              VERIFIED
+            </span>
+            {property.projectDetails?.projectName && (
+              <span className="px-2.5 py-1 bg-gradient-to-r from-[#C9A227]/80 to-[#F0D060]/80 text-[#1A1800] text-[10px] font-black tracking-wider uppercase border-l border-[#C9A227]/40">
+                {property.projectDetails.projectName}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Top-Right Favorite Heart */}
