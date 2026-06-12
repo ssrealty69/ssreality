@@ -458,8 +458,13 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                               <div className="w-8 sm:w-14 flex items-center justify-center bg-gradient-to-br from-[#C9A227] to-[#B8860B] border-r border-[#C9A227]/20 text-white group-hover:scale-110 transition-transform shrink-0">
                                 <span className="text-xs sm:text-base font-extrabold text-white">₹</span>
                               </div>
-                              <div className="flex-1 px-2 sm:px-4 py-3 text-[#1A1800] text-[10px] sm:text-sm font-bold flex items-center leading-tight truncate">
-                                {item.price} {item.negotiable ? '(Negotiable)' : ''}
+                              <div className="flex-1 px-2 sm:px-4 py-2.5 text-[#1A1800] flex flex-col justify-center gap-0.5 min-w-0">
+                                <span className="text-[10px] sm:text-sm font-bold leading-tight">{item.price}</span>
+                                {item.negotiable && (
+                                  <span className="text-[8px] sm:text-[10px] font-black text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded-full uppercase tracking-wide leading-none w-fit">
+                                    Negotiable
+                                  </span>
+                                )}
                               </div>
                             </div>
                           </div>
