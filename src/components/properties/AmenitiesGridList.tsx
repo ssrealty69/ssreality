@@ -156,7 +156,7 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
               >
                 <div className="relative flex-1 min-h-0 overflow-hidden bg-gray-100 rounded-xs mb-2 md:mb-3 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(25px)] group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]">
                   <AmenityImage
-                    src={`/Project Amenities/${col.items[0]}.jpg`}
+                    src={`/Project Amenities/${col.items[0].replace(/'/g, "")}.jpg`}
                     alt={col.items[0]}
                     fallbackText="✦"
                   />
@@ -193,7 +193,7 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
                     >
                       <div className="relative flex-grow min-h-0 overflow-hidden bg-gray-100 rounded-xs mb-1.5 md:mb-2 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(20px)] group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
                         <AmenityImage
-                          src={`/Project Amenities/${item}.jpg`}
+                          src={`/Project Amenities/${item.replace(/'/g, "")}.jpg`}
                           alt={item}
                           fallbackText="✦"
                         />

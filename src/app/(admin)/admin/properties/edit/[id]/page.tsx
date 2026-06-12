@@ -799,7 +799,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {PROJECT_AMENITIES.map(amenity => {
-              const imgPath = `/Project Amenities/${amenity}.jpg`;
+              const imgPath = `/Project Amenities/${amenity.replace(/'/g, "")}.jpg`;
               const isChecked = formData.amenities.includes(amenity);
               return (
                 <label
