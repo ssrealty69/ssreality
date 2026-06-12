@@ -695,9 +695,9 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               Similar <span className="text-[#A07A10]">Properties</span>
             </h2>
 
-            <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 px-2" style={{ scrollbarWidth: 'none' }}>
+            <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-8 px-2" style={{ scrollbarWidth: 'none' }}>
               {relatedProperties.map((relatedProp: any) => (
-                <div key={relatedProp._id.toString()} className="min-w-[calc(50%-12px)] md:min-w-[calc(25%-18px)] snap-start flex-shrink-0">
+                <div key={relatedProp._id.toString()} className="min-w-[220px] md:min-w-[250px] lg:min-w-[260px] snap-start flex-shrink-0">
                   <SimilarPropertyCard property={relatedProp} />
                 </div>
               ))}

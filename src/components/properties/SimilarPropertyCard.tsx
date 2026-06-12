@@ -18,7 +18,7 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
   return (
     <article className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full group transition-all duration-300 hover:shadow-md hover:border-[#C9A227]/30">
       {/* Image Container */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden">
+      <div className="relative w-full aspect-[16/10] sm:aspect-[3/2] overflow-hidden">
         <Image
           src={mainImage}
           alt={property.title}
@@ -36,24 +36,24 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
       </div>
 
       {/* Content */}
-      <div className="p-3 sm:p-4 flex flex-col flex-grow">
-        <h3 className="text-sm sm:text-base font-bold text-[#1A1800] mb-2 line-clamp-1 group-hover:text-[#C9A227] transition-colors">
+      <div className="p-3 flex flex-col flex-grow">
+        <h3 className="text-[13px] sm:text-sm font-bold text-[#1A1800] mb-2 line-clamp-1 group-hover:text-[#C9A227] transition-colors leading-tight">
           {property.title}
         </h3>
 
         {/* Minimal Specs */}
         {(property.features.bedrooms || property.features.area) ? (
-          <div className="grid grid-cols-1 gap-1.5 mb-3 sm:mb-4">
+          <div className="grid grid-cols-1 gap-1 mb-3">
             {property.features.bedrooms ? (
               <div className="flex items-center gap-1.5 text-gray-500">
-                <BedDouble size={14} className="text-[#C9A227]" />
-                <span className="text-[11px] sm:text-[13px] font-medium">{property.features.bedrooms} BHK</span>
+                <BedDouble size={13} className="text-[#C9A227]" />
+                <span className="text-[11px] font-medium">{property.features.bedrooms} BHK</span>
               </div>
             ) : null}
             {property.features.area ? (
               <div className="flex items-center gap-1.5 text-gray-500">
-                <Maximize2 size={14} className="text-[#C9A227]" />
-                <span className="text-[11px] sm:text-[13px] font-medium line-clamp-1">
+                <Maximize2 size={13} className="text-[#C9A227]" />
+                <span className="text-[11px] font-medium line-clamp-1">
                   {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Sq. Yd' : property.features.areaUnit}
                 </span>
               </div>
@@ -64,7 +64,7 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
         {/* View Details Button */}
         <Link 
           href={`/properties/${property._id}`}
-          className="mt-auto w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] text-[12px] sm:text-sm font-heading font-bold rounded-lg text-center transition-all flex items-center justify-center gap-1 group/btn shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden"
+          className="mt-auto w-full py-2 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] text-[11px] sm:text-xs font-heading font-bold rounded-md text-center transition-all flex items-center justify-center gap-1 group/btn shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden"
         >
           {/* SHINE EFFECT */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] pointer-events-none" />
