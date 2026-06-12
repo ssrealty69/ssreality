@@ -100,7 +100,7 @@ export default async function HomePage() {
       
       {/* 1. Featured Properties Section */}
       <FeaturedProperties 
-        title={<>Exclusive <span className="text-[#A07A10]">Collection</span></>}
+        title={<>Handpicked <span className="bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] bg-clip-text text-transparent">Masterpieces</span></>}
         subtitle="Discover our handpicked selection of premium residential and commercial properties tailored for you."
         properties={latestProperties}
         viewAllHref="/properties"
