@@ -89,36 +89,29 @@ export async function POST(req: NextRequest) {
     // BRANCH A — IMAGE: Convert to WebP via sharp, then upload to Cloudinary
     // ════════════════════════════════════════════════════════════════════
     if (isImage) {
-      let processedBuffer: Buffer;
-      let convertedWidth  = 0;
-      let convertedHeight = 0;
-      let convertedSizeKB = 0;
+      // Bypassing local sharp processing to prevent Vercel Serverless out-of-memory / segfault crashes.
+      // Delegating all resizing and WebP conversion to Cloudinary instead.
+      const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-      try {
-        const processed = await convertToWebP(buffer, preset);
-        processedBuffer  = processed.buffer;
-        convertedWidth   = processed.width;
-        convertedHeight  = processed.height;
-        convertedSizeKB  = Math.round(processed.sizeBytes / 1024);
-      } catch (sharpErr) {
-        console.error('[image-processor] sharp failed, falling back to original:', sharpErr);
-        // If sharp fails (e.g., unsupported exotic format), fall back to
-        // uploading the original and let Cloudinary handle conversion.
-        processedBuffer = buffer;
+      // Set Cloudinary transformation limits based on preset
+      let maxWidth = 1920;
+      let maxHeight = 1280;
+      if (preset === 'blog') {
+        maxWidth = 1200;
+        maxHeight = 800;
+      } else if (preset === 'thumbnail') {
+        maxWidth = 600;
+        maxHeight = 450;
       }
-
-      // Base64-encode the WebP buffer for Cloudinary upload
-      const base64 = `data:image/webp;base64,${processedBuffer.toString('base64')}`;
 
       const result = await cloudinary.uploader.upload(base64, {
         folder,
         resource_type: 'image',
         unique_filename: true,
         use_filename: false,
-        // Store natively as WebP — Cloudinary won't re-convert
         format: 'webp',
-        // Final quality pass on Cloudinary side (auto picks optimal)
         transformation: [
+          { width: maxWidth, height: maxHeight, crop: 'limit' },
           { quality: 'auto:best' },
         ],
       });
@@ -131,13 +124,13 @@ export async function POST(req: NextRequest) {
         url:            result.secure_url,
         publicId:       result.public_id,
         format:         'webp',
-        width:          result.width  || convertedWidth,
-        height:         result.height || convertedHeight,
+        width:          result.width,
+        height:         result.height,
         originalSizeKB,
-        convertedSizeKB,   // after sharp (before Cloudinary)
-        optimisedSizeKB:   finalSizeKB, // after Cloudinary
+        convertedSizeKB:   finalSizeKB, // we skipped intermediate sharp
+        optimisedSizeKB:   finalSizeKB,
         savedPercent:      Math.max(0, savedPercent),
-        message: `Converted to WebP & optimised. Saved ${Math.max(0, savedPercent)}% (${originalSizeKB} KB → ${finalSizeKB} KB)`,
+        message: `Converted & optimised by Cloudinary. Saved ${Math.max(0, savedPercent)}% (${originalSizeKB} KB → ${finalSizeKB} KB)`,
       });
     }
 

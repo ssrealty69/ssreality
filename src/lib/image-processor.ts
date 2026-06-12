@@ -7,8 +7,7 @@
  *  - PDFs are left for Cloudinary to handle (raw resource type)
  */
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-const sharp = require('sharp') as any;
+import sharp from 'sharp';
 
 // ─── Config ────────────────────────────────────────────────────────────────
 
