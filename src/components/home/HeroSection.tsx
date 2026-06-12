@@ -1,94 +1,22 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Star, Building2, CheckCircle2, Play } from 'lucide-react';
 
 export default function HeroSection() {
-  const [loadVideo, setLoadVideo] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-
-  // Lazy-load YouTube iframe: load after a short delay or interaction (desktop only)
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      return;
-    }
-    
-    // Instead of loading after 1.5s (which blocks the main thread during Lighthouse TBT window),
-    // load it only on user interaction or after a very long delay (8s).
-    const timer = setTimeout(() => setLoadVideo(true), 8000);
-    
-    const handleInteraction = () => setLoadVideo(true);
-    window.addEventListener('scroll', handleInteraction, { once: true, passive: true });
-    window.addEventListener('click', handleInteraction, { once: true });
-    window.addEventListener('touchstart', handleInteraction, { once: true, passive: true });
-    window.addEventListener('mousemove', handleInteraction, { once: true, passive: true });
-
-    // Listen to postMessage state change events from the YouTube Player
-    const handleYoutubeMessage = (event: MessageEvent) => {
-      if (event.origin && event.origin.includes('youtube.com')) {
-        try {
-          const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-          if (data && data.event === 'infoDelivery' && data.info && data.info.playerState === 1) {
-            setIsVideoPlaying(true);
-          }
-        } catch (e) {
-          // ignore parsing errors from other message events
-        }
-      }
-    };
-
-    window.addEventListener('message', handleYoutubeMessage);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('scroll', handleInteraction);
-      window.removeEventListener('click', handleInteraction);
-      window.removeEventListener('touchstart', handleInteraction);
-      window.removeEventListener('message', handleYoutubeMessage);
-    };
-  }, []);
-
-  // Safety fallback: if video is loading but doesn't play or message is blocked, fade poster anyway after 6s
-  useEffect(() => {
-    if (loadVideo && !isVideoPlaying) {
-      const backupTimer = setTimeout(() => {
-        setIsVideoPlaying(true);
-      }, 6000);
-      return () => clearTimeout(backupTimer);
-    }
-  }, [loadVideo, isVideoPlaying]);
-
   return (
-    <section ref={sectionRef} className="relative h-[100vh] min-h-[600px] w-full overflow-hidden flex flex-col justify-center items-center font-sans">
+    <section className="relative h-[100vh] min-h-[600px] w-full overflow-hidden flex flex-col justify-center items-center font-sans">
       
-      {/* Background: Poster image first, then YouTube iframe */}
-      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
-        {/* Lightweight poster image (loads instantly) */}
-        <Image
-          src="https://img.youtube.com/vi/M-j_LvEK2ZA/maxresdefault.jpg"
-          alt="SS Realty Hero Background"
-          fill
-          className={`object-cover transition-opacity duration-1000 ${isVideoPlaying ? 'opacity-0' : 'opacity-100'}`}
-          priority
-          sizes="100vw"
-          quality={75}
+      {/* Background: HTML5 Video */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none bg-[#0A0A0A]">
+        <video
+          src="https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto/f_auto/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.mp4"
+          poster="https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto/f_auto/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         />
-
-        {/* YouTube iframe (loads only after delay/interaction) */}
-        {loadVideo && (
-          <div className="absolute inset-0 pointer-events-none">
-            <iframe
-              src="https://www.youtube-nocookie.com/embed/M-j_LvEK2ZA?autoplay=1&mute=1&loop=1&playlist=M-j_LvEK2ZA&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&disablekb=1&fs=0&cc_load_policy=0&enablejsapi=1"
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[61.87vw] min-h-[110vh] min-w-[195.55vh] border-0 scale-110 pointer-events-none"
-              allow="autoplay; encrypted-media"
-              title="SS Realty background video"
-              loading="lazy"
-              tabIndex={-1}
-            />
-          </div>
-        )}
       </div>
 
       {/* Reduced overlay opacity to show video better */}
