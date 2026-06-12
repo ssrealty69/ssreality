@@ -40,8 +40,9 @@ const nextConfig: NextConfig = {
 
   // ─── External packages (native modules — not bundled) ─────────────────────
   // sharp uses native .node binaries and must NOT be bundled by webpack/turbopack.
-  // Vercel pre-installs sharp in the lambda environment automatically.
-  serverExternalPackages: ['sharp'],
+  // cloudinary and mongoose also must not be bundled as they use Node.js http/net/tls modules.
+  // Vercel pre-installs these in the lambda environment automatically.
+  serverExternalPackages: ['sharp', 'cloudinary', 'mongoose'],
 
   // ─── HTTP Security Headers ────────────────────────────────────────────────
   async headers() {
