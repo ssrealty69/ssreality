@@ -98,25 +98,17 @@ export default async function HomePage() {
       />
       <HeroSection />
       
-      {/* 1. Newly Added Section */}
+      {/* 1. Featured Properties Section */}
       <FeaturedProperties 
-        title={<>Newly Added <span className="text-[#A07A10]">Properties</span></>}
-        subtitle="Stay ahead with the latest residential and commercial opportunities recently posted by our expert team."
+        title={<>Exclusive <span className="text-[#A07A10]">Collection</span></>}
+        subtitle="Discover our handpicked selection of premium residential and commercial properties tailored for you."
         properties={latestProperties}
-        viewAllHref="/properties?sortBy=newest"
-        badgeText="Fresh Listings"
+        viewAllHref="/properties"
+        badgeText="Featured Properties"
         className="pt-12 pb-6 md:pt-16 md:pb-8"
       />
 
-      {/* 3. Freehold Lands Section */}
-      <FeaturedProperties 
-        title={<>Freehold <span className="text-[#A07A10]">Lands &amp; Plots</span></>}
-        subtitle="Build your dream home on our premium residential and freehold plots in strategic locations across NCR."
-        properties={plots}
-        viewAllHref="/properties?propertyType=plot"
-        badgeText="Investment Gold"
-        className="pt-6 pb-12 md:pt-8 md:pb-16"
-      />
+
 
       <FarmHouseSection />
 
