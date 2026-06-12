@@ -625,14 +625,14 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               {property.title} - <span className="text-[#C9A227]">Location Advantage</span>
             </h2>
             <div className="flex flex-col lg:flex-row gap-8">
-              <div className="lg:w-1/2 relative h-[450px] rounded-[32px] overflow-hidden shadow-2xl border-4 border-white group">
+              <div className="lg:w-1/2 relative aspect-square max-h-[500px] lg:max-h-[600px] mx-auto w-full rounded-[32px] overflow-hidden shadow-2xl border-4 border-white group bg-[#FAF8F5]">
                 <Image
                   src={property.locationMapUrl || "/ss_realty_project_location_map.png"}
                   alt="Project Location Map"
                   fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-1000"
+                  className="object-contain group-hover:scale-105 transition-transform duration-1000 p-2"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
               </div>
               <div className="lg:w-1/2 flex flex-col gap-2 h-full">
                 {property.nearby.map((loc: any, i: number) => (
