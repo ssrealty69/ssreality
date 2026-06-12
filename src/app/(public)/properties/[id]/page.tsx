@@ -566,13 +566,34 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               {property.title} - <span className="text-[#C9A227]">Gallery</span>
             </h2>
 
-            {galleryImages.length >= 4 ? (
+            {galleryImages.length >= 6 ? (
+              <div className="grid grid-cols-2 md:grid-cols-12 gap-2 md:gap-3 auto-rows-[150px] md:auto-rows-[190px] lg:auto-rows-[220px]">
+                {galleryImages.map((imgUrl: string, idx: number) => {
+                  let spanClass = '';
+                  if (idx === 0) spanClass = 'col-span-2 md:col-span-6 row-span-2';
+                  else if (idx === 1 || idx === 2) spanClass = 'col-span-1 md:col-span-3';
+                  else if (idx === 3 || idx === 4) spanClass = 'col-span-1 md:col-span-2';
+                  else if (idx === 5) spanClass = galleryImages.length === 6 ? 'col-span-2 md:col-span-2' : 'col-span-1 md:col-span-2';
+                  else spanClass = 'col-span-1 md:col-span-3';
+
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group ${spanClass}`}
+                    >
+                      <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                    </div>
+                  );
+                })}
+              </div>
+            ) : galleryImages.length >= 4 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 auto-rows-[150px] md:auto-rows-[190px] lg:auto-rows-[220px]">
                 {galleryImages.map((imgUrl: string, idx: number) => (
                   <div 
                     key={idx} 
                     className={`relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group ${
-                      idx === 0 ? 'col-span-2 row-span-2' : ''
+                      idx === 0 ? 'col-span-2 row-span-2' : 
+                      (galleryImages.length === 5 && idx === 4) ? 'col-span-2 md:col-span-1' : 'col-span-1'
                     }`}
                   >
                     <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
