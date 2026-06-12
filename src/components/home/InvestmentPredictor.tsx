@@ -420,18 +420,18 @@ export default function InvestmentPredictor() {
                       setSearchQueryA('');
                       setShowSuggestionsA(true);
                     }}
-                    className="absolute right-10 top-3.5 text-gray-400 hover:text-gray-600 transition-colors p-0.5 rounded-full hover:bg-gray-100"
+                    className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
                     title="Clear input"
                   >
                     <X size={15} />
                   </button>
                 )}
 
-                <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center pointer-events-none">
                   {isSearchingA ? (
-                    <Loader2 className="animate-spin text-[#C9A227]" size={16} />
+                    <Loader2 className="animate-spin text-[#C9A227]" size={18} />
                   ) : (
-                    <Compass className="text-[#C9A227]" size={16} />
+                    <Compass className="text-[#C9A227]" size={18} />
                   )}
                 </div>
               </div>
@@ -508,18 +508,18 @@ export default function InvestmentPredictor() {
                       setSearchQueryB('');
                       setShowSuggestionsB(true);
                     }}
-                    className="absolute right-10 top-3.5 text-gray-400 hover:text-gray-600 transition-colors p-0.5 rounded-full hover:bg-gray-100"
+                    className="absolute right-10 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
                     title="Clear input"
                   >
                     <X size={15} />
                   </button>
                 )}
 
-                <div className="absolute right-3.5 top-3.5 flex items-center justify-center">
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center pointer-events-none">
                   {isSearchingB ? (
-                    <Loader2 className="animate-spin text-[#C9A227]" size={16} />
+                    <Loader2 className="animate-spin text-[#C9A227]" size={18} />
                   ) : (
-                    <Compass className="text-[#C9A227]" size={16} />
+                    <Compass className="text-[#C9A227]" size={18} />
                   )}
                 </div>
               </div>
@@ -613,7 +613,7 @@ export default function InvestmentPredictor() {
                   onClick={() => setTimeframe(5)}
                   className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
                     timeframe === 5
-                      ? 'bg-[#C9A227] text-white shadow-sm'
+                      ? 'bg-[#C9A227] text-[#1A1800] shadow-sm'
                       : 'text-gray-600 hover:text-[#B8860B]'
                   }`}
                 >
@@ -623,7 +623,7 @@ export default function InvestmentPredictor() {
                   onClick={() => setTimeframe(10)}
                   className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
                     timeframe === 10
-                      ? 'bg-[#C9A227] text-white shadow-sm'
+                      ? 'bg-[#C9A227] text-[#1A1800] shadow-sm'
                       : 'text-gray-600 hover:text-[#B8860B]'
                   }`}
                 >

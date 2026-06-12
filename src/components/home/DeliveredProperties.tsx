@@ -77,8 +77,8 @@ function DeliveredPropertyCard({ property }: { property: Property }) {
           </div>
         </div>
 
-        {/* Small Elegant floating type stamp */}
-        <div className="absolute -bottom-2 px-3 py-0.5 bg-white border border-[#C9A227]/40 text-[#AA7C11] text-[9px] font-black rounded-full shadow-sm uppercase tracking-wider z-20">
+        {/* Small Property Type Badge */}
+        <div className="absolute -bottom-2 px-3 py-0.5 bg-white border border-[#C9A227]/40 text-[#7A5C00] text-[9px] font-black rounded-full shadow-sm uppercase tracking-wider z-20">
           {property.propertyType}
         </div>
       </div>

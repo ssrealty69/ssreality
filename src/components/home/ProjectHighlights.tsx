@@ -259,7 +259,7 @@ export default function ProjectHighlights() {
               onClick={() => setActiveTab(cat.id)}
               className={`px-5 py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 border ${
                 activeTab === cat.id
-                  ? 'bg-[#C9A227] text-white border-[#C9A227] shadow-lg shadow-[#C9A227]/15 scale-105'
+                  ? 'bg-[#C9A227] text-[#1A1800] border-[#C9A227] shadow-lg shadow-[#C9A227]/15 scale-105'
                   : 'bg-white/80 text-[#5a4a30] border-orange-100 hover:border-[#C9A227]/40 hover:text-[#7A5C00] hover:bg-white'
               }`}
             >
