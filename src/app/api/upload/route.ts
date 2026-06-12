@@ -74,8 +74,10 @@ async function uploadToCloudinary(
     .join('');
 
   // ── Build multipart form ────────────────────────────────────────────────
+  // Use .slice() to get a strict ArrayBuffer (not SharedArrayBuffer) for Blob compatibility in Node 24
+  const arrayBuf = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
   const form = new FormData();
-  form.append('file', new Blob([buffer], { type: mimeType }));
+  form.append('file', new Blob([arrayBuf], { type: mimeType }));
   form.append('api_key', apiKey);
   form.append('timestamp', timestamp);
   form.append('signature', signature);
