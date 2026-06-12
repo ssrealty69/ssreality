@@ -4,6 +4,10 @@ import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
+
+
+
+
 // ─── No-cache helper ──────────────────────────────────────────────────────
 function json(body: object, status = 200): NextResponse {
   return NextResponse.json(body, {
@@ -42,7 +46,7 @@ async function uploadToCloudinary(
   isImage: boolean,
 ): Promise<{ secure_url: string; public_id: string; bytes: number; width?: number; height?: number }> {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
-  const apiKey    = process.env.CLOUDINARY_API_KEY!;
+  const apiKey = process.env.CLOUDINARY_API_KEY!;
   const apiSecret = process.env.CLOUDINARY_API_SECRET!;
 
   // ── Generate SHA-1 signature for authenticated upload ──────────────────
@@ -102,10 +106,10 @@ async function uploadToCloudinary(
 
   return {
     secure_url: data.secure_url as string,
-    public_id:  data.public_id  as string,
-    bytes:      data.bytes      as number,
-    width:      data.width      as number | undefined,
-    height:     data.height     as number | undefined,
+    public_id: data.public_id as string,
+    bytes: data.bytes as number,
+    width: data.width as number | undefined,
+    height: data.height as number | undefined,
   };
 }
 
@@ -114,7 +118,7 @@ async function uploadToCloudinary(
 export async function POST(req: NextRequest) {
   try {
     // ── Auth ──────────────────────────────────────────────────────────────
-    const secret      = req.headers.get('x-admin-secret');
+    const secret = req.headers.get('x-admin-secret');
     const cookieToken = req.cookies.get('admin_token')?.value;
     const adminSecret = process.env.ADMIN_SECRET;
 
@@ -129,7 +133,7 @@ export async function POST(req: NextRequest) {
 
     // ── Check env vars ────────────────────────────────────────────────────
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-    const apiKey    = process.env.CLOUDINARY_API_KEY;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
     console.log('[Upload] Env — cloud_name:', cloudName ?? 'MISSING', '| api_key:', !!apiKey, '| api_secret:', !!apiSecret);
@@ -142,8 +146,8 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Parse form ────────────────────────────────────────────────────────
-    const formData  = await req.formData();
-    const file      = formData.get('file') as File | null;
+    const formData = await req.formData();
+    const file = formData.get('file') as File | null;
     const rawFolder = (formData.get('folder') as string) || 'ss-realty';
 
     if (!file) {
@@ -157,32 +161,32 @@ export async function POST(req: NextRequest) {
       return json({ success: false, error: `File too large. Max 50 MB. Got ${(file.size / 1024 / 1024).toFixed(1)} MB` }, 400);
     }
 
-    const isPdf   = file.type === 'application/pdf';
+    const isPdf = file.type === 'application/pdf';
     const isImage = IMAGE_TYPES.has(file.type);
 
     if (!isImage && !isPdf) {
       return json({ success: false, error: `Unsupported file type: ${file.type}` }, 400);
     }
 
-    const bytes          = await file.arrayBuffer();
-    const buffer         = Buffer.from(bytes);
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
     const originalSizeKB = Math.round(file.size / 1024);
 
     // ── Upload ────────────────────────────────────────────────────────────
     const result = await uploadToCloudinary(buffer, file.type, folder, isImage);
 
-    const finalSizeKB  = Math.round(result.bytes / 1024);
+    const finalSizeKB = Math.round(result.bytes / 1024);
     const savedPercent = Math.max(0, Math.round((1 - result.bytes / file.size) * 100));
 
     console.log('[Upload] Success:', result.secure_url, '| saved:', savedPercent + '%');
 
     return json({
-      success:         true,
-      url:             result.secure_url,
-      publicId:        result.public_id,
-      format:          isImage ? 'webp' : 'pdf',
-      width:           result.width,
-      height:          result.height,
+      success: true,
+      url: result.secure_url,
+      publicId: result.public_id,
+      format: isImage ? 'webp' : 'pdf',
+      width: result.width,
+      height: result.height,
       originalSizeKB,
       convertedSizeKB: finalSizeKB,
       optimisedSizeKB: finalSizeKB,
@@ -193,8 +197,8 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (err: unknown) {
-    const msg   = err instanceof Error ? err.message : String(err);
-    const stack = err instanceof Error ? err.stack   : '';
+    const msg = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack : '';
     console.error('[Upload Error]', msg);
     console.error('[Upload Stack]', stack);
     return json({ success: false, error: `Upload failed: ${msg}` }, 500);
