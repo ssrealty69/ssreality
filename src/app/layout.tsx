@@ -64,6 +64,9 @@ export const metadata: Metadata = {
     shortcut: '/SS Realty Official Logo.png',
     apple: '/SS Realty Official Logo.png',
   },
+  verification: {
+    google: 'KE62V7D-CjTuCnUR5guuPdwlLC47wzhG5b6SZWOGBys',
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
