@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// ─── Critical: Force server-rendered, never statically cached ──────────────
+// ─── Force server-rendered, never statically cached ───────────────────────
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
 // ─── No-cache helper ──────────────────────────────────────────────────────
-function noCache(body: object, status = 200): NextResponse {
+function json(body: object, status = 200): NextResponse {
   return NextResponse.json(body, {
     status,
     headers: {
@@ -17,21 +17,12 @@ function noCache(body: object, status = 200): NextResponse {
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────
-
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 const IMAGE_TYPES = new Set([
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-  'image/avif',
-  'image/gif',
-  'image/heic',
-  'image/heif',
-  'image/bmp',
-  'image/tiff',
-  'image/svg+xml',
+  'image/jpeg', 'image/jpg', 'image/png', 'image/webp',
+  'image/avif', 'image/gif', 'image/heic', 'image/heif',
+  'image/bmp', 'image/tiff', 'image/svg+xml',
 ]);
 
 const ALLOWED_FOLDERS = new Set([
@@ -41,164 +32,169 @@ const ALLOWED_FOLDERS = new Set([
   'ss-realty',
 ]);
 
-// ─── Route handler ────────────────────────────────────────────────────────
+// ─── Cloudinary REST Upload (no npm package — pure fetch) ─────────────────
+// Uses Cloudinary's unsigned upload API directly.
+// Docs: https://cloudinary.com/documentation/image_upload_api_reference
+async function uploadToCloudinary(
+  buffer: Buffer,
+  mimeType: string,
+  folder: string,
+  isImage: boolean,
+): Promise<{ secure_url: string; public_id: string; bytes: number; width?: number; height?: number }> {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
+  const apiKey    = process.env.CLOUDINARY_API_KEY!;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET!;
+
+  // ── Generate SHA-1 signature for authenticated upload ──────────────────
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+  const resourceType = isImage ? 'image' : 'raw';
+
+  // Build signature params (sorted alphabetically, no url/file)
+  const eager = isImage ? 'c_limit,w_1920,h_1280/q_auto:best/f_webp' : undefined;
+  const sigParams: Record<string, string> = {
+    folder,
+    timestamp,
+    unique_filename: 'true',
+    use_filename: 'false',
+    ...(eager ? { eager } : {}),
+    ...(isImage ? { format: 'webp' } : {}),
+  };
+
+  // Sort keys and build param string
+  const paramStr = Object.keys(sigParams)
+    .sort()
+    .map((k) => `${k}=${sigParams[k]}`)
+    .join('&') + apiSecret;
+
+  // SHA-1 hash using Web Crypto API (available in Node.js 16+)
+  const encoder = new TextEncoder();
+  const hashBuf = await crypto.subtle.digest('SHA-1', encoder.encode(paramStr));
+  const signature = Array.from(new Uint8Array(hashBuf))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  // ── Build multipart form ────────────────────────────────────────────────
+  const form = new FormData();
+  form.append('file', new Blob([buffer], { type: mimeType }));
+  form.append('api_key', apiKey);
+  form.append('timestamp', timestamp);
+  form.append('signature', signature);
+  form.append('folder', folder);
+  form.append('unique_filename', 'true');
+  form.append('use_filename', 'false');
+  if (isImage) {
+    form.append('format', 'webp');
+    form.append('eager', eager!);
+  }
+
+  const url = `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`;
+  console.log('[Upload] POSTing to Cloudinary:', url);
+
+  const res = await fetch(url, { method: 'POST', body: form });
+  const data = await res.json() as Record<string, unknown>;
+
+  if (!res.ok) {
+    const errMsg = (data?.error as Record<string, string>)?.message ?? JSON.stringify(data);
+    throw new Error(`Cloudinary upload failed (${res.status}): ${errMsg}`);
+  }
+
+  return {
+    secure_url: data.secure_url as string,
+    public_id:  data.public_id  as string,
+    bytes:      data.bytes      as number,
+    width:      data.width      as number | undefined,
+    height:     data.height     as number | undefined,
+  };
+}
+
+// ─── POST handler ─────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
   try {
-    // ── Auth ──────────────────────────────────────────────────────────
+    // ── Auth ──────────────────────────────────────────────────────────────
     const secret      = req.headers.get('x-admin-secret');
     const cookieToken = req.cookies.get('admin_token')?.value;
     const adminSecret = process.env.ADMIN_SECRET;
-
-    console.log('[Upload] Auth — cookie:', cookieToken ? 'present' : 'missing', '| header:', secret ? 'present' : 'missing');
 
     const isAuthorized =
       (secret && adminSecret && secret === adminSecret) ||
       cookieToken === 'authenticated';
 
     if (!isAuthorized) {
-      return noCache({ success: false, error: 'Unauthorized' }, 401);
+      console.warn('[Upload] Unauthorized');
+      return json({ success: false, error: 'Unauthorized' }, 401);
     }
 
-    // ── Verify Cloudinary env vars ──────────────────────────────────────
+    // ── Check env vars ────────────────────────────────────────────────────
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const apiKey    = process.env.CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
-    console.log('[Upload] Cloudinary config — cloud_name:', cloudName || 'MISSING', '| api_key set:', !!apiKey, '| api_secret set:', !!apiSecret);
+    console.log('[Upload] Env — cloud_name:', cloudName ?? 'MISSING', '| api_key:', !!apiKey, '| api_secret:', !!apiSecret);
 
     if (!cloudName || !apiKey || !apiSecret) {
-      console.error('[Upload] FATAL: Cloudinary env vars missing on Vercel!');
-      return noCache({
+      return json({
         success: false,
-        error: 'Server configuration error: Cloudinary credentials not configured. Please set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET in Vercel Environment Variables.',
+        error: 'Server misconfiguration: Cloudinary env vars missing. Set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET in Vercel Environment Variables.',
       }, 500);
     }
 
-    // ── Parse form ────────────────────────────────────────────────────
-    const formData = await req.formData();
+    // ── Parse form ────────────────────────────────────────────────────────
+    const formData  = await req.formData();
     const file      = formData.get('file') as File | null;
     const rawFolder = (formData.get('folder') as string) || 'ss-realty';
 
     if (!file) {
-      return noCache({ success: false, error: 'No file provided' }, 400);
+      return json({ success: false, error: 'No file provided' }, 400);
     }
 
     const folder = ALLOWED_FOLDERS.has(rawFolder) ? rawFolder : 'ss-realty';
-
     console.log('[Upload] File:', file.name, '| type:', file.type, '| size:', file.size, '| folder:', folder);
 
-    // ── File-size guard ───────────────────────────────────────────────
     if (file.size > MAX_FILE_SIZE) {
-      return noCache(
-        { success: false, error: `File too large. Max 50 MB. Your file: ${(file.size / 1024 / 1024).toFixed(1)} MB` },
-        400
-      );
+      return json({ success: false, error: `File too large. Max 50 MB. Got ${(file.size / 1024 / 1024).toFixed(1)} MB` }, 400);
     }
 
-    // ── Type check ────────────────────────────────────────────────────
     const isPdf   = file.type === 'application/pdf';
     const isImage = IMAGE_TYPES.has(file.type);
 
     if (!isImage && !isPdf) {
-      return noCache(
-        { success: false, error: `Invalid file type: ${file.type}` },
-        400
-      );
+      return json({ success: false, error: `Unsupported file type: ${file.type}` }, 400);
     }
 
-    // ── Read bytes ────────────────────────────────────────────────────
     const bytes          = await file.arrayBuffer();
     const buffer         = Buffer.from(bytes);
     const originalSizeKB = Math.round(file.size / 1024);
 
-    // ── Lazy-load Cloudinary (avoids bundling issues on Vercel) ───────
-    console.log('[Upload] Loading cloudinary module dynamically...');
-    const { v2: cloudinary } = await import('cloudinary');
-    cloudinary.config({ cloud_name: cloudName, api_key: apiKey, api_secret: apiSecret });
-    console.log('[Upload] Cloudinary configured successfully');
+    // ── Upload ────────────────────────────────────────────────────────────
+    const result = await uploadToCloudinary(buffer, file.type, folder, isImage);
 
-    // ── BRANCH A: IMAGE ───────────────────────────────────────────────
-    if (isImage) {
-      const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
+    const finalSizeKB  = Math.round(result.bytes / 1024);
+    const savedPercent = Math.max(0, Math.round((1 - result.bytes / file.size) * 100));
 
-      let maxWidth = 1920;
-      let maxHeight = 1280;
-      if (folder === 'ss-realty/blog') {
-        maxWidth = 1200;
-        maxHeight = 800;
-      } else if (folder === 'ss-realty/thumbnails') {
-        maxWidth = 600;
-        maxHeight = 450;
-      }
+    console.log('[Upload] Success:', result.secure_url, '| saved:', savedPercent + '%');
 
-      console.log('[Upload] Uploading image to Cloudinary folder:', folder);
-      const result = await cloudinary.uploader.upload(base64, {
-        folder,
-        resource_type: 'image',
-        unique_filename: true,
-        use_filename: false,
-        format: 'webp',
-        transformation: [
-          { width: maxWidth, height: maxHeight, crop: 'limit' },
-          { quality: 'auto:best' },
-        ],
-      });
-
-      const finalSizeKB  = Math.round(result.bytes / 1024);
-      const savedPercent = Math.max(0, Math.round((1 - result.bytes / file.size) * 100));
-
-      console.log('[Upload] Image upload success:', result.secure_url);
-
-      return noCache({
-        success:         true,
-        url:             result.secure_url,
-        publicId:        result.public_id,
-        format:          'webp',
-        width:           result.width,
-        height:          result.height,
-        originalSizeKB,
-        convertedSizeKB: finalSizeKB,
-        optimisedSizeKB: finalSizeKB,
-        savedPercent,
-        message: `Converted & optimised by Cloudinary. Saved ${savedPercent}% (${originalSizeKB} KB → ${finalSizeKB} KB)`,
-      });
-    }
-
-    // ── BRANCH B: PDF ─────────────────────────────────────────────────
-    console.log('[Upload] Uploading PDF to Cloudinary folder:', folder);
-    const pdfBase64 = `data:application/pdf;base64,${buffer.toString('base64')}`;
-
-    const pdfResult = await cloudinary.uploader.upload(pdfBase64, {
-      folder,
-      resource_type: 'raw',
-      unique_filename: true,
-      use_filename: false,
-      eager: [{ flags: 'attachment' }],
-      eager_async: false,
-    });
-
-    const pdfFinalSizeKB  = Math.round(pdfResult.bytes / 1024);
-    const pdfSavedPercent = Math.max(0, Math.round((1 - pdfResult.bytes / file.size) * 100));
-
-    console.log('[Upload] PDF upload success:', pdfResult.secure_url);
-
-    return noCache({
+    return json({
       success:         true,
-      url:             pdfResult.secure_url,
-      publicId:        pdfResult.public_id,
-      format:          'pdf',
+      url:             result.secure_url,
+      publicId:        result.public_id,
+      format:          isImage ? 'webp' : 'pdf',
+      width:           result.width,
+      height:          result.height,
       originalSizeKB,
-      optimisedSizeKB: pdfFinalSizeKB,
-      savedPercent:    pdfSavedPercent,
-      message: `PDF uploaded & compressed. ${originalSizeKB} KB → ${pdfFinalSizeKB} KB`,
+      convertedSizeKB: finalSizeKB,
+      optimisedSizeKB: finalSizeKB,
+      savedPercent,
+      message: isImage
+        ? `Converted & optimised by Cloudinary. Saved ${savedPercent}% (${originalSizeKB} KB → ${finalSizeKB} KB)`
+        : `PDF uploaded. ${originalSizeKB} KB → ${finalSizeKB} KB`,
     });
 
-  } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : String(error);
-    const stack = error instanceof Error ? error.stack : '';
-    console.error('[Upload API Error]:', msg);
-    console.error('[Upload API Stack]:', stack);
-    return noCache({ success: false, error: `Upload failed: ${msg}` }, 500);
+  } catch (err: unknown) {
+    const msg   = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack   : '';
+    console.error('[Upload Error]', msg);
+    console.error('[Upload Stack]', stack);
+    return json({ success: false, error: `Upload failed: ${msg}` }, 500);
   }
 }
