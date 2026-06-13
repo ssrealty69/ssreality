@@ -225,9 +225,9 @@ function FloorViewContent({
             </div>
           </div>
 
-          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight font-[var(--font-playfair)]">
+          <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight font-[var(--font-playfair)]">
             This link has expired
-          </h1>
+          </h2>
           <p className="text-[10px] text-[#C9A227] uppercase tracking-widest font-extrabold mt-1">
             SS Realty Secure Share
           </p>
@@ -283,9 +283,9 @@ function FloorViewContent({
             </div>
           </div>
 
-          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight font-[var(--font-playfair)]">
+          <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight font-[var(--font-playfair)]">
             SS REALTY
-          </h1>
+          </h2>
           <p className="text-[10px] text-[#C9A227] uppercase tracking-widest font-extrabold mt-1">
             Secure Floor Plan Portal
           </p>

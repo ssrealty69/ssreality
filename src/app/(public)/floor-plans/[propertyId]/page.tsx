@@ -93,7 +93,7 @@ export default async function PublicFloorPlanPage({
           </div>
           
           <div className="space-y-2">
-            <h1 className="text-xl font-bold text-gray-800 font-[var(--font-playfair)]">Availability Status</h1>
+            <h2 className="text-xl font-bold text-gray-800 font-[var(--font-playfair)]">Availability Status</h2>
             <p className="text-gray-500 text-sm leading-relaxed">
               {errorMsg || 'The visual availability layout is not currently online.'}
             </p>
@@ -114,11 +114,17 @@ export default async function PublicFloorPlanPage({
   }
 
   return (
-    <ClientFloorPlanViewer 
-      property={property} 
-      floorPlan={floorPlan} 
-      plotPlan={plotPlan}
-      availableProperties={propertiesWithPlans} 
-    />
+    <>
+      {/* Hidden H1 for SEO/accessibility */}
+      <h1 className="sr-only">
+        {property?.title ? `${property.title} – Floor Plan` : 'Live Floor Plan & Availability – SS Realty'}
+      </h1>
+      <ClientFloorPlanViewer 
+        property={property} 
+        floorPlan={floorPlan} 
+        plotPlan={plotPlan}
+        availableProperties={propertiesWithPlans} 
+      />
+    </>
   );
 }

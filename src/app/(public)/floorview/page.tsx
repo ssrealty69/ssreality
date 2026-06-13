@@ -47,9 +47,13 @@ export default async function FloorViewPage() {
   }
 
   return (
-    <FloorViewClient 
-      availableProperties={propertiesWithPlans} 
-      dbError={dbError} 
-    />
+    <>
+      {/* Visually hidden H1 for SEO — page is noindex but H1 is still required for accessibility */}
+      <h1 className="sr-only">SS Realty Secure Floor Plan Portal</h1>
+      <FloorViewClient 
+        availableProperties={propertiesWithPlans} 
+        dbError={dbError} 
+      />
+    </>
   );
 }
