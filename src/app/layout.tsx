@@ -32,14 +32,14 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: 'SS Realty | Premium Properties in Delhi NCR',
+    default: 'Find Premium Properties in Delhi NCR - Luxury Apartments & Villas | SS Realty',
     template: '%s | SS Realty',
   },
   description:
-    'SS Realty — Your trusted real estate partner in Delhi NCR. Find premium apartments, villas, plots and commercial properties for sale and rent.',
+    'Discover premium residential and commercial properties in Delhi NCR. Explore luxury apartments, villas, and plots. Expert real estate consulting for best investments.',
   keywords: [
     'SS Realty', 'real estate', 'property in Delhi NCR', 'apartments for sale',
-    'villas', 'plots', 'commercial property', 'buy property', 'rent property',
+    'villas', 'plots', 'commercial property', 'buy property', 'rent property', 'luxury homes',
   ],
   authors: [{ name: 'SS Realty Teams', url: 'https://ssrealty.org' }],
   creator: 'SS Realty Teams',
@@ -48,13 +48,13 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     url: process.env.NEXT_PUBLIC_APP_URL,
     siteName: 'SS Realty',
-    title: 'SS Realty | Premium Properties in Delhi NCR',
-    description: 'Find your dream property with SS Realty — trusted real estate partner in Delhi NCR.',
+    title: 'Find Premium Properties in Delhi NCR - Luxury Apartments & Villas | SS Realty',
+    description: 'Discover premium residential and commercial properties in Delhi NCR. Explore luxury apartments, villas, and plots.',
     images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'SS Realty' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SS Realty | Premium Properties',
+    title: 'Premium Properties in Delhi NCR | SS Realty',
     description: 'Find your dream property with SS Realty.',
   },
   robots: { index: true, follow: true },
@@ -106,24 +106,90 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'Organization',
-              name: 'SS Realty',
-              url: process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org',
-              logo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || ''}/SS%20Realty%20Official%20Logo.png`,
-              description: 'Premium real estate and property services in Delhi NCR.',
-              contactPoint: {
-                '@type': 'ContactPoint',
-                telephone: '+91-9311059100',
-                contactType: 'customer service',
-                areaServed: 'IN',
-                availableLanguage: ['English', 'Hindi']
-              },
-              address: {
-                '@type': 'PostalAddress',
-                addressLocality: 'Noida',
-                addressRegion: 'Uttar Pradesh',
-                addressCountry: 'IN'
-              }
+              '@graph': [
+                {
+                  '@type': 'RealEstateAgent',
+                  '@id': 'https://ssrealty.org/#organization',
+                  name: 'SS Realty',
+                  url: process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org',
+                  logo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org'}/SS%20Realty%20Official%20Logo.png`,
+                  image: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org'}/SS%20Realty%20Official%20Logo.png`,
+                  description: 'Premium real estate agency in Delhi NCR offering luxury apartments, villas, and commercial spaces. Expert consulting for best property investments.',
+                  telephone: '+91-9311059100',
+                  address: {
+                    '@type': 'PostalAddress',
+                    addressLocality: 'Gurugram',
+                    addressRegion: 'Haryana',
+                    addressCountry: 'IN'
+                  },
+                  hasMap: 'https://share.google/0VFigfocQUhuCZvKc',
+                  sameAs: [
+                    'https://share.google/0VFigfocQUhuCZvKc'
+                  ]
+                },
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://ssrealty.org/#website',
+                  url: 'https://ssrealty.org',
+                  name: 'SS Realty',
+                  publisher: {
+                    '@id': 'https://ssrealty.org/#organization'
+                  },
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: 'https://ssrealty.org/properties?q={search_term_string}',
+                    'query-input': 'required name=search_term_string'
+                  }
+                },
+                {
+                  '@type': 'ItemList',
+                  name: 'Site Navigation',
+                  itemListElement: [
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 1,
+                      name: 'Apartment',
+                      description: 'Find premium luxury apartments for sale and rent in Delhi NCR with world-class amenities.',
+                      url: 'https://ssrealty.org/properties?type=Apartment'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 2,
+                      name: 'Villa/Farm House',
+                      description: 'Explore exclusive villas and farm houses for a luxurious lifestyle in top locations.',
+                      url: 'https://ssrealty.org/properties?type=Villa'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 3,
+                      name: 'Residential Plots',
+                      description: 'Invest in approved residential plots in fast-growing sectors of Delhi NCR.',
+                      url: 'https://ssrealty.org/properties?type=Plot'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 4,
+                      name: 'Commercial Spaces and Plots',
+                      description: 'Buy or lease prime commercial spaces, retail shops, and plots for high ROI.',
+                      url: 'https://ssrealty.org/properties?type=Commercial'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 5,
+                      name: 'Home Loan Calculator',
+                      description: 'Calculate your EMI and plan your home loan effortlessly with our free finance tool.',
+                      url: 'https://ssrealty.org/emi-calculator'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 6,
+                      name: 'Contact Us',
+                      description: 'Get in touch with our expert real estate consultants to find your dream property today.',
+                      url: 'https://ssrealty.org/contact-us'
+                    }
+                  ]
+                }
+              ]
             }),
           }}
         />
@@ -211,24 +277,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </noscript>
         )}
         <TrackingProvider settings={settings}>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                '@context': 'https://schema.org',
-                '@type': 'Organization',
-                name: 'SS Realty',
-                url: process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org',
-                logo: `${process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org'}/SS Realty Official Logo.png`,
-                description: 'SS Realty — Your trusted real estate partner in Delhi NCR. Find premium apartments, villas, plots and commercial properties for sale and rent.',
-                contactPoint: {
-                  '@type': 'ContactPoint',
-                  telephone: '+91-9999999999', // Update as needed
-                  contactType: 'customer service'
-                }
-              }),
-            }}
-          />
+          {/* Second JSON-LD Block Removed as we consolidated everything above */}
           {children}
         </TrackingProvider>
         <Toaster
