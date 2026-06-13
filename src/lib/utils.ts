@@ -16,7 +16,8 @@ export function formatPrice(price: number, currency: string = '₹'): string {
   return `${currency}${price.toLocaleString('en-IN')}`;
 }
 
-export function formatDate(dateStr: string): string {
+export function formatDate(dateStr: string | Date | number): string {
+  if (!dateStr) return '';
   return new Date(dateStr).toLocaleDateString('en-IN', {
     year: 'numeric',
     month: 'long',
