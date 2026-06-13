@@ -351,15 +351,15 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
 
         {/* Nearby / Location Highlights */}
         {property.nearby && property.nearby.length > 0 && (
-          <div className="hidden md:flex mb-4 items-center gap-1.5 flex-wrap text-xs text-gray-600">
+          <div className="hidden md:flex mb-4 items-center gap-1.5 flex-nowrap overflow-hidden text-xs text-gray-600 w-full">
             <span className="font-bold text-[#1A1800] shrink-0">Nearby:</span>
-            {property.nearby.slice(0, 3).map((nb, i) => (
-              <span key={i} className="bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full font-medium text-[11px]">
+            {property.nearby.slice(0, 2).map((nb, i) => (
+              <span key={i} className="bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full font-medium text-[11px] truncate max-w-[220px] shrink">
                 {nb.name} {nb.distance ? `(${nb.distance})` : ''}
               </span>
             ))}
-            {property.nearby.length > 3 && (
-              <span className="text-[10px] font-bold text-[#7A5C00] shrink-0">+{property.nearby.length - 3} more</span>
+            {property.nearby.length > 2 && (
+              <span className="text-[10px] font-bold text-[#7A5C00] shrink-0">+{property.nearby.length - 2} more</span>
             )}
           </div>
         )}
