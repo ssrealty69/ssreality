@@ -377,7 +377,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               SSR
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Listing Agent</p>
+              <p className="text-[10px] font-black uppercase text-gray-500 tracking-wider">Listing By</p>
               <p className="text-xs font-bold text-gray-800">{property.agent?.name || 'SS Realty Agent'}</p>
             </div>
           </div>
