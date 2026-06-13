@@ -278,12 +278,12 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
 
         {/* Dot Indicators (bottom-center) — composited transform-based width, min touch area 44px */}
         {images.length > 1 && (
-          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1 z-20 pointer-events-auto">
+          <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-0 z-20 pointer-events-auto">
             {images.map((_, idx) => (
               <button
                 key={idx}
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCurrentImageIndex(idx); }}
-                className="flex items-center justify-center w-[44px] h-[44px] rounded-full"
+                className="flex items-center justify-center w-7 h-[32px] rounded-full"
                 aria-label={`Go to slide ${idx + 1}`}
               >
                 <span

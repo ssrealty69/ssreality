@@ -222,13 +222,13 @@ export default function FarmHouseSection() {
         </div>
 
         {/* Mobile Dot Indicators — 44px touch area */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex items-center gap-0">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
-              className="flex items-center justify-center w-[44px] h-[44px] rounded-full"
+              className="flex items-center justify-center w-7 h-[32px] rounded-full"
             >
               <span className={`block rounded-full transition-[width] duration-500 ${
                 i === current ? 'w-7 h-2 bg-gradient-to-r from-[#C9A227] to-[#E8C96A]' : 'w-2 h-2 bg-white/30 hover:bg-white/60'
@@ -328,13 +328,13 @@ export default function FarmHouseSection() {
         </div>
 
         {/* Desktop Dot Indicators — 44px touch area */}
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 hidden md:flex items-center gap-0">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
               aria-label={`Go to slide ${i + 1}`}
-              className="flex items-center justify-center w-[44px] h-[44px] rounded-full"
+              className="flex items-center justify-center w-7 h-[32px] rounded-full"
             >
               <span className={`block rounded-full transition-[width] duration-500 ${
                 i === current ? 'w-8 h-2.5 bg-gradient-to-r from-[#C9A227] to-[#E8C96A]' : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/60'
