@@ -4,7 +4,7 @@ import JourneyTimeline from '@/components/public/JourneyTimeline';
 
 export const metadata: Metadata = {
   title: 'About Us - Top Real Estate Agency in Gurgaon & Delhi NCR',
-  description: 'Learn about SS Realty — Gurgaon and Delhi NCR\\'s trusted real estate partner with 25+ years of experience helping families find their dream homes.',
+  description: "Learn about SS Realty — Gurgaon and Delhi NCR's trusted real estate partner with 25+ years of experience helping families find their dream homes.",
 };
 
 // SSG — fully static
