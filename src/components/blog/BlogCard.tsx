@@ -19,12 +19,21 @@ export default function BlogCard({ blog }: BlogCardProps) {
     <Link href={`/blog/${blog.slug}`} className="group block">
       <article className="bg-white rounded-[2rem] overflow-hidden border border-[#E8D5A3]/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgba(201,162,39,0.15)] transition-all duration-500 hover:-translate-y-2 flex flex-col h-full">
         {/* Image Container with Zoom and Overlay */}
-        <div className="relative h-60 overflow-hidden">
+        <div className="relative h-60 overflow-hidden bg-[#1A1800]">
+          {/* Blurred Background Image */}
+          <Image
+            src={blog.coverImage || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'}
+            alt=""
+            fill
+            className="object-cover opacity-40 blur-xl scale-125 pointer-events-none"
+            aria-hidden="true"
+          />
+          {/* Main Content Image */}
           <Image
             src={blog.coverImage || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'}
             alt={blog.title}
             fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            className="object-contain transition-transform duration-700 group-hover:scale-105 z-10"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
           {/* Subtle Gradient Overlay */}
