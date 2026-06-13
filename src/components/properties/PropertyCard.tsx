@@ -46,7 +46,7 @@ export default function PropertyCard({ property, priority = false, actionText, o
           fill
           className={`object-cover transition-opacity duration-700 ${isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'}`}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw"
-          quality={90}
+          quality={50}
           priority={priority}
           loading={priority ? 'eager' : 'lazy'}
         />
@@ -59,7 +59,7 @@ export default function PropertyCard({ property, priority = false, actionText, o
             fill
             className={`object-cover transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw"
-            quality={90}
+            quality={50}
             onError={() => setHoverImageError(true)}
           />
         )}

@@ -7,15 +7,15 @@ import { FALLBACK_PROPERTIES } from '@/constants/properties';
 import { connectDB } from '@/lib/mongodb';
 import PropertyModel from '@/models/Property';
 
-// Lazy-load below-the-fold sections — they won't block initial paint
-const ProjectHighlights = dynamic(() => import('@/components/home/ProjectHighlights'), { ssr: true });
-const AmenitiesSection = dynamic(() => import('@/components/home/AmenitiesSection'), { ssr: true });
-const InvestmentPredictor = dynamic(() => import('@/components/home/InvestmentPredictor'), { ssr: true });
-const StatsSection = dynamic(() => import('@/components/home/StatsSection'), { ssr: true });
-const ServicesSection = dynamic(() => import('@/components/home/ServicesSection'), { ssr: true });
-const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection'), { ssr: true });
-const DeliveredProperties = dynamic(() => import('@/components/home/DeliveredProperties'), { ssr: true });
-const FarmHouseSection = dynamic(() => import('@/components/home/FarmHouseSection'), { ssr: true });
+// Lazy-load below-the-fold sections
+const ProjectHighlights   = dynamic(() => import('@/components/home/ProjectHighlights'));
+const AmenitiesSection    = dynamic(() => import('@/components/home/AmenitiesSection'));
+const InvestmentPredictor = dynamic(() => import('@/components/home/InvestmentPredictor'));
+const StatsSection        = dynamic(() => import('@/components/home/StatsSection'));
+const ServicesSection     = dynamic(() => import('@/components/home/ServicesSection'));
+const TestimonialsSection = dynamic(() => import('@/components/home/TestimonialsSection'));
+const DeliveredProperties = dynamic(() => import('@/components/home/DeliveredProperties'));
+const FarmHouseSection    = dynamic(() => import('@/components/home/FarmHouseSection'));
 
 
 export const metadata: Metadata = {

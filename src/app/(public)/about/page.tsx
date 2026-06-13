@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { Target, Eye, Heart, Users, Award, CheckCircle2, Phone, Mail } from 'lucide-react';
 import JourneyTimeline from '@/components/public/JourneyTimeline';
@@ -76,8 +77,14 @@ export default function AboutPage() {
             </div>
             <div className="relative w-full aspect-[4/3] md:aspect-auto md:h-full md:min-h-[420px]">
               <div className="w-full h-full rounded-3xl overflow-hidden shadow-[var(--shadow-hover)]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/SS Realty office, SS Realty 3BHK Flat in Gurgaon, 3BHK Flat in Sultanpur, SS Realty.webp" alt="SS Realty office" className="w-full h-full object-cover object-center scale-105 transition-transform duration-500" />
+                <Image
+                  src="/SS Realty office, SS Realty 3BHK Flat in Gurgaon, 3BHK Flat in Sultanpur, SS Realty.webp"
+                  alt="SS Realty office in Chhatarpur, New Delhi"
+                  fill
+                  className="object-cover object-center scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={75}
+                />
               </div>
               <div className="absolute -top-4 -left-4 md:-top-10 md:-left-10 z-10">
                 {/* Minimal gradient golden ring wrapper (w-24 on mobile, w-36 on desktop) */}

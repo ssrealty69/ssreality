@@ -208,7 +208,7 @@ export default function FarmHouseSection() {
             {/* CTA — centered */}
             <button
               onClick={() => setShowModal(true)}
-              className="fh-enquiry-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-[#0B0A06] font-black text-[11px] uppercase tracking-widest shadow-xl cursor-pointer"
+              className="fh-enquiry-btn inline-flex items-center gap-2 px-5 py-3 min-h-[44px] rounded-full text-[#0B0A06] font-black text-[11px] uppercase tracking-widest shadow-xl cursor-pointer"
             >
               <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -222,7 +222,7 @@ export default function FarmHouseSection() {
         </div>
 
         {/* Mobile Dot Indicators — 44px touch area */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-0">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1">
           {slides.map((_, i) => (
             <button
               key={i}
@@ -328,7 +328,7 @@ export default function FarmHouseSection() {
         </div>
 
         {/* Desktop Dot Indicators — 44px touch area */}
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-0">
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1">
           {slides.map((_, i) => (
             <button
               key={i}

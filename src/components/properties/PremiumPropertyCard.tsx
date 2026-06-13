@@ -209,7 +209,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 440px"
               priority={priority && idx === 0}
               loading={priority && idx === 0 ? 'eager' : 'lazy'}
-              quality={65}
+              quality={50}
             />
           </div>
         ))}
@@ -278,7 +278,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
 
         {/* Dot Indicators (bottom-center) — composited transform-based width, min touch area 44px */}
         {images.length > 1 && (
-          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-0 z-20 pointer-events-auto">
+          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1 z-20 pointer-events-auto">
             {images.map((_, idx) => (
               <button
                 key={idx}
