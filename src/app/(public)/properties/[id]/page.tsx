@@ -484,6 +484,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                 propertyTitle={property.title}
                 brochureUrl={property.brochureUrl}
                 waLink={waLink}
+                property={property}
               />
             </div>
           </div>

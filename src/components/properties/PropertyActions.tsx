@@ -10,10 +10,15 @@ interface PropertyActionsProps {
   propertyTitle: string;
   brochureUrl?: string;
   waLink: string;
+  property?: any; // Passed from parent to use with BrochureModal
 }
 
-export default function PropertyActions({ propertyId, propertyTitle, brochureUrl, waLink }: PropertyActionsProps) {
+import dynamic from 'next/dynamic';
+const BrochureModal = dynamic(() => import('./BrochureModal'), { ssr: false });
+
+export default function PropertyActions({ propertyId, propertyTitle, brochureUrl, waLink, property }: PropertyActionsProps) {
   const [showModal, setShowModal] = useState(false);
+  const [showBrochureModal, setShowBrochureModal] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [requirement, setRequirement] = useState('');
@@ -80,10 +85,8 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
       <div className="flex flex-col sm:flex-row gap-4 mt-6">
         {/* Brochure Download Button */}
         {brochureUrl ? (
-          <a
-            href={brochureUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => setShowBrochureModal(true)}
             className="flex-[1.2] relative group overflow-hidden bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] py-4 rounded-2xl flex justify-center items-center gap-3 shadow-[0_10px_20px_-5px_rgba(201,162,39,0.3)] hover:shadow-[0_15px_30px_rgba(201,162,39,0.4)] transition-all duration-300 transform hover:-translate-y-0.5 active:scale-95 text-center cursor-pointer"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
@@ -91,7 +94,7 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
               <Download size={22} className="stroke-[3]" />
             </div>
             <span className="text-[17px] font-heading font-bold tracking-tight">Download Brochure</span>
-          </a>
+          </button>
         ) : (
           <div className="flex-[1.2] relative overflow-hidden bg-gray-100 text-gray-400 py-4 rounded-2xl flex justify-center items-center gap-3 cursor-not-allowed border border-gray-200/50">
             <div className="w-10 h-10 rounded-full bg-gray-200/50 flex items-center justify-center shrink-0">
@@ -252,6 +255,16 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
           </div>
         )}
       </AnimatePresence>
+
+      {/* Brochure Modal Popup */}
+      {showBrochureModal && property && (
+        <BrochureModal 
+          property={property} 
+          images={property.images && property.images.length > 0 ? property.images : ['/placeholder.jpg']}
+          waLink={waLink}
+          onClose={() => setShowBrochureModal(false)} 
+        />
+      )}
     </>
   );
 }

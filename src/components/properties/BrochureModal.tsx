@@ -17,7 +17,7 @@ interface BrochureModalProps {
 export default function BrochureModal({ property, images, waLink, onClose }: BrochureModalProps) {
   const [brochureName, setBrochureName] = useState('');
   const [brochurePhone, setBrochurePhone] = useState('');
-  const [selectedBhk, setSelectedBhk] = useState('3 BHK');
+  const [brochureEmail, setBrochureEmail] = useState('');
   const [brochureLoading, setBrochureLoading] = useState(false);
   const [brochureSubmitted, setBrochureSubmitted] = useState(false);
 
@@ -41,7 +41,7 @@ export default function BrochureModal({ property, images, waLink, onClose }: Bro
         body: JSON.stringify({
           name: brochureName.trim(),
           phone: brochurePhone,
-          requirement: `Selected Configuration: ${selectedBhk}`,
+          requirement: `Brochure Download Request. Email: ${brochureEmail}`,
           propertyId: property._id,
           propertyTitle: property.title,
           propertyUrl: typeof window !== 'undefined' ? window.location.origin + `/properties/${property._id}` : `/properties/${property._id}`,
@@ -180,25 +180,18 @@ export default function BrochureModal({ property, images, waLink, onClose }: Bro
                 </div>
               </div>
 
-              {/* Configuration Selector */}
+              {/* Email Address */}
               <div className="space-y-1.5">
-                <label className="text-[9px] font-black text-[#E8C96A] uppercase tracking-widest ml-1">Configuration Preference</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['3 BHK', '4 BHK', 'Duplex'].map((opt) => (
-                    <button
-                      key={opt}
-                      type="button"
-                      onClick={() => setSelectedBhk(opt)}
-                      className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all text-center cursor-pointer ${
-                        selectedBhk === opt
-                          ? 'bg-gradient-to-r from-[#C9A227] to-[#E8C96A] text-[#0B0A06] border-[#E8C96A] shadow-[0_0_10px_rgba(201,162,39,0.3)]'
-                          : 'bg-white/5 border-white/10 text-white hover:bg-white/[0.08]'
-                      }`}
-                    >
-                      {opt}
-                    </button>
-                  ))}
-                </div>
+                <label className="text-[9px] font-black text-[#E8C96A] uppercase tracking-widest ml-1">Email Address</label>
+                <input 
+                  type="email" 
+                  placeholder="Your email address"
+                  value={brochureEmail}
+                  onChange={(e) => setBrochureEmail(e.target.value)}
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-[#C9A227]/80 text-xs font-semibold text-white outline-none transition-all placeholder:text-white/30 hover:bg-white/[0.08]"
+                  required 
+                  disabled={brochureLoading}
+                />
               </div>
 
               {/* Submit Button */}
