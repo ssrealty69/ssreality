@@ -19,7 +19,8 @@ const FarmHouseSection = dynamic(() => import('@/components/home/FarmHouseSectio
 
 
 export const metadata: Metadata = {
-  title: 'SS Realty | Premium Properties in Delhi NCR',
+  // We remove title here so it inherits the robust 'default' title from layout.tsx
+  // which is already "Find Premium Properties in Delhi NCR - Luxury Apartments & Villas | SS Realty"
   description: 'Discover premium residential and commercial properties for sale and rent across Delhi NCR with SS Realty — your trusted real estate partner.',
 };
 
