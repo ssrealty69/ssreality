@@ -26,6 +26,8 @@ export default function MascotAvatar({
         animate={{ y: [0, -3, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       >
+        {/* Mascot removed as per user request, waiting for new code */}
+        {/*
         <Image
           src="/mascot-leaning.webp"
           alt="SS Realty AI Mascot"
@@ -34,6 +36,7 @@ export default function MascotAvatar({
           className="object-contain w-full h-full drop-shadow-xl"
           priority
         />
+        */}
       </motion.div>
     );
   }
@@ -62,6 +65,8 @@ export default function MascotAvatar({
         }
         className="w-full h-full flex items-center justify-center"
       >
+        {/* Mascot removed as per user request, waiting for new code */}
+        {/* 
         <Image
           src="/mascot-main.webp"
           alt="SS Realty AI Mascot — Aria"
@@ -74,6 +79,7 @@ export default function MascotAvatar({
             filter: 'drop-shadow(0 6px 12px rgba(232,175,48,0.3)) drop-shadow(0 2px 4px rgba(0,0,0,0.15))',
           }}
         />
+        */}
       </motion.div>
 
       {/* Gold glow ring under mascot */}
