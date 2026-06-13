@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calculator, Search, Info, BookOpen } from 'lucide-react';
+import { Home, Calculator, Search, Info, Phone } from 'lucide-react';
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
@@ -11,7 +11,7 @@ export default function MobileBottomNav() {
     { name: 'EMI', href: '/emi-calculator', icon: Calculator, isCenter: false },
     { name: 'SEARCH', href: '/properties?focus=true', icon: Search, isCenter: true },
     { name: 'ABOUT', href: '/about', icon: Info, isCenter: false },
-    { name: 'BROCHURES', href: '/brochures', icon: BookOpen, isCenter: false },
+    { name: 'CONTACT', href: '/contact', icon: Phone, isCenter: false },
   ];
 
   return (
