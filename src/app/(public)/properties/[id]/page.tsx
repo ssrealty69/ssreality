@@ -260,6 +260,8 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
             fill
             className="object-cover"
             priority
+            sizes="100vw"
+            quality={80}
           />
         </div>
         {/* Mobile Background */}
@@ -581,7 +583,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                       key={idx} 
                       className={`relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group ${spanClass}`}
                     >
-                      <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw" />
                     </div>
                   );
                 })}
@@ -596,7 +598,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                       (galleryImages.length === 5 && idx === 4) ? 'col-span-2 md:col-span-1' : 'col-span-1'
                     }`}
                   >
-                    <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, 25vw" />
                   </div>
                 ))}
               </div>
@@ -608,7 +610,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               }`}>
                 {galleryImages.map((imgUrl: string, idx: number) => (
                   <div key={idx} className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group">
-                    <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, 33vw" />
                   </div>
                 ))}
               </div>

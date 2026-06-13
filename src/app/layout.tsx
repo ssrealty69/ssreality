@@ -76,13 +76,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${poppins.variable} scroll-smooth`} suppressHydrationWarning>
       <head>
-        {/* Google Tag Manager */}
+        {/* Google Tag Manager — loaded after page becomes interactive to avoid render blocking */}
         {settings?.isEnabled && settings.googleTagManagerId && (
-          <script dangerouslySetInnerHTML={{ __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          <Script
+            id="gtm-load"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{ __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','${settings.googleTagManagerId}');` }} />
+})(window,document,'script','dataLayer','${settings.googleTagManagerId}');` }}
+          />
         )}
         {/* End Google Tag Manager */}
         <link rel="icon" href="/SS Realty Official Logo.png" />
@@ -91,6 +95,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* Preconnect to speed up 3rd-party connections before browser discovers them */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
         {/* DNS-prefetch for external resources to reduce DNS resolution overhead without blocking TCP/TLS handshakes */}
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />

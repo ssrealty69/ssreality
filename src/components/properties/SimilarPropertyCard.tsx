@@ -24,6 +24,8 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
           alt={property.title}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-110"
+          sizes="(max-width: 640px) 50vw, 260px"
+          quality={60}
         />
         {/* Price Overlay */}
         <div className="absolute bottom-2 left-2">

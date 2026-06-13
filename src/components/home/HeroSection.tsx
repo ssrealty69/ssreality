@@ -1,20 +1,48 @@
 'use client';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Star, Building2, CheckCircle2, Play } from 'lucide-react';
+import Image from 'next/image';
+import { Star, Building2, CheckCircle2 } from 'lucide-react';
 
 export default function HeroSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Defer video load until after page is interactive (improves LCP)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    // Lazy-load video after a short delay so it doesn't compete with LCP
+    const timer = setTimeout(() => {
+      video.src = 'https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto:low,f_auto,w_1280/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.mp4';
+      video.load();
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <section className="relative h-[100vh] min-h-[600px] w-full overflow-hidden flex flex-col justify-center items-center font-sans">
       
-      {/* Background: HTML5 Video */}
+      {/* Background: Poster image shown immediately (no render blocking), video loads lazily */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none bg-[#0A0A0A]">
+        {/* Poster image loads instantly — critical for LCP */}
+        <Image
+          src="https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto,f_webp,w_1280/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.jpg"
+          alt="SS Realty Hero Background"
+          fill
+          priority
+          quality={75}
+          className="object-cover"
+          sizes="100vw"
+        />
+        {/* Video loads after 3s — does not block initial render */}
         <video
-          src="https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto/f_auto/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.mp4"
-          poster="https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto/f_auto/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.jpg"
+          ref={videoRef}
+          poster="https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto,f_webp,w_1280/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.jpg"
           autoPlay
           muted
           loop
           playsInline
+          preload="none"
           className="absolute inset-0 w-full h-full object-cover pointer-events-none"
         />
       </div>
