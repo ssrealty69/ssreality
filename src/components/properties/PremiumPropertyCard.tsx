@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   Check, Heart, Star, Download, Eye, ChevronLeft, ChevronRight,
-  MapPin, ShieldAlert, Award, PhoneCall, X, CheckCircle2, Loader2
+  MapPin, ShieldAlert, Award, PhoneCall, X, CheckCircle2, Loader2, CheckCheck
 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import type { Property } from '@/types';
@@ -227,7 +227,8 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
 
           {/* VERIFIED + Project Name — joined pill */}
           <div className="flex items-stretch shadow-md rounded-md overflow-hidden backdrop-blur-md">
-            <span className="px-2.5 py-1 bg-white/90 text-[#1A1800] text-[10px] font-black tracking-wider uppercase">
+            <span className="flex items-center gap-1 px-2.5 py-1 bg-white/90 text-[#1A1800] text-[10px] font-black tracking-wider uppercase">
+              <CheckCheck size={14} className="text-green-600" />
               VERIFIED
             </span>
             {(property.propertyName || property.projectDetails?.projectName) && (
