@@ -34,8 +34,8 @@ export default async function HomePage() {
   try {
     await connectDB();
     const [latestRaw, plotRaw, deliveredRaw] = await Promise.all([
-      PropertyModel.find({ status: 'available' }).sort('-createdAt').limit(4).lean(),
-      PropertyModel.find({ propertyType: 'plot', status: 'available' }).sort('-createdAt').limit(4).lean(),
+      PropertyModel.find({ status: 'available' }).sort('-createdAt').limit(6).lean(),
+      PropertyModel.find({ propertyType: 'plot', status: 'available' }).sort('-createdAt').limit(6).lean(),
       PropertyModel.find({ status: 'delivered' }).sort('-createdAt').limit(6).lean(),
     ]);
 
