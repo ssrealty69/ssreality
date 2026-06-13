@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Shield, Eye, Lock, Bell, FileText, Mail, Phone, MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | SS Realty',
-  description: 'Learn how SS Realty collects, uses, and protects your personal information. Your privacy is our priority.',
+  title: 'Privacy Policy',
+  description: 'Privacy policy detailing how SS Realty handles and protects user data for our Gurgaon and Delhi NCR real estate services.',
 };
 
 export const dynamic = 'force-static';

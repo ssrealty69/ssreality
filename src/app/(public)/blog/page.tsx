@@ -6,8 +6,8 @@ import type { Blog } from '@/types';
 import { getAllBlogs } from '@/lib/blog-service';
 
 export const metadata: Metadata = {
-  title: 'Blog & News | SS Realty',
-  description: 'Stay updated with the latest real estate news, market trends, investment tips, and property guides from SS Realty.',
+  title: 'Real Estate Blog & Market Insights for Gurgaon & Delhi NCR',
+  description: 'Stay updated with the latest real estate news, market trends, investment tips, and property guides for Gurgaon and Delhi NCR from SS Realty.',
 };
 
 export const dynamic = 'force-dynamic';

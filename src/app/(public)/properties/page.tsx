@@ -7,8 +7,8 @@ import { FALLBACK_PROPERTIES } from '@/constants/properties';
 import type { Property } from '@/types';
 
 export const metadata: Metadata = {
-  title: 'Properties | SS Realty',
-  description: 'Browse all properties for sale and rent in Delhi NCR — apartments, villas, plots, and commercial spaces.',
+  title: 'Premium Properties for Sale & Rent in Gurgaon & Delhi NCR',
+  description: 'Browse premium properties for sale and rent in Gurgaon & Delhi NCR — luxury apartments, villas, plots, and commercial spaces by top builders.',
 };
 
 export const dynamic = 'force-dynamic';

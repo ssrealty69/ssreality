@@ -8,8 +8,8 @@ import FloorViewClient from './FloorViewClient';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Secure Floor Plan availability Console - SS Realty',
-  description: 'Authorized personnel access only.',
+  title: 'Secure Floor Plan Console',
+  description: 'Request secure access to premium property floor plans in Gurgaon and Delhi NCR.',
   robots: {
     index: false,
     follow: false,

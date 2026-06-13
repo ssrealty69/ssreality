@@ -3,8 +3,8 @@ import { Target, Eye, Heart, Users, Award, CheckCircle2, Phone, Mail } from 'luc
 import JourneyTimeline from '@/components/public/JourneyTimeline';
 
 export const metadata: Metadata = {
-  title: 'About Us | SS Realty',
-  description: 'Learn about SS Realty — Delhi NCR\'s trusted real estate partner with 25+ years of experience helping families find their dream homes.',
+  title: 'About Us - Top Real Estate Agency in Gurgaon & Delhi NCR',
+  description: 'Learn about SS Realty — Gurgaon and Delhi NCR\\'s trusted real estate partner with 25+ years of experience helping families find their dream homes.',
 };
 
 // SSG — fully static

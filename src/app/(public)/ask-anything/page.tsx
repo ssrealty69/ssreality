@@ -5,11 +5,11 @@ import { Question } from '@/models/Question';
 import { Search, MessageSquare, Clock, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Ask Anything - Real Estate Q&A | SS Realty',
-  description: 'Ask your real estate questions about plots, flats, and villas. Get answers from the community and SS Realty experts.',
+  title: 'Real Estate Q&A - Ask Experts in Gurgaon & Delhi NCR',
+  description: 'Have questions about buying, selling, or renting property in Gurgaon and Delhi NCR? Ask our real estate experts at SS Realty.',
   openGraph: {
-    title: 'Ask Anything - Real Estate Q&A | SS Realty',
-    description: 'Ask your real estate questions and get answers from experts and the community.',
+    title: 'Real Estate Q&A - Ask Experts in Gurgaon & Delhi NCR',
+    description: 'Have questions about buying, selling, or renting property in Gurgaon and Delhi NCR? Ask our real estate experts at SS Realty.',
   }
 };
 
