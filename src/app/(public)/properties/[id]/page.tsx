@@ -233,7 +233,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
   const galleryImages = galleryImagesSource.filter((imgUrl: string) => imgUrl !== heroImage);
 
   return (
-    <div className="font-sans bg-white pb-20 overflow-x-hidden">
+    <div className="font-sans bg-white overflow-x-hidden">
       <style dangerouslySetInnerHTML={{
         __html: `
         @keyframes custom-smooth-blink {
@@ -283,7 +283,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         <div className="absolute inset-0 max-w-7xl mx-auto px-4 flex flex-col justify-end pb-16 items-center text-center md:justify-center md:pb-0 md:items-start md:text-left pt-24 md:pt-16">
           <div className="max-w-xl text-white flex flex-col items-center md:items-start">
             {/* Price Badge - Gold outlined glowing style like Farmhouse Exclusive Launch badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 backdrop-blur-sm mb-5 shadow-[0_0_8px_rgba(201,162,39,0.4)] animate-smooth-blink">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 md:bg-gradient-to-r md:from-black/60 md:via-[#2b2200]/60 md:to-[#1A1800]/60 backdrop-blur-sm mb-5 shadow-[0_0_8px_rgba(201,162,39,0.4)] animate-smooth-blink">
               <span className="w-2 h-2 rounded-full bg-gradient-to-br from-[#FFE59E] via-[#E8C96A] to-[#C9A227] shadow-[0_0_10px_#E8C96A] inline-block shrink-0 animate-pulse" />
               <span className="text-[#E8C96A] text-[10px] md:text-xs font-bold tracking-[0.22em] uppercase">
                 ₹ {formatPrice(property.price)} {property.priceType === 'rent' ? '/month' : 'Onwards'}
@@ -698,9 +698,9 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               Similar <span className="text-[#A07A10]">Properties</span>
             </h2>
 
-            <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-8 px-2" style={{ scrollbarWidth: 'none' }}>
-              {relatedProperties.map((relatedProp: any) => (
-                <div key={relatedProp._id.toString()} className="min-w-[220px] md:min-w-[250px] lg:min-w-[260px] snap-start flex-shrink-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pb-8 px-2">
+              {relatedProperties.slice(0, 4).map((relatedProp: any) => (
+                <div key={relatedProp._id.toString()} className="w-full">
                   <SimilarPropertyCard property={relatedProp} />
                 </div>
               ))}
@@ -717,20 +717,10 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
       <div className="max-w-7xl mx-auto px-4">
 
-        <div className="bg-[#C9A227] rounded-xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 shadow-lg mb-16">
-          <h3 className="text-2xl text-white font-medium text-center md:text-left">Ready to Book or Need More Details?</h3>
-          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-            <a href={waLink} target="_blank" rel="noopener noreferrer" className="bg-[#25D366] text-white px-6 py-3 rounded-md font-bold flex justify-center items-center gap-2 hover:bg-[#20bd5a] transition-colors shadow-md">
-              <MessageCircle size={18} /> WhatsApp Now
-            </a>
-            <a href="tel:+919311059100" className="bg-[#1A1800] text-[#C9A227] px-6 py-3 rounded-md font-bold flex justify-center items-center gap-2 hover:bg-gray-100 transition-colors shadow-md">
-              <Phone size={18} /> 93110 59100
-            </a>
-          </div>
-        </div>
+
 
         {/* --- ABOUT & FORM --- */}
-        <section id="about" className="py-16 border-t border-gray-100">
+        <section id="about" className="pt-16 pb-8 border-t border-gray-100">
           <div className="flex flex-col lg:flex-row gap-12">
             <div className="lg:w-1/2">
               <div className="flex items-center gap-4 mb-8">

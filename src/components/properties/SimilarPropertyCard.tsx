@@ -18,14 +18,14 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
   return (
     <article className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full group transition-all duration-300 hover:shadow-md hover:border-[#C9A227]/30">
       {/* Image Container */}
-      <div className="relative w-full aspect-[16/10] sm:aspect-[3/2] overflow-hidden">
+      <div className="relative w-full aspect-square overflow-hidden">
         <Image
           src={mainImage}
           alt={property.title}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-110"
           sizes="(max-width: 640px) 50vw, 260px"
-          quality={60}
+          quality={90}
         />
         {/* Price Overlay */}
         <div className="absolute bottom-2 left-2">
@@ -43,25 +43,38 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
           {property.title}
         </h3>
 
-        {/* Minimal Specs */}
-        {(property.features.bedrooms || property.features.area) ? (
-          <div className="grid grid-cols-1 gap-1 mb-3">
-            {property.features.bedrooms ? (
-              <div className="flex items-center gap-1.5 text-gray-500">
-                <BedDouble size={13} className="text-[#C9A227]" />
-                <span className="text-[11px] font-medium">{property.features.bedrooms} BHK</span>
-              </div>
-            ) : null}
-            {property.features.area ? (
-              <div className="flex items-center gap-1.5 text-gray-500">
-                <Maximize2 size={13} className="text-[#C9A227]" />
-                <span className="text-[11px] font-medium line-clamp-1">
-                  {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Sq. Yd' : property.features.areaUnit}
-                </span>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
+        {/* Proper Configuration & Size Info */}
+        {(() => {
+          let configText = '';
+          if (property.priceList && property.priceList.length > 0) {
+            configText = property.priceList.map(item => {
+              let typeStr = item.type?.replace(/(\d+)\s*(BHK)/i, '$1 BHK').trim();
+              let sizeStr = item.size?.trim();
+              if (sizeStr && /^[0-9\s\.,]+$/.test(sizeStr)) {
+                const unit = property.features?.areaUnit === 'sqyd' ? 'Sq.Yd.' : (property.features?.areaUnit || 'Sq.Ft.');
+                sizeStr = `${sizeStr} ${unit}`;
+              }
+              if (typeStr && sizeStr) return `${typeStr} (${sizeStr})`;
+              return typeStr || sizeStr || '';
+            }).filter(Boolean).join(' | ');
+          } else if (property.features?.bedrooms || property.features?.area) {
+            const parts = [];
+            if (property.features.bedrooms) parts.push(`${property.features.bedrooms} BHK`);
+            if (property.features.area) {
+              const unit = property.features.areaUnit === 'sqyd' ? 'Sq.Yd.' : (property.features.areaUnit || 'Sq.Ft.');
+              parts.push(`${property.features.area} ${unit}`);
+            }
+            configText = parts.join(' - ');
+          }
+
+          if (!configText) return null;
+
+          return (
+            <div className="mb-3 text-[11px] text-[#475569] font-medium leading-snug line-clamp-2">
+              {configText}
+            </div>
+          );
+        })()}
 
         {/* View Details Button */}
         <Link 

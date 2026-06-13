@@ -59,27 +59,11 @@ const buildColumns = (list: string[]): ColumnGroup[] => {
 };
 
 const getRotation = (idx: number) => {
-  const rotations = [
-    'rotate-[1deg]',
-    'rotate-[-1.5deg]',
-    'rotate-[2deg]',
-    'rotate-[-1deg]',
-    'rotate-[1.5deg]',
-    'rotate-[-2deg]'
-  ];
-  return rotations[idx % rotations.length];
+  return '';
 };
 
 const getColOffset = (colIdx: number) => {
-  const offsets = [
-    'translate-y-2',
-    '-translate-y-1.5',
-    'translate-y-0',
-    'translate-y-3',
-    '-translate-y-2',
-    'translate-y-1'
-  ];
-  return offsets[colIdx % offsets.length];
+  return '';
 };
 
 export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] }) {
@@ -140,15 +124,11 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
             {col.type === 'single' ? (
               // Single item column
               <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: '-20px' }}
                 transition={{ duration: 0.5, delay: Math.min(colIdx * 0.04, 0.25) }}
                 whileHover={{
-                  y: -12,
-                  z: 20,
-                  rotateX: 8,
-                  rotateY: -8,
                   scale: 1.03,
                   boxShadow: "0 30px 60px -15px rgba(201,162,39,0.22)"
                 }}
@@ -156,7 +136,7 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
               >
                 <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-gray-100 rounded-xs mb-2 md:mb-3 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(25px)] group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]">
                   <AmenityImage
-                    src={`/Project Amenities/${col.items[0].replace(/'/g, "")}.jpg`}
+                    src={`/Project Amenities/${col.items[0].replace(/'/g, "").toUpperCase()}.jpg`}
                     alt={col.items[0]}
                     fallbackText="✦"
                   />
@@ -177,15 +157,11 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
                     className={`${getRotation(subIdx + 1)} w-full [perspective:1000px]`}
                   >
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true, margin: '-20px' }}
                       transition={{ duration: 0.5, delay: Math.min((colIdx * 2 + subIdx) * 0.04, 0.25) }}
                       whileHover={{
-                        y: -8,
-                        z: 15,
-                        rotateX: 6,
-                        rotateY: -6,
                         scale: 1.03,
                         boxShadow: "0 20px 40px -8px rgba(201,162,39,0.18)"
                       }}
@@ -193,7 +169,7 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
                     >
                       <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-gray-100 rounded-xs mb-1.5 md:mb-2 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(20px)] group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
                         <AmenityImage
-                          src={`/Project Amenities/${item.replace(/'/g, "")}.jpg`}
+                          src={`/Project Amenities/${item.replace(/'/g, "").toUpperCase()}.jpg`}
                           alt={item}
                           fallbackText="✦"
                         />
@@ -282,15 +258,11 @@ export function WorldClassAmenitiesGrid({ amenities = [] }: { amenities?: string
             {col.type === 'single' ? (
               // Single item column
               <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: '-20px' }}
                 transition={{ duration: 0.5, delay: Math.min(colIdx * 0.04, 0.25) }}
                 whileHover={{
-                  y: -12,
-                  z: 20,
-                  rotateX: 8,
-                  rotateY: -8,
                   scale: 1.03,
                   boxShadow: "0 30px 60px -15px rgba(201,162,39,0.22)"
                 }}
@@ -319,15 +291,11 @@ export function WorldClassAmenitiesGrid({ amenities = [] }: { amenities?: string
                     className={`${getRotation(subIdx + 1)} w-full [perspective:1000px]`}
                   >
                     <motion.div
-                      initial={{ opacity: 0, scale: 0.95, y: 15 }}
-                      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true, margin: '-20px' }}
                       transition={{ duration: 0.5, delay: Math.min((colIdx * 2 + subIdx) * 0.04, 0.25) }}
                       whileHover={{
-                        y: -8,
-                        z: 15,
-                        rotateX: 6,
-                        rotateY: -6,
                         scale: 1.03,
                         boxShadow: "0 20px 40px -8px rgba(201,162,39,0.18)"
                       }}

@@ -97,31 +97,38 @@ export default function PropertyCard({ property, priority = false, actionText, o
           {property.location.address}
         </p>
 
-        {/* Specs Icons - Even more Compact */}
-        {(property.features.bedrooms || property.features.bathrooms || property.features.area) ? (
-          <div className="flex items-center gap-2.5 mb-3 py-1 border-y border-gray-50">
-            {property.features.bedrooms ? (
-              <div className="flex items-center gap-1 text-[#1E293B]">
-                <BedDouble size={14} className="text-[#334155]" />
-                <span className="text-xs font-semibold">{property.features.bedrooms}</span>
-              </div>
-            ) : null}
-            {property.features.bathrooms ? (
-              <div className="flex items-center gap-1 text-[#1E293B]">
-                <Bath size={14} className="text-[#334155]" />
-                <span className="text-xs font-semibold">{property.features.bathrooms}</span>
-              </div>
-            ) : null}
-            {property.features.area ? (
-              <div className="flex items-center gap-1 text-[#1E293B]">
-                <Maximize2 size={14} className="text-[#334155]" />
-                <span className="text-xs font-semibold whitespace-nowrap">
-                  {property.features.area} {property.features.areaUnit === 'sqyd' ? 'Yd' : property.features.areaUnit}
-                </span>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
+        {/* Proper Configuration & Size Info */}
+        {(() => {
+          let configText = '';
+          if (property.priceList && property.priceList.length > 0) {
+            configText = property.priceList.map(item => {
+              let typeStr = item.type?.replace(/(\d+)\s*(BHK)/i, '$1 BHK').trim();
+              let sizeStr = item.size?.trim();
+              if (sizeStr && /^[0-9\s\.,]+$/.test(sizeStr)) {
+                const unit = property.features?.areaUnit === 'sqyd' ? 'Sq.Yd.' : (property.features?.areaUnit || 'Sq.Ft.');
+                sizeStr = `${sizeStr} ${unit}`;
+              }
+              if (typeStr && sizeStr) return `${typeStr} (${sizeStr})`;
+              return typeStr || sizeStr || '';
+            }).filter(Boolean).join(' | ');
+          } else if (property.features?.bedrooms || property.features?.area) {
+            const parts = [];
+            if (property.features.bedrooms) parts.push(`${property.features.bedrooms} BHK`);
+            if (property.features.area) {
+              const unit = property.features.areaUnit === 'sqyd' ? 'Sq.Yd.' : (property.features.areaUnit || 'Sq.Ft.');
+              parts.push(`${property.features.area} ${unit}`);
+            }
+            configText = parts.join(' - ');
+          }
+
+          if (!configText) return null;
+
+          return (
+            <div className="mb-3 py-1.5 border-y border-gray-50 text-[11px] text-[#334155] font-semibold leading-snug line-clamp-2">
+              {configText}
+            </div>
+          );
+        })()}
 
         {/* Features List - Show customized count of amenities */}
         <div className="space-y-0.5 mb-4 flex-grow">
