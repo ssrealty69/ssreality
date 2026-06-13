@@ -24,8 +24,8 @@ export default function FeaturedProperties({
   className = "section-padding"
 }: FeaturedPropertiesProps) {
   const displayProperties = useMemo(() => {
-    // Take first 4 properties
-    return [...properties].slice(0, 4);
+    // Take first 6 properties
+    return [...properties].slice(0, 6);
   }, [properties]);
 
   if (displayProperties.length === 0) return null;
