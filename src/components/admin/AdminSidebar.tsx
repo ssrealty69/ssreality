@@ -13,7 +13,6 @@ const navItems = [
   { href: '/admin/leads', label: 'Leads', icon: Users },
   { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },
-  { href: '/admin/ask-anything', label: 'Ask Anything', icon: HelpCircle },
   { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target },
 ];
 
