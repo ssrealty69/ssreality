@@ -79,29 +79,28 @@ export default function CareersPage() {
 
   return (
     <div className="min-h-screen bg-[#FFFEF5] overflow-x-hidden">
-      {/* Hero Section - Compact Premium */}
-      <section className="relative pt-32 pb-16 overflow-hidden bg-[#1A1800]">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-20 scale-105" 
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80')" }} 
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#FFFEF5]" />
+      {/* Hero Section */}
+      <div className="relative pt-36 pb-20 overflow-hidden">
+        <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80')" }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1A1800]/90 via-[#1A1800]/85 to-[#1A1800]/75" />
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#FFFEF5] to-transparent" />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center"
           >
-            <div className="gold-divider mb-4 mx-auto" />
-            <h1 className="text-3xl md:text-6xl font-[var(--font-playfair)] text-white mb-4">
-              Join Our <span className="text-[#C9A227]">Elite Team</span>
+            <div className="gold-divider mb-5" />
+            <h1 className="text-4xl md:text-6xl font-[var(--font-playfair)] mb-4 text-white">
+              <span className="text-white">Join Our</span> <span className="text-[#C9A227]">Elite Team</span>
             </h1>
-            <p className="text-[#E8D5A3] text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+            <p className="text-[#d4c490] text-lg max-w-2xl">
               Build your future with Delhi NCR's most trusted real estate brand.
             </p>
           </motion.div>
         </div>
-      </section>
+      </div>
 
       {/* Why Work With Us - Compact */}
       <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
