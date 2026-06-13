@@ -73,10 +73,10 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80')" }} />
         <div className="absolute inset-0 bg-gradient-to-r from-[#1A1800]/90 via-[#1A1800]/85 to-[#1A1800]/75" />
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-[#FFFEF5] to-transparent" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
           <div className="gold-divider mb-5" />
-          <h1 className="text-4xl md:text-6xl font-[var(--font-playfair)] text-white mb-4">
-            Blog & <span className="text-[#C9A227]">Insights</span>
+          <h1 className="text-4xl md:text-6xl font-[var(--font-playfair)] mb-4 text-white">
+            <span className="text-white">Blog &</span> <span className="text-[#C9A227]">Insights</span>
           </h1>
           <p className="text-[#d4c490] text-lg max-w-xl">
             Real estate news, market trends, investment tips, and property guides from our experts.

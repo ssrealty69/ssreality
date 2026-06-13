@@ -178,12 +178,12 @@ export default function EMICalculator() {
         {/* Bottom fade for smooth section transition */}
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#FFFEF5] to-transparent opacity-100" />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="gold-divider mb-6 mx-auto" />
-          <h1 className="text-4xl md:text-7xl font-[var(--font-playfair)] text-white mb-4 tracking-tight">
-            EMI <span className="text-[#C9A227]">Calculator</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
+          <div className="gold-divider mb-6" />
+          <h1 className="text-4xl md:text-7xl font-[var(--font-playfair)] mb-4 tracking-tight text-white">
+            <span className="text-white">EMI</span> <span className="text-[#C9A227]">Calculator</span>
           </h1>
-          <p className="text-[#E8D5A3] text-lg md:text-xl max-w-3xl font-medium mx-auto leading-relaxed">
+          <p className="text-[#E8D5A3] text-lg md:text-xl max-w-3xl font-medium leading-relaxed">
             Plan your property investment with precision. Calculate your monthly installments and interest breakdown instantly.
           </p>
         </div>
