@@ -32,7 +32,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Find Premium Properties in Delhi NCR - Luxury Apartments & Villas | SS Realty',
+    default: 'Find Premium Properties in Gurgaon & Delhi NCR - Luxury Apartments & Villas | SS Realty',
     template: '%s | SS Realty',
   },
   description:
