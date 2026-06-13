@@ -233,7 +233,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
   const galleryImages = galleryImagesSource.filter((imgUrl: string) => imgUrl !== heroImage);
 
   return (
-    <div className="font-sans bg-white pb-20">
+    <div className="font-sans bg-white pb-20 overflow-x-hidden">
       <style dangerouslySetInnerHTML={{
         __html: `
         @keyframes custom-smooth-blink {
