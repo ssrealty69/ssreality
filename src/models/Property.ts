@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IProperty extends Document {
+  propertyName?: string;
   title: string;
   description: string;
   price: number;
@@ -73,6 +74,7 @@ export interface IProperty extends Document {
 
 const PropertySchema = new Schema<IProperty>(
   {
+    propertyName: { type: String, trim: true },
     title: { type: String, required: true, trim: true, index: true },
     description: { type: String, required: true },
     price: { type: Number, required: true, index: true },

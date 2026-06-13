@@ -71,6 +71,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
   const [fetching, setFetching] = useState(true);
   
   const [formData, setFormData] = useState({
+    propertyName: '',
     title: '',
     description: '',
     price: '',
@@ -147,6 +148,7 @@ export default function EditProperty({ params }: EditPropertyProps) {
           
           // Pre-populate state while ensuring all structures exist
           setFormData({
+            propertyName: prop.propertyName || '',
             title: prop.title || '',
             description: prop.description || '',
             price: prop.price !== undefined ? formatPriceForEdit(prop.price) : '',
@@ -386,6 +388,10 @@ export default function EditProperty({ params }: EditPropertyProps) {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 space-y-4">
           <h2 className="text-lg font-bold text-[#1A1800] border-b pb-2">Basic Details</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Property / Apartment Name</label>
+              <input type="text" name="propertyName" value={formData.propertyName} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#C9A227] outline-none" placeholder="e.g. DLF Camellias, Supernova Spira" />
+            </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
               <input type="text" name="title" required value={formData.title} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#C9A227] outline-none" placeholder="e.g. Luxury 4BHK Villa in Noida" />
