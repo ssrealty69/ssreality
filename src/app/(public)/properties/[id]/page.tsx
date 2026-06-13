@@ -255,7 +255,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         {/* Desktop & Tablet Background */}
         <div className={property.mobileBannerUrl ? "hidden md:block absolute inset-0" : "absolute inset-0"}>
           <Image
-            src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.png"}
+            src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.webp"}
             alt={property.title}
             fill
             className="object-cover"
@@ -363,7 +363,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                 images={
                   property.interiorImages && property.interiorImages.length > 0
                     ? property.interiorImages
-                    : (property.images && property.images.length > 0 ? property.images : ['/hero-nature.png'])
+                    : (property.images && property.images.length > 0 ? property.images : ['/hero-nature.webp'])
                 }
               />
             </div>
