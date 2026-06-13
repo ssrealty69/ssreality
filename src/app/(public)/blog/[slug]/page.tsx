@@ -186,7 +186,7 @@ export default async function BlogPostPage({ params }: Props) {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-[#1A1800] leading-none mb-1">{blog.author?.name || 'SS Realty Expert'}</p>
-                    <p className="text-[9px] text-[#a09060] leading-none">{formatDate(blog.createdAt)}</p>
+                    <p className="text-[9px] text-[#a09060] leading-none">{formatDate(blog.publishDate || blog.createdAt)}</p>
                   </div>
                 </div>
 

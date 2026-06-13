@@ -144,7 +144,7 @@ export default function BlogsTable({ initialBlogs }: BlogsTableProps) {
                       </span>
                     </td>
                     <td className="p-4 text-sm text-gray-500">
-                      {new Date(blog.createdAt).toLocaleDateString('en-IN')}
+                      {new Date(blog.publishDate || blog.createdAt).toLocaleDateString('en-IN')}
                     </td>
                     <td className="p-4 text-right space-x-1 sm:space-x-2">
                       <Link 

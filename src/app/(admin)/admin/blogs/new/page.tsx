@@ -145,7 +145,7 @@ export default function AddBlog() {
       // Map properties matching DB expectations + embed SEO sub-object
       const payload = {
         ...formData,
-        publishDate: formData.status === 'scheduled' && formData.publishDate ? new Date(formData.publishDate).toISOString() : null,
+        publishDate: formData.publishDate ? new Date(formData.publishDate).toISOString() : null,
         seo: seoData,
         author: {
           name: formData.authorName
@@ -333,19 +333,17 @@ export default function AddBlog() {
             </div>
 
             {/* Scheduled Date Picker */}
-            {formData.status === 'scheduled' && (
-              <div className="animate-fade-in-up">
-                <label className="block text-xs font-bold text-gray-700 mb-1">Schedule Date & Time</label>
-                <input 
-                  type="datetime-local" 
-                  name="publishDate" 
-                  required 
-                  value={formData.publishDate} 
-                  onChange={handleChange} 
-                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white" 
-                />
-              </div>
-            )}
+            <div>
+              <label className="block text-xs font-bold text-gray-700 mb-1">Publish Date {formData.status === 'scheduled' && '*'}</label>
+              <input 
+                type="datetime-local" 
+                name="publishDate" 
+                value={formData.publishDate} 
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg p-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
+                required={formData.status === 'scheduled'}
+              />
+            </div>
           </div>
         </section>
 

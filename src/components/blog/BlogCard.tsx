@@ -52,7 +52,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
           <div className="flex items-center gap-4 text-[11px] text-[#a09060] font-medium mb-4">
             <span className="flex items-center gap-1.5">
               <Calendar size={12} className="text-[#C9A227]" />
-              {formatDate(blog.createdAt)}
+              {formatDate(blog.publishDate || blog.createdAt)}
             </span>
             <span className="w-1 h-1 rounded-full bg-[#E8D5A3]/60" />
             <span className="flex items-center gap-1.5">
