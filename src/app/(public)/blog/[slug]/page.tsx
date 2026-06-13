@@ -294,7 +294,7 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="mt-16 bg-[#1A1800] rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #C9A227 0%, transparent 60%)' }} />
           <div className="relative z-10">
-            <h3 className="text-2xl md:text-4xl font-bold font-[var(--font-playfair)] text-white mb-4">
+            <h3 className="text-2xl md:text-4xl font-bold font-[var(--font-playfair)] !text-white mb-4">
               Looking for the <span className="text-[#C9A227]">Perfect Property?</span>
             </h3>
             <p className="text-[#a09060] text-base mb-8 max-w-2xl mx-auto">Our experts are ready to help you find your dream home or investment in Delhi NCR.</p>
