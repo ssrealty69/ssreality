@@ -286,7 +286,9 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
                 <div key={fc.id} className="bg-gray-50 border border-gray-200 rounded-xl p-3 space-y-2">
                   {/* Floor header */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-gray-600">Floor {idx + 1}</span>
+                    <span className="text-xs font-bold text-gray-600">
+                      {fc.floorName || `Floor Setup ${idx + 1}`}
+                    </span>
                     <button
                       onClick={() => removeFloor(fc.id)}
                       className="text-red-400 hover:text-red-600 transition-colors"
