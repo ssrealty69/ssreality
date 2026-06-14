@@ -55,20 +55,34 @@ export default function BrochureModal({ property, images, waLink, onClose }: Bro
         
         // Trigger download of brochure
         if (property.brochureUrl) {
-          let downloadUrl = property.brochureUrl;
-          
-          // Force download for Cloudinary URLs by adding fl_attachment
-          if (downloadUrl.includes('res.cloudinary.com') && downloadUrl.includes('/upload/')) {
-            if (!downloadUrl.includes('fl_attachment')) {
-              // Create a safe filename from property title
-              const safeTitle = property.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
-              downloadUrl = downloadUrl.replace('/upload/', `/upload/fl_attachment:${safeTitle}-brochure.pdf/`);
+          try {
+            // Attempt to fetch the file directly to force a true local download
+            const response = await fetch(property.brochureUrl);
+            
+            // Check if it's an HTML page (like a Google Drive view link)
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('text/html')) {
+              // It's a webpage, just open it
+              window.open(property.brochureUrl, '_blank', 'noopener,noreferrer');
+            } else {
+              const blob = await response.blob();
+              const blobUrl = window.URL.createObjectURL(blob);
+              
+              let filename = property.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() + '-brochure.pdf';
+
+              const link = document.createElement('a');
+              link.href = blobUrl;
+              link.setAttribute('download', filename);
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              
+              setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
             }
-            // For forced downloads, changing location is safest and avoids popup blockers
-            window.location.href = downloadUrl;
-          } else {
-            // For external links (like Google Drive), open in new tab
-            window.open(downloadUrl, '_blank', 'noopener,noreferrer');
+          } catch (error) {
+            // Fallback for CORS issues (e.g., external Google Drive link)
+            console.warn('Direct download blocked by CORS, opening in new tab instead.');
+            window.open(property.brochureUrl, '_blank', 'noopener,noreferrer');
           }
         } else {
           // Fallback to whatsapp if no brochure URL is uploaded
