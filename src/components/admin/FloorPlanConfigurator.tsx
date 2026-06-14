@@ -55,9 +55,9 @@ const ordinal = (n: number) => {
 };
 
 const defaultFloorConfigs = (): FloorConfig[] => [
-  { id: crypto.randomUUID(), floorName: 'Ground Floor', roomPrefix: 'Room', roomCount: 2, defaultBhk: 3 },
-  { id: crypto.randomUUID(), floorName: '1st Floor',    roomPrefix: 'Room', roomCount: 2, defaultBhk: 3 },
-  { id: crypto.randomUUID(), floorName: '2nd Floor',    roomPrefix: 'Room', roomCount: 3, defaultBhk: 3 },
+  { id: crypto.randomUUID(), floorName: 'Ground Floor', roomPrefix: 'Unit', roomCount: 2, defaultBhk: 3 },
+  { id: crypto.randomUUID(), floorName: '1st Floor',    roomPrefix: 'Unit', roomCount: 2, defaultBhk: 3 },
+  { id: crypto.randomUUID(), floorName: '2nd Floor',    roomPrefix: 'Unit', roomCount: 3, defaultBhk: 3 },
 ];
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -96,7 +96,7 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
       {
         id:         crypto.randomUUID(),
         floorName:  ordinal(nextNum),
-        roomPrefix: 'Room',
+        roomPrefix: 'Unit',
         roomCount:  2,
         defaultBhk: 3,
       },
@@ -189,7 +189,7 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
       const next = floor.flats.length + 1;
       floor.flats = [
         ...floor.flats,
-        { number: `Room ${next}`, status: 'available' },
+        { number: `Unit ${next}`, status: 'available' },
       ];
       return updated;
     });
@@ -316,7 +316,7 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
                         type="text"
                         value={fc.roomPrefix}
                         onChange={e => updateFloorConfig(fc.id, { roomPrefix: e.target.value })}
-                        placeholder="e.g. Room / UG / G"
+                        placeholder="e.g. Unit / UG / G / Shop"
                         className="w-full px-2.5 py-1.5 bg-white border border-gray-200 rounded-lg text-xs text-gray-800 focus:outline-none focus:border-[#C9A227]"
                       />
                       <p className="text-[9px] text-gray-400 mt-0.5">→ {fc.roomPrefix} 1, {fc.roomPrefix} 2…</p>
