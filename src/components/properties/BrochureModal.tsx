@@ -17,7 +17,7 @@ interface BrochureModalProps {
 export default function BrochureModal({ property, images, waLink, onClose }: BrochureModalProps) {
   const [brochureName, setBrochureName] = useState('');
   const [brochurePhone, setBrochurePhone] = useState('');
-  const [brochureEmail, setBrochureEmail] = useState('');
+  const [brochureLookingFor, setBrochureLookingFor] = useState('3BHK');
   const [brochureLoading, setBrochureLoading] = useState(false);
   const [brochureSubmitted, setBrochureSubmitted] = useState(false);
 
@@ -41,7 +41,7 @@ export default function BrochureModal({ property, images, waLink, onClose }: Bro
         body: JSON.stringify({
           name: brochureName.trim(),
           phone: brochurePhone,
-          requirement: `Brochure Download Request. Email: ${brochureEmail}`,
+          requirement: `Brochure Download Request. Looking for: ${brochureLookingFor}`,
           propertyId: property._id,
           propertyTitle: property.title,
           propertyUrl: typeof window !== 'undefined' ? window.location.origin + `/properties/${property._id}` : `/properties/${property._id}`,
@@ -210,18 +210,26 @@ export default function BrochureModal({ property, images, waLink, onClose }: Bro
                 </div>
               </div>
 
-              {/* Email Address */}
-              <div className="space-y-1.5">
-                <label className="text-[9px] font-black text-[#E8C96A] uppercase tracking-widest ml-1">Email Address</label>
-                <input 
-                  type="email" 
-                  placeholder="Your email address"
-                  value={brochureEmail}
-                  onChange={(e) => setBrochureEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-[#C9A227]/80 text-xs font-semibold text-white outline-none transition-all placeholder:text-white/30 hover:bg-white/[0.08]"
-                  required 
-                  disabled={brochureLoading}
-                />
+              {/* Looking For Radio Buttons */}
+              <div className="space-y-2">
+                <label className="text-[9px] font-black text-[#E8C96A] uppercase tracking-widest ml-1">Looking For</label>
+                <div className="flex gap-3">
+                  {['3BHK', '4BHK', 'Other'].map(option => (
+                    <label key={option} className="flex-1 cursor-pointer">
+                      <input 
+                        type="radio" 
+                        name="lookingFor" 
+                        value={option}
+                        checked={brochureLookingFor === option}
+                        onChange={(e) => setBrochureLookingFor(e.target.value)}
+                        className="peer hidden"
+                      />
+                      <div className="text-center py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-xs font-semibold text-white/50 peer-checked:bg-[#C9A227]/20 peer-checked:border-[#C9A227]/50 peer-checked:text-[#E8C96A] hover:bg-white/[0.08] transition-all select-none">
+                        {option}
+                      </div>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               {/* Submit Button */}

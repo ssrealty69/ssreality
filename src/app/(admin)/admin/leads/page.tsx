@@ -268,9 +268,9 @@ export default function AdminLeadsPage() {
         sheetName = 'Brochure Leads';
         fileName = `SS_Realty_Brochure_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
         exportData = (filteredLeads as PropertyEnquiry[]).map((e, idx) => {
-          let email = 'N/A';
-          if (e.requirement && e.requirement.includes('Email:')) {
-            email = e.requirement.split('Email:')[1].trim();
+          let lookingFor = 'N/A';
+          if (e.requirement && e.requirement.includes('Looking for:')) {
+            lookingFor = e.requirement.split('Looking for:')[1].trim();
           }
           return {
             'S.No.': idx + 1,
@@ -282,7 +282,7 @@ export default function AdminLeadsPage() {
             }),
             'Name': e.name,
             'Phone': `+91 ${e.phone}`,
-            'Email': email,
+            'Looking For': lookingFor,
             'Property Name': e.propertyTitle,
             'Property ID': e.propertyId,
             'Status': e.status,
@@ -554,9 +554,9 @@ export default function AdminLeadsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {(filteredLeads as PropertyEnquiry[]).map((enq) => {
-                    let email = '';
-                    if (activeTab === 'brochure' && enq.requirement && enq.requirement.includes('Email:')) {
-                      email = enq.requirement.split('Email:')[1].trim();
+                    let lookingFor = '';
+                    if (activeTab === 'brochure' && enq.requirement && enq.requirement.includes('Looking for:')) {
+                      lookingFor = enq.requirement.split('Looking for:')[1].trim();
                     }
                     return (
                     <tr key={enq._id} className={`hover:bg-${activeTab === 'brochure' ? 'rose' : 'amber'}-50/30 transition-colors`}>
@@ -581,7 +581,7 @@ export default function AdminLeadsPage() {
                       {/* Name */}
                       <td className="py-4 px-4 font-bold text-gray-800">
                         {enq.name}
-                        {email && <div className="text-[10px] text-gray-400 font-medium">{email}</div>}
+                        {lookingFor && <div className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 mt-1 rounded inline-block font-bold border border-emerald-100">Looking for: {lookingFor}</div>}
                       </td>
 
                       {/* Phone */}
