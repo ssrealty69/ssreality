@@ -81,7 +81,7 @@ export default function AboutPage() {
                   src="/SS Realty office, SS Realty 3BHK Flat in Gurgaon, 3BHK Flat in Sultanpur, SS Realty.webp"
                   alt="SS Realty office in Chhatarpur, New Delhi"
                   fill
-                  className="object-cover object-center scale-105 transition-transform duration-500"
+                  className="object-cover object-center scale-105 transition-transform duration-500 rounded-3xl"
                   sizes="(max-width: 768px) 100vw, 50vw"
                   quality={75}
                 />
