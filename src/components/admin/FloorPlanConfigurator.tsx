@@ -185,12 +185,13 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
   const addRoomToFloor = (floorIndex: number) => {
     setFloors(prev => {
       const updated = [...prev];
-      const floor = updated[floorIndex];
+      const floor = { ...updated[floorIndex] };
       const next = floor.flats.length + 1;
       floor.flats = [
         ...floor.flats,
         { number: `Unit ${next}`, status: 'available' },
       ];
+      updated[floorIndex] = floor;
       return updated;
     });
   };
@@ -198,7 +199,9 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
   const removeRoomFromFloor = (floorIndex: number, flatIndex: number) => {
     setFloors(prev => {
       const updated = [...prev];
-      updated[floorIndex].flats = updated[floorIndex].flats.filter((_, i) => i !== flatIndex);
+      const floor = { ...updated[floorIndex] };
+      floor.flats = floor.flats.filter((_, i) => i !== flatIndex);
+      updated[floorIndex] = floor;
       return updated;
     });
   };
@@ -478,9 +481,19 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
                               key={flatIndex}
                               onClick={() => handleOpenFlatEditor(actualFloorIndex, flatIndex, flat)}
                               onDoubleClick={e => { e.stopPropagation(); handleQuickToggleStatus(actualFloorIndex, flatIndex); }}
-                              className={`relative p-3 rounded-lg border text-center cursor-pointer transition-all hover:scale-[1.04] select-none shadow-sm w-[90px] ${statusColor}`}
+                              className={`relative group p-3 rounded-lg border text-center cursor-pointer transition-all hover:scale-[1.04] select-none shadow-sm w-[90px] ${statusColor}`}
                               title="Click to edit · Double-click to toggle status"
                             >
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeRoomFromFloor(actualFloorIndex, flatIndex);
+                                }}
+                                className="absolute -top-1.5 -right-1.5 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-all z-10 border border-red-200 shadow-sm"
+                                title="Remove Unit"
+                              >
+                                <X size={10} strokeWidth={3} />
+                              </button>
                               <div className="font-bold text-sm tracking-wide leading-tight">{flat.number}</div>
                               {flat.bedrooms ? (
                                 <div className="text-[10px] font-semibold mt-0.5 text-gray-500">{flat.bedrooms} BHK</div>
@@ -507,10 +520,10 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
                         <button
                           onClick={() => addRoomToFloor(actualFloorIndex)}
                           className="w-[90px] p-3 rounded-lg border-2 border-dashed border-gray-200 hover:border-[#C9A227] text-gray-400 hover:text-[#C9A227] transition-all flex flex-col items-center justify-center gap-1 text-[10px] font-semibold"
-                          title="Add a room to this floor"
+                          title="Add a unit to this floor"
                         >
                           <Plus size={16} />
-                          Add Room
+                          Add Unit
                         </button>
                       </div>
                     </div>
