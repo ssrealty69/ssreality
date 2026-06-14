@@ -331,7 +331,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
         {/* Hero Content Box - Centered vertically but padded top to clear header */}
         <div className="absolute inset-0 max-w-7xl mx-auto px-4 flex flex-col justify-end pb-16 items-center text-center md:justify-center md:pb-0 md:items-start md:text-left pt-24 md:pt-16">
-          <div className="max-w-xl text-white flex flex-col items-center md:items-start">
+          <div className="max-w-xl md:max-w-2xl lg:max-w-3xl text-white flex flex-col items-center md:items-start">
             {/* Price Badge - Gold outlined glowing style like Farmhouse Exclusive Launch badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#C9A227]/60 bg-[#C9A227]/10 md:bg-gradient-to-r md:from-black/60 md:via-[#2b2200]/60 md:to-[#1A1800]/60 backdrop-blur-sm mb-5 shadow-[0_0_8px_rgba(201,162,39,0.4)] animate-smooth-blink">
               <span className="w-2 h-2 rounded-full bg-gradient-to-br from-[#FFE59E] via-[#E8C96A] to-[#C9A227] shadow-[0_0_10px_#E8C96A] inline-block shrink-0 animate-pulse" />
@@ -341,7 +341,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
             </div>
 
             {/* Title - Serif Playfair font with gold gradient */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-2 bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
+            <h1 className="text-4xl md:text-4xl lg:text-[46px] font-bold leading-[1.2] mb-3 bg-gradient-to-r from-[#FFE59E] via-[#E8C96A] to-[#C9A227] bg-clip-text text-transparent"
               style={{
                 fontFamily: 'var(--font-playfair, Georgia, serif)',
                 WebkitBackgroundClip: 'text',
