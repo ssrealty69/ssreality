@@ -642,7 +642,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                     key={idx} 
                     className={`relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group ${
                       idx === 0 ? 'col-span-2 row-span-2' : 
-                      (galleryImages.length === 5 && idx === 4) ? 'col-span-2 md:col-span-1' : 'col-span-1'
+                      (galleryImages.length === 5 && idx === 4) ? 'col-span-1' : 'col-span-1'
                     }`}
                   >
                     <Image
