@@ -37,7 +37,7 @@ const quickLinks = [
 ];
 
 const companyLinks = [
-  { href: '/about', label: 'About Us' },
+  { href: '/about-us', label: 'About Us' },
   { href: '/blog', label: 'Blog & News' },
   { href: '/contact-us', label: 'Contact Us' },
   { href: '/careers', label: 'Careers' },

@@ -10,7 +10,7 @@ export default function MobileBottomNav() {
     { name: 'HOME', href: '/', icon: Home, isCenter: false },
     { name: 'EMI', href: '/emi-calculator', icon: Calculator, isCenter: false },
     { name: 'SEARCH', href: '/properties?focus=true', icon: Search, isCenter: true },
-    { name: 'ABOUT', href: '/about', icon: Info, isCenter: false },
+    { name: 'ABOUT', href: '/about-us', icon: Info, isCenter: false },
     { name: 'CONTACT', href: '/contact-us', icon: Phone, isCenter: false },
   ];
 

@@ -16,7 +16,7 @@ const navLinks = [
     { href: '/properties?propertyType=plot', label: 'Plots' },
     { href: '/properties?propertyType=commercial', label: 'Commercial' },
   ]},
-  { href: '/about', label: 'About' },
+  { href: '/about-us', label: 'About' },
   { href: '/blog', label: 'Blog' },
   { href: '/careers', label: 'Careers' },
 ];
