@@ -52,7 +52,7 @@ export default function AdminLeadsPage() {
   const [aiLeads, setAiLeads] = useState<AiLead[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'general' | 'loan' | 'property' | 'popup'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'loan' | 'property' | 'popup' | 'brochure'>('general');
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -123,13 +123,28 @@ export default function AdminLeadsPage() {
     return { general, loan };
   }, [leads]);
 
+  // Categorize property enquiries into general property vs brochure
+  const categorizedEnquiries = useMemo(() => {
+    const property: PropertyEnquiry[] = [];
+    const brochure: PropertyEnquiry[] = [];
+    propertyEnquiries.forEach((enq) => {
+      if (enq.requirement && enq.requirement.includes('Brochure Download')) {
+        brochure.push(enq);
+      } else {
+        property.push(enq);
+      }
+    });
+    return { property, brochure };
+  }, [propertyEnquiries]);
+
   const stats = useMemo(() => ({
     total: leads.length + propertyEnquiries.length + aiLeads.length,
     general: categorizedLeads.general.length,
     loan: categorizedLeads.loan.length,
-    property: propertyEnquiries.length,
+    property: categorizedEnquiries.property.length,
+    brochure: categorizedEnquiries.brochure.length,
     popup: aiLeads.length,
-  }), [leads, categorizedLeads, propertyEnquiries, aiLeads]);
+  }), [leads, categorizedLeads, categorizedEnquiries, aiLeads]);
 
   // Delete contact lead
   const handleDeleteLead = async (id: string) => {
@@ -178,8 +193,18 @@ export default function AdminLeadsPage() {
     const query = searchQuery.toLowerCase().trim();
 
     if (activeTab === 'property') {
-      if (!query) return propertyEnquiries;
-      return propertyEnquiries.filter(e =>
+      if (!query) return categorizedEnquiries.property;
+      return categorizedEnquiries.property.filter(e =>
+        e.name.toLowerCase().includes(query) ||
+        e.phone.includes(query) ||
+        e.propertyTitle.toLowerCase().includes(query) ||
+        e.requirement?.toLowerCase().includes(query)
+      );
+    }
+
+    if (activeTab === 'brochure') {
+      if (!query) return categorizedEnquiries.brochure;
+      return categorizedEnquiries.brochure.filter(e =>
         e.name.toLowerCase().includes(query) ||
         e.phone.includes(query) ||
         e.propertyTitle.toLowerCase().includes(query) ||
@@ -239,6 +264,30 @@ export default function AdminLeadsPage() {
           'Requirement / Message': e.requirement || 'Looking for details, price plans and site visit.',
           'Status': e.status,
         }));
+      } else if (activeTab === 'brochure') {
+        sheetName = 'Brochure Leads';
+        fileName = `SS_Realty_Brochure_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        exportData = (filteredLeads as PropertyEnquiry[]).map((e, idx) => {
+          let email = 'N/A';
+          if (e.requirement && e.requirement.includes('Email:')) {
+            email = e.requirement.split('Email:')[1].trim();
+          }
+          return {
+            'S.No.': idx + 1,
+            'Date': new Date(e.createdAt).toLocaleDateString('en-IN', {
+              day: '2-digit', month: '2-digit', year: 'numeric',
+            }),
+            'Time': new Date(e.createdAt).toLocaleTimeString('en-IN', {
+              hour: '2-digit', minute: '2-digit',
+            }),
+            'Name': e.name,
+            'Phone': `+91 ${e.phone}`,
+            'Email': email,
+            'Property Name': e.propertyTitle,
+            'Property ID': e.propertyId,
+            'Status': e.status,
+          };
+        });
       } else if (activeTab === 'general') {
         sheetName = 'General Queries';
         fileName = `SS_Realty_General_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
@@ -389,6 +438,15 @@ export default function AdminLeadsPage() {
             <h3 className="text-2xl font-black text-gray-900 mt-0.5">{stats.popup}</h3>
           </div>
         </div>
+        <div className="bg-white rounded-2xl p-5 border border-rose-100 shadow-sm flex items-center gap-3 ring-1 ring-rose-200/60">
+          <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
+            <FileDown size={20} />
+          </div>
+          <div>
+            <p className="text-[10px] font-black text-rose-500 uppercase tracking-wider">Brochures</p>
+            <h3 className="text-2xl font-black text-gray-900 mt-0.5">{stats.brochure}</h3>
+          </div>
+        </div>
       </div>
 
       {/* Main Card */}
@@ -437,6 +495,16 @@ export default function AdminLeadsPage() {
             >
               🤖 Pop-up Leads ({stats.popup})
             </button>
+            <button
+              onClick={() => { setActiveTab('brochure'); setSearchQuery(''); }}
+              className={`flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                activeTab === 'brochure'
+                  ? 'bg-rose-50 text-rose-700 shadow-sm border border-rose-200'
+                  : 'text-gray-400 hover:text-rose-600'
+              }`}
+            >
+              📄 Brochures ({stats.brochure})
+            </button>
           </div>
 
           {/* Search + Download */}
@@ -471,11 +539,11 @@ export default function AdminLeadsPage() {
         {/* Table Area */}
         <div className="overflow-x-auto">
           {(filteredLeads as any[]).length > 0 ? (
-            activeTab === 'property' ? (
-              /* ─── Property Enquiries Table ─── */
+            activeTab === 'property' || activeTab === 'brochure' ? (
+              /* ─── Property / Brochure Enquiries Table ─── */
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-amber-50/60 text-[10px] font-black text-amber-700 uppercase border-b border-amber-100">
+                  <tr className={`bg-${activeTab === 'brochure' ? 'rose' : 'amber'}-50/60 text-[10px] font-black text-${activeTab === 'brochure' ? 'rose' : 'amber'}-700 uppercase border-b border-${activeTab === 'brochure' ? 'rose' : 'amber'}-100`}>
                     <th className="py-4 px-6">Date &amp; Time</th>
                     <th className="py-4 px-4">Name</th>
                     <th className="py-4 px-4">Phone</th>
@@ -485,8 +553,13 @@ export default function AdminLeadsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {(filteredLeads as PropertyEnquiry[]).map((enq) => (
-                    <tr key={enq._id} className="hover:bg-amber-50/30 transition-colors">
+                  {(filteredLeads as PropertyEnquiry[]).map((enq) => {
+                    let email = '';
+                    if (activeTab === 'brochure' && enq.requirement && enq.requirement.includes('Email:')) {
+                      email = enq.requirement.split('Email:')[1].trim();
+                    }
+                    return (
+                    <tr key={enq._id} className={`hover:bg-${activeTab === 'brochure' ? 'rose' : 'amber'}-50/30 transition-colors`}>
                       {/* Date & Time */}
                       <td className="py-4 px-6 font-semibold text-gray-500 whitespace-nowrap">
                         <span className="flex items-center gap-1.5">
@@ -506,7 +579,10 @@ export default function AdminLeadsPage() {
                       </td>
 
                       {/* Name */}
-                      <td className="py-4 px-4 font-bold text-gray-800">{enq.name}</td>
+                      <td className="py-4 px-4 font-bold text-gray-800">
+                        {enq.name}
+                        {email && <div className="text-[10px] text-gray-400 font-medium">{email}</div>}
+                      </td>
 
                       {/* Phone */}
                       <td className="py-4 px-4 whitespace-nowrap">
@@ -521,14 +597,14 @@ export default function AdminLeadsPage() {
                       {/* Property */}
                       <td className="py-4 px-4 max-w-[200px]">
                         <div className="flex flex-col gap-1">
-                          <span className="text-[8px] font-black text-amber-600 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded uppercase tracking-wider w-fit leading-none">
-                            Property Enquiry
+                          <span className={`text-[8px] font-black text-${activeTab === 'brochure' ? 'rose' : 'amber'}-600 bg-${activeTab === 'brochure' ? 'rose' : 'amber'}-50 border border-${activeTab === 'brochure' ? 'rose' : 'amber'}-200 px-1.5 py-0.5 rounded uppercase tracking-wider w-fit leading-none`}>
+                            {activeTab === 'brochure' ? 'Brochure Download' : 'Property Enquiry'}
                           </span>
                           <a
                             href={enq.propertyUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[#C9A227] hover:underline font-extrabold text-xs truncate flex items-center gap-1"
+                            className={`text-[#C9A227] hover:underline font-extrabold text-xs truncate flex items-center gap-1`}
                             title={enq.propertyTitle}
                           >
                             {enq.propertyTitle}
@@ -569,7 +645,7 @@ export default function AdminLeadsPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  )})}
                 </tbody>
               </table>
             ) : activeTab === 'general' ? (
