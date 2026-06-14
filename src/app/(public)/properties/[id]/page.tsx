@@ -77,6 +77,43 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
+// Generates descriptive alt text: e.g. "Amaryllis 3BHK & 4BHK Flat in Gwal Pahari Mandi Building Image 1"
+function generateImageAlt(property: any, idx: number, suffix?: string): string {
+  const name = property.propertyName || property.title || 'Property';
+  const location = property.location?.address || property.location?.city || '';
+
+  // Build BHK / config part from priceList
+  let configPart = '';
+  if (property.priceList && property.priceList.length > 0) {
+    const types = property.priceList
+      .map((item: any) => item.type?.trim())
+      .filter(Boolean);
+    const formattedTypes = Array.from(new Set(types.map((t: string) => {
+      let f = t.replace(/(\d+)\s*(BHK)/i, '$1 BHK');
+      f = f.replace(/bhk/i, 'BHK');
+      return f;
+    }))) as string[];
+    if (formattedTypes.length === 1) configPart = formattedTypes[0];
+    else if (formattedTypes.length === 2) configPart = `${formattedTypes[0]} & ${formattedTypes[1]}`;
+    else configPart = `${formattedTypes.slice(0, -1).join(', ')} & ${formattedTypes[formattedTypes.length - 1]}`;
+  } else if (property.features?.bedrooms) {
+    configPart = `${property.features.bedrooms} BHK`;
+  }
+
+  // Add "Flat" after BHK if not already present
+  if (configPart && !configPart.toLowerCase().includes('flat')) {
+    configPart = `${configPart} Flat`;
+  }
+
+  const locationPart = location ? ` in ${location}` : '';
+  const imgLabel = suffix || `Image ${idx + 1}`;
+
+  if (configPart) {
+    return `${name} ${configPart}${locationPart} ${imgLabel}`;
+  }
+  return `${name}${locationPart} ${imgLabel}`;
+}
+
 function formatPropertyHeading(priceList: any[], propertyType: string): string {
   const pluralType = propertyType.endsWith('y')
     ? propertyType.slice(0, -1) + 'ies'
@@ -256,7 +293,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         <div className={property.mobileBannerUrl ? "hidden md:block absolute inset-0" : "absolute inset-0"}>
           <Image
             src={property.images && property.images.length > 0 ? property.images[0] : "/hero-nature.webp"}
-            alt={property.title}
+            alt={generateImageAlt(property, 0, 'Building Main Image')}
             fill
             className="object-cover"
             priority
@@ -269,7 +306,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           <div className="block md:hidden absolute inset-0">
             <Image
               src={property.mobileBannerUrl}
-              alt={`${property.title} - Mobile Banner`}
+              alt={generateImageAlt(property, 0, 'Building Mobile Banner')}
               fill
               className="object-cover"
               priority
@@ -365,6 +402,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                     ? property.interiorImages
                     : (property.images && property.images.length > 0 ? property.images : ['/hero-nature.webp'])
                 }
+                altPrefix={generateImageAlt(property, 0).replace(' Building Main Image', '')}
               />
             </div>
 
@@ -584,7 +622,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                       key={idx} 
                       className={`relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group ${spanClass}`}
                     >
-                      <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw" />
+                      <Image src={imgUrl} alt={generateImageAlt(property, idx, `Building Image ${idx + 1}`)} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw" />
                     </div>
                   );
                 })}
@@ -599,7 +637,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                       (galleryImages.length === 5 && idx === 4) ? 'col-span-2 md:col-span-1' : 'col-span-1'
                     }`}
                   >
-                    <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, 25vw" />
+                    <Image src={imgUrl} alt={generateImageAlt(property, idx, `Building Image ${idx + 1}`)} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, 25vw" />
                   </div>
                 ))}
               </div>
@@ -611,7 +649,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
               }`}>
                 {galleryImages.map((imgUrl: string, idx: number) => (
                   <div key={idx} className="relative rounded-xl md:rounded-2xl overflow-hidden shadow-md border border-[#E8D5A3]/40 group">
-                    <Image src={imgUrl} alt={`Gallery ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, 33vw" />
+                    <Image src={imgUrl} alt={generateImageAlt(property, idx, `Building Image ${idx + 1}`)} fill className="object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" quality={65} sizes="(max-width: 768px) 50vw, 33vw" />
                   </div>
                 ))}
               </div>

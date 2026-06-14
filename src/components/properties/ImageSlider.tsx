@@ -6,9 +6,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ImageSliderProps {
   images: string[];
+  altPrefix?: string;
 }
 
-export default function ImageSlider({ images }: ImageSliderProps) {
+export default function ImageSlider({ images, altPrefix }: ImageSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
@@ -98,7 +99,7 @@ export default function ImageSlider({ images }: ImageSliderProps) {
           >
             <Image 
               src={src} 
-              alt={`Property slide ${idx + 1}`} 
+              alt={altPrefix ? `${altPrefix} Building Image ${idx + 1}` : `Property slide ${idx + 1}`} 
               fill 
               className="object-cover" 
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
