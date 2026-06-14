@@ -53,37 +53,17 @@ export default function BrochureModal({ property, images, waLink, onClose }: Bro
         setBrochureSubmitted(true);
         toast.success('Your details have been submitted. Downloading brochure...');
         
-        // Trigger download of brochure
+        // Trigger download of brochure via server-side proxy (avoids CORS)
         if (property.brochureUrl) {
-          try {
-            // Attempt to fetch the file directly to force a true local download
-            const response = await fetch(property.brochureUrl);
-            
-            // Check if it's an HTML page (like a Google Drive view link)
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('text/html')) {
-              // It's a webpage, just open it
-              window.open(property.brochureUrl, '_blank', 'noopener,noreferrer');
-            } else {
-              const blob = await response.blob();
-              const blobUrl = window.URL.createObjectURL(blob);
-              
-              let filename = property.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() + '-brochure.pdf';
-
-              const link = document.createElement('a');
-              link.href = blobUrl;
-              link.setAttribute('download', filename);
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              
-              setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
-            }
-          } catch (error) {
-            // Fallback for CORS issues (e.g., external Google Drive link)
-            console.warn('Direct download blocked by CORS, opening in new tab instead.');
-            window.open(property.brochureUrl, '_blank', 'noopener,noreferrer');
-          }
+          const filename = property.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase() + '-brochure.pdf';
+          const proxyUrl = `/api/download-brochure?url=${encodeURIComponent(property.brochureUrl)}&filename=${encodeURIComponent(filename)}`;
+          
+          const link = document.createElement('a');
+          link.href = proxyUrl;
+          link.setAttribute('download', filename);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         } else {
           // Fallback to whatsapp if no brochure URL is uploaded
           window.open(waLink, '_blank', 'noopener,noreferrer');
