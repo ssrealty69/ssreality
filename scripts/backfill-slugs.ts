@@ -17,8 +17,13 @@ if (fs.existsSync(envPath)) {
 }
 
 
-function slugify(text: string): string {
-  return text
+function extractCleanName(title: string, propertyName?: string): string {
+  let name = propertyName;
+  if (!name) {
+    const match = title.match(/^(.*?)(?=\s+\d+BHK|\s+2BHK|\s+3BHK|\s+4BHK|\s+Simple|\s+Apartments)/i);
+    name = match && match[1] ? match[1].trim() : title;
+  }
+  return name
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
@@ -47,16 +52,13 @@ async function backfillSlugs() {
 
     let updated = 0;
     for (const prop of properties) {
-      if (!prop.slug) {
-        const base = slugify(prop.title || 'property');
-        const slug = base + '-' + prop._id.toString().slice(-6);
-        await db.collection('properties').updateOne(
-          { _id: prop._id },
-          { $set: { slug } }
-        );
-        console.log(`Updated property ${prop._id} with slug: ${slug}`);
-        updated++;
-      }
+      const slug = extractCleanName(prop.title || 'property', prop.propertyName);
+      await db.collection('properties').updateOne(
+        { _id: prop._id },
+        { $set: { slug } }
+      );
+      console.log(`Updated property ${prop._id} with slug: ${slug}`);
+      updated++;
     }
 
     console.log(`Finished updating ${updated} properties.`);

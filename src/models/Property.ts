@@ -165,34 +165,38 @@ PropertySchema.index({ 'location.city': 1, propertyType: 1, status: 1 });
 PropertySchema.index({ price: 1, priceType: 1 });
 PropertySchema.index({ title: 'text', description: 'text', 'location.address': 'text' });
 
+// Helper to extract clean name for slug
+function extractCleanName(title: string, propertyName?: string): string {
+  let name = propertyName;
+  if (!name) {
+    const match = title.match(/^(.*?)(?=\s+\d+BHK|\s+2BHK|\s+3BHK|\s+4BHK|\s+Simple|\s+Apartments)/i);
+    name = match && match[1] ? match[1].trim() : title;
+  }
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+}
+
 // Auto-generate slug from title before saving
 PropertySchema.pre('save', async function () {
-  if (this.isModified('title') || !this.slug) {
-    const base = this.title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-    this.slug = base + '-' + this._id.toString().slice(-6);
+  if (this.isModified('title') || this.isModified('propertyName') || !this.slug) {
+    this.slug = extractCleanName(this.title, this.propertyName);
   }
 });
 
 // Also generate slug on findOneAndUpdate / findByIdAndUpdate
 PropertySchema.pre('findOneAndUpdate', async function () {
   const update = this.getUpdate() as Record<string, unknown>;
-  if (update && update.title && !update.slug) {
-    const base = (update.title as string)
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-    // Append last 6 chars of the filter id for uniqueness
-    const filter = this.getFilter();
-    const idStr = filter._id ? filter._id.toString() : '';
-    update.slug = idStr ? base + '-' + idStr.slice(-6) : base;
-    this.setUpdate(update);
+  if (update && (update.title || update.propertyName) && !update.slug) {
+    const title = (update.title as string) || '';
+    const propName = (update.propertyName as string) || '';
+    if (title || propName) {
+      update.slug = extractCleanName(title, propName);
+      this.setUpdate(update);
+    }
   }
 });
 
