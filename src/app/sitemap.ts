@@ -21,11 +21,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     
     // Fetch properties
     const properties = await Property.find({ status: { $ne: 'sold' } })
-      .select('_id updatedAt createdAt')
+      .select('_id slug updatedAt createdAt')
       .lean();
     
     const propertyPages: MetadataRoute.Sitemap = properties.map((property: any) => ({
-      url: `${baseUrl}/properties/${property._id}`,
+      url: `${baseUrl}/properties/${property.slug || property._id}`,
       lastModified: property.updatedAt || property.createdAt || new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,

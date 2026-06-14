@@ -33,6 +33,11 @@ export function slugify(text: string): string {
     .trim();
 }
 
+/** Returns /properties/slug or falls back to /properties/id */
+export function getPropertyUrl(property: { _id: string; slug?: string }): string {
+  return `/properties/${property.slug || property._id}`;
+}
+
 export function truncate(text: string, length: number): string {
   if (text.length <= length) return text;
   return text.slice(0, length) + '...';

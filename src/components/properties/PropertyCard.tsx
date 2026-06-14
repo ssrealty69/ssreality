@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BedDouble, Bath, Maximize2, Car, Check } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, getPropertyUrl } from '@/lib/utils';
 import type { Property } from '@/types';
 
 interface PropertyCardProps {
@@ -161,7 +161,7 @@ export default function PropertyCard({ property, priority = false, actionText, o
           </button>
         ) : (
           <Link 
-            href={`/properties/${property._id}`}
+            href={getPropertyUrl(property)}
             className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />

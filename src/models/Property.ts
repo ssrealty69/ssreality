@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface IProperty extends Document {
   propertyName?: string;
   title: string;
+  slug: string;
   description: string;
   price: number;
   priceType: 'sale' | 'rent';
@@ -76,6 +77,7 @@ const PropertySchema = new Schema<IProperty>(
   {
     propertyName: { type: String, trim: true },
     title: { type: String, required: true, trim: true, index: true },
+    slug: { type: String, trim: true, index: true },
     description: { type: String, required: true },
     price: { type: Number, required: true, index: true },
     priceType: { type: String, enum: ['sale', 'rent'], required: true },
@@ -162,6 +164,37 @@ const PropertySchema = new Schema<IProperty>(
 PropertySchema.index({ 'location.city': 1, propertyType: 1, status: 1 });
 PropertySchema.index({ price: 1, priceType: 1 });
 PropertySchema.index({ title: 'text', description: 'text', 'location.address': 'text' });
+
+// Auto-generate slug from title before saving
+PropertySchema.pre('save', async function () {
+  if (this.isModified('title') || !this.slug) {
+    const base = this.title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+    this.slug = base + '-' + this._id.toString().slice(-6);
+  }
+});
+
+// Also generate slug on findOneAndUpdate / findByIdAndUpdate
+PropertySchema.pre('findOneAndUpdate', async function () {
+  const update = this.getUpdate() as Record<string, unknown>;
+  if (update && update.title && !update.slug) {
+    const base = (update.title as string)
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+    // Append last 6 chars of the filter id for uniqueness
+    const filter = this.getFilter();
+    const idStr = filter._id ? filter._id.toString() : '';
+    update.slug = idStr ? base + '-' + idStr.slice(-6) : base;
+    this.setUpdate(update);
+  }
+});
 
 if (process.env.NODE_ENV === 'development' && mongoose.models.Property) {
   delete mongoose.models.Property;

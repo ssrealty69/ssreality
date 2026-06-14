@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { BedDouble, Maximize2, ChevronRight } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, getPropertyUrl } from '@/lib/utils';
 import type { Property } from '@/types';
 
 interface SimilarPropertyCardProps {
@@ -78,7 +78,7 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
 
         {/* View Details Button */}
         <Link 
-          href={`/properties/${property._id}`}
+          href={getPropertyUrl(property)}
           className="mt-auto w-full py-2 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] text-[11px] sm:text-xs font-heading font-bold rounded-md text-center transition-all flex items-center justify-center gap-1 group/btn shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden"
         >
           {/* SHINE EFFECT */}

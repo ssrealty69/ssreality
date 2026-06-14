@@ -78,6 +78,7 @@ export async function PUT(
 
     // Invalidate Next.js static pages cache
     revalidatePath(`/properties/${id}`);
+    if (property.slug) revalidatePath(`/properties/${property.slug}`);
     revalidatePath('/');
 
     return NextResponse.json({ success: true, data: property });
@@ -105,6 +106,7 @@ export async function DELETE(
 
     // Invalidate Next.js static pages cache
     revalidatePath(`/properties/${id}`);
+    if (property.slug) revalidatePath(`/properties/${property.slug}`);
     revalidatePath('/');
 
     return NextResponse.json({ success: true, message: 'Deleted successfully' });

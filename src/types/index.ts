@@ -2,6 +2,7 @@ export interface Property {
   _id: string;
   propertyName?: string;
   title: string;
+  slug?: string;
   description: string;
   price: number;
   priceType: 'sale' | 'rent';

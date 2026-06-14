@@ -7,7 +7,7 @@ import {
   Check, Heart, Star, Download, Eye, ChevronLeft, ChevronRight,
   MapPin, ShieldAlert, Award, PhoneCall, X, CheckCircle2, Loader2, CheckCheck
 } from 'lucide-react';
-import { formatPrice } from '@/lib/utils';
+import { formatPrice, getPropertyUrl } from '@/lib/utils';
 import type { Property } from '@/types';
 import toast from 'react-hot-toast';
 import dynamic from 'next/dynamic';
@@ -394,7 +394,7 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
 
             {/* View Details gold gradient button */}
             <Link
-              href={`/properties/${property._id}`}
+              href={getPropertyUrl(property)}
               aria-label={`View details for ${property.title}`}
               className="px-5 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] hover:brightness-105 transition-all duration-300 font-poppins font-bold text-xs uppercase tracking-widest rounded-xl flex items-center gap-1.5 shadow-[0_4px_14px_rgba(201,162,39,0.25)] hover:shadow-[0_6px_20px_rgba(201,162,39,0.4)] active:scale-95"
             >

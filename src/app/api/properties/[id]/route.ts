@@ -14,13 +14,27 @@ export async function GET(
     if (cached) return NextResponse.json({ success: true, data: cached });
 
     await connectDB();
-    const property = await Property.findById(id).lean();
+
+    // Smart lookup: try slug first, then fallback to MongoDB ObjectId
+    let property = null;
+    const isObjectId = /^[a-f\d]{24}$/i.test(id);
+
+    if (!isObjectId) {
+      // It's a slug — find by slug
+      property = await Property.findOne({ slug: id }).lean();
+    }
+
+    if (!property && isObjectId) {
+      // Fallback to ID for backward compatibility
+      property = await Property.findById(id).lean();
+    }
+
     if (!property) {
       return NextResponse.json({ success: false, error: 'Not found' }, { status: 404 });
     }
 
     // Increment views
-    await Property.findByIdAndUpdate(id, { $inc: { views: 1 } });
+    await Property.findByIdAndUpdate((property as any)._id, { $inc: { views: 1 } });
 
     await setCached(cacheKey, property, 600);
     return NextResponse.json({ success: true, data: property });

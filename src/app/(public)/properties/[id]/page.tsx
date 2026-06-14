@@ -40,8 +40,16 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   try {
     await connectDB();
-    if (mongoose.Types.ObjectId.isValid(id)) {
-      const property: any = await Property.findById(id).select('title description seo images').lean();
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    let property: any = null;
+    
+    if (!isObjectId) {
+      property = await Property.findOne({ slug: id }).select('title description seo images').lean();
+    }
+    
+    if (!property && isObjectId) {
+      property = await Property.findById(id).select('title description seo images').lean();
+    }
       if (property) {
         return {
           title: property.seo?.title || `${property.title} | SS Realty`,
@@ -53,7 +61,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
           }
         };
       }
-    }
   } catch (e) {
     console.error("Error generating metadata", e);
   }
@@ -168,7 +175,13 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
 
   try {
     await connectDB();
-    if (mongoose.Types.ObjectId.isValid(id)) {
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    
+    if (!isObjectId) {
+      property = await Property.findOne({ slug: id }).lean();
+    }
+    
+    if (!property && isObjectId) {
       property = await Property.findById(id).lean();
     }
 
@@ -229,7 +242,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
         priceValidUntil: '2028-12-31',
         itemCondition: 'https://schema.org/NewCondition',
         availability: 'https://schema.org/InStock',
-        url: `https://ssrealty.org/properties/${property._id ? property._id.toString() : id}`
+        url: `https://ssrealty.org/properties/${property.slug || (property._id ? property._id.toString() : id)}`
       }
     },
     {
