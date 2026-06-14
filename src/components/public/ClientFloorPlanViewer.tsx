@@ -310,10 +310,10 @@ export default function ClientFloorPlanViewer({
                     </span>
                     <div className="flex flex-col md:flex-row md:items-center gap-3.5 w-full">
                       {/* Category Segmented Buttons */}
-                      <div className="flex bg-[#FAF9F5] border border-gray-200 p-1 rounded-xl shadow-sm self-start md:self-auto h-[46px] items-center">
+                      <div className="flex w-full md:w-auto bg-[#FAF9F5] border border-gray-200 p-1 rounded-xl shadow-sm h-[46px] items-center">
                         <button
                           onClick={() => setSelectedCategory('apartment')}
-                          className={`flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none whitespace-nowrap ${
+                          className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none whitespace-nowrap ${
                             selectedCategory === 'apartment'
                               ? 'bg-[#C9A227] text-[#1A1800] shadow-[0_2px_6px_rgba(201,162,39,0.15)]'
                               : 'text-gray-500 hover:text-gray-700'
@@ -323,7 +323,7 @@ export default function ClientFloorPlanViewer({
                         </button>
                         <button
                           onClick={() => setSelectedCategory('plot')}
-                          className={`flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none whitespace-nowrap ${
+                          className={`flex-1 md:flex-none flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none whitespace-nowrap ${
                             selectedCategory === 'plot'
                               ? 'bg-[#C9A227] text-[#1A1800] shadow-[0_2px_6px_rgba(201,162,39,0.15)]'
                               : 'text-gray-500 hover:text-gray-700'
@@ -340,7 +340,7 @@ export default function ClientFloorPlanViewer({
                         });
 
                         return (
-                          <div className="relative flex-1 max-w-md group">
+                          <div className="relative w-full md:flex-1 md:max-w-md group">
                             <select
                               value={property._id}
                               onChange={(e) => {
@@ -368,11 +368,11 @@ export default function ClientFloorPlanViewer({
                         );
                       })()}
                       
-                      <div className="relative">
+                      <div className="relative w-full md:w-auto">
                         <button
                           onClick={() => setShowShareMenu(!showShareMenu)}
                           disabled={sharing}
-                          className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] hover:from-[#B8860B] hover:to-[#C9A227] text-[#1A1800] font-extrabold px-5 py-3 rounded-xl text-xs transition-all shadow-md hover:shadow-lg hover:shadow-[#C9A227]/10 cursor-pointer h-[46px] select-none flex-shrink-0 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-75"
+                          className="w-full md:w-auto flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] hover:from-[#B8860B] hover:to-[#C9A227] text-[#1A1800] font-extrabold px-5 py-3 rounded-xl text-xs transition-all shadow-md hover:shadow-lg hover:shadow-[#C9A227]/10 cursor-pointer h-[46px] select-none flex-shrink-0 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-75"
                           title="Share secure client-locked floor plan page"
                         >
                           {sharing ? (
@@ -444,7 +444,7 @@ export default function ClientFloorPlanViewer({
             </div>
 
             {/* Glowing Breathing Pulse Live status tracker console */}
-            <div className="flex items-center gap-4 bg-white/95 border border-[#C9A227]/30 px-6 py-4 rounded-2xl shadow-[0_8px_30px_rgba(201,162,39,0.08)] flex-shrink-0 relative group overflow-hidden">
+            <div className="flex items-center gap-4 bg-white/95 border border-[#C9A227]/30 px-6 py-4 rounded-2xl shadow-[0_8px_30px_rgba(201,162,39,0.08)] flex-shrink-0 w-full md:w-auto relative group overflow-hidden">
               <div className="absolute inset-0 bg-[#C9A227]/5 opacity-30 group-hover:opacity-100 transition-opacity" />
               <span className="relative flex h-3.5 w-3.5 flex-shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
