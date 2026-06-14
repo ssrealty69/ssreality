@@ -259,6 +259,14 @@ export default function ClientFloorPlanViewer({
     toast.success('Secure Client-Sharing link copied to clipboard!');
   };
 
+  const formatProjectName = (title: string) => {
+    const match = title.match(/(?: in | at )([^,]+)/i);
+    if (match && match[1]) {
+      return `Project - ${match[1].trim()}`;
+    }
+    return `Project - ${title.split(',')[0].trim()}`;
+  };
+
   return (
     <div className="min-h-screen bg-[#FAF9F5] text-gray-800 font-sans relative overflow-x-hidden pb-16 selection:bg-[#C9A227] selection:text-black">
       
@@ -291,7 +299,7 @@ export default function ClientFloorPlanViewer({
                     🏢 Premium Building Details
                   </span>
                   <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1800] tracking-tight font-[var(--font-playfair)]">
-                    {property.title}
+                    {formatProjectName(property.title)}
                   </h2>
                 </div>
               ) : (
@@ -346,7 +354,7 @@ export default function ClientFloorPlanViewer({
                             >
                               {filtered.map((p) => (
                                 <option key={p._id} value={p._id}>
-                                  {p.title} ({p.location.city})
+                                  {formatProjectName(p.title)}
                                 </option>
                               ))}
                               {filtered.length === 0 && (
