@@ -30,6 +30,8 @@ export default function EditBlog({ params }: EditBlogProps) {
     category: '',
     status: 'draft',
     publishDate: '',
+    linkedPropertyId: '',
+    linkedPropertyName: '',
   });
 
   // SEO Control Panel State
@@ -46,6 +48,9 @@ export default function EditBlog({ params }: EditBlogProps) {
   const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
 
+  // Available properties state
+  const [availableProperties, setAvailableProperties] = useState<{_id: string; title: string; propertyName: string}[]>([]);
+
   // Fetch initial blog data and dynamic categories on mount
   useEffect(() => {
     async function loadBlogAndCategories() {
@@ -55,6 +60,13 @@ export default function EditBlog({ params }: EditBlogProps) {
         const catJson = await catRes.json();
         if (catJson.success && catJson.data) {
           setCategories(catJson.data);
+        }
+
+        // Fetch available properties
+        const propRes = await fetch('/api/properties?status=available&limit=50');
+        const propJson = await propRes.json();
+        if (propJson.data) {
+          setAvailableProperties(propJson.data);
         }
 
         // Fetch actual blog post data
@@ -78,6 +90,8 @@ export default function EditBlog({ params }: EditBlogProps) {
             category: blog.category || '',
             status: blog.status || (blog.published ? 'published' : 'draft'),
             publishDate: blog.publishDate ? new Date(blog.publishDate).toISOString().slice(0, 16) : '',
+            linkedPropertyId: blog.linkedPropertyId || '',
+            linkedPropertyName: blog.linkedPropertyName || '',
           });
 
           // Sync SEO properties if saved in database
@@ -172,9 +186,9 @@ export default function EditBlog({ params }: EditBlogProps) {
         status: formData.status,
         publishDate: formData.publishDate ? new Date(formData.publishDate).toISOString() : null,
         seo: seoData,
-        author: {
-          name: formData.authorName
-        }
+        author: { name: formData.authorName },
+        linkedPropertyId: formData.linkedPropertyId,
+        linkedPropertyName: formData.linkedPropertyName,
       };
 
       const res = await fetch(`/api/admin/blogs/${id}`, {
@@ -320,6 +334,29 @@ export default function EditBlog({ params }: EditBlogProps) {
                   </button>
                 </div>
               )}
+            </div>
+
+            {/* Linked Property */}
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 mb-1">🏠 Linked Property (Optional)</label>
+              <select
+                value={formData.linkedPropertyId}
+                onChange={(e) => {
+                  const selected = availableProperties.find(p => p._id === e.target.value);
+                  setFormData(prev => ({
+                    ...prev,
+                    linkedPropertyId: e.target.value,
+                    linkedPropertyName: selected ? (selected.propertyName || selected.title) : ''
+                  }));
+                }}
+                className="w-full border border-gray-300 rounded-lg px-3 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
+              >
+                <option value="">-- No linked property (generic brochure form) --</option>
+                {availableProperties.map((p) => (
+                  <option key={p._id} value={p._id}>{p.propertyName || p.title}</option>
+                ))}
+              </select>
+              <p className="text-[10px] text-gray-400 mt-1">When a reader submits their number, they'll receive this property's brochure automatically.</p>
             </div>
 
             {/* Excerpt */}

@@ -22,18 +22,18 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const body = await req.json();
-    const { name, phone, requirement, propertyId, propertyTitle, propertyUrl } = body;
+    const { name, phone, requirement, propertyId, propertyTitle, propertyUrl, isBrochureDownload, source } = body;
 
     // ── Field validation ──────────────────────────────────────────────────
-    if (!name || !phone || !propertyId || !propertyTitle) {
+    if (!phone || !propertyId || !propertyTitle) {
       return NextResponse.json(
-        { success: false, error: 'Name, phone, and property details are required.' },
+        { success: false, error: 'Phone and property details are required.' },
         { status: 400 }
       );
     }
 
     // ── Input sanitization + length limits ────────────────────────────────
-    const sanitizedName    = String(name).trim().slice(0, 100);
+    const sanitizedName    = name ? String(name).trim().slice(0, 100) : 'Blog Lead';
     const sanitizedPhone   = String(phone).trim().replace(/\D/g, '').slice(0, 15);
     const sanitizedReq     = requirement ? String(requirement).trim().slice(0, 1000) : '';
     const sanitizedPropId  = String(propertyId).trim().slice(0, 100);
@@ -55,6 +55,8 @@ export async function POST(req: NextRequest) {
       propertyId: sanitizedPropId,
       propertyTitle: sanitizedTitle,
       propertyUrl: sanitizedUrl,
+      isBrochureDownload: !!isBrochureDownload,
+      source: source || '',
     });
 
     // Send email notification if configured

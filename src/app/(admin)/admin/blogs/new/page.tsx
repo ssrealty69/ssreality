@@ -20,10 +20,12 @@ export default function AddBlog() {
     excerpt: '',
     content: '',
     coverImage: '',
-    authorName: 'SS Realty Expert', // Brand default author
+    authorName: 'SS Realty Expert',
     category: '',
     status: 'draft',
     publishDate: '',
+    linkedPropertyId: '',
+    linkedPropertyName: '',
   });
 
   // SEO Control Panel State
@@ -34,6 +36,9 @@ export default function AddBlog() {
     focusKeyword: '',
     canonicalUrl: '',
   });
+
+  // Available properties state
+  const [availableProperties, setAvailableProperties] = useState<{_id: string; title: string; propertyName: string}[]>([]);
 
   // Dynamic Categories State
   const [categories, setCategories] = useState<string[]>([]);
@@ -52,7 +57,6 @@ export default function AddBlog() {
         const json = await res.json();
         if (json.success && json.data) {
           setCategories(json.data);
-          // Set first category as default if available
           if (json.data.length > 0 && !formData.category) {
             setFormData(prev => ({ ...prev, category: json.data[0] }));
           }
@@ -63,7 +67,21 @@ export default function AddBlog() {
         setLoadingCategories(false);
       }
     }
+
+    async function fetchProperties() {
+      try {
+        const res = await fetch('/api/properties?status=available&limit=50');
+        const json = await res.json();
+        if (json.data) {
+          setAvailableProperties(json.data);
+        }
+      } catch (error) {
+        console.error('Failed to load properties:', error);
+      }
+    }
+
     fetchCategories();
+    fetchProperties();
   }, [formData.category]);
 
   // Auto-generate slug from title
@@ -142,7 +160,6 @@ export default function AddBlog() {
     setLoading(true);
 
     try {
-      // Map properties matching DB expectations + embed SEO sub-object
       const payload = {
         ...formData,
         publishDate: formData.publishDate ? new Date(formData.publishDate).toISOString() : null,
@@ -287,6 +304,29 @@ export default function AddBlog() {
                   </button>
                 </div>
               )}
+            </div>
+
+            {/* Linked Property */}
+            <div className="md:col-span-2">
+              <label className="block text-xs font-bold text-gray-700 mb-1">🏠 Linked Property (Optional)</label>
+              <select
+                value={formData.linkedPropertyId}
+                onChange={(e) => {
+                  const selected = availableProperties.find(p => p._id === e.target.value);
+                  setFormData(prev => ({
+                    ...prev,
+                    linkedPropertyId: e.target.value,
+                    linkedPropertyName: selected ? (selected.propertyName || selected.title) : ''
+                  }));
+                }}
+                className="w-full border border-gray-300 rounded-lg px-3 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white"
+              >
+                <option value="">-- No linked property (generic brochure form) --</option>
+                {availableProperties.map((p) => (
+                  <option key={p._id} value={p._id}>{p.propertyName || p.title}</option>
+                ))}
+              </select>
+              <p className="text-[10px] text-gray-400 mt-1">When a reader submits their number, they'll receive this property's brochure automatically. Lead saved in admin panel.</p>
             </div>
 
             {/* Excerpt */}

@@ -7,6 +7,8 @@ export interface IPropertyEnquiry extends Document {
   propertyId: string;
   propertyTitle: string;
   propertyUrl: string;
+  isBrochureDownload?: boolean;
+  source?: string;
   status: 'new' | 'contacted' | 'closed';
   createdAt: Date;
   updatedAt: Date;
@@ -20,6 +22,8 @@ const PropertyEnquirySchema = new Schema<IPropertyEnquiry>(
     propertyId:     { type: String, required: true },
     propertyTitle:  { type: String, required: true, trim: true },
     propertyUrl:    { type: String, required: true, trim: true },
+    isBrochureDownload: { type: Boolean, default: false },
+    source:         { type: String, default: '' },
     status: {
       type: String,
       enum: ['new', 'contacted', 'closed'],

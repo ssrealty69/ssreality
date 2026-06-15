@@ -7,6 +7,7 @@ import { formatDate } from '@/lib/utils';
 import type { Blog } from '@/types';
 import { connectDB } from '@/lib/mongodb';
 import BlogModel from '@/models/Blog';
+import PropertyModel from '@/models/Property';
 import { FALLBACK_BLOGS } from '@/lib/blogs';
 
 export const dynamic = 'force-dynamic';
@@ -34,6 +35,16 @@ async function getBlog(slug: string): Promise<Blog | null> {
     console.error("Direct db fetch failed for slug:", slug, error);
     const fallback = FALLBACK_BLOGS.find(b => b.slug === slug);
     return JSON.parse(JSON.stringify(fallback || null));
+  }
+}
+
+async function getLinkedProperty(propertyId: string): Promise<{ brochureUrl?: string; title?: string; propertyName?: string; slug?: string } | null> {
+  try {
+    await connectDB();
+    const property = await PropertyModel.findById(propertyId).select('brochureUrl title propertyName slug').lean() as any;
+    return property ? JSON.parse(JSON.stringify(property)) : null;
+  } catch {
+    return null;
   }
 }
 
@@ -82,6 +93,13 @@ export default async function BlogPostPage({ params }: Props) {
   if (!blog) notFound();
 
   const readingTime = Math.ceil((blog.content || '').split(' ').length / 200);
+
+  // Fetch linked property for brochure form
+  let linkedProperty: { brochureUrl?: string; title?: string; propertyName?: string; slug?: string } | null = null;
+  const blogAny = blog as any;
+  if (blogAny.linkedPropertyId) {
+    linkedProperty = await getLinkedProperty(blogAny.linkedPropertyId);
+  }
 
   // JSON-LD Structured Data for SEO
   const jsonLd = {
@@ -155,7 +173,13 @@ export default async function BlogPostPage({ params }: Props) {
             {/* 2. Lead Form (Mobile: Middle, Desktop: Right) */}
             <div className="relative animate-scale-in lg:max-w-md ml-auto w-full order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2">
               <div className="absolute inset-0 -m-2 bg-white/40 blur-lg rounded-3xl" />
-              <BlogLeadForm />
+              <BlogLeadForm
+                propertyId={(blog as any).linkedPropertyId}
+                propertyName={linkedProperty?.propertyName}
+                propertyTitle={linkedProperty?.title}
+                brochureUrl={linkedProperty?.brochureUrl}
+                propertyUrl={linkedProperty?.slug ? `/properties/${linkedProperty.slug}` : undefined}
+              />
             </div>
 
             {/* 3. Why Section (Mobile: Bottom, Desktop: Below Header) */}

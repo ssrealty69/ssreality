@@ -20,6 +20,8 @@ export interface IBlog extends Document {
     focusKeyword?: string;
     canonicalUrl?: string;
   };
+  linkedPropertyId?: string;
+  linkedPropertyName?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -48,6 +50,8 @@ const BlogSchema = new Schema<IBlog>(
       focusKeyword: { type: String },
       canonicalUrl: { type: String },
     },
+    linkedPropertyId:   { type: String, default: '' },
+    linkedPropertyName: { type: String, default: '' },
   },
   { timestamps: true }
 );
