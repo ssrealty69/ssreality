@@ -675,7 +675,9 @@ export default function AdminLeadsPage() {
                         </span>
                       </td>
                       <td className="py-4 px-4 font-bold text-gray-800">{lead.name}</td>
-                      <td className="py-4 px-4 text-gray-500 font-medium break-all">{lead.email}</td>
+                      <td className="py-4 px-4 text-gray-500 font-medium whitespace-nowrap" title={lead.email}>
+                        {lead.email && lead.email.length > 5 ? lead.email.substring(0, 5) + '...' : lead.email}
+                      </td>
                       <td className="py-4 px-4 text-gray-500 font-semibold whitespace-nowrap">{lead.phone}</td>
                       <td className="py-4 px-4 font-bold text-gray-800 whitespace-nowrap">{lead.subject}</td>
                       <td className="py-4 px-4 max-w-xs">
