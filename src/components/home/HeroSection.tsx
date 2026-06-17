@@ -7,15 +7,36 @@ import { Star, Building2, CheckCircle2 } from 'lucide-react';
 export default function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Defer video load until after page is interactive (improves LCP)
+  // Defer video load until well after LCP so it never competes with critical resources.
+  // Connection-aware: skip entirely on 2G/3G or when save-data is requested.
+  // Responsive: serve w_640 on mobile (<768px) and w_1280 on desktop to cut payload ~50%.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    // Lazy-load video after a short delay so it doesn't compete with LCP
+
+    // Skip video on slow connections or data-saver mode
+    const nav = navigator as Navigator & {
+      connection?: { effectiveType?: string; saveData?: boolean };
+    };
+    const conn = nav.connection;
+    const isSlowConnection =
+      conn?.saveData === true ||
+      conn?.effectiveType === 'slow-2g' ||
+      conn?.effectiveType === '2g' ||
+      conn?.effectiveType === '3g';
+
+    if (isSlowConnection) return; // Poster image is sufficient fallback
+
+    // Responsive width: 640 on narrow viewports, 1280 on desktop
+    const width = window.innerWidth < 768 ? 640 : 1280;
+    const videoUrl = `https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto:low,f_auto,w_${width}/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.mp4`;
+
+    // 5 s delay — ensures LCP image, fonts, and above-fold JS finish first
     const timer = setTimeout(() => {
-      video.src = 'https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto:low,f_auto,w_1280/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.mp4';
+      video.src = videoUrl;
       video.load();
-    }, 3000);
+      video.play().catch((err) => console.log("Autoplay prevented:", err));
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
 

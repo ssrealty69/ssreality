@@ -228,6 +228,9 @@ h4, h5, h6 {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   content-visibility: auto;
   contain-intrinsic-size: 0 400px;
+  /* Isolate reflow to card subtree — prevents forced reflows from propagating
+     to the full document when JS reads geometric properties (offsetWidth etc.) */
+  contain: layout style;
 }
 .property-card:hover {
   transform: translateY(-6px);

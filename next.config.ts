@@ -36,6 +36,9 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '50mb',
     },
+    // Disable strict CSS chunking to allow cross-chunk CSS merging; reduces the two
+    // blocking CSS files into fewer requests, saving ~500 ms render-blocking time.
+    cssChunking: false,
   },
 
   // ─── External packages (native modules — not bundled) ─────────────────────
@@ -43,6 +46,17 @@ const nextConfig: NextConfig = {
   // cloudinary and mongoose also must not be bundled as they use Node.js http/net/tls modules.
   // Vercel pre-installs these in the lambda environment automatically.
   serverExternalPackages: ['sharp', 'cloudinary', 'mongoose'],
+
+  // ─── Redirects ────────────────────────────────────────────────────────────
+  async redirects() {
+    return [
+      {
+        source: '/privacy-policy',
+        destination: '/privacy',
+        permanent: true,
+      },
+    ];
+  },
 
   // ─── HTTP Security Headers ────────────────────────────────────────────────
   async headers() {
