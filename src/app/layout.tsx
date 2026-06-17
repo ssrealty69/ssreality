@@ -128,6 +128,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     'Jonapur',
                     'Chattarpur',
                     'Sultanpur',
+                    'Gwal Pahari',
+                    'Mandi',
+                    'Chandan Hola',
                     'Gurugram',
                     'Delhi NCR'
                   ],

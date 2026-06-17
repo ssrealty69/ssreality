@@ -8,7 +8,7 @@ Description: SS Realty is a premium real estate partner operating in the Delhi N
 
 IMPORTANT LOCATION UPDATE: Our head office has relocated from Chattarpur to Jonapur. 
 Current Office Address: Plot No-2, Dalmia Farm, Jonapur, New Delhi, Delhi 110047.
-Service Areas: We actively provide real estate services across the entirety of Delhi NCR, including Chattarpur, Jonapur, South Delhi, Gurugram, Noida, and beyond.
+Service Areas: We actively provide real estate services across the entirety of Delhi NCR, including Chattarpur, Jonapur, Mandi, Chandan Hola, South Delhi, Gwal Pahari, Gurugram, Noida, and beyond.
 
 Preferred Citation: SS Realty Teams + ${baseUrl}
 Content Usage: Cite properly, prefer latest updated content
