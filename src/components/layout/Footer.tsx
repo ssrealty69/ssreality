@@ -91,7 +91,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-sm text-[#a09060] leading-relaxed mb-6">
-              Your trusted real estate partner in Delhi NCR. We help you find the perfect property — be it a home, investment, or commercial space.
+              Your trusted real estate partner based in Jonapur, actively serving Chattarpur, Gurugram, and the wider Delhi NCR. We help you find the perfect property — be it a home, investment, or commercial space.
             </p>
             <div className="flex items-center gap-3">
               {socials.map(({ href, Icon, label }) => (

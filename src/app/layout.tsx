@@ -118,10 +118,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   telephone: '+91-9311059100',
                   address: {
                     '@type': 'PostalAddress',
-                    addressLocality: 'Gurugram',
-                    addressRegion: 'Haryana',
+                    streetAddress: 'Plot No-2, Dalmia Farm, Jonapur',
+                    addressLocality: 'New Delhi',
+                    addressRegion: 'Delhi',
+                    postalCode: '110047',
                     addressCountry: 'IN'
                   },
+                  areaServed: [
+                    'Jonapur',
+                    'Chattarpur',
+                    'Sultanpur',
+                    'Gurugram',
+                    'Delhi NCR'
+                  ],
                   hasMap: 'https://share.google/0VFigfocQUhuCZvKc',
                   sameAs: [
                     'https://share.google/0VFigfocQUhuCZvKc'
