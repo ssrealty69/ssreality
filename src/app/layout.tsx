@@ -18,10 +18,7 @@ const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-playfair',
   display: 'swap',
-  // preload: false — Playfair is only used in h1/h2/h3 headings (below-fold for most pages).
-  // Preloading it competes with Inter (body text) and the LCP hero image in the critical path.
-  // Browser will load it via font-display:swap with no layout shift since fallback dimensions match.
-  preload: false,
+  preload: true,
   weight: ['700'],              // Only the weight used for headings
 });
 
