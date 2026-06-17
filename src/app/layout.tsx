@@ -62,11 +62,6 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
-  icons: {
-    icon: '/SS Realty Official Logo.png',
-    shortcut: '/SS Realty Official Logo.png',
-    apple: '/SS Realty Official Logo.png',
-  },
   verification: {
     google: 'KE62V7D-CjTuCnUR5guuPdwlLC47wzhG5b6SZWOGBys',
   },
@@ -92,9 +87,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         )}
         {/* End Google Tag Manager */}
-        <link rel="icon" href="/SS Realty Official Logo.png" />
-        <link rel="apple-touch-icon" href="/SS Realty Official Logo.png" />
-        <link rel="shortcut icon" href="/SS Realty Official Logo.png" />
         {/* Preconnect to speed up 3rd-party connections before browser discovers them */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
