@@ -51,9 +51,9 @@ export default function HeroSection() {
           alt="SS Realty Hero Background"
           fill
           priority
-          quality={75}
+          quality={50}
           className="object-cover"
-          sizes="100vw"
+          sizes="(max-width: 768px) 100vw, 1280px"
         />
         {/* Video loads after 3s — does not block initial render */}
         <video
