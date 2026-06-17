@@ -27,9 +27,9 @@ export default function HeroSection() {
 
     if (isSlowConnection) return; // Poster image is sufficient fallback
 
-    // Responsive width: 640 on narrow viewports, 1280 on desktop
-    const width = window.innerWidth < 768 ? 640 : 1280;
-    const videoUrl = `https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto:low,f_auto,w_${width}/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.mp4`;
+    // Responsive width: 768 on narrow viewports, 1920 on desktop
+    const width = window.innerWidth < 768 ? 768 : 1920;
+    const videoUrl = `https://res.cloudinary.com/ddpahrqfk/video/upload/q_auto:good,f_auto,w_${width}/v1781260563/SS_Realty_Hero_Section_Video_bdnplb.mp4`;
 
     // 5 s delay — ensures LCP image, fonts, and above-fold JS finish first
     const timer = setTimeout(() => {
