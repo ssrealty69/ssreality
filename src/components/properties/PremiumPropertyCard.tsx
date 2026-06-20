@@ -409,29 +409,29 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
             {/* Outlined Brochure/Enquire button */}
             <button 
               onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowBrochureModal(true); }}
-              className="px-4 py-2.5 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-950 hover:text-white transition-all duration-300 font-poppins font-bold text-xs uppercase tracking-widest rounded-xl flex items-center gap-1.5 cursor-pointer"
+              className="flex-1 sm:flex-none justify-center px-1 sm:px-4 py-2.5 bg-white border-2 border-gray-900 text-gray-900 hover:bg-gray-950 hover:text-white transition-all duration-300 font-poppins font-bold text-[10px] sm:text-xs uppercase tracking-widest rounded-xl flex items-center gap-1 sm:gap-1.5 cursor-pointer whitespace-nowrap"
             >
-              <Download size={13} /> Brochure
+              <Download size={12} className="shrink-0" /> Brochure
             </button>
 
             {/* View Details gold gradient button */}
             <Link
               href={getPropertyUrl(property)}
               aria-label={`View details for ${property.title}`}
-              className="px-5 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] hover:brightness-105 transition-all duration-300 font-poppins font-bold text-xs uppercase tracking-widest rounded-xl flex items-center gap-1.5 shadow-[0_4px_14px_rgba(201,162,39,0.25)] hover:shadow-[0_6px_20px_rgba(201,162,39,0.4)] active:scale-95"
+              className="flex-1 sm:flex-none justify-center px-1 sm:px-5 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] hover:brightness-105 transition-all duration-300 font-poppins font-bold text-[10px] sm:text-xs uppercase tracking-widest rounded-xl flex items-center gap-1 sm:gap-1.5 shadow-[0_4px_14px_rgba(201,162,39,0.25)] hover:shadow-[0_6px_20px_rgba(201,162,39,0.4)] active:scale-95 whitespace-nowrap"
             >
-              <Eye size={13} /> View Details
+              <Eye size={12} className="shrink-0" /> View Details
             </Link>
 
             {/* Share Button */}
             <button
               onClick={handleShare}
               aria-label="Share property"
-              className="w-11 h-10 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 transition-all duration-300 rounded-xl flex items-center justify-center shrink-0 active:scale-95"
+              className="w-[42px] h-[40px] sm:w-11 sm:h-10 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 transition-all duration-300 rounded-xl flex items-center justify-center shrink-0 active:scale-95"
             >
               <Share2 size={16} />
             </button>
