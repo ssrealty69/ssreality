@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import { FileText, AlertTriangle, HandshakeIcon, Gavel, CreditCard, Users, Mail, Phone, MapPin } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service',
-  description: 'Terms of service and user agreement for SS Realty services and property listings in Gurgaon and Delhi NCR.',
+  title: 'Terms of Service | SS Realty Real Estate',
+  description:
+    'Review the terms and conditions governing use of SS Realty\'s website and property services — brokerage, listings, payments & dispute resolution.',
+  alternates: { canonical: 'https://ssrealty.org/terms' },
 };
 
 export const dynamic = 'force-static';

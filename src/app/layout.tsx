@@ -32,33 +32,38 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Find Premium Properties in Gurgaon & Delhi NCR - Luxury Apartments & Villas | SS Realty',
+    // ≤60 chars default — avoids "Page Titles: Over 60 Characters" warning
+    default: 'SS Realty | Premium Properties in Delhi NCR',
     template: '%s | SS Realty',
   },
   description:
-    'Discover premium residential and commercial properties in Delhi NCR. Explore luxury apartments, villas, and plots. Expert real estate consulting for best investments.',
+    'Discover premium flats, villas & plots for sale in Jonapur, Chattarpur & Delhi NCR. Expert real estate consulting by SS Realty.',
   keywords: [
     'SS Realty', 'real estate', 'property in Delhi NCR', 'apartments for sale',
-    'villas', 'plots', 'commercial property', 'buy property', 'rent property', 'luxury homes',
+    'flats in Jonapur', 'property in Chattarpur', 'villas', 'plots',
+    'commercial property', 'buy property', 'luxury homes',
   ],
   authors: [{ name: 'SS Realty Teams', url: 'https://ssrealty.org' }],
   creator: 'SS Realty Teams',
+  alternates: {
+    canonical: 'https://ssrealty.org',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: process.env.NEXT_PUBLIC_APP_URL,
+    url: 'https://ssrealty.org',
     siteName: 'SS Realty',
-    title: 'Find Premium Properties in Delhi NCR - Luxury Apartments & Villas | SS Realty',
-    description: 'Discover premium residential and commercial properties in Delhi NCR. Explore luxury apartments, villas, and plots.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'SS Realty' }],
+    title: 'SS Realty | Premium Properties in Jonapur & Delhi NCR',
+    description: 'Find luxury apartments, villas & plots in Jonapur, Chattarpur, Gwal Pahari & Gurugram. Trusted real estate partner since 2008.',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'SS Realty – Premium Properties in Delhi NCR' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Premium Properties in Delhi NCR | SS Realty',
-    description: 'Find your dream property with SS Realty.',
+    title: 'SS Realty | Homes in Jonapur & Delhi NCR',
+    description: 'Find luxury flats, villas & plots in Delhi NCR with SS Realty.',
   },
   robots: { index: true, follow: true },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  metadataBase: new URL('https://ssrealty.org'),
   verification: {
     google: 'KE62V7D-CjTuCnUR5guuPdwlLC47wzhG5b6SZWOGBys',
   },

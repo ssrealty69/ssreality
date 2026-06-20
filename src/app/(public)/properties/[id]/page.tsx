@@ -50,17 +50,17 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     if (!property && isObjectId) {
       property = await Property.findById(id).select('title description seo images').lean();
     }
-      if (property) {
-        return {
-          title: property.seo?.title || `${property.title} | SS Realty`,
+      const slug = property.slug || (property._id ? property._id.toString() : id);
+      return {
+        title: property.seo?.title || `${property.title} | SS Realty`,
+        description: property.seo?.description || property.description,
+        alternates: { canonical: `https://ssrealty.org/properties/${slug}` },
+        openGraph: {
+          title: property.seo?.title || property.title,
           description: property.seo?.description || property.description,
-          openGraph: {
-            title: property.seo?.title || property.title,
-            description: property.seo?.description || property.description,
-            images: property.images && property.images.length > 0 ? [property.images[0]] : [],
-          }
-        };
-      }
+          images: property.images && property.images.length > 0 ? [property.images[0]] : [],
+        }
+      };
   } catch (e) {
     console.error("Error generating metadata", e);
   }
@@ -84,7 +84,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-// Generates descriptive alt text: e.g. "Amaryllis 3BHK & 4BHK Flat in Gwal Pahari Mandi Building Image 1"
+// Generates descriptive alt text capped at 100 chars (SEO best practice)
 function generateImageAlt(property: any, idx: number, suffix?: string): string {
   const name = property.propertyName || property.title || 'Property';
   const location = property.location?.address || property.location?.city || '';
@@ -115,10 +115,13 @@ function generateImageAlt(property: any, idx: number, suffix?: string): string {
   const locationPart = location ? ` in ${location}` : '';
   const imgLabel = suffix || `Image ${idx + 1}`;
 
-  if (configPart) {
-    return `${name} ${configPart}${locationPart} ${imgLabel}`;
-  }
-  return `${name}${locationPart} ${imgLabel}`;
+  let alt = configPart
+    ? `${name} ${configPart}${locationPart} ${imgLabel}`
+    : `${name}${locationPart} ${imgLabel}`;
+
+  // Enforce 100-char limit (SEO Spider: Alt Text Over 100 Characters)
+  if (alt.length > 100) alt = alt.slice(0, 97) + '...';
+  return alt;
 }
 
 function formatPropertyHeading(priceList: any[], propertyType: string): string {

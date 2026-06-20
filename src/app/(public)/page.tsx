@@ -19,9 +19,10 @@ const FarmHouseSection    = dynamic(() => import('@/components/home/FarmHouseSec
 
 
 export const metadata: Metadata = {
-  // We remove title here so it inherits the robust 'default' title from layout.tsx
-  // which is already "Find Premium Properties in Delhi NCR - Luxury Apartments & Villas | SS Realty"
-  description: 'Discover premium residential and commercial properties for sale and rent across Delhi NCR with SS Realty — your trusted real estate partner.',
+  title: 'SS Realty – Homes & Flats for Sale in Delhi NCR',
+  description:
+    'Browse luxury 2BHK, 3BHK flats, villas & plots for sale in Jonapur, Chattarpur, Sultanpur & Gurugram. SS Realty – Delhi NCR\'s trusted property consultant since 2008.',
+  alternates: { canonical: 'https://ssrealty.org' },
 };
 
 export const revalidate = 3600; // Cache the page for 1 hour

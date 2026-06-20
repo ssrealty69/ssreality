@@ -6,8 +6,10 @@ import type { Blog } from '@/types';
 import { getAllBlogs } from '@/lib/blog-service';
 
 export const metadata: Metadata = {
-  title: 'Real Estate Blog & Market Insights for Gurgaon & Delhi NCR',
-  description: 'Stay updated with the latest real estate news, market trends, investment tips, and property guides for Gurgaon and Delhi NCR from SS Realty.',
+  title: 'Real Estate Blog | Delhi NCR Market Insights',
+  description:
+    'Expert real estate guides, property investment tips & Delhi NCR market trends. Stay informed with SS Realty\'s blog for buyers, sellers & NRI investors.',
+  alternates: { canonical: 'https://ssrealty.org/blog' },
 };
 
 export const dynamic = 'force-dynamic';

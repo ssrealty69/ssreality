@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   Check, Heart, Star, Download, Eye, ChevronLeft, ChevronRight,
-  MapPin, ShieldAlert, Award, PhoneCall, X, CheckCircle2, Loader2, CheckCheck
+  MapPin, ShieldAlert, Award, PhoneCall, X, CheckCircle2, Loader2, CheckCheck, Share2
 } from 'lucide-react';
 import { formatPrice, getPropertyUrl } from '@/lib/utils';
 import type { Property } from '@/types';
@@ -172,6 +172,32 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
     const years = ['2026', '2027', '2028'];
     return `New Launch - Completion in ${months[hash % 4]} ${years[hash % 3]}`;
   }, [property]);
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const shareUrl = `${window.location.origin}${getPropertyUrl(property)}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: property.title,
+          text: `Check out this property: ${property.title} in ${property.location.address}`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('Link copied to clipboard!');
+      } catch (err) {
+        toast.error('Failed to copy link');
+      }
+    }
+  };
 
   const waMessage = encodeURIComponent(`Hello, I am interested in ${property.title} located in ${property.location.address}, ${property.location.city}. Please share more details.`);
   const waLink = `https://wa.me/919311059100?text=${waMessage}`;
@@ -400,6 +426,15 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
             >
               <Eye size={13} /> View Details
             </Link>
+
+            {/* Share Button */}
+            <button
+              onClick={handleShare}
+              aria-label="Share property"
+              className="w-11 h-10 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-700 transition-all duration-300 rounded-xl flex items-center justify-center shrink-0 active:scale-95"
+            >
+              <Share2 size={16} />
+            </button>
           </div>
         </div>
 

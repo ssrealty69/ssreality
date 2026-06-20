@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { BedDouble, Bath, Maximize2, Car, Check } from 'lucide-react';
+import { BedDouble, Bath, Maximize2, Car, Check, Share2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { formatPrice, getPropertyUrl } from '@/lib/utils';
 import type { Property } from '@/types';
 
@@ -30,6 +31,32 @@ export default function PropertyCard({ property, priority = false, actionText, o
   // WhatsApp Link
   const waMessage = encodeURIComponent(`Hello, I am interested in ${property.title} located in ${property.location.address}, ${property.location.city}. Please share more details.`);
   const waLink = `https://wa.me/919311059100?text=${waMessage}`;
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const shareUrl = `${window.location.origin}${getPropertyUrl(property)}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: property.title,
+          text: `Check out this property: ${property.title} in ${property.location.address}`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('Link copied to clipboard!');
+      } catch (err) {
+        toast.error('Failed to copy link');
+      }
+    }
+  };
 
   return (
     <article 
@@ -141,33 +168,43 @@ export default function PropertyCard({ property, priority = false, actionText, o
         </div>
 
         {/* View Details / Custom Action Button */}
-        {property.status === 'delivered' ? (
-          <a 
-            href={property.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.title + ', ' + property.location.address + ', ' + property.location.city)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm select-none"
+        <div className="flex items-center gap-2">
+          {property.status === 'delivered' ? (
+            <a 
+              href={property.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.title + ', ' + property.location.address + ', ' + property.location.city)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm select-none"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+              <span className="relative z-10">{actionText || 'View Location'}</span>
+            </a>
+          ) : onActionClick ? (
+            <button 
+              onClick={() => onActionClick(property)}
+              className="flex-1 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+              <span className="relative z-10">{actionText || 'View Details'}</span>
+            </button>
+          ) : (
+            <Link 
+              href={getPropertyUrl(property)}
+              className="flex-1 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+              <span className="relative z-10">{actionText || 'View Details'}</span>
+            </Link>
+          )}
+
+          <button
+            onClick={handleShare}
+            aria-label="Share property"
+            className="w-[42px] h-[42px] bg-white border-2 border-gray-100 hover:bg-gray-50 hover:border-gray-200 text-gray-600 hover:text-gray-900 transition-all duration-300 rounded-lg flex items-center justify-center shrink-0 shadow-sm active:scale-95"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
-            <span className="relative z-10">{actionText || 'View Location'}</span>
-          </a>
-        ) : onActionClick ? (
-          <button 
-            onClick={() => onActionClick(property)}
-            className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
-            <span className="relative z-10">{actionText || 'View Details'}</span>
+            <Share2 size={18} />
           </button>
-        ) : (
-          <Link 
-            href={getPropertyUrl(property)}
-            className="w-full py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-heading font-bold rounded-lg text-center transition-all shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden block text-sm"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
-            <span className="relative z-10">{actionText || 'View Details'}</span>
-          </Link>
-        )}
+        </div>
       </div>
     </article>
   );

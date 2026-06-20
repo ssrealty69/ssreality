@@ -4,8 +4,10 @@ import { Target, Eye, Heart, Users, Award, CheckCircle2, Phone, Mail } from 'luc
 import JourneyTimeline from '@/components/public/JourneyTimeline';
 
 export const metadata: Metadata = {
-  title: 'About Us - Top Real Estate Agency in Gurgaon & Delhi NCR',
-  description: "Learn about SS Realty — Gurgaon and Delhi NCR's trusted real estate partner with 25+ years of experience helping families find their dream homes.",
+  title: 'About SS Realty | Trusted Delhi NCR Property Experts',
+  description:
+    'Founded in 2008, SS Realty has helped 2,000+ families buy flats, villas & plots across Jonapur, Chattarpur & Delhi NCR. Meet our team and our story.',
+  alternates: { canonical: 'https://ssrealty.org/about-us' },
 };
 
 // SSG — fully static

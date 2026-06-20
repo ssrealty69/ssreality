@@ -8,12 +8,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Yahan apne dynamic pages add kar sakte ho (database se bhi fetch kar sakte ho)
   const staticPages: MetadataRoute.Sitemap = [
-    '', '/properties', '/about', '/contact-us', '/blog', '/emi-calculator', '/privacy', '/terms', '/careers'
-  ].map(route => ({
+    { route: '',              priority: 1.0 },
+    { route: '/properties',   priority: 0.9 },
+    { route: '/about-us',     priority: 0.8 },
+    { route: '/contact-us',   priority: 0.8 },
+    { route: '/blog',         priority: 0.8 },
+    { route: '/emi-calculator', priority: 0.7 },
+    { route: '/careers',      priority: 0.6 },
+    { route: '/privacy',      priority: 0.4 },
+    { route: '/terms',        priority: 0.4 },
+  ].map(({ route, priority }) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1.0 : 0.8,
+    priority,
   }));
 
   try {

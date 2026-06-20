@@ -7,8 +7,10 @@ import { FALLBACK_PROPERTIES } from '@/constants/properties';
 import type { Property } from '@/types';
 
 export const metadata: Metadata = {
-  title: 'Premium Properties for Sale & Rent in Gurgaon & Delhi NCR',
-  description: 'Browse premium properties for sale and rent in Gurgaon & Delhi NCR — luxury apartments, villas, plots, and commercial spaces by top builders.',
+  title: 'Properties for Sale in Jonapur & Delhi NCR',
+  description:
+    'Browse 2BHK & 3BHK flats, independent villas, farm houses & plots in Jonapur, Chattarpur, Sultanpur & Gurugram. Verified listings by SS Realty.',
+  alternates: { canonical: 'https://ssrealty.org/properties' },
 };
 
 export const dynamic = 'force-dynamic';

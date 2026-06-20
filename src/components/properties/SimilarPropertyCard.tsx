@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { BedDouble, Maximize2, ChevronRight } from 'lucide-react';
+import { BedDouble, Maximize2, ChevronRight, Share2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { formatPrice, getPropertyUrl } from '@/lib/utils';
 import type { Property } from '@/types';
 
@@ -14,6 +15,32 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
   const mainImage = (property.interiorImages && property.interiorImages.length > 0)
     ? property.interiorImages[0]
     : property.images?.[0] || '/SS Realty.png';
+  
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const shareUrl = `${window.location.origin}${getPropertyUrl(property)}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: property.title,
+          text: `Check out this property: ${property.title} in ${property.location.address}`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('Link copied to clipboard!');
+      } catch (err) {
+        toast.error('Failed to copy link');
+      }
+    }
+  };
   
   return (
     <article className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full group transition-all duration-300 hover:shadow-md hover:border-[#C9A227]/30">
@@ -77,17 +104,26 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
         })()}
 
         {/* View Details Button */}
-        <Link 
-          href={getPropertyUrl(property)}
-          className="mt-auto w-full py-2 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] text-[11px] sm:text-xs font-heading font-bold rounded-md text-center transition-all flex items-center justify-center gap-1 group/btn shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden"
-        >
-          {/* SHINE EFFECT */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] pointer-events-none" />
-          <span className="relative z-10 flex items-center gap-1">
-            View Details 
-            <ChevronRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
-          </span>
-        </Link>
+        <div className="mt-auto flex items-center gap-2">
+          <Link 
+            href={getPropertyUrl(property)}
+            className="flex-1 py-2 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] text-[11px] sm:text-xs font-heading font-bold rounded-md text-center transition-all flex items-center justify-center gap-1 group/btn shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden"
+          >
+            {/* SHINE EFFECT */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+            <span className="relative z-10 flex items-center gap-1">
+              View Details 
+              <ChevronRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
+            </span>
+          </Link>
+          <button
+            onClick={handleShare}
+            aria-label="Share property"
+            className="w-8 h-8 sm:w-[34px] sm:h-[34px] bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 hover:text-gray-900 transition-all duration-300 rounded-md flex items-center justify-center shrink-0 shadow-sm active:scale-95"
+          >
+            <Share2 size={16} />
+          </button>
+        </div>
       </div>
     </article>
   );
