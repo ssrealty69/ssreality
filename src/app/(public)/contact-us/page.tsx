@@ -26,7 +26,7 @@ const contactInfo = [
   { icon: MapPin, title: 'Office Address', detail: 'Plot No-2, Dalmia Farm, Jonapur, New Delhi 110047', href: 'https://share.google/DuHqosVcJ03udejB8' },
   { icon: Phone, title: 'Phone', detail: '+91 93110 59100', href: 'tel:+919311059100' },
   { icon: Mail, title: 'Email', detail: 'info@ssrealty.org', href: 'mailto:info@ssrealty.org' },
-  { icon: Clock, title: 'Working Hours', detail: 'Mon–Sat: 9:00 AM – 7:00 PM', href: null },
+  { icon: Clock, title: 'Working Hours', detail: 'Wed–Mon: 10:00 AM – 7:00 PM', href: null },
 ];
 
 export default function ContactPage() {
