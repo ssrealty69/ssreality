@@ -11,6 +11,7 @@ interface Flat {
   bedrooms?: number;
   price?: number;
   notes?: string;
+  _floorName?: string;
 }
 
 interface Floor {
@@ -59,6 +60,7 @@ interface Plot {
   facing?: string;
   price?: number;
   notes?: string;
+  _blockName?: string;
 }
 
 interface Block {
@@ -245,7 +247,7 @@ export default function ClientFloorPlanViewer({
       if (isPlot) {
         text = `Hi ${property.agent.name}, I am highly interested in booking Plot "${unitNum}"${details ? ` (${details})` : ''} at "${property.title}". Please share pricing and payment plans!`;
       } else {
-        text = `Hi ${property.agent.name}, I am highly interested in booking Flat "${unitNum}"${details ? ` (${details} BHK)` : ''} at "${property.title}". Please share pricing and payment plans!`;
+        text = `Hi ${property.agent.name}, I am highly interested in booking Unit "${unitNum}"${details ? ` (${details} BHK)` : ''} at "${property.title}". Please share pricing and payment plans!`;
       }
     }
     
@@ -592,14 +594,14 @@ export default function ClientFloorPlanViewer({
                   <div className="mt-4 bg-[#C9A227]/5 border border-[#C9A227]/20 p-3.5 rounded-xl text-xs space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
                     <p className="text-gray-500 font-medium">Selected Plot:</p>
                     <div className="flex items-center justify-between">
-                      <span className="font-extrabold text-gray-800 text-md">Plot {selectedPlot.number}</span>
+                      <span className="font-extrabold text-gray-800 text-md">{selectedPlot._blockName ? `${selectedPlot._blockName} - ` : ''}Plot {selectedPlot.number}</span>
                       <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 text-[10px] font-bold rounded">
                         {selectedPlot.sizeGaj} Gaj {selectedPlot.isCorner && '• Corner'}
                       </span>
                     </div>
 
                     <a
-                      href={getWhatsappUrl(selectedPlot.number, `${selectedPlot.sizeGaj} Gaj${selectedPlot.isCorner ? ', Corner' : ''}`)}
+                      href={getWhatsappUrl(`${selectedPlot._blockName ? selectedPlot._blockName + ' - ' : ''}${selectedPlot.number}`, `${selectedPlot.sizeGaj} Gaj${selectedPlot.isCorner ? ', Corner' : ''}`)}
                       target="_blank"
                       className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(16,185,129,0.15)] cursor-pointer text-xs"
                     >
@@ -631,14 +633,14 @@ export default function ClientFloorPlanViewer({
                   <div className="mt-4 bg-[#C9A227]/5 border border-[#C9A227]/20 p-3.5 rounded-xl text-xs space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
                     <p className="text-gray-500 font-medium">Selected Unit:</p>
                     <div className="flex items-center justify-between">
-                      <span className="font-extrabold text-gray-800 text-md">Flat {selectedFlat.number}</span>
+                      <span className="font-extrabold text-gray-800 text-md">{selectedFlat._floorName ? `${selectedFlat._floorName} - ` : ''}Unit {selectedFlat.number}</span>
                       <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 text-[10px] font-bold rounded">
                         {selectedFlat.bedrooms ? `${selectedFlat.bedrooms} BHK` : 'Available'}
                       </span>
                     </div>
 
                     <a
-                      href={getWhatsappUrl(selectedFlat.number, selectedFlat.bedrooms ? `${selectedFlat.bedrooms} BHK` : undefined)}
+                      href={getWhatsappUrl(`${selectedFlat._floorName ? selectedFlat._floorName + ' - ' : ''}${selectedFlat.number}`, selectedFlat.bedrooms ? `${selectedFlat.bedrooms} BHK` : undefined)}
                       target="_blank"
                       className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(16,185,129,0.15)] cursor-pointer text-xs"
                     >
@@ -844,7 +846,7 @@ export default function ClientFloorPlanViewer({
                             cardStyle = 'bg-white border border-gray-200/80 text-amber-800 hover:border-amber-500 hover:bg-amber-50/10 cursor-pointer shadow-sm';
                           }
 
-                          const isSelected = selectedPlot?.number === plot.number;
+                          const isSelected = selectedPlot?.number === plot.number && selectedPlot?._blockName === block.blockName;
                           if (isSelected) {
                             topBarColor = 'bg-[#C9A227] shadow-[0_0_8px_#C9A227]';
                             cardStyle = 'bg-[#C9A227]/5 border-2 border-[#C9A227] text-[#1A1800] scale-[1.03] cursor-pointer shadow-md';
@@ -855,7 +857,7 @@ export default function ClientFloorPlanViewer({
                               key={pIndex}
                               onClick={() => {
                                 if (isAvailable || isReserved) {
-                                  setSelectedPlot(isSelected ? null : plot);
+                                  setSelectedPlot(isSelected ? null : { ...plot, _blockName: block.blockName });
                                 }
                               }}
                               className={`rounded-xl overflow-hidden relative flex flex-col justify-center min-h-[95px] pt-3.5 pb-2.5 px-4 transition-all duration-300 hover:-translate-y-1 ${cardStyle}`}
@@ -936,7 +938,7 @@ export default function ClientFloorPlanViewer({
                             cardStyle = 'bg-white border border-gray-200/80 text-amber-800 hover:border-amber-500 hover:bg-amber-50/10 cursor-pointer shadow-sm';
                           }
 
-                          const isSelected = selectedFlat?.number === flat.number;
+                          const isSelected = selectedFlat?.number === flat.number && selectedFlat?._floorName === floor.floorName;
                           if (isSelected) {
                             topBarColor = 'bg-[#C9A227] shadow-[0_0_8px_#C9A227]';
                             cardStyle = 'bg-[#C9A227]/5 border-2 border-[#C9A227] text-[#1A1800] scale-[1.03] cursor-pointer shadow-md';
@@ -947,7 +949,7 @@ export default function ClientFloorPlanViewer({
                               key={fIndex}
                               onClick={() => {
                                 if (isAvailable || isReserved) {
-                                  setSelectedFlat(isSelected ? null : flat);
+                                  setSelectedFlat(isSelected ? null : { ...flat, _floorName: floor.floorName });
                                 }
                               }}
                               className={`rounded-xl overflow-hidden relative flex flex-col justify-center min-h-[95px] pt-3.5 pb-2.5 px-4 transition-all duration-300 hover:-translate-y-1 ${cardStyle}`}
