@@ -145,33 +145,86 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="absolute top-0 right-0 w-[60%] h-full bg-gradient-to-l from-[#C9A227]/5 to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-x-16 items-start">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-x-16 items-start">
             
-            {/* 1. Header (Title + Excerpt) */}
-            <div className="animate-fade-in-up order-1 lg:col-start-1 lg:row-start-1">
-              <Link href="/blog" className="inline-flex items-center gap-2 text-[#C9A227] hover:text-[#B8860B] font-semibold text-[10px] mb-4 uppercase tracking-wider group">
-                <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" /> Back to Blog
-              </Link>
-              
-              <div className="flex items-center gap-2 mb-3">
-                <span className="px-2 py-0.5 bg-[#C9A227]/10 text-[#B8860B] rounded-md text-[9px] font-bold uppercase tracking-wide">
-                  {blog.category}
-                </span>
-                <span className="w-1 h-1 bg-[#a09060] rounded-full" />
-                <span className="text-[10px] text-[#a09060] font-medium">{readingTime} min read</span>
+            {/* Left Column: Header & Trust Section */}
+            <div className="flex flex-col gap-6 lg:gap-8 order-1 w-full lg:col-start-1">
+              {/* Header (Title + Excerpt) */}
+              <div className="animate-fade-in-up">
+                <Link href="/blog" className="inline-flex items-center gap-2 text-[#C9A227] hover:text-[#B8860B] font-semibold text-[10px] mb-4 uppercase tracking-wider group">
+                  <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" /> Back to Blog
+                </Link>
+                
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-2 py-0.5 bg-[#C9A227]/10 text-[#B8860B] rounded-md text-[9px] font-bold uppercase tracking-wide">
+                    {blog.category}
+                  </span>
+                  <span className="w-1 h-1 bg-[#a09060] rounded-full" />
+                  <span className="text-[10px] text-[#a09060] font-medium">{readingTime} min read</span>
+                </div>
+
+                <h1 className="text-2xl md:text-4xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4 leading-[1.2] text-balance">
+                  {blog.title}
+                </h1>
+                
+                <p className="text-[#6b6450] text-sm md:text-base mb-3 leading-relaxed max-w-xl">
+                  {blog.excerpt}
+                </p>
               </div>
 
-              <h1 className="text-2xl md:text-4xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4 leading-[1.2]">
-                {blog.title}
-              </h1>
-              
-              <p className="text-[#6b6450] text-sm md:text-base mb-3 leading-relaxed max-w-xl">
-                {blog.excerpt}
-              </p>
+              {/* Why Section */}
+              <div className="mt-2">
+                <div className="mb-4">
+                  <h3 className="text-[14px] font-black text-[#1A1800] mb-2 uppercase tracking-[0.1em]">Why get property on <span className="text-[#C9A227]">SS Realty?</span></h3>
+                  <div className="flex flex-col sm:flex-row sm:flex-nowrap gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-2 sm:pb-0">
+                    {[
+                      'Verified Luxury Properties',
+                      'Market Insights & Pricing',
+                      'Expert Consultation'
+                    ].map((hook, index) => (
+                      <div key={index} className="flex items-center gap-2 bg-white border border-[#E8D5A3]/30 py-1.5 px-3 rounded-lg shadow-sm hover:shadow-md transition-all group/hook whitespace-nowrap">
+                        <div className="flex-shrink-0 w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-sm">
+                          <CheckCircle className="text-white" size={9} strokeWidth={3} />
+                        </div>
+                        <span className="text-[10px] font-bold text-[#3a3828]">{hook}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Author & Trust Stats (Single Row Consolidation) */}
+                <div className="flex flex-wrap items-center justify-between gap-6 pt-5 border-t border-[#E8D5A3]/40">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#C9A227]/20 flex items-center justify-center font-bold text-[#C9A227] text-xs">
+                      SS
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-[#1A1800] leading-none mb-1">{blog.author?.name || 'SS Realty Expert'}</p>
+                      <p className="text-[9px] text-[#a09060] leading-none">{formatDate(blog.publishDate || blog.createdAt)}</p>
+                    </div>
+                  </div>
+
+                  {/* Horizontal Trust Stats */}
+                  <div className="flex gap-6">
+                    <div className="flex flex-col">
+                      <span className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">2008</span>
+                      <span className="text-xs text-[#6b6450] font-medium uppercase tracking-wider">Established</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">10k+</span>
+                      <span className="text-xs text-[#6b6450] font-medium uppercase tracking-wider">Happy Families</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">₹500Cr+</span>
+                      <span className="text-xs text-[#6b6450] font-medium uppercase tracking-wider">Assets Managed</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* 2. Lead Form (Mobile: Middle, Desktop: Right) */}
-            <div className="relative animate-scale-in lg:max-w-md ml-auto w-full order-2 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+            {/* Right Column: Lead Form */}
+            <div className="relative animate-scale-in w-full lg:max-w-md lg:ml-auto order-2 lg:col-start-2">
               <div className="absolute inset-0 -m-2 bg-white/40 blur-lg rounded-3xl" />
               <BlogLeadForm
                 propertyId={(blog as any).linkedPropertyId}
@@ -181,37 +234,6 @@ export default async function BlogPostPage({ params }: Props) {
                 propertyUrl={linkedProperty?.slug ? `/properties/${linkedProperty.slug}` : undefined}
               />
             </div>
-
-            {/* 3. Why Section (Mobile: Bottom, Desktop: Below Header) */}
-            <div className="order-3 lg:col-start-1 lg:row-start-2 mt-1 lg:mt-1">
-              <div className="mb-4">
-                <h3 className="text-[14px] font-black text-[#1A1800] mb-2 uppercase tracking-[0.1em]">Why get property on <span className="text-[#C9A227]">SS Realty?</span></h3>
-                <div className="flex flex-col sm:flex-row sm:flex-nowrap gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-2 sm:pb-0">
-                  {[
-                    'Verified Luxury Properties',
-                    'Market Insights & Pricing',
-                    'Expert Consultation'
-                  ].map((hook, index) => (
-                    <div key={index} className="flex items-center gap-2 bg-white border border-[#E8D5A3]/30 py-1.5 px-3 rounded-lg shadow-sm hover:shadow-md transition-all group/hook whitespace-nowrap">
-                      <div className="flex-shrink-0 w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-sm">
-                        <CheckCircle className="text-white" size={9} strokeWidth={3} />
-                      </div>
-                      <span className="text-[10px] font-bold text-[#3a3828]">{hook}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Author & Trust Stats (Single Row Consolidation) */}
-              <div className="flex flex-wrap items-center justify-between gap-6 pt-5 border-t border-[#E8D5A3]/40">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#C9A227]/20 flex items-center justify-center font-bold text-[#C9A227] text-xs">
-                    SS
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-[#1A1800] leading-none mb-1">{blog.author?.name || 'SS Realty Expert'}</p>
-                    <p className="text-[9px] text-[#a09060] leading-none">{formatDate(blog.publishDate || blog.createdAt)}</p>
-                  </div>
                 </div>
 
                 {/* Horizontal Trust Stats */}
