@@ -234,23 +234,6 @@ export default async function BlogPostPage({ params }: Props) {
                 propertyUrl={linkedProperty?.slug ? `/properties/${linkedProperty.slug}` : undefined}
               />
             </div>
-                </div>
-
-                {/* Horizontal Trust Stats */}
-                <div className="flex items-center gap-4 sm:gap-8">
-                  {[
-                    { label: 'Investors', val: '1,200+' },
-                    { label: 'Years', val: '10+' },
-                    { label: 'Listings', val: '500+' }
-                  ].map((stat, i) => (
-                    <div key={i} className="flex flex-col items-center sm:flex-row sm:gap-1.5">
-                      <span className="text-[12px] font-black text-[#1A1800] leading-none">{stat.val}</span>
-                      <span className="text-[8px] text-[#a09060] font-bold uppercase tracking-tight">{stat.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
 
           </div>
         </div>
