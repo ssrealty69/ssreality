@@ -362,6 +362,7 @@ input:focus, select:focus, textarea:focus {
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch;
   max-width: 100% !important;
+  table-layout: auto !important;
 }
 
 /* Headings styling */
