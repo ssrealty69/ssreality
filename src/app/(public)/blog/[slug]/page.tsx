@@ -130,7 +130,7 @@ export default async function BlogPostPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFEF5]">
+    <div className="min-h-screen bg-[#FFFEF5] overflow-x-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -176,13 +176,13 @@ export default async function BlogPostPage({ params }: Props) {
               <div className="mt-2">
                 <div className="mb-4">
                   <h3 className="text-[14px] font-black text-[#1A1800] mb-2 uppercase tracking-[0.1em]">Why get property on <span className="text-[#C9A227]">SS Realty?</span></h3>
-                  <div className="flex flex-col sm:flex-row sm:flex-nowrap gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-2 sm:pb-0">
+                  <div className="flex flex-wrap gap-2">
                     {[
                       'Verified Luxury Properties',
                       'Market Insights & Pricing',
                       'Expert Consultation'
                     ].map((hook, index) => (
-                      <div key={index} className="flex items-center gap-2 bg-white border border-[#E8D5A3]/30 py-1.5 px-3 rounded-lg shadow-sm hover:shadow-md transition-all group/hook whitespace-nowrap">
+                      <div key={index} className="flex items-center gap-2 bg-white border border-[#E8D5A3]/30 py-1.5 px-3 rounded-lg shadow-sm">
                         <div className="flex-shrink-0 w-4 h-4 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-sm">
                           <CheckCircle className="text-white" size={9} strokeWidth={3} />
                         </div>
@@ -193,7 +193,7 @@ export default async function BlogPostPage({ params }: Props) {
                 </div>
 
                 {/* Author & Trust Stats (Single Row Consolidation) */}
-                <div className="flex flex-wrap items-center justify-between gap-6 pt-5 border-t border-[#E8D5A3]/40">
+                <div className="flex flex-wrap items-center gap-4 pt-5 border-t border-[#E8D5A3]/40">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-[#C9A227]/20 flex items-center justify-center font-bold text-[#C9A227] text-xs">
                       SS
@@ -204,19 +204,19 @@ export default async function BlogPostPage({ params }: Props) {
                     </div>
                   </div>
 
-                  {/* Horizontal Trust Stats */}
-                  <div className="flex gap-6">
+                  {/* Trust Stats */}
+                  <div className="flex gap-4">
                     <div className="flex flex-col">
-                      <span className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">2008</span>
-                      <span className="text-xs text-[#6b6450] font-medium uppercase tracking-wider">Established</span>
+                      <span className="text-lg font-bold font-[var(--font-playfair)] text-[#1A1800]">2008</span>
+                      <span className="text-[9px] text-[#6b6450] font-medium uppercase tracking-wider">Est.</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">10k+</span>
-                      <span className="text-xs text-[#6b6450] font-medium uppercase tracking-wider">Happy Families</span>
+                      <span className="text-lg font-bold font-[var(--font-playfair)] text-[#1A1800]">10k+</span>
+                      <span className="text-[9px] text-[#6b6450] font-medium uppercase tracking-wider">Families</span>
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">₹500Cr+</span>
-                      <span className="text-xs text-[#6b6450] font-medium uppercase tracking-wider">Assets Managed</span>
+                      <span className="text-lg font-bold font-[var(--font-playfair)] text-[#1A1800]">₹500Cr+</span>
+                      <span className="text-[9px] text-[#6b6450] font-medium uppercase tracking-wider">Assets</span>
                     </div>
                   </div>
                 </div>
@@ -225,7 +225,7 @@ export default async function BlogPostPage({ params }: Props) {
 
             {/* Right Column: Lead Form */}
             <div className="relative animate-scale-in w-full lg:max-w-md lg:ml-auto order-2 lg:col-start-2">
-              <div className="absolute inset-0 -m-2 bg-white/40 blur-lg rounded-3xl" />
+              <div className="absolute inset-0 bg-white/40 blur-lg rounded-3xl" />
               <BlogLeadForm
                 propertyId={(blog as any).linkedPropertyId}
                 propertyName={linkedProperty?.propertyName}
