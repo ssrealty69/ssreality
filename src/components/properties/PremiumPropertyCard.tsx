@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   Check, Heart, Star, Download, Eye, ChevronLeft, ChevronRight,
   MapPin, ShieldAlert, Award, PhoneCall, X, CheckCircle2, Loader2, CheckCheck, Share2
@@ -37,6 +38,7 @@ interface PremiumPropertyCardProps {
 }
 
 export default function PremiumPropertyCard({ property, priority = false }: PremiumPropertyCardProps) {
+  const router = useRouter();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -210,10 +212,15 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
     >
       {/* ── IMAGE SECTION (LEFT) ── Optimized to aspect-video (16:9) with ambient blur background to prevent cropping or solid black/gray letterboxes */}
       <div
-        className="w-full md:w-[360px] lg:w-[400px] xl:w-[440px] aspect-[4/3] md:aspect-video relative shrink-0 overflow-hidden "
+        className="w-full md:w-[360px] lg:w-[400px] xl:w-[440px] aspect-[4/3] md:aspect-video relative shrink-0 overflow-hidden cursor-pointer"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        onClick={(e) => {
+          // ensure it doesn't trigger if they clicked a button inside
+          if ((e.target as HTMLElement).closest('button')) return;
+          router.push(getPropertyUrl(property));
+        }}
       >
         {/* Slider Images — pure opacity crossfade (no scale = no blur) */}
         {images.map((src, idx) => (

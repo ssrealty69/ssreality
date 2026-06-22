@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { BedDouble, Bath, Maximize2, Car, Check, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { formatPrice, getPropertyUrl } from '@/lib/utils';
@@ -17,6 +18,7 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({ property, priority = false, actionText, onActionClick, amenitiesCount = 3 }: PropertyCardProps) {
+  const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [hoverImageError, setHoverImageError] = useState(false);
   
@@ -58,6 +60,17 @@ export default function PropertyCard({ property, priority = false, actionText, o
     }
   };
 
+  const handleImageClick = (e: React.MouseEvent) => {
+    // Prevent navigation if user is just clicking inside the card but maybe we have inner buttons in the future
+    if (property.status === 'delivered') {
+      window.open(property.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.title + ', ' + property.location.address + ', ' + property.location.city)}`, '_blank');
+    } else if (onActionClick) {
+      onActionClick(property);
+    } else {
+      router.push(getPropertyUrl(property));
+    }
+  };
+
   return (
     <article 
       onMouseEnter={() => setIsHovered(true)}
@@ -65,7 +78,10 @@ export default function PropertyCard({ property, priority = false, actionText, o
       className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full group"
     >
       {/* Image Container - Ultra Compact Height */}
-      <div className="relative h-44 overflow-hidden block bg-gray-100">
+      <div 
+        className="relative h-44 overflow-hidden block bg-gray-100 cursor-pointer"
+        onClick={handleImageClick}
+      >
         {/* Main Image */}
         <Image
           src={mainImage}
