@@ -1536,7 +1536,6 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
               </button>
             </div>
           </div>
-          </div>
         )}
 
         {/* Floating Table Config Toolbar */}
