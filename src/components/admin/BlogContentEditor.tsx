@@ -549,10 +549,16 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
   };
 
   const handleDeleteColumn = () => {
-    if (!selectedTable || !selectedCell) {
-      toast.error('Click inside a column first to delete it.');
+    if (!selectedTable) return;
+    
+    // If no specific cell is selected (e.g. they clicked the phantom empty space)
+    // they probably want to get rid of that empty space. So we auto-fix the widths.
+    if (!selectedCell) {
+      handleResetTableWidths();
+      toast.success('Extra space removed!');
       return;
     }
+    
     const colIndex = selectedCell.cellIndex;
     const rows = selectedTable.rows;
     for (let i = 0; i < rows.length; i++) {
@@ -560,6 +566,14 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
         rows[i].deleteCell(colIndex);
       }
     }
+    
+    // Check if table is empty now
+    if (rows.length > 0 && rows[0].cells.length === 0) {
+      selectedTable.remove();
+      setSelectedTable(null);
+    }
+    
+    setSelectedCell(null);
     triggerChange();
     toast.success('Column deleted!');
   };
@@ -567,8 +581,13 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
   const handleResetTableWidths = () => {
     if (!selectedTable) return;
     // Remove fixed layout and explicit widths to let it auto-size
-    selectedTable.style.tableLayout = '';
+    selectedTable.style.tableLayout = 'auto';
     selectedTable.style.width = '100%';
+    
+    // Some editors add inline widths to columns
+    const colgroups = selectedTable.querySelectorAll('colgroup');
+    colgroups.forEach(cg => cg.remove());
+    
     const cells = selectedTable.querySelectorAll('th, td');
     cells.forEach(cell => {
       const el = cell as HTMLElement;
@@ -577,7 +596,7 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
       el.style.maxWidth = '';
     });
     triggerChange();
-    toast.success('Table widths reset to auto!');
+    toast.success('Table layout auto-adjusted!');
   };
 
   const handleAlign = (alignType: string) => {
@@ -1554,10 +1573,10 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
                 type="button"
                 onClick={handleResetTableWidths}
                 className="flex items-center gap-1.5 p-1.5 px-2 hover:bg-[#C9A227]/10 rounded text-[#B8860B] font-bold text-xs transition-colors whitespace-nowrap"
-                title="Clean Table (Fix Paste Issues)"
+                title="Remove Extra Empty Space"
               >
                 <Columns size={14} />
-                <span>Fix Columns</span>
+                <span>Fix Space</span>
               </button>
 
               <span className="w-px h-5 bg-gray-200 flex-shrink-0" />
