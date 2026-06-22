@@ -26,8 +26,9 @@ export default function MobileBottomNav() {
               <div key={item.name} className="flex-1 flex justify-center -mt-10 relative z-20">
                 <Link
                   href={item.href}
+                  prefetch={true}
                   aria-label="Search properties"
-                  className="bg-gradient-to-tr from-[#C9A227] to-[#FBBF24] p-4 rounded-full shadow-[0_8px_20px_rgba(201,162,39,0.4)] border-4 border-[#FFFEF5] text-[#1A1800] hover:scale-105 transition-transform"
+                  className="bg-gradient-to-tr from-[#C9A227] to-[#FBBF24] p-4 rounded-full shadow-[0_8px_20px_rgba(201,162,39,0.4)] border-4 border-[#FFFEF5] text-[#1A1800] hover:scale-105 active:scale-95 transition-all"
                 >
                   <Icon size={24} strokeWidth={2.5} />
                 </Link>
@@ -39,8 +40,8 @@ export default function MobileBottomNav() {
             <Link
               key={item.name}
               href={item.href}
-
-              className={`flex-1 flex flex-col items-center justify-center h-full space-y-1 transition-colors ${
+              prefetch={true}
+              className={`flex-1 flex flex-col items-center justify-center h-full space-y-1 transition-all active:scale-95 active:opacity-70 ${
                 isActive ? 'text-[#C9A227]' : 'text-[#a09060] hover:text-white'
               }`}
             >
