@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { 
   Bold, Italic, Underline, Strikethrough, AlignLeft, AlignCenter, AlignRight, AlignJustify,
   List, ListOrdered, Link2, Unlink, Image as ImageIcon, Heading1, Heading2, Heading3, 
-  Quote, Type, Eye, Code, Palette, Loader2, Eraser, Minus, Check
+  Quote, Type, Eye, Code, Palette, Loader2, Eraser, Minus, Check, X, Trash2, Rows, Columns
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -25,6 +25,11 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
   const [selectedImage, setSelectedImage] = useState<HTMLImageElement | null>(null);
   const [imageLinkUrl, setImageLinkUrl] = useState<string>('');
   const [toolbarPos, setToolbarPos] = useState<{ top: number; left: number } | null>(null);
+
+  // ── Table Customization States ──
+  const [selectedTable, setSelectedTable] = useState<HTMLTableElement | null>(null);
+  const [selectedCell, setSelectedCell] = useState<HTMLTableCellElement | null>(null);
+  const [tableToolbarPos, setTableToolbarPos] = useState<{ top: number; left: number } | null>(null);
 
   const editorRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -50,24 +55,34 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
     };
   }, []);
 
-  // ── Image Selection & Toolbar Position Logic ──
+  // ── Image & Table Selection & Toolbar Position Logic ──
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
 
-    const updateToolbarPos = (img: HTMLImageElement) => {
-      const rect = img.getBoundingClientRect();
+    const updateToolbarPos = (el: HTMLElement, isTable = false) => {
+      const rect = el.getBoundingClientRect();
       const containerRect = editor.parentElement!.getBoundingClientRect();
       
-      // Position floating toolbar 55px above the image and horizontally centered
-      setToolbarPos({
-        top: rect.top - containerRect.top + editor.scrollTop - 55,
-        left: Math.max(10, rect.left - containerRect.left + (rect.width - 340) / 2)
-      });
+      const width = isTable ? 220 : 340; // Table toolbar is smaller
+      
+      if (isTable) {
+        setTableToolbarPos({
+          top: rect.top - containerRect.top + editor.scrollTop - 45,
+          left: Math.max(10, rect.left - containerRect.left + (rect.width - width) / 2)
+        });
+      } else {
+        setToolbarPos({
+          top: rect.top - containerRect.top + editor.scrollTop - 55,
+          left: Math.max(10, rect.left - containerRect.left + (rect.width - width) / 2)
+        });
+      }
     };
 
     const handleEditorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+      
+      // Image click handling
       if (target.tagName === 'IMG') {
         const img = target as HTMLImageElement;
         setSelectedImage(img);
@@ -75,8 +90,7 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
         const link = img.closest('a');
         setImageLinkUrl(link ? link.getAttribute('href') || '' : '');
         
-        // Let image sizing/load happen before positioning
-        setTimeout(() => updateToolbarPos(img), 30);
+        setTimeout(() => updateToolbarPos(img, false), 30);
       } else {
         const isToolbarClick = (e.target as HTMLElement).closest('.img-floating-toolbar');
         if (!isToolbarClick) {
@@ -84,12 +98,28 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
           setToolbarPos(null);
         }
       }
+
+      // Table click handling
+      const tdOrTh = target.closest('td, th') as HTMLTableCellElement | null;
+      const table = target.closest('table');
+      
+      if (table) {
+        setSelectedTable(table);
+        if (tdOrTh) setSelectedCell(tdOrTh);
+        setTimeout(() => updateToolbarPos(table, true), 30);
+      } else {
+        const isTableToolbarClick = (e.target as HTMLElement).closest('.table-floating-toolbar');
+        if (!isTableToolbarClick) {
+          setSelectedTable(null);
+          setSelectedCell(null);
+          setTableToolbarPos(null);
+        }
+      }
     };
 
     const handleScroll = () => {
-      if (selectedImage) {
-        updateToolbarPos(selectedImage);
-      }
+      if (selectedImage) updateToolbarPos(selectedImage, false);
+      if (selectedTable) updateToolbarPos(selectedTable, true);
     };
 
     editor.addEventListener('click', handleEditorClick);
@@ -99,7 +129,7 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
       editor.removeEventListener('click', handleEditorClick);
       editor.removeEventListener('scroll', handleScroll);
     };
-  }, [selectedImage]);
+  }, [selectedImage, selectedTable, selectedCell]);
 
   // Sync value from parent, but only if it's different from the editor's innerHTML
   useEffect(() => {
@@ -503,6 +533,51 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
       triggerChange();
       toast.success('Image deleted from article!');
     }
+  };
+
+  // ── Table Modifications ──
+  const handleDeleteTable = () => {
+    if (!selectedTable) return;
+    if (confirm('Are you sure you want to delete this entire table?')) {
+      selectedTable.remove();
+      setSelectedTable(null);
+      setSelectedCell(null);
+      setTableToolbarPos(null);
+      triggerChange();
+      toast.success('Table deleted!');
+    }
+  };
+
+  const handleDeleteColumn = () => {
+    if (!selectedTable || !selectedCell) {
+      toast.error('Click inside a column first to delete it.');
+      return;
+    }
+    const colIndex = selectedCell.cellIndex;
+    const rows = selectedTable.rows;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].cells[colIndex]) {
+        rows[i].deleteCell(colIndex);
+      }
+    }
+    triggerChange();
+    toast.success('Column deleted!');
+  };
+
+  const handleResetTableWidths = () => {
+    if (!selectedTable) return;
+    // Remove fixed layout and explicit widths to let it auto-size
+    selectedTable.style.tableLayout = '';
+    selectedTable.style.width = '100%';
+    const cells = selectedTable.querySelectorAll('th, td');
+    cells.forEach(cell => {
+      const el = cell as HTMLElement;
+      el.style.width = '';
+      el.style.minWidth = '';
+      el.style.maxWidth = '';
+    });
+    triggerChange();
+    toast.success('Table widths reset to auto!');
   };
 
   const handleAlign = (alignType: string) => {
@@ -1458,6 +1533,54 @@ export function BlogContentEditor({ value, onChange, placeholder = 'Write your b
                 title="Delete Image from Article"
               >
                 <Eraser size={14} />
+              </button>
+            </div>
+          </div>
+          </div>
+        )}
+
+        {/* Floating Table Config Toolbar */}
+        {selectedTable && tableToolbarPos && (
+          <div 
+            className="table-floating-toolbar absolute bg-white/95 backdrop-blur-md border border-[#E8D5A3] shadow-lg rounded-xl p-2 flex items-center gap-2.5 z-30 transition-all duration-300 animate-scale-in"
+            style={{ 
+              top: `${tableToolbarPos.top}px`, 
+              left: `${tableToolbarPos.left}px`,
+              width: '220px'
+            }}
+          >
+            <div className="flex items-center gap-1 flex-shrink-0 w-full justify-between">
+              
+              <button
+                type="button"
+                onClick={handleResetTableWidths}
+                className="flex items-center gap-1.5 p-1.5 px-2 hover:bg-[#C9A227]/10 rounded text-[#B8860B] font-bold text-xs transition-colors whitespace-nowrap"
+                title="Clean Table (Fix Paste Issues)"
+              >
+                <Columns size={14} />
+                <span>Fix Columns</span>
+              </button>
+
+              <span className="w-px h-5 bg-gray-200 flex-shrink-0" />
+
+              <button
+                type="button"
+                onClick={handleDeleteColumn}
+                className="p-1.5 hover:bg-red-50 rounded text-red-500 font-bold transition-colors"
+                title="Delete Selected Column"
+              >
+                <Minus size={14} />
+              </button>
+
+              <span className="w-px h-5 bg-gray-200 flex-shrink-0" />
+
+              <button
+                type="button"
+                onClick={handleDeleteTable}
+                className="p-1.5 hover:bg-red-500 hover:text-white rounded text-red-500 font-bold transition-colors"
+                title="Delete Entire Table"
+              >
+                <X size={14} />
               </button>
             </div>
           </div>
