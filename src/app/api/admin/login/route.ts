@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',   // Changed from 'lax' → 'strict' to prevent CSRF
         path: '/',
-        maxAge: 60 * 60 * 8, // 8 hours (reduced from 7 days for security)
+        maxAge: 60 * 60 * 24 * 7, // 7 days (increased from 8 hours to prevent session timeouts during long edits)
       });
 
       return response;
