@@ -412,16 +412,15 @@ export default async function BlogPostPage({ params }: Props) {
                       {/* Text overlay — bottom of image with dark backdrop */}
                       <div
                         className="absolute bottom-0 left-0 right-0 z-10 px-3 py-2.5 mx-2 mb-2 rounded-xl"
-                        style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+                        style={{ backgroundColor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
                       >
                         <h3
                           className="font-black text-sm leading-tight line-clamp-1 mb-1"
                           style={{
-                            background: 'linear-gradient(90deg, #F0D060, #ffffff)',
+                            backgroundImage: 'linear-gradient(90deg, #F0D060, #ffffff)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text',
-                            textShadow: 'none',
                             filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.8))'
                           }}
                         >
