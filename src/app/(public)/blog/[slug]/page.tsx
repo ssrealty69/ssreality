@@ -272,7 +272,7 @@ export default async function BlogPostPage({ params }: Props) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="grid lg:grid-cols-12 gap-12">
+        <div className="grid lg:grid-cols-12 gap-12 items-start">
           {/* Main Content */}
           <div className="lg:col-span-8">
             {/* ── THUMBNAIL (16:9 = 1920×1080 ratio) ── */}
@@ -312,8 +312,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
 
           {/* Sidebar / Related Posts */}
-          <div className="lg:col-span-4">
-            <div className="sticky top-28 space-y-8">
+          <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-8">
               <div className="bg-white rounded-2xl border border-[#E8D5A3] p-6">
                 <h3 className="text-xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-5 pb-3 border-b border-[#E8D5A3]">
                   Related <span className="text-[#C9A227]">Articles</span>
@@ -346,7 +345,6 @@ export default async function BlogPostPage({ params }: Props) {
                   </button>
                 </div>
               </div>
-            </div>
           </div>
         </div>
 
