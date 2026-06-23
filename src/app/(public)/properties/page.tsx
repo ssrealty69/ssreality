@@ -7,9 +7,10 @@ import { FALLBACK_PROPERTIES } from '@/constants/properties';
 import type { Property } from '@/types';
 
 export const metadata: Metadata = {
-  title: 'Properties for Sale in Jonapur & Delhi NCR',
+  title: '3 BHK Flats for Sale in Chattarpur, Gwal Pahari & Gurgaon | SS Realty',
   description:
-    'Browse 2BHK & 3BHK flats, independent villas, farm houses & plots in Jonapur, Chattarpur, Sultanpur & Gurugram. Verified listings by SS Realty.',
+    'Browse 3 BHK flat for sale in Gwal Pahari, 3BHK flat in Chattarpur, builder floors in Gurgaon, plots & farmhouses. SS Realty – verified luxury properties in Chattarpur, Gwal Pahari, Gurugram & all of Delhi NCR.',
+  keywords: '3 bhk flat for sale in gwal pahari, 3bhk flats for sale in gwal pahari, buy flats in gwal pahari near gurgaon, 3 bhk in gwal pahari for sale, 3 bhk in gwal pahari price, 3bhk flat chattarpur, 3 bhk flat in chattarpur delhi, 3bhk flat for sale in chattarpur, chattarpur 3 bhk flat for sale, chattarpur 3 bhk flat price, 3 bhk flat in chattarpur enclave phase 2, registry flats in chattarpur, flats for sale in chattarpur delhi, 3bhk for rent in gurgaon, 3bhk flat for sale in gurgaon, 3bhk flats in gurgaon, 3bhk builder floor in gurgaon, 3bhk for sale in gurgaon, 3bhk flat in gurgaon, 3bhk flat in gurgaon price, 3 bhk flat in gwal pahari gurgaon, 3 bhk in gwal pahari, builder floor in gurgaon, house for sale in gurgaon, property in gurgaon, plots in gurgaon, flats in gurgaon, sky mansion chattarpur',
   alternates: { canonical: 'https://ssrealty.org/properties' },
 };
 

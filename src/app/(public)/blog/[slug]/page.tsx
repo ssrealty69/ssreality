@@ -318,8 +318,50 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </div>
 
+        {/* Keyword-Rich Property Search Section */}
+        <div className="mt-12 bg-[#FFFBEB] rounded-3xl p-8 md:p-10 border border-[#E8D5A3]">
+          <div className="text-center mb-6">
+            <div className="inline-block w-12 h-1 bg-[#C9A227] rounded-full mb-4" />
+            <h2 className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">
+              Find Your Dream Property with <span className="text-[#C9A227]">SS Realty</span>
+            </h2>
+            <p className="text-[#6b6450] text-sm mt-2 max-w-2xl mx-auto">
+              From 3 BHK flats in Chattarpur &amp; Gwal Pahari to builder floors in Gurgaon — we have verified listings across all of Delhi NCR.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {[
+              '3 BHK Flat in Gwal Pahari',
+              '3 BHK Flat in Chattarpur',
+              'Builder Floor in Gurgaon',
+              'Flats in Gurgaon',
+              '3BHK Flat for Sale Gurgaon',
+              'Registry Flats in Chattarpur',
+              'Plots in Gurgaon',
+              'House for Sale in Gurgaon',
+              '3 BHK Chattarpur Enclave',
+              'Flats in Chattarpur Delhi',
+              'Sky Mansion Chattarpur',
+              'Property in Gurgaon',
+            ].map((keyword) => (
+              <a
+                key={keyword}
+                href="/properties"
+                className="flex items-center gap-2 bg-white border border-[#E8D5A3] rounded-xl px-3 py-2.5 text-xs font-semibold text-[#504e40] hover:border-[#C9A227] hover:text-[#C9A227] transition-all group"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] group-hover:scale-125 transition-transform shrink-0" />
+                {keyword}
+              </a>
+            ))}
+          </div>
+          <p className="text-center text-xs text-[#a09060] mt-6">
+            SS Realty serves Chattarpur, Gwal Pahari, Gurugram, Noida, Mandi, Chandan Hola, South Delhi &amp; all of Delhi NCR. 
+            <a href="/contact-us" className="text-[#C9A227] font-semibold ml-1 hover:underline">Contact us today →</a>
+          </p>
+        </div>
+
         {/* Bottom CTA */}
-        <div className="mt-16 bg-[#1A1800] rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
+        <div className="mt-8 bg-[#1A1800] rounded-3xl p-10 md:p-14 text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 80% 50%, #C9A227 0%, transparent 60%)' }} />
           <div className="relative z-10">
             <h3 className="text-2xl md:text-4xl font-bold font-[var(--font-playfair)] !text-white mb-4">

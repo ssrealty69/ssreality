@@ -4,9 +4,10 @@ import { Target, Eye, Heart, Users, Award, CheckCircle2, Phone, Mail, MapPin, Na
 import JourneyTimeline from '@/components/public/JourneyTimeline';
 
 export const metadata: Metadata = {
-  title: 'About SS Realty | Trusted Delhi NCR Property Experts',
+  title: 'About SS Realty | 3 BHK Flats in Chattarpur, Gwal Pahari & Gurgaon',
   description:
-    'Founded in 2008, SS Realty has helped 2,000+ families buy flats, villas & plots across Jonapur, Chattarpur & Delhi NCR. Meet our team and our story.',
+    'SS Realty – trusted since 2008 for 3 BHK flats in Chattarpur, Gwal Pahari & Gurgaon. Buy luxury homes, builder floors, farmhouses, villas & plots across Delhi NCR. Visit us at Jonapur, New Delhi.',
+  keywords: '3 bhk flat for sale in gwal pahari, 3bhk flat chattarpur, 3bhk flat for sale in chattarpur, chattarpur 3 bhk flat for sale, sky mansion chattarpur, 3 bhk flat in chattarpur enclave phase 2, registry flats in chattarpur, flats for sale in chattarpur delhi, 3bhk for rent in gurgaon, 3bhk flat for sale in gurgaon, 3bhk builder floor in gurgaon, builder floor in gurgaon, property in gurgaon, plots in gurgaon, flats in gurgaon, 3 bhk in gwal pahari, house for sale in gurgaon, ss realty chattarpur, ss realty jonapur',
   alternates: { canonical: 'https://ssrealty.org/about-us' },
 };
 
@@ -136,8 +137,11 @@ export default function AboutPage() {
             <div className="grid md:grid-cols-2 gap-10">
               <div>
                 <h3 className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">Premium Properties Across Delhi NCR</h3>
+                <p className="text-[#504e40] leading-relaxed mb-4">
+                  At SS Realty, we specialize in offering an exclusive portfolio of properties tailored to your lifestyle and investment needs. Whether you are looking for a <strong>3 BHK flat for sale in Gwal Pahari</strong>, a <strong>3BHK flat in Chattarpur</strong>, a <strong>builder floor in Gurgaon</strong>, or <strong>plots in Gurgaon</strong>, we have you covered with verified listings and expert guidance.
+                </p>
                 <p className="text-[#504e40] leading-relaxed mb-6">
-                  At SS Realty, we specialize in offering an exclusive portfolio of properties tailored to your lifestyle and business needs. Whether you are looking for <strong>Luxury Homes</strong>, <strong>Luxury Flats</strong>, <strong>Apartments</strong>, or <strong>Commercial and residential properties</strong>, we have you covered. We also deal extensively in <strong>Lands</strong>, <strong>Farm houses</strong>, and <strong>Villas</strong> to ensure you find the perfect match for your investment or living requirements.
+                  We deal in <strong>Luxury Homes</strong>, <strong>Luxury Flats</strong>, <strong>3 BHK Apartments</strong>, <strong>Commercial and Residential Properties</strong>, <strong>Lands</strong>, <strong>Farm Houses</strong>, and <strong>Villas</strong> across all of Delhi NCR. From <strong>registry flats in Chattarpur</strong> and <strong>Sky Mansion Chattarpur</strong> to <strong>3BHK flats in Gurgaon</strong> and <strong>houses for sale in Gurgaon</strong> — SS Realty is your one-stop real estate destination.
                 </p>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 rounded-full bg-[#C9A227]/10 flex items-center justify-center shrink-0">
@@ -146,7 +150,7 @@ export default function AboutPage() {
                   <p className="text-sm font-semibold text-[#1A1800]">Prime Locations We Serve:</p>
                 </div>
                 <p className="text-[#6b6450] text-sm leading-relaxed pl-11">
-                  Chattarpur, Mandi, Chandan Hola, and South Delhi to Gwal Pahari, Gurugram, Noida, and all over Delhi NCR.
+                  <strong>Chattarpur</strong> (Chattarpur Enclave Phase 1 &amp; 2, JVTS Garden), <strong>Gwal Pahari</strong> (near Gurgaon border), <strong>Mandi</strong>, <strong>Chandan Hola</strong>, <strong>South Delhi</strong>, <strong>Gurugram / Gurgaon</strong>, <strong>Noida</strong>, and all over <strong>Delhi NCR</strong>.
                 </p>
               </div>
               <div className="bg-[#FFFBEB] rounded-2xl p-6 border border-[#E8D5A3] flex flex-col justify-center">
