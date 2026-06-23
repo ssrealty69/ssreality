@@ -84,10 +84,30 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-// Generates descriptive alt text capped at 100 chars (SEO best practice)
+// Generates descriptive alt text with keyword-rich location terms (SEO best practice, capped at 100 chars)
 function generateImageAlt(property: any, idx: number, suffix?: string): string {
   const name = property.propertyName || property.title || 'Property';
-  const location = property.location?.address || property.location?.city || '';
+  const rawLocation = property.location?.address || property.location?.city || '';
+
+  // Map common locations to keyword-rich versions
+  const locationKeywordMap: Record<string, string> = {
+    'Gwal Pahari': '3 BHK Flat in Gwal Pahari Gurgaon',
+    'Gwal pahari': '3 BHK Flat in Gwal Pahari Gurgaon',
+    'Chattarpur': '3 BHK Flat in Chattarpur Delhi',
+    'Chhatarpur': '3 BHK Flat in Chattarpur Delhi',
+    'Gurgaon': 'Builder Floor in Gurgaon',
+    'Gurugram': 'Builder Floor in Gurgaon',
+    'Jonapur': 'Luxury Property in Jonapur South Delhi',
+  };
+
+  // Try to find a keyword match for the location
+  let locationPart = rawLocation ? ` in ${rawLocation}` : '';
+  for (const [key, val] of Object.entries(locationKeywordMap)) {
+    if (rawLocation.includes(key)) {
+      locationPart = ` | ${val}`;
+      break;
+    }
+  }
 
   // Build BHK / config part from priceList
   let configPart = '';
@@ -112,7 +132,6 @@ function generateImageAlt(property: any, idx: number, suffix?: string): string {
     configPart = `${configPart} Flat`;
   }
 
-  const locationPart = location ? ` in ${location}` : '';
   const imgLabel = suffix || `Image ${idx + 1}`;
 
   let alt = configPart
@@ -285,6 +304,17 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
       : property.images || []);
   const galleryImages = galleryImagesSource.filter((imgUrl: string) => imgUrl !== heroImage);
 
+  // Breadcrumb Schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://ssrealty.org' },
+      { '@type': 'ListItem', position: 2, name: 'Properties', item: 'https://ssrealty.org/properties' },
+      { '@type': 'ListItem', position: 3, name: property.title, item: `https://ssrealty.org/properties/${property.slug || property._id}` },
+    ]
+  };
+
   return (
     <div className="font-sans bg-white overflow-x-hidden">
       <style dangerouslySetInnerHTML={{
@@ -297,6 +327,10 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
           animation: custom-smooth-blink 3s ease-in-out infinite;
         }
       `}} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(propertyJsonLd) }}

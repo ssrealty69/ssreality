@@ -54,24 +54,65 @@ export default async function HomePage() {
   const trueDeliveredData = deliveredData.filter((p: Property) => p.status === 'delivered');
   const deliveredProperties = trueDeliveredData;
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://ssrealty.org' },
+      { '@type': 'ListItem', position: 2, name: 'Properties', item: 'https://ssrealty.org/properties' },
+    ]
+  };
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "What type of properties does SS Realty offer?",
+        "name": "Where can I find 3 BHK flat for sale in Gwal Pahari?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "SS Realty offers a wide range of premium properties including luxury apartments, villas, residential plots, and commercial spaces primarily in the Delhi NCR region."
+          "text": "SS Realty offers verified 3 BHK flats for sale in Gwal Pahari near Gurgaon border. Our listings include luxury apartments with premium amenities at competitive prices. Visit ssrealty.org or call +91-9311059100."
         }
       },
       {
         "@type": "Question",
-        "name": "Are the properties listed by SS Realty verified?",
+        "name": "What is the price of 3 BHK flat in Gwal Pahari Gurgaon?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, all properties listed on our platform undergo a strict verification process to ensure authenticity, clear titles, and quality standards."
+          "text": "3 BHK flat prices in Gwal Pahari Gurgaon typically range from ₹80 lakhs to ₹2.5 crore depending on size, floor, and amenities. SS Realty has exclusive listings in Gwal Pahari with registry available. Contact us at +91-9311059100 for exact pricing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are there registry flats available in Chattarpur Delhi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! SS Realty specializes in registry flats in Chattarpur Delhi including Chattarpur Enclave Phase 1 & 2 and JVTS Garden. We have verified listings of 3 BHK flats for sale in Chattarpur with full legal documentation and registry available."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does SS Realty offer builder floors in Gurgaon?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, SS Realty offers premium builder floors in Gurgaon and 3 BHK flats across Gurgaon. Our portfolio includes properties in sectors near Gwal Pahari border. We also have plots in Gurgaon for investment."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What type of properties does SS Realty offer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SS Realty offers a wide range of premium properties including 3 BHK luxury flats in Gwal Pahari and Chattarpur, builder floors in Gurgaon, farmhouses, villas, residential plots, commercial spaces, and lands across Delhi NCR."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where is SS Realty office located?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SS Realty office is located at Plot No-2, Dalmia Farm, Jonapur, New Delhi, Delhi 110047. Previously in Chattarpur, our new office is in Jonapur. Contact: +91-9311059100 or info@ssrealty.org."
         }
       },
       {
@@ -79,7 +120,7 @@ export default async function HomePage() {
         "name": "Can SS Realty help me with property loans?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Absolutely. We provide consultation and assistance in securing home loans through our trusted banking partners, making your property buying experience seamless."
+          "text": "Absolutely. We provide consultation and assistance in securing home loans through our trusted banking partners, making your property buying experience in Gwal Pahari, Chattarpur, and Gurgaon seamless."
         }
       },
       {
@@ -87,7 +128,7 @@ export default async function HomePage() {
         "name": "Does SS Realty deal in commercial real estate?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, we specialize in high-yield commercial real estate, offering premium office spaces and retail shops for both end-use and investment purposes."
+          "text": "Yes, we specialize in high-yield commercial real estate across Delhi NCR, offering premium office spaces, retail shops, and commercial plots in Gurgaon, Noida, and South Delhi for both end-use and investment."
         }
       }
     ]
@@ -95,6 +136,10 @@ export default async function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

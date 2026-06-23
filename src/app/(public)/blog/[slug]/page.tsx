@@ -129,8 +129,23 @@ export default async function BlogPostPage({ params }: Props) {
     },
   };
 
+  // Breadcrumb Schema for Blog
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://ssrealty.org' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://ssrealty.org/blog' },
+      { '@type': 'ListItem', position: 3, name: blog.title, item: `https://ssrealty.org/blog/${slug}` },
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-[#FFFEF5] overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

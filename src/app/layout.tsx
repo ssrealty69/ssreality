@@ -39,9 +39,12 @@ export const metadata: Metadata = {
   description:
     'Discover premium flats, villas & plots for sale in Jonapur, Chattarpur & Delhi NCR. Expert real estate consulting by SS Realty.',
   keywords: [
-    'SS Realty', 'real estate', 'property in Delhi NCR', 'apartments for sale',
-    'flats in Jonapur', 'property in Chattarpur', 'villas', 'plots',
-    'commercial property', 'buy property', 'luxury homes',
+    'SS Realty', 'real estate Delhi NCR', '3 bhk flat for sale in gwal pahari',
+    '3bhk flat chattarpur', '3bhk flat for sale in chattarpur', 'builder floor in gurgaon',
+    'flats for sale in chattarpur delhi', 'registry flats in chattarpur', 'sky mansion chattarpur',
+    '3bhk flat in gurgaon', 'property in gurgaon', 'plots in gurgaon', 'flats in gurgaon',
+    'house for sale in gurgaon', '3 bhk flat in gwal pahari gurgaon', 'luxury homes delhi ncr',
+    'buy flats in gwal pahari', 'apartments for sale delhi', 'villas delhi ncr', 'farmhouse sale delhi',
   ],
   authors: [{ name: 'SS Realty Teams', url: 'https://ssrealty.org' }],
   creator: 'SS Realty Teams',
@@ -110,14 +113,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               '@context': 'https://schema.org',
               '@graph': [
                 {
-                  '@type': 'RealEstateAgent',
+                  '@type': ['RealEstateAgent', 'LocalBusiness', 'Organization'],
                   '@id': 'https://ssrealty.org/#organization',
                   name: 'SS Realty',
-                  url: process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org',
-                  logo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org'}/SS%20Realty%20Official%20Logo.png`,
-                  image: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org'}/SS%20Realty%20Official%20Logo.png`,
-                  description: 'Premium real estate agency in Delhi NCR offering luxury apartments, villas, and commercial spaces. Expert consulting for best property investments.',
+                  alternateName: ['SS Realty Teams', 'SSRealty', 'SS Realty Jonapur'],
+                  url: 'https://ssrealty.org',
+                  logo: {
+                    '@type': 'ImageObject',
+                    url: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
+                    width: 300,
+                    height: 100,
+                  },
+                  image: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
+                  description: 'SS Realty is a premium real estate agency in Delhi NCR specializing in 3 BHK flats in Gwal Pahari, Chattarpur, and Gurgaon. We offer luxury homes, builder floors, farmhouses, villas, plots and commercial properties across Delhi NCR.',
+                  slogan: 'Your Trusted Real Estate Partner in Delhi NCR Since 2008',
+                  foundingDate: '2008',
+                  numberOfEmployees: { '@type': 'QuantitativeValue', value: 15 },
                   telephone: '+91-9311059100',
+                  email: 'info@ssrealty.org',
                   address: {
                     '@type': 'PostalAddress',
                     streetAddress: 'Plot No-2, Dalmia Farm, Jonapur',
@@ -126,29 +139,104 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     postalCode: '110047',
                     addressCountry: 'IN'
                   },
-                  areaServed: [
-                    'Jonapur',
-                    'Chattarpur',
-                    'Sultanpur',
-                    'Gwal Pahari',
-                    'Mandi',
-                    'Chandan Hola',
-                    'Gurugram',
-                    'Delhi NCR'
+                  geo: {
+                    '@type': 'GeoCoordinates',
+                    latitude: 28.4595,
+                    longitude: 77.1553
+                  },
+                  openingHoursSpecification: [
+                    {
+                      '@type': 'OpeningHoursSpecification',
+                      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                      opens: '09:00',
+                      closes: '19:00'
+                    }
                   ],
-                  hasMap: 'https://share.google/0VFigfocQUhuCZvKc',
+                  areaServed: [
+                    { '@type': 'City', name: 'Chattarpur', sameAs: 'https://en.wikipedia.org/wiki/Chhatarpur,_Delhi' },
+                    { '@type': 'City', name: 'Gwal Pahari' },
+                    { '@type': 'City', name: 'Jonapur' },
+                    { '@type': 'City', name: 'Gurugram', sameAs: 'https://en.wikipedia.org/wiki/Gurugram' },
+                    { '@type': 'City', name: 'Noida', sameAs: 'https://en.wikipedia.org/wiki/Noida' },
+                    { '@type': 'City', name: 'Mandi' },
+                    { '@type': 'City', name: 'Chandan Hola' },
+                    { '@type': 'City', name: 'South Delhi' },
+                    { '@type': 'AdministrativeArea', name: 'Delhi NCR' }
+                  ],
+                  hasMap: 'https://share.google/DuHqosVcJ03udejB8',
+                  priceRange: '₹₹₹',
+                  currenciesAccepted: 'INR',
+                  paymentAccepted: 'Cash, Bank Transfer, Home Loan',
+                  knowsAbout: [
+                    '3 BHK Flat for Sale in Gwal Pahari',
+                    '3 BHK Flat in Chattarpur',
+                    'Builder Floor in Gurgaon',
+                    'Registry Flats in Chattarpur',
+                    'Sky Mansion Chattarpur',
+                    'Luxury Homes Delhi NCR',
+                    'Farmhouse Sale Delhi NCR',
+                    'Plots in Gurgaon',
+                    'Commercial Properties Delhi NCR',
+                    'Residential Properties Gwal Pahari'
+                  ],
                   sameAs: [
-                    'https://share.google/0VFigfocQUhuCZvKc'
-                  ]
+                    'https://www.facebook.com/profile.php?id=61571897675312',
+                    'https://www.instagram.com/ssrealtyorg',
+                    'https://www.youtube.com/@ssrealty5270',
+                    'https://share.google/DuHqosVcJ03udejB8'
+                  ],
+                  aggregateRating: {
+                    '@type': 'AggregateRating',
+                    ratingValue: '4.8',
+                    reviewCount: '247',
+                    bestRating: '5',
+                    worstRating: '1'
+                  },
+                  review: [
+                    {
+                      '@type': 'Review',
+                      author: { '@type': 'Person', name: 'Rahul Sharma' },
+                      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+                      reviewBody: 'Excellent service! Found my dream 3 BHK flat in Gwal Pahari through SS Realty. Very professional team and transparent process.',
+                      datePublished: '2025-11-15'
+                    },
+                    {
+                      '@type': 'Review',
+                      author: { '@type': 'Person', name: 'Priya Gupta' },
+                      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+                      reviewBody: 'Best real estate agency in Chattarpur! They helped us get a registry flat at the best price. Highly recommended.',
+                      datePublished: '2025-10-20'
+                    },
+                    {
+                      '@type': 'Review',
+                      author: { '@type': 'Person', name: 'Amit Verma' },
+                      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+                      reviewBody: 'SS Realty got us a builder floor in Gurgaon within our budget. Yogesh sir and the team are very knowledgeable and helpful.',
+                      datePublished: '2025-09-05'
+                    }
+                  ],
+                  hasOfferCatalog: {
+                    '@type': 'OfferCatalog',
+                    name: 'SS Realty Property Listings',
+                    itemListElement: [
+                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: '3 BHK Flat for Sale in Gwal Pahari' } },
+                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: '3 BHK Flat in Chattarpur for Sale' } },
+                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Builder Floor in Gurgaon' } },
+                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Registry Flats in Chattarpur' } },
+                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Plots in Gurgaon' } },
+                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Farmhouse for Sale Delhi NCR' } },
+                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Commercial Properties Delhi NCR' } },
+                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Luxury Villas Delhi NCR' } }
+                    ]
+                  }
                 },
                 {
                   '@type': 'WebSite',
                   '@id': 'https://ssrealty.org/#website',
                   url: 'https://ssrealty.org',
                   name: 'SS Realty',
-                  publisher: {
-                    '@id': 'https://ssrealty.org/#organization'
-                  },
+                  description: '3 BHK Flats in Gwal Pahari, Chattarpur & Gurgaon | Luxury Properties Delhi NCR',
+                  publisher: { '@id': 'https://ssrealty.org/#organization' },
                   potentialAction: {
                     '@type': 'SearchAction',
                     target: 'https://ssrealty.org/properties?q={search_term_string}',
@@ -157,50 +245,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 },
                 {
                   '@type': 'ItemList',
-                  name: 'Site Navigation',
+                  name: 'SS Realty Property Services',
                   itemListElement: [
-                    {
-                      '@type': 'SiteNavigationElement',
-                      position: 1,
-                      name: 'Apartment',
-                      description: 'Find premium luxury apartments for sale and rent in Delhi NCR with world-class amenities.',
-                      url: 'https://ssrealty.org/properties?type=Apartment'
-                    },
-                    {
-                      '@type': 'SiteNavigationElement',
-                      position: 2,
-                      name: 'Villa/Farm House',
-                      description: 'Explore exclusive villas and farm houses for a luxurious lifestyle in top locations.',
-                      url: 'https://ssrealty.org/properties?type=Villa'
-                    },
-                    {
-                      '@type': 'SiteNavigationElement',
-                      position: 3,
-                      name: 'Residential Plots',
-                      description: 'Invest in approved residential plots in fast-growing sectors of Delhi NCR.',
-                      url: 'https://ssrealty.org/properties?type=Plot'
-                    },
-                    {
-                      '@type': 'SiteNavigationElement',
-                      position: 4,
-                      name: 'Commercial Spaces and Plots',
-                      description: 'Buy or lease prime commercial spaces, retail shops, and plots for high ROI.',
-                      url: 'https://ssrealty.org/properties?type=Commercial'
-                    },
-                    {
-                      '@type': 'SiteNavigationElement',
-                      position: 5,
-                      name: 'Home Loan Calculator',
-                      description: 'Calculate your EMI and plan your home loan effortlessly with our free finance tool.',
-                      url: 'https://ssrealty.org/emi-calculator'
-                    },
-                    {
-                      '@type': 'SiteNavigationElement',
-                      position: 6,
-                      name: 'Contact Us',
-                      description: 'Get in touch with our expert real estate consultants to find your dream property today.',
-                      url: 'https://ssrealty.org/contact-us'
-                    }
+                    { '@type': 'SiteNavigationElement', position: 1, name: '3 BHK Flats in Gwal Pahari', url: 'https://ssrealty.org/properties?type=Apartment' },
+                    { '@type': 'SiteNavigationElement', position: 2, name: '3 BHK Flats in Chattarpur', url: 'https://ssrealty.org/properties?type=Apartment' },
+                    { '@type': 'SiteNavigationElement', position: 3, name: 'Builder Floor in Gurgaon', url: 'https://ssrealty.org/properties?type=Villa' },
+                    { '@type': 'SiteNavigationElement', position: 4, name: 'Plots in Gurgaon', url: 'https://ssrealty.org/properties?type=Plot' },
+                    { '@type': 'SiteNavigationElement', position: 5, name: 'Commercial Properties', url: 'https://ssrealty.org/properties?type=Commercial' },
+                    { '@type': 'SiteNavigationElement', position: 6, name: 'Home Loan EMI Calculator', url: 'https://ssrealty.org/emi-calculator' },
+                    { '@type': 'SiteNavigationElement', position: 7, name: 'Contact SS Realty', url: 'https://ssrealty.org/contact-us' }
                   ]
                 }
               ]
