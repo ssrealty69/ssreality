@@ -158,7 +158,7 @@ export default async function BlogPostPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFEF5] overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFFEF5] overflow-x-clip">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
