@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { Target, Eye, Heart, Users, Award, CheckCircle2, Phone, Mail } from 'lucide-react';
+import { Target, Eye, Heart, Users, Award, CheckCircle2, Phone, Mail, MapPin, Navigation } from 'lucide-react';
 import JourneyTimeline from '@/components/public/JourneyTimeline';
 
 export const metadata: Metadata = {
@@ -121,6 +121,51 @@ export default function AboutPage() {
                 <p className="text-sm text-[#6b6450] leading-relaxed">{desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Network & Expertise (SEO Optimized) */}
+      <section className="section-padding bg-[#FFFEF5]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="gold-divider mx-auto mb-5" />
+            <h2 className="text-4xl font-[var(--font-playfair)] text-[#1A1800]">Our <span className="gold-text-gradient">Network & Expertise</span></h2>
+          </div>
+          <div className="bg-white rounded-3xl p-8 md:p-12 border border-[#E8D5A3] shadow-sm hover:shadow-[var(--shadow-gold)] transition-shadow">
+            <div className="grid md:grid-cols-2 gap-10">
+              <div>
+                <h3 className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">Premium Properties Across Delhi NCR</h3>
+                <p className="text-[#504e40] leading-relaxed mb-6">
+                  At SS Realty, we specialize in offering an exclusive portfolio of properties tailored to your lifestyle and business needs. Whether you are looking for <strong>Luxury Homes</strong>, <strong>Luxury Flats</strong>, <strong>Apartments</strong>, or <strong>Commercial and residential properties</strong>, we have you covered. We also deal extensively in <strong>Lands</strong>, <strong>Farm houses</strong>, and <strong>Villas</strong> to ensure you find the perfect match for your investment or living requirements.
+                </p>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-[#C9A227]/10 flex items-center justify-center shrink-0">
+                    <MapPin size={16} className="text-[#C9A227]" />
+                  </div>
+                  <p className="text-sm font-semibold text-[#1A1800]">Prime Locations We Serve:</p>
+                </div>
+                <p className="text-[#6b6450] text-sm leading-relaxed pl-11">
+                  Chattarpur, Mandi, Chandan Hola, and South Delhi to Gwal Pahari, Gurugram, Noida, and all over Delhi NCR.
+                </p>
+              </div>
+              <div className="bg-[#FFFBEB] rounded-2xl p-6 border border-[#E8D5A3] flex flex-col justify-center">
+                <h3 className="text-xl font-bold text-[#1A1800] mb-4 flex items-center gap-2">
+                  <MapPin size={20} className="text-[#C9A227]"/> Visit Our Office
+                </h3>
+                <address className="not-italic text-[#504e40] leading-relaxed mb-6">
+                  <strong>SS Realty</strong><br />
+                  Plot No-2, Dalmia Farm,<br />
+                  Jonapur, New Delhi 110047
+                </address>
+                <p className="text-sm text-[#6b6450] mb-4">
+                  Drop by our office to discuss your real estate requirements with our expert consultants. We are always ready to assist you in finding the best properties in South Delhi and beyond.
+                </p>
+                <a href="https://share.google/DuHqosVcJ03udejB8" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#1A1800] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[#3a3828] transition-colors self-start text-sm">
+                  Get Directions <Navigation size={14} />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

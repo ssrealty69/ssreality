@@ -19,7 +19,7 @@ const FarmHouseSection    = dynamic(() => import('@/components/home/FarmHouseSec
 
 
 export const metadata: Metadata = {
-  title: 'SS Realty – Homes & Flats for Sale in Delhi NCR',
+  title: 'Luxury Homes & Flat for sale in Chattarpur, Gwal Pahari, Gurgaon and Delhi NCR',
   description:
     'Browse luxury 2BHK, 3BHK flats, villas & plots for sale in Jonapur, Chattarpur, Sultanpur & Gurugram. SS Realty – Delhi NCR\'s trusted property consultant since 2008.',
   alternates: { canonical: 'https://ssrealty.org' },
