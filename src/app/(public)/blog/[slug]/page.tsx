@@ -52,7 +52,7 @@ async function getAvailableProperties() {
   try {
     await connectDB();
     const props = await PropertyModel.find({ status: 'available' })
-      .select('title propertyName slug images location price priceType features propertyType priceList')
+      .select('title propertyName slug images interiorImages location price priceType features propertyType priceList')
       .sort('-createdAt')
       .limit(6)
       .lean() as any[];
@@ -377,8 +377,12 @@ export default async function BlogPostPage({ params }: Props) {
               `}</style>
               {availableProperties.map((prop: any) => {
                 const propSlug = prop.slug || prop._id?.toString();
-                // First image from admin "Apartment Interior / Overview Images" — building exterior
-                const imgUrl = prop.images?.[0] || '/hero-nature.webp';
+                // Use interiorImages[0] first (same as home page property cards),
+                // then fall back to images[0] — this is the building exterior photo
+                const imgUrl =
+                  (prop.interiorImages && prop.interiorImages.length > 0 ? prop.interiorImages[0] : null) ||
+                  (prop.images && prop.images.length > 0 ? prop.images[0] : null) ||
+                  '/hero-nature.webp';
                 const city = prop.location?.city || prop.location?.address || 'Delhi NCR';
                 const bhk = prop.priceList?.[0]?.type || (prop.features?.bedrooms ? `${prop.features.bedrooms} BHK` : prop.propertyType);
                 const price = prop.priceList?.[0]?.price || (prop.price ? `₹${(prop.price / 100000).toFixed(0)}L` : 'On Request');
