@@ -391,9 +391,9 @@ export default async function BlogPostPage({ params }: Props) {
                   <a
                     key={prop._id}
                     href={`/properties/${propSlug}`}
-                    className="group flex-none bg-white rounded-2xl overflow-hidden border border-[#E8D5A3]/60 hover:border-[#C9A227]/70 shadow-sm hover:shadow-[0_8px_28px_-4px_rgba(201,162,39,0.22)] transition-all duration-300 hover:-translate-y-1"
+                    className="group flex-none rounded-2xl overflow-hidden shadow-md hover:shadow-[0_10px_32px_-4px_rgba(201,162,39,0.35)] transition-all duration-300 hover:-translate-y-1 relative"
                   >
-                    {/* Square image — 1:1 aspect ratio */}
+                    {/* Pure square image card — text overlaid on image */}
                     <div className="relative w-full" style={{ paddingBottom: '100%' }}>
                       <img
                         src={imgUrl}
@@ -401,24 +401,29 @@ export default async function BlogPostPage({ params }: Props) {
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-                      <span className="absolute bottom-2 left-2 bg-[#C9A227] text-[#1A1800] text-[9px] font-black uppercase px-2 py-0.5 rounded-full">
-                        {prop.priceType === 'rent' ? 'For Rent' : 'For Sale'}
-                      </span>
-                      <span className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-[#1A1800] text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                      {/* Deep gradient from bottom — for text readability */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                      {/* BHK badge — top right */}
+                      <span className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-[#1A1800] text-[9px] font-bold px-1.5 py-0.5 rounded-full z-10">
                         {bhk}
                       </span>
-                    </div>
-                    {/* Card Info */}
-                    <div className="p-3">
-                      <h3 className="font-bold text-[#1A1800] text-xs leading-tight mb-1 group-hover:text-[#C9A227] transition-colors line-clamp-1">{name}</h3>
-                      <p className="text-[#a09060] text-[10px] mb-2 flex items-center gap-1">
-                        <span className="w-1 h-1 rounded-full bg-[#C9A227] shrink-0" />
-                        {city}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-[#C9A227] font-black text-xs">{price}</span>
-                        <span className="text-[9px] text-[#C9A227] font-semibold group-hover:underline">View →</span>
+
+                      {/* Text overlay — bottom of image */}
+                      <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+                        <h3
+                          className="font-black text-xs leading-tight line-clamp-1 mb-0.5 group-hover:opacity-90 transition-opacity"
+                          style={{ background: 'linear-gradient(90deg, #F0D060, #fff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+                        >
+                          {name}
+                        </h3>
+                        <div className="flex items-center justify-between">
+                          <p className="text-white/80 text-[9px] flex items-center gap-1">
+                            <span className="w-1 h-1 rounded-full bg-[#C9A227] shrink-0" />
+                            {city}
+                          </p>
+                          <span className="text-[#F0D060] font-black text-[10px]">{price}</span>
+                        </div>
                       </div>
                     </div>
                   </a>
