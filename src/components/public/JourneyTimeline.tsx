@@ -42,7 +42,7 @@ const milestones: Milestone[] = [
     year: "2021",
     step: "04",
     title: "Apartments & Registered Corporate",
-    desc: "Entered the residential apartments sector and officially registered as a corporate, fully RERA-compliant real estate firm in Delhi NCR.",
+    desc: "Entered the residential apartments sector and officially registered as a corporate real estate firm in Delhi NCR, serving buyers across Chattarpur, Gwal Pahari, and Gurgaon.",
     imageUrl: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=90",
     icon: ShieldCheck
   }

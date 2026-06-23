@@ -193,7 +193,7 @@ export default function PrivacyPage() {
             <div className="gold-divider mb-5" />
             <h2 className="text-2xl font-[var(--font-playfair)] mb-4" style={{ color: '#ffffff' }}>RERA & Regulatory Compliance</h2>
             <p className="text-white text-sm leading-relaxed mb-4">
-              SS Realty operates in compliance with the Real Estate (Regulation and Development) Act, 2016 (RERA). Our registered projects are listed on the relevant state RERA portals. Any information shared for RERA-registered project inquiries may be forwarded to the respective project developers as required.
+              SS Realty operates as a real estate brokerage and advisory firm. We assist clients in evaluating properties for purchase. Clients are strongly advised to independently verify any property approvals, including RERA registration where applicable, on the respective state RERA portals before making any purchase decision. Information shared during property inquiries may be shared with property owners or developers as part of the transaction process.
             </p>
             <p className="text-white text-sm leading-relaxed">
               We may be legally required to disclose your information if mandated by a court order, government authority, or in response to a lawful legal process under Indian law.

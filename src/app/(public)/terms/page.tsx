@@ -46,8 +46,8 @@ const sections = [
         text: 'Any investment predictions, ROI calculators, or market analyses provided on our platform are for informational purposes only and do not constitute financial or investment advice. Real estate investments carry inherent risks. Please consult a qualified financial advisor before making investment decisions.',
       },
       {
-        subtitle: 'RERA Compliance',
-        text: 'SS Realty is committed to operating in compliance with the Real Estate (Regulation and Development) Act, 2016 (RERA). We recommend clients verify RERA registration of any project before making a purchase decision on the respective state RERA portal.',
+        subtitle: 'Legal Due Diligence',
+        text: 'SS Realty assists clients with property documentation, legal verification, and due diligence. We strongly recommend clients independently verify all property approvals, permissions, and registrations — including RERA registration where applicable — on the respective state portals before making any purchase decision.',
       },
     ],
   },
@@ -173,7 +173,7 @@ export default function TermsPage() {
           {/* Key Highlights */}
           <div className="grid sm:grid-cols-3 gap-4 mb-10">
             {[
-              { title: 'RERA Compliant', desc: 'Operating under RERA 2016 for full regulatory compliance.' },
+              { title: 'Verified Listings', desc: 'Properties listed after thorough verification and documentation checks.' },
               { title: 'Transparent Fees', desc: 'All brokerage fees disclosed before any commitment.' },
               { title: 'Delhi NCR Courts', desc: 'Disputes governed by courts in New Delhi, India.' },
             ].map(({ title, desc }) => (
