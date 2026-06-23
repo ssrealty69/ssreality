@@ -48,6 +48,20 @@ async function getLinkedProperty(propertyId: string): Promise<{ brochureUrl?: st
   }
 }
 
+async function getAvailableProperties() {
+  try {
+    await connectDB();
+    const props = await PropertyModel.find({ status: 'available' })
+      .select('title propertyName slug images location price priceType features propertyType priceList')
+      .sort('-createdAt')
+      .limit(6)
+      .lean() as any[];
+    return JSON.parse(JSON.stringify(props || []));
+  } catch {
+    return [];
+  }
+}
+
 
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -100,6 +114,9 @@ export default async function BlogPostPage({ params }: Props) {
   if (blogAny.linkedPropertyId) {
     linkedProperty = await getLinkedProperty(blogAny.linkedPropertyId);
   }
+
+  // Fetch live available properties for dynamic project section
+  const availableProperties = await getAvailableProperties();
 
   // JSON-LD Structured Data for SEO
   const jsonLd = {
@@ -332,6 +349,74 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           </div>
         </div>
+
+        {/* ✅ DYNAMIC SS Realty Current Projects Section */}
+        {availableProperties.length > 0 && (
+          <div className="mt-12 mb-4">
+            <div className="text-center mb-8">
+              <span className="inline-block px-3 py-1 bg-[#C9A227]/10 text-[#B8860B] rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-3">Live Listings</span>
+              <h2 className="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800]">
+                SS Realty <span className="text-[#C9A227]">Current Projects</span>
+              </h2>
+              <p className="text-[#6b6450] text-sm mt-2 max-w-xl mx-auto">
+                These properties meet the highest construction quality standards — verified by our experts.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {availableProperties.map((prop: any) => {
+                const slug = prop.slug || prop._id?.toString();
+                const imgUrl = prop.images?.[0] || '/hero-nature.webp';
+                const city = prop.location?.city || prop.location?.address || 'Delhi NCR';
+                const bhk = prop.priceList?.[0]?.type || (prop.features?.bedrooms ? `${prop.features.bedrooms} BHK` : prop.propertyType);
+                const price = prop.priceList?.[0]?.price || (prop.price ? `₹${(prop.price / 100000).toFixed(0)}L` : 'On Request');
+                const name = prop.propertyName || prop.title;
+                return (
+                  <a
+                    key={prop._id}
+                    href={`/properties/${slug}`}
+                    className="group bg-white rounded-2xl overflow-hidden border border-[#E8D5A3]/50 hover:border-[#C9A227]/60 shadow-sm hover:shadow-[0_8px_30px_-5px_rgba(201,162,39,0.2)] transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                  >
+                    <div className="relative h-44 overflow-hidden">
+                      <img
+                        src={imgUrl}
+                        alt={`${bhk} ${prop.propertyType} in ${city} | SS Realty`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <span className="absolute bottom-3 left-3 bg-[#C9A227] text-[#1A1800] text-[10px] font-black uppercase px-2 py-0.5 rounded-full">
+                        {prop.priceType === 'rent' ? 'For Rent' : 'For Sale'}
+                      </span>
+                      <span className="absolute top-3 right-3 bg-white/90 text-[#1A1800] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        {bhk}
+                      </span>
+                    </div>
+                    <div className="p-4 flex flex-col flex-1">
+                      <h3 className="font-bold text-[#1A1800] text-sm leading-tight mb-1 group-hover:text-[#C9A227] transition-colors line-clamp-2">{name}</h3>
+                      <p className="text-[#a09060] text-[11px] mb-3 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] shrink-0" />
+                        {city}
+                      </p>
+                      <div className="mt-auto flex items-center justify-between">
+                        <span className="text-[#C9A227] font-black text-sm">{price}</span>
+                        <span className="text-[10px] text-[#C9A227] font-semibold group-hover:underline">View Details →</span>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+            <div className="text-center mt-8">
+              <a
+                href="/properties"
+                className="inline-flex items-center gap-2 bg-[#1A1800] text-[#C9A227] font-bold px-8 py-3.5 rounded-xl hover:bg-[#C9A227] hover:text-[#1A1800] transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg"
+              >
+                View All Properties
+                <span className="text-lg">→</span>
+              </a>
+            </div>
+          </div>
+        )}
 
         {/* Keyword-Rich Property Search Section */}
         <div className="mt-12 bg-[#FFFBEB] rounded-3xl p-8 md:p-10 border border-[#E8D5A3]">

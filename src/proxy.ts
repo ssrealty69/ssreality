@@ -15,8 +15,12 @@ export function proxy(request: NextRequest) {
 
 
     const token = request.cookies.get('admin_token');
+    const secretHeader = request.headers.get('x-admin-secret');
+    const adminSecret = process.env.ADMIN_SECRET;
 
-    if (!token || token.value !== 'authenticated') {
+    const isAuthorized = (token && token.value === 'authenticated') || (adminSecret && secretHeader === adminSecret);
+
+    if (!isAuthorized) {
       if (pathname.startsWith('/api/')) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
