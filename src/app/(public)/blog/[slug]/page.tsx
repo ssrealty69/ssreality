@@ -326,23 +326,39 @@ export default async function BlogPostPage({ params }: Props) {
               Find Your Dream Property with <span className="text-[#C9A227]">SS Realty</span>
             </h2>
             <p className="text-[#6b6450] text-sm mt-2 max-w-2xl mx-auto">
-              From 3 BHK flats in Chattarpur &amp; Gwal Pahari to builder floors in Gurgaon — we have verified listings across all of Delhi NCR.
+              From 3 BHK flats in Gwal Pahari &amp; Chattarpur to builder floors in Gurgaon — we have verified listings across all of Delhi NCR.
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {[
               '3 BHK Flat in Gwal Pahari',
+              '3 BHK Flat for Sale in Gwal Pahari',
+              '3 BHK in Gwal Pahari Price',
+              'Buy Flats in Gwal Pahari',
+              'Gwal Pahari Near Gurgaon',
+              '3 BHK Flat in Gwal Pahari Gurgaon',
               '3 BHK Flat in Chattarpur',
-              'Builder Floor in Gurgaon',
-              'Flats in Gurgaon',
-              '3BHK Flat for Sale Gurgaon',
+              '3 BHK in Chattarpur for Sale',
+              '3 BHK Flat in Chattarpur Delhi',
+              '3 BHK Flat Chattarpur Enclave',
               'Registry Flats in Chattarpur',
+              'Flats for Sale in Chattarpur',
+              'Flats in Chattarpur for Rent',
+              'Sky Mansion Chattarpur',
+              '3BHK Flat in JVTS Chattarpur',
+              'Builder Floor in Gurgaon',
+              '3BHK Flat for Sale in Gurgaon',
+              '3BHK Builder Floor Gurgaon',
+              'Flats in Gurgaon',
               'Plots in Gurgaon',
               'House for Sale in Gurgaon',
-              '3 BHK Chattarpur Enclave',
-              'Flats in Chattarpur Delhi',
-              'Sky Mansion Chattarpur',
               'Property in Gurgaon',
+              '3BHK Flat for Rent Gurgaon',
+              '3BHK Flat in Gurgaon Price',
+              '3 BHK Apartment for Sale Delhi',
+              '3 BHK Flats in Delhi',
+              'Luxury Homes Delhi NCR',
+              'Farmhouse for Sale Delhi NCR',
             ].map((keyword) => (
               <a
                 key={keyword}
@@ -355,7 +371,7 @@ export default async function BlogPostPage({ params }: Props) {
             ))}
           </div>
           <p className="text-center text-xs text-[#a09060] mt-6">
-            SS Realty serves Chattarpur, Gwal Pahari, Gurugram, Noida, Mandi, Chandan Hola, South Delhi &amp; all of Delhi NCR. 
+            SS Realty serves Gwal Pahari, Chattarpur, Gurugram, Noida, Mandi, Chandan Hola, South Delhi &amp; all of Delhi NCR.
             <a href="/contact-us" className="text-[#C9A227] font-semibold ml-1 hover:underline">Contact us today →</a>
           </p>
         </div>
