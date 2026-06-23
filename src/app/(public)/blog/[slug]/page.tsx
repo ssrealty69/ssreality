@@ -409,20 +409,33 @@ export default async function BlogPostPage({ params }: Props) {
                         {bhk}
                       </span>
 
-                      {/* Text overlay — bottom of image */}
-                      <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+                      {/* Text overlay — bottom of image with dark backdrop */}
+                      <div
+                        className="absolute bottom-0 left-0 right-0 z-10 px-3 py-2.5 mx-2 mb-2 rounded-xl"
+                        style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }}
+                      >
                         <h3
-                          className="font-black text-xs leading-tight line-clamp-1 mb-0.5 group-hover:opacity-90 transition-opacity"
-                          style={{ background: 'linear-gradient(90deg, #F0D060, #fff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}
+                          className="font-black text-sm leading-tight line-clamp-1 mb-1"
+                          style={{
+                            background: 'linear-gradient(90deg, #F0D060, #ffffff)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text',
+                            textShadow: 'none',
+                            filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.8))'
+                          }}
                         >
                           {name}
                         </h3>
                         <div className="flex items-center justify-between">
-                          <p className="text-white/80 text-[9px] flex items-center gap-1">
-                            <span className="w-1 h-1 rounded-full bg-[#C9A227] shrink-0" />
+                          <p className="text-white/85 text-[10px] font-medium flex items-center gap-1" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] shrink-0" />
                             {city}
                           </p>
-                          <span className="text-[#F0D060] font-black text-[10px]">{price}</span>
+                          <span
+                            className="font-black text-sm"
+                            style={{ color: '#F0D060', textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}
+                          >{price}</span>
                         </div>
                       </div>
                     </div>
