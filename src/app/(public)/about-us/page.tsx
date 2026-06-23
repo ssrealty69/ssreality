@@ -14,10 +14,10 @@ export const metadata: Metadata = {
 export const dynamic = 'force-static';
 
 const team = [
-  { name: 'Yogesh Tanwar', role: 'Founder & CEO', initials: 'SS', color: '#C9A227', exp: '17+ years experience' },
-  { name: 'Ayaan', role: 'Head of Sales', initials: 'SP', color: '#B8860B', exp: 'Residential expert' },
-  { name: 'Nikhil', role: 'Head of Department', initials: 'RM', color: '#9a6f08', exp: 'Commercial specialist' },
-  { name: 'Priya Desai', role: 'Legal Advisor', initials: 'PD', color: '#C9A227', exp: 'Property law expert' },
+  { name: 'Yogesh Tanwar', role: 'Founder & CEO', initials: 'YT', color: '#C9A227', exp: '17+ years experience', phone: '+919311059100' },
+  { name: 'Ayaan', role: 'Head of Sales', initials: 'A', color: '#B8860B', exp: 'Residential expert', phone: '+918076431848' },
+  { name: 'Nikhil', role: 'Head of Department', initials: 'N', color: '#9a6f08', exp: 'Commercial specialist', phone: '+918920673269' },
+  { name: 'Priya Desai', role: 'Legal Advisor', initials: 'PD', color: '#C9A227', exp: 'Property law expert', phone: '+919311059100' },
 ];
 
 const values = [
@@ -191,7 +191,7 @@ export default function AboutPage() {
                 <p className="text-xs text-[#C9A227] font-semibold mt-1">{m.role}</p>
                 <p className="text-xs text-[#6b6450] mt-1">{m.exp}</p>
                 <div className="flex justify-center gap-3 mt-4">
-                  <a href="tel:+919311059100" className="w-8 h-8 rounded-lg bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-all"><Phone size={13} /></a>
+                  <a href={`tel:${m.phone}`} className="w-8 h-8 rounded-lg bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-all"><Phone size={13} /></a>
                   <a href="mailto:info@ssrealty.org" className="w-8 h-8 rounded-lg bg-[#C9A227]/10 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-white transition-all"><Mail size={13} /></a>
                 </div>
               </div>

@@ -45,7 +45,7 @@ const companyLinks = [
 
 const socials = [
   { href: 'https://www.facebook.com/profile.php?id=61571897675312', Icon: FacebookIcon, label: 'Facebook' },
-  { href: 'https://www.instagram.com/ss_realty_official', Icon: InstagramIcon, label: 'Instagram' },
+  { href: 'https://www.instagram.com/ssrealtyorg', Icon: InstagramIcon, label: 'Instagram' },
   { href: 'https://www.youtube.com/@ssrealty5270', Icon: YoutubeIcon, label: 'YouTube' },
 ];
 
