@@ -362,9 +362,22 @@ export default async function BlogPostPage({ params }: Props) {
                 These properties meet the highest construction quality standards — verified by our experts.
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+            {/* Horizontal scroll slider — 4 cards desktop/tablet, 2 cards mobile */}
+            <div
+              className="proj-scroll-wrap flex gap-4 overflow-x-auto pb-3 scroll-smooth -mx-1 px-1"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              <style>{`
+                .proj-scroll-wrap::-webkit-scrollbar { display: none; }
+                .proj-scroll-wrap > a { flex: 0 0 calc(25% - 12px); min-width: 150px; }
+                @media (max-width: 640px) {
+                  .proj-scroll-wrap > a { flex: 0 0 calc(50% - 8px) !important; }
+                }
+              `}</style>
               {availableProperties.map((prop: any) => {
-                const slug = prop.slug || prop._id?.toString();
+                const propSlug = prop.slug || prop._id?.toString();
+                // First image from admin "Apartment Interior / Overview Images" — building exterior
                 const imgUrl = prop.images?.[0] || '/hero-nature.webp';
                 const city = prop.location?.city || prop.location?.address || 'Delhi NCR';
                 const bhk = prop.priceList?.[0]?.type || (prop.features?.bedrooms ? `${prop.features.bedrooms} BHK` : prop.propertyType);
@@ -373,39 +386,42 @@ export default async function BlogPostPage({ params }: Props) {
                 return (
                   <a
                     key={prop._id}
-                    href={`/properties/${slug}`}
-                    className="group bg-white rounded-2xl overflow-hidden border border-[#E8D5A3]/50 hover:border-[#C9A227]/60 shadow-sm hover:shadow-[0_8px_30px_-5px_rgba(201,162,39,0.2)] transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                    href={`/properties/${propSlug}`}
+                    className="group flex-none bg-white rounded-2xl overflow-hidden border border-[#E8D5A3]/60 hover:border-[#C9A227]/70 shadow-sm hover:shadow-[0_8px_28px_-4px_rgba(201,162,39,0.22)] transition-all duration-300 hover:-translate-y-1"
                   >
-                    <div className="relative h-44 overflow-hidden">
+                    {/* Square image — 1:1 aspect ratio */}
+                    <div className="relative w-full" style={{ paddingBottom: '100%' }}>
                       <img
                         src={imgUrl}
                         alt={`${bhk} ${prop.propertyType} in ${city} | SS Realty`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <span className="absolute bottom-3 left-3 bg-[#C9A227] text-[#1A1800] text-[10px] font-black uppercase px-2 py-0.5 rounded-full">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+                      <span className="absolute bottom-2 left-2 bg-[#C9A227] text-[#1A1800] text-[9px] font-black uppercase px-2 py-0.5 rounded-full">
                         {prop.priceType === 'rent' ? 'For Rent' : 'For Sale'}
                       </span>
-                      <span className="absolute top-3 right-3 bg-white/90 text-[#1A1800] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      <span className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-[#1A1800] text-[9px] font-bold px-1.5 py-0.5 rounded-full">
                         {bhk}
                       </span>
                     </div>
-                    <div className="p-4 flex flex-col flex-1">
-                      <h3 className="font-bold text-[#1A1800] text-sm leading-tight mb-1 group-hover:text-[#C9A227] transition-colors line-clamp-2">{name}</h3>
-                      <p className="text-[#a09060] text-[11px] mb-3 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] shrink-0" />
+                    {/* Card Info */}
+                    <div className="p-3">
+                      <h3 className="font-bold text-[#1A1800] text-xs leading-tight mb-1 group-hover:text-[#C9A227] transition-colors line-clamp-1">{name}</h3>
+                      <p className="text-[#a09060] text-[10px] mb-2 flex items-center gap-1">
+                        <span className="w-1 h-1 rounded-full bg-[#C9A227] shrink-0" />
                         {city}
                       </p>
-                      <div className="mt-auto flex items-center justify-between">
-                        <span className="text-[#C9A227] font-black text-sm">{price}</span>
-                        <span className="text-[10px] text-[#C9A227] font-semibold group-hover:underline">View Details →</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[#C9A227] font-black text-xs">{price}</span>
+                        <span className="text-[9px] text-[#C9A227] font-semibold group-hover:underline">View →</span>
                       </div>
                     </div>
                   </a>
                 );
               })}
             </div>
+
             <div className="text-center mt-8">
               <a
                 href="/properties"
