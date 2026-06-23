@@ -1,10 +1,12 @@
 import { TrendingUp, Users, Home, Award, Clock, Handshake } from 'lucide-react';
 
+const companyExpYears = new Date().getFullYear() - 2008;
+
 const stats = [
   { icon: Home, value: '500+', label: 'Properties Listed', color: '#C9A227' },
   { icon: Users, value: '2000+', label: 'Happy Clients', color: '#B8860B' },
   { icon: TrendingUp, value: '₹500Cr+', label: 'Property Sold', color: '#C9A227' },
-  { icon: Award, value: '15+', label: 'Years Experience', color: '#B8860B' },
+  { icon: Award, value: `${companyExpYears}+`, label: 'Years Experience', color: '#B8860B' },
   { icon: Clock, value: '48hrs', label: 'Avg Closing Time', color: '#C9A227' },
   { icon: Handshake, value: '98%', label: 'Client Satisfaction', color: '#B8860B' },
 ];
@@ -22,7 +24,7 @@ export default function StatsSection() {
             <span className="text-white">Our</span> <span className="text-[#C9A227]">Numbers</span> <span className="text-white">Speak</span>
           </h2>
           <p className="text-[#a09060] mt-3 max-w-xl mx-auto text-sm">
-            Trusted by thousands of families and investors across Delhi NCR for over 15 years.
+            Trusted by thousands of families and investors across Delhi NCR for over {companyExpYears} years.
           </p>
         </div>
 

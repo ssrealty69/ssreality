@@ -200,7 +200,7 @@ function buildSystemPrompt(
     post_property: `Properties were shown. Now ask: "Would you like to see more properties here, or explore a different area?" Give 2 clear options.`,
   };
 
-  return `You are Aria, a premium AI property sales assistant for SS Realty — Delhi NCR's top real estate platform (15+ years, 2000+ verified properties).
+  return `You are Aria, a premium AI property sales assistant for SS Realty — Delhi NCR's top real estate platform (${new Date().getFullYear() - 2008}+ years, 2000+ verified properties).
 
 LANGUAGE RULE: ${langRule}
 

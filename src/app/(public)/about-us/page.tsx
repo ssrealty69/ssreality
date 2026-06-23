@@ -14,8 +14,10 @@ export const metadata: Metadata = {
 // SSG — fully static
 export const dynamic = 'force-static';
 
+const companyExpYears = new Date().getFullYear() - 2008;
+
 const team = [
-  { name: 'Yogesh Tanwar', role: 'Founder & CEO', initials: 'YT', color: '#C9A227', exp: '17+ years experience', phone: '+919311059100' },
+  { name: 'Yogesh Tanwar', role: 'Founder & CEO', initials: 'YT', color: '#C9A227', exp: `${companyExpYears}+ years experience`, phone: '+919311059100' },
   { name: 'Ayaan', role: 'Head of Sales', initials: 'A', color: '#B8860B', exp: 'Residential expert', phone: '+918076431848' },
   { name: 'Nikhil', role: 'Head of Department', initials: 'N', color: '#9a6f08', exp: 'Commercial specialist', phone: '+918920673269' },
   { name: 'Priya Desai', role: 'Legal Advisor', initials: 'PD', color: '#C9A227', exp: 'Property law expert', phone: '+919311059100' },
@@ -42,7 +44,7 @@ export default function AboutPage() {
             <span className="text-white">About</span> <span className="text-[#C9A227]">SS Realty</span>
           </h1>
           <p className="text-[#d4c490] text-lg max-w-2xl">
-            25+ years of trust, transparency, and transforming property dreams into reality across Delhi NCR.
+            {companyExpYears}+ years of trust, transparency, and transforming property dreams into reality across Delhi NCR.
           </p>
         </div>
       </div>
