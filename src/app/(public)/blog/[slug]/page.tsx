@@ -274,7 +274,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div className="grid lg:grid-cols-12 gap-12 items-start">
           {/* Main Content */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 min-w-0 w-full overflow-hidden">
             {/* ── THUMBNAIL (16:9 = 1920×1080 ratio) ── */}
             {blog.coverImage && (
               <div className="w-full mb-8 rounded-2xl overflow-hidden shadow-lg">
@@ -295,7 +295,7 @@ export default async function BlogPostPage({ params }: Props) {
             </p>
 
             <div 
-              className="prose prose-lg max-w-none text-[#3a3828] leading-relaxed"
+              className="prose prose-sm md:prose-lg max-w-full w-full break-words overflow-x-auto text-[#3a3828] leading-relaxed"
               dangerouslySetInnerHTML={{ __html: blog.content }}
             />
 
