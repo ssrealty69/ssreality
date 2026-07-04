@@ -4,6 +4,7 @@ import Property from '@/models/Property';
 import Blog from '@/models/Blog';
 import Contact from '@/models/Contact';
 import JobApplication from '@/models/JobApplication';
+import PropertyEnquiry from '@/models/PropertyEnquiry';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,12 +22,16 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     // Fetch live counts in parallel
-    const [propertiesCount, blogsCount, leadsCount, jobsCount] = await Promise.all([
+    const [propertiesCount, blogsCount, contactLeadsCount, propertyEnquiriesCount, jobsCount] = await Promise.all([
       Property.countDocuments({}),
       Blog.countDocuments({}),
       Contact.countDocuments({}),
+      PropertyEnquiry.countDocuments({}),
       JobApplication.countDocuments({})
     ]);
+
+    // Total leads = all contact form submissions + all property enquiries (includes brochures)
+    const leadsCount = contactLeadsCount + propertyEnquiriesCount;
 
     // Fetch recent 4 items for previews
     const [recentLeads, recentJobs] = await Promise.all([

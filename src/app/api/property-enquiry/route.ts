@@ -47,6 +47,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // ── Deduplication: prevent duplicate entry from same phone+property within 5 min ──
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const existingEnquiry = await PropertyEnquiry.findOne({
+      phone: sanitizedPhone,
+      propertyId: sanitizedPropId,
+      createdAt: { $gte: fiveMinutesAgo },
+    });
+
+    if (existingEnquiry) {
+      // Return success silently — the enquiry was already saved previously
+      return NextResponse.json({ success: true, data: { _id: existingEnquiry._id } }, { status: 200 });
+    }
+
     // Save to DB
     const enquiry = await PropertyEnquiry.create({
       name: sanitizedName,

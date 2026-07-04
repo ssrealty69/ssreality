@@ -52,7 +52,7 @@ export default function AdminLeadsPage() {
   const [aiLeads, setAiLeads] = useState<AiLead[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState<'general' | 'loan' | 'property' | 'popup' | 'brochure'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'loan' | 'property' | 'brochure'>('general');
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -138,13 +138,12 @@ export default function AdminLeadsPage() {
   }, [propertyEnquiries]);
 
   const stats = useMemo(() => ({
-    total: leads.length + propertyEnquiries.length + aiLeads.length,
+    total: leads.length + propertyEnquiries.length,
     general: categorizedLeads.general.length,
     loan: categorizedLeads.loan.length,
     property: categorizedEnquiries.property.length,
     brochure: categorizedEnquiries.brochure.length,
-    popup: aiLeads.length,
-  }), [leads, categorizedLeads, categorizedEnquiries, aiLeads]);
+  }), [leads, categorizedLeads, categorizedEnquiries]);
 
   // Delete contact lead
   const handleDeleteLead = async (id: string) => {
@@ -209,16 +208,6 @@ export default function AdminLeadsPage() {
         e.phone.includes(query) ||
         e.propertyTitle.toLowerCase().includes(query) ||
         e.requirement?.toLowerCase().includes(query)
-      );
-    }
-
-    if (activeTab === 'popup') {
-      if (!query) return aiLeads;
-      return aiLeads.filter(l =>
-        l.name.toLowerCase().includes(query) ||
-        l.phone.includes(query) ||
-        l.location?.toLowerCase().includes(query) ||
-        l.propertyType?.toLowerCase().includes(query)
       );
     }
 
@@ -304,26 +293,6 @@ export default function AdminLeadsPage() {
           'Property Name': lead.propertyTitle || 'N/A',
           'Property ID': lead.propertyId || 'N/A',
         }));
-        } else if (activeTab === 'popup') {
-          sheetName = 'Pop-up Leads';
-          fileName = `SS_Realty_Popup_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
-          exportData = (filteredLeads as AiLead[]).map((lead, idx) => ({
-            'S.No.': idx + 1,
-            'Date': new Date(lead.createdAt).toLocaleDateString('en-IN', {
-              day: '2-digit', month: '2-digit', year: 'numeric',
-            }),
-            'Time': new Date(lead.createdAt).toLocaleTimeString('en-IN', {
-              hour: '2-digit', minute: '2-digit',
-            }),
-            'Name': lead.name,
-            'Phone': lead.phone,
-            'Email': lead.email || 'N/A',
-            'Location': lead.location || 'N/A',
-            'Property Type': lead.propertyType || 'N/A',
-            'Budget': lead.budget || 'N/A',
-            'Message': lead.message || 'N/A',
-            'Source': lead.source,
-          }));
         } else {
           sheetName = 'Home Loan Leads';
         fileName = `SS_Realty_Home_Loan_Leads_${new Date().toISOString().slice(0, 10)}.xlsx`;
@@ -429,15 +398,6 @@ export default function AdminLeadsPage() {
             <h3 className="text-2xl font-black text-gray-900 mt-0.5">{stats.property}</h3>
           </div>
         </div>
-        <div className="bg-white rounded-2xl p-5 border border-purple-100 shadow-sm flex items-center gap-3 ring-1 ring-purple-200/60">
-          <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 shrink-0">
-            <MessageSquare size={20} />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-purple-500 uppercase tracking-wider">Pop-up Leads</p>
-            <h3 className="text-2xl font-black text-gray-900 mt-0.5">{stats.popup}</h3>
-          </div>
-        </div>
         <div className="bg-white rounded-2xl p-5 border border-rose-100 shadow-sm flex items-center gap-3 ring-1 ring-rose-200/60">
           <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
             <FileDown size={20} />
@@ -484,16 +444,6 @@ export default function AdminLeadsPage() {
               }`}
             >
               🏠 Property Enquiries ({stats.property})
-            </button>
-            <button
-              onClick={() => { setActiveTab('popup'); setSearchQuery(''); }}
-              className={`flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
-                activeTab === 'popup'
-                  ? 'bg-purple-50 text-purple-700 shadow-sm border border-purple-200'
-                  : 'text-gray-400 hover:text-purple-600'
-              }`}
-            >
-              🤖 Pop-up Leads ({stats.popup})
             </button>
             <button
               onClick={() => { setActiveTab('brochure'); setSearchQuery(''); }}
@@ -794,110 +744,14 @@ export default function AdminLeadsPage() {
                   })}
                 </tbody>
               </table>
-            ) : (
-              /* ─── Pop-up / AI Leads Table ─── */
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-purple-50/60 text-[10px] font-black text-purple-700 uppercase border-b border-purple-100">
-                    <th className="py-4 px-6">Date &amp; Time</th>
-                    <th className="py-4 px-4">Name</th>
-                    <th className="py-4 px-4">Phone</th>
-                    <th className="py-4 px-4">Location</th>
-                    <th className="py-4 px-4">Requirement</th>
-                    <th className="py-4 px-6 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {(filteredLeads as AiLead[]).map((lead) => (
-                    <tr key={lead._id} className="hover:bg-purple-50/30 transition-colors">
-                      {/* Date & Time */}
-                      <td className="py-4 px-6 font-semibold text-gray-500 whitespace-nowrap">
-                        <span className="flex items-center gap-1.5">
-                          <Calendar size={13} className="text-purple-500 shrink-0" />
-                          <span>
-                            {new Date(lead.createdAt).toLocaleDateString('en-IN', {
-                              day: 'numeric', month: 'short', year: 'numeric',
-                            })}
-                            <br />
-                            <span className="text-[10px] text-gray-400">
-                              {new Date(lead.createdAt).toLocaleTimeString('en-IN', {
-                                hour: '2-digit', minute: '2-digit',
-                              })}
-                            </span>
-                          </span>
-                        </span>
-                      </td>
-
-                      {/* Name */}
-                      <td className="py-4 px-4 font-bold text-gray-800">
-                        {lead.name}
-                        {lead.email && <div className="text-[10px] text-gray-400 font-medium">{lead.email}</div>}
-                      </td>
-
-                      {/* Phone */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <a
-                          href={`tel:+91${lead.phone}`}
-                          className="font-semibold text-gray-700 hover:text-purple-600 transition-colors"
-                        >
-                          +91 {lead.phone}
-                        </a>
-                      </td>
-
-                      {/* Location */}
-                      <td className="py-4 px-4">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 border border-gray-200 text-[10px] font-bold rounded uppercase tracking-wider">
-                          <MapPin size={10} className="text-purple-500" />
-                          {lead.location || 'N/A'}
-                        </span>
-                      </td>
-
-                      {/* Requirement */}
-                      <td className="py-4 px-4 max-w-[200px]">
-                        <div className="flex flex-col gap-1">
-                          {lead.propertyType && (
-                            <span className="text-[9px] font-black text-purple-600 uppercase tracking-wider truncate">
-                              {lead.propertyType}
-                            </span>
-                          )}
-                          {lead.budget && (
-                            <span className="text-xs font-bold text-gray-900">
-                              Budget: {lead.budget}
-                            </span>
-                          )}
-                          {lead.message && (
-                            <p className="text-gray-500 font-medium leading-relaxed truncate text-[11px]" title={lead.message}>
-                              {lead.message}
-                            </p>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="py-4 px-6 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <a
-                            href={`https://wa.me/91${lead.phone}?text=Hi ${encodeURIComponent(lead.name)}, thank you for sharing your details via our pop-up form. We noticed you are looking for ${encodeURIComponent(lead.propertyType || 'properties')} in ${encodeURIComponent(lead.location || 'our covered areas')}. How can we assist you?`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 border border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 text-gray-400 hover:text-emerald-600 rounded-xl transition-all cursor-pointer"
-                            title="Reply on WhatsApp"
-                          >
-                            <MessageSquare size={14} />
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )
+            ) : null
           ) : (
             <div className="py-16 text-center text-gray-400 text-sm font-semibold flex flex-col items-center justify-center space-y-2">
               <Users size={32} className="text-[#C9A227] opacity-40" />
               <span>No matching records found.</span>
             </div>
           )}
+
         </div>
       </div>
     </div>
