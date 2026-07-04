@@ -592,8 +592,17 @@ export default function AdminLeadsPage() {
                           >
                             <MessageSquare size={14} />
                           </a>
+                          <button
+                            onClick={() => handleDeleteEnquiry(enq._id)}
+                            disabled={deletingId === enq._id}
+                            className="p-2 border border-gray-100 hover:border-red-400 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl transition-all cursor-pointer disabled:opacity-40"
+                            title="Delete this entry"
+                          >
+                            {deletingId === enq._id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                          </button>
                         </div>
                       </td>
+
                     </tr>
                   )})}
                 </tbody>
