@@ -23,9 +23,13 @@ export async function POST(req: NextRequest) {
     await invalidateCache('blogs:*');
     await invalidateCache('blog:*');
     await invalidateCache('property:*');
+    // Invalidate marketing/tracking settings cache
+    await invalidateCache('marketing_tracking_settings');
 
-    // Clear Next.js cache
+    // Clear Next.js cache for all pages
     revalidatePath('/', 'layout');
+    revalidatePath('/admin/marketing/tracking');
+    revalidatePath('/admin', 'layout');
 
     return NextResponse.json({ success: true, message: 'Cache successfully cleared' });
   } catch (error: unknown) {

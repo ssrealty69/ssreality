@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getTrackingSettings, updateTrackingSettings } from '@/lib/tracking-service';
 
 export const dynamic = 'force-dynamic';
@@ -48,6 +49,10 @@ export async function POST(req: NextRequest) {
 
     const updatedBy = req.headers.get('x-admin-user') || 'Admin Dashboard';
     const settings = await updateTrackingSettings(body, updatedBy);
+
+    // Revalidate all pages so new pixel/tracking IDs are reflected immediately
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin', 'layout');
 
     return NextResponse.json({
       success: true,
