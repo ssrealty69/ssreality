@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target, Compass, HelpCircle } from 'lucide-react';
@@ -10,7 +11,7 @@ const navItems = [
   { href: '/admin/properties', label: 'Properties', icon: Home },
   { href: '/admin/floor-plans', label: 'Floor Plans', icon: Layers },
   { href: '/admin/delivered-landmarks', label: 'Delivered Landmarks', icon: Compass },
-  { href: '/admin/leads', label: 'Leads', icon: Users },
+  { href: '/admin/leads', label: 'Leads', icon: Users, hasBadge: true },
   { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },
   { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target },
@@ -24,6 +25,26 @@ export default function AdminSidebar({
   setIsOpen: (val: boolean) => void;
 }) {
   const pathname = usePathname();
+  const [unreadLeads, setUnreadLeads] = useState(0);
+
+  useEffect(() => {
+    // Fetch unread leads count initially and poll every 30 seconds
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await fetch('/api/admin/leads/unread-count');
+        const data = await res.json();
+        if (data.success) {
+          setUnreadLeads(data.unreadCount);
+        }
+      } catch (err) {
+        console.error('Failed to fetch unread leads count', err);
+      }
+    };
+
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
@@ -64,20 +85,34 @@ export default function AdminSidebar({
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
+            const showBadge = item.hasBadge && unreadLeads > 0;
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors relative ${
                   isActive 
                     ? 'bg-[#C9A227]/10 text-[#C9A227]' 
                     : 'text-white/70 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <Icon size={20} />
-                <span className="font-medium">{item.label}</span>
+                <div className="relative">
+                  <Icon size={20} />
+                  {showBadge && (
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                  )}
+                </div>
+                <span className="font-medium flex-1">{item.label}</span>
+                {showBadge && (
+                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                    {unreadLeads}
+                  </span>
+                )}
               </Link>
             );
           })}

@@ -17,6 +17,7 @@ interface Lead {
   message: string;
   propertyId?: string;
   propertyTitle?: string;
+  status: string;
   createdAt: string;
 }
 
@@ -145,6 +146,52 @@ export default function AdminLeadsPage() {
     brochure: categorizedEnquiries.brochure.length,
   }), [leads, categorizedLeads, categorizedEnquiries]);
 
+  const hasNewGeneral = categorizedLeads.general.some(l => l.status === 'new');
+  const hasNewLoan = categorizedLeads.loan.some(l => l.status === 'new');
+  const hasNewProperty = categorizedEnquiries.property.some(e => e.status === 'new');
+  const hasNewBrochure = categorizedEnquiries.brochure.some(e => e.status === 'new');
+
+  const handleTabClick = async (tab: 'general' | 'loan' | 'property' | 'brochure') => {
+    setActiveTab(tab);
+    setSearchQuery('');
+    
+    let unreadIds: string[] = [];
+    let type = '';
+
+    if (tab === 'general') {
+      unreadIds = categorizedLeads.general.filter(l => l.status === 'new').map(l => l._id);
+      type = 'contact';
+    } else if (tab === 'loan') {
+      unreadIds = categorizedLeads.loan.filter(l => l.status === 'new').map(l => l._id);
+      type = 'contact';
+    } else if (tab === 'property') {
+      unreadIds = categorizedEnquiries.property.filter(l => l.status === 'new').map(l => l._id);
+      type = 'property-enquiry';
+    } else if (tab === 'brochure') {
+      unreadIds = categorizedEnquiries.brochure.filter(l => l.status === 'new').map(l => l._id);
+      type = 'property-enquiry';
+    }
+
+    if (unreadIds.length > 0) {
+      // Optimistic UI update
+      if (type === 'contact') {
+        setLeads(prev => prev.map(l => unreadIds.includes(l._id) ? { ...l, status: 'read' } : l));
+      } else {
+        setPropertyEnquiries(prev => prev.map(e => unreadIds.includes(e._id) ? { ...e, status: 'contacted' } : e));
+      }
+
+      try {
+        await fetch('/api/admin/leads/mark-read', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: unreadIds, type })
+        });
+      } catch (err) {
+        console.error('Failed to mark leads as read', err);
+      }
+    }
+  };
+
   // Delete contact lead
   const handleDeleteLead = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this lead?')) return;
@@ -235,8 +282,8 @@ export default function AdminLeadsPage() {
       let fileName = '';
 
       if (activeTab === 'property') {
-        sheetName = 'Property Enquiries';
-        fileName = `SS_Realty_Property_Enquiries_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        sheetName = 'Blog Enquiries';
+        fileName = `SS_Realty_Blog_Enquiries_${new Date().toISOString().slice(0, 10)}.xlsx`;
         exportData = (filteredLeads as PropertyEnquiry[]).map((e, idx) => ({
           'S.No.': idx + 1,
           'Date': new Date(e.createdAt).toLocaleDateString('en-IN', {
@@ -394,7 +441,7 @@ export default function AdminLeadsPage() {
             <Home size={20} />
           </div>
           <div>
-            <p className="text-[10px] font-black text-amber-500 uppercase tracking-wider">Property Enquiries</p>
+            <p className="text-[10px] font-black text-amber-500 uppercase tracking-wider">Blog Enquiries</p>
             <h3 className="text-2xl font-black text-gray-900 mt-0.5">{stats.property}</h3>
           </div>
         </div>
@@ -416,44 +463,48 @@ export default function AdminLeadsPage() {
           {/* Tabs */}
           <div className="flex bg-gray-50 p-1 border border-gray-100 rounded-xl self-start md:self-auto flex-wrap gap-1">
             <button
-              onClick={() => { setActiveTab('general'); setSearchQuery(''); }}
-              className={`flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              onClick={() => handleTabClick('general')}
+              className={`relative flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === 'general'
                   ? 'bg-white text-[#1A1800] shadow-sm'
                   : 'text-gray-400 hover:text-gray-600'
               }`}
             >
               🏢 General ({stats.general})
+              {hasNewGeneral && <span className="absolute top-1 right-1 flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>}
             </button>
             <button
-              onClick={() => { setActiveTab('loan'); setSearchQuery(''); }}
-              className={`flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              onClick={() => handleTabClick('loan')}
+              className={`relative flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === 'loan'
                   ? 'bg-white text-[#1A1800] shadow-sm'
                   : 'text-gray-400 hover:text-gray-600'
               }`}
             >
               💰 Loan ({stats.loan})
+              {hasNewLoan && <span className="absolute top-1 right-1 flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>}
             </button>
             <button
-              onClick={() => { setActiveTab('property'); setSearchQuery(''); }}
-              className={`flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              onClick={() => handleTabClick('property')}
+              className={`relative flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === 'property'
                   ? 'bg-amber-50 text-amber-700 shadow-sm border border-amber-200'
                   : 'text-gray-400 hover:text-amber-600'
               }`}
             >
-              🏠 Property Enquiries ({stats.property})
+              📄 Blog Enquiries ({stats.property})
+              {hasNewProperty && <span className="absolute top-1 right-1 flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>}
             </button>
             <button
-              onClick={() => { setActiveTab('brochure'); setSearchQuery(''); }}
-              className={`flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              onClick={() => handleTabClick('brochure')}
+              className={`relative flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 activeTab === 'brochure'
                   ? 'bg-rose-50 text-rose-700 shadow-sm border border-rose-200'
                   : 'text-gray-400 hover:text-rose-600'
               }`}
             >
               📄 Brochures ({stats.brochure})
+              {hasNewBrochure && <span className="absolute top-1 right-1 flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>}
             </button>
           </div>
 
@@ -548,7 +599,7 @@ export default function AdminLeadsPage() {
                       <td className="py-4 px-4 max-w-[200px]">
                         <div className="flex flex-col gap-1">
                           <span className={`text-[8px] font-black text-${activeTab === 'brochure' ? 'rose' : 'amber'}-600 bg-${activeTab === 'brochure' ? 'rose' : 'amber'}-50 border border-${activeTab === 'brochure' ? 'rose' : 'amber'}-200 px-1.5 py-0.5 rounded uppercase tracking-wider w-fit leading-none`}>
-                            {activeTab === 'brochure' ? 'Brochure Download' : 'Property Enquiry'}
+                            {activeTab === 'brochure' ? 'Brochure Download' : 'Blog Enquiry'}
                           </span>
                           <a
                             href={enq.propertyUrl}
