@@ -47,10 +47,21 @@ async function uploadToCloudinary(
   mimeType: string,
   folder: string,
   isImage: boolean,
+  originalFilename: string,
 ): Promise<{ secure_url: string; public_id: string; bytes: number; width?: number; height?: number }> {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
   const apiKey = process.env.CLOUDINARY_API_KEY!;
   const apiSecret = process.env.CLOUDINARY_API_SECRET!;
+
+  // ── Sanitize original filename for use as public_id ────────────────────
+  // Remove extension, replace spaces/special chars with hyphens, lowercase
+  const nameWithoutExt = originalFilename.replace(/\.[^/.]+$/, '');
+  const sanitizedName = nameWithoutExt
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]/g, '-')   // replace unsafe chars with hyphen
+    .replace(/-{2,}/g, '-')           // collapse multiple hyphens
+    .replace(/^-+|-+$/g, '');         // trim leading/trailing hyphens
+  const publicId = `${folder}/${sanitizedName}`;
 
   // ── Generate SHA-1 signature for authenticated upload ──────────────────
   const timestamp = Math.floor(Date.now() / 1000).toString();
@@ -60,9 +71,10 @@ async function uploadToCloudinary(
   const eager = isImage ? 'c_limit,w_1920,h_1280/q_auto:best/f_webp' : undefined;
   const sigParams: Record<string, string> = {
     folder,
+    public_id: publicId,
     timestamp,
-    unique_filename: 'true',
-    use_filename: 'false',
+    unique_filename: 'false',
+    use_filename: 'true',
     ...(eager ? { eager } : {}),
     ...(isImage ? { format: 'webp' } : {}),
   };
@@ -89,8 +101,9 @@ async function uploadToCloudinary(
   form.append('timestamp', timestamp);
   form.append('signature', signature);
   form.append('folder', folder);
-  form.append('unique_filename', 'true');
-  form.append('use_filename', 'false');
+  form.append('public_id', publicId);
+  form.append('unique_filename', 'false');
+  form.append('use_filename', 'true');
   if (isImage) {
     form.append('format', 'webp');
     form.append('eager', eager!);
@@ -176,7 +189,7 @@ export async function POST(req: NextRequest) {
     const originalSizeKB = Math.round(file.size / 1024);
 
     // ── Upload ────────────────────────────────────────────────────────────
-    const result = await uploadToCloudinary(buffer, file.type, folder, isImage);
+    const result = await uploadToCloudinary(buffer, file.type, folder, isImage, file.name);
 
     const finalSizeKB = Math.round(result.bytes / 1024);
     const savedPercent = Math.max(0, Math.round((1 - result.bytes / file.size) * 100));
