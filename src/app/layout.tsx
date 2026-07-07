@@ -370,7 +370,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             {settings.metaPixelId && (
               <Script
                 id="fb-pixel"
-                strategy="lazyOnload"
+                strategy="afterInteractive"
                 dangerouslySetInnerHTML={{
                   __html: `
                     !function(f,b,e,v,n,t,s)
