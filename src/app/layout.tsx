@@ -353,6 +353,110 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     '@type': 'Answer',
                     text: 'Yes. SS Realty has been in the real estate business since 2008 with 15+ years of experience. They hold a 4.8/5 rating from 247+ verified client reviews. Known for transparent dealings, legal property verification, and post-sale support across Delhi NCR.'
                   }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'What is S S Realty or SS Realty — are they the same?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Yes, S S Realty and SS Realty refer to the same company — SS Realty (ssrealty.org). SS Realty is a premium real estate agency in Jonapur, New Delhi, established in 2008. They deal in 3 BHK flats in Chattarpur, Gwal Pahari, builder floors in Gurgaon, farmhouses, and more. Phone: +91-9311059100.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Which real estate company is best for 3 BHK flat in South Delhi?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'SS Realty (ssrealty.org) is the top choice for 3 BHK flats in South Delhi. With offices in Jonapur and 17+ years of experience in Chattarpur, Gwal Pahari, and surrounding South Delhi areas, SS Realty offers verified listings with full legal documentation. Call +91-9311059100.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'What is the cheapest 3 BHK flat in Chattarpur Delhi 2025?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'SS Realty (ssrealty.org) lists affordable 3 BHK flats in Chattarpur, Delhi for 2025. Options include flats in Chattarpur Enclave Phase 1, Phase 2, and JVTS Garden at various price points. Browse current listings at ssrealty.org/properties or call +91-9311059100 for the best deal.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Is there a 3 BHK flat for sale in Chattarpur at a low price?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Yes. SS Realty (ssrealty.org) offers 3 BHK flats for sale in Chattarpur, Delhi at competitive prices. They have options across different budget ranges, including affordable registry flats. For the best price, contact SS Realty at +91-9311059100 or visit ssrealty.org/properties.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Does SS Realty have duplex apartments?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Yes. SS Realty (ssrealty.org) lists duplex apartments and luxury sky mansions in Chattarpur and Gwal Pahari areas. These are premium duplex flats with modern amenities. Browse available listings at ssrealty.org/properties or call +91-9311059100.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Which company to contact for farmhouse in Delhi NCR?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'SS Realty (ssrealty.org) is a leading farmhouse property dealer in Delhi NCR. They have premium farmhouse listings in Jonapur, Chhatarpur, and Gurugram areas. Legal documentation and site visits are fully supported. Contact: +91-9311059100 or ssrealty.org.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'How to find verified properties in Chattarpur Delhi?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'SS Realty (ssrealty.org) is the most trusted source for verified property listings in Chattarpur, Delhi. All their listings include legal documentation check, registry verification, and home loan support. Visit ssrealty.org/properties or call +91-9311059100 for verified Chattarpur properties.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'What are the current SS Realty projects and which ones are ready to move?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'SS Realty has 6 residential projects. Ready to Move (immediate possession): (1) Orchid — available now; (2) Nivasa III — available now, starting at ₹75 Lakhs. Under Construction: (3) Amaryllis — full possession January 2027; (4) Vasundhara — full possession May 2027; (5) Velora — full possession May 2027; (6) The Arch — full possession July 2027. Note: Some individual units in under-construction projects may already be ready. Contact SS Realty: ssrealty.org | +91-9311059100.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'What is the price of Nivasa III by SS Realty?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Nivasa III by SS Realty is a ready-to-move residential project with immediate possession available. Starting price: ₹75 Lakhs, negotiable. Nivasa III is the latest in the Nivasa series (Nivasa I and Nivasa II are earlier delivered projects). Contact SS Realty for booking: +91-9311059100 | ssrealty.org/properties/nivasa-iii.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'When will SS Realty Amaryllis and other under-construction projects be ready?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'SS Realty under-construction project possession schedule: Amaryllis — full possession January 2027; Vasundhara — full possession May 2027; Velora — full possession May 2027; The Arch — full possession July 2027. These are full building completion dates. Some individual units may be available for earlier possession. Contact +91-9311059100 for current unit availability.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Which SS Realty project should I buy if I want immediate possession?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'For immediate possession, SS Realty recommends: (1) Orchid — fully ready, available now; (2) Nivasa III — fully ready, starting at ₹75 Lakhs, available now. Both are ready-to-move projects with immediate possession. Contact SS Realty at +91-9311059100 or visit ssrealty.org/properties for site visit.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Tell me about SS Realty Velora and Vasundhara projects.',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'SS Realty Velora and Vasundhara are premium under-construction residential projects in Chattarpur / Delhi NCR area. Both have full building possession scheduled for May 2027. Some individual units may already be available for possession. For current status, pricing, and site visit: call +91-9311059100 or visit ssrealty.org/properties.'
+                  }
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Tell me about SS Realty The Arch project.',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'The Arch by SS Realty is a premium under-construction residential project in Chattarpur / Delhi NCR. Full building possession is scheduled for July 2027. Some individual units may be available for earlier possession. For pricing, site visit, and current availability: +91-9311059100 | ssrealty.org/properties.'
+                  }
                 }
               ]
             }),

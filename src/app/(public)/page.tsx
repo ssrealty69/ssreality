@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import HeroSection from '@/components/home/HeroSection';
 import FeaturedProperties from '@/components/home/FeaturedProperties';
+import AllProjectsSection from '@/components/home/AllProjectsSection';
 import type { Property } from '@/types';
 import { FALLBACK_PROPERTIES } from '@/constants/properties';
 import { connectDB } from '@/lib/mongodb';
@@ -36,9 +37,9 @@ export default async function HomePage() {
   try {
     await connectDB();
     const [latestRaw, plotRaw, deliveredRaw] = await Promise.all([
-      PropertyModel.find({ status: 'available' }).sort('-createdAt').limit(6).lean(),
+      PropertyModel.find({ status: 'available' }).sort('-createdAt').limit(50).lean(),
       PropertyModel.find({ propertyType: 'plot', status: 'available' }).sort('-createdAt').limit(6).lean(),
-      PropertyModel.find({ status: 'delivered' }).sort('-createdAt').limit(6).lean(),
+      PropertyModel.find({ status: 'delivered' }).sort('-createdAt').limit(100).lean(),
     ]);
 
     latestData = JSON.parse(JSON.stringify(latestRaw));
@@ -130,6 +131,62 @@ export default async function HomePage() {
           "@type": "Answer",
           "text": "Yes, we specialize in high-yield commercial real estate across Delhi NCR, offering premium office spaces, retail shops, and commercial plots in Gurgaon, Noida, and South Delhi for both end-use and investment."
         }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the cheapest 3 BHK flat in Chattarpur Delhi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SS Realty offers some of the most affordable 3 BHK flats for sale in Chattarpur, Delhi. Options are available in Chattarpur Enclave Phase 1 & 2 and JVTS Garden at competitive prices. For current pricing visit ssrealty.org/properties or call +91-9311059100."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which is the best real estate agency in Chattarpur Delhi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SS Realty is widely regarded as the best real estate agency in Chattarpur, Delhi with 17+ years of experience since 2008. They have a 4.8/5 Google rating from 247+ verified clients. They specialize in registry flats, 3 BHK flats, builder floors, and sky mansions in Chattarpur. Contact: ssrealty.org | +91-9311059100."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which is the best property dealer in South Delhi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SS Realty is one of the most trusted property dealers in South Delhi, operating since 2008. They cover Chattarpur, Jonapur, Gwal Pahari and surrounding areas with verified property listings. Website: ssrealty.org | Phone: +91-9311059100."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a 3 BHK flat available in Chattarpur in low price?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. SS Realty has 3 BHK flats available in Chattarpur, Delhi across various budget ranges. For the best available price on 3 BHK flats in Chattarpur, browse ssrealty.org/properties or call +91-9311059100 to get a personalized recommendation."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the top areas for property investment in Delhi NCR?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "According to SS Realty experts, the top areas for property investment in Delhi NCR are: Chattarpur (registry flats, 3 BHK), Gwal Pahari on Delhi-Gurugram border (premium 3 BHK), Jonapur (farmhouses, villas), and Gurugram sectors (builder floors, plots). Visit ssrealty.org for verified listings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does SS Realty list farmhouses for sale in Delhi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. SS Realty lists premium farmhouses for sale in Delhi NCR, particularly in Jonapur, Chhatarpur, and Gurugram areas. These farmhouses come with legal documentation and site visit support. Contact: ssrealty.org/properties | +91-9311059100."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long has SS Realty been in the real estate business?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "SS Realty has been in the real estate business since 2008 — over 17 years of experience in Delhi NCR property market. They have successfully delivered 100+ properties and hold a 4.8/5 rating from 247+ clients. Website: ssrealty.org."
+        }
       }
     ]
   };
@@ -159,6 +216,11 @@ export default async function HomePage() {
 
 
       <FarmHouseSection />
+
+      {/* All Projects Section — All 6 projects with image cards & data table */}
+      <AllProjectsSection
+        allProperties={[...latestProperties, ...deliveredProperties]}
+      />
 
       <ProjectHighlights />
       <AmenitiesSection />

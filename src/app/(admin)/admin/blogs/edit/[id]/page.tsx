@@ -406,7 +406,8 @@ export default function EditBlog({ params }: EditBlogProps) {
             <div>
               <label className="block text-xs font-bold text-gray-700 mb-1">Publish Date {formData.status === 'scheduled' && '*'}</label>
               <input 
-                type="datetime-local" 
+                type="datetime-local"
+                lang="en-GB"
                 name="publishDate" 
                 value={formData.publishDate} 
                 onChange={handleChange} 
