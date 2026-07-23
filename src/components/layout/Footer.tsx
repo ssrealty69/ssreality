@@ -57,9 +57,9 @@ export default function Footer() {
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 space-y-10">
         {/* Main Grid: Brand + 4 Location Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
           {/* Brand Info */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="col-span-2 md:col-span-2 lg:col-span-1 space-y-4">
             <Link href="/" className="inline-block group">
               <div className="relative w-40 h-14 transition-transform duration-300 group-hover:scale-105">
                 <Image
@@ -133,9 +133,9 @@ export default function Footer() {
         </div>
 
         {/* ── Social Media Icons + Contact Details Integrated Row ── */}
-        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Social Icons */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center justify-center md:justify-start gap-3 w-full md:w-auto shrink-0">
             {socials.map(({ href, Icon, label }) => (
               <a key={label} href={href} aria-label={label}
                 target="_blank" rel="noopener noreferrer"
@@ -147,13 +147,13 @@ export default function Footer() {
           </div>
 
           {/* Contact Details Items */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6 items-center pl-0 md:pl-8 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0">
+          <div className="w-full flex-1 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 items-center pl-0 md:pl-8 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0">
             {/* Address */}
             <a
               href="https://share.google/DuHqosVcJ03udejB8"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors sm:justify-self-start"
+              className="col-span-2 md:col-span-1 flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors md:justify-self-start"
             >
               <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
                 <MapPin size={16} />
@@ -169,28 +169,28 @@ export default function Footer() {
             {/* Phone */}
             <a
               href="tel:+919311059100"
-              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors sm:justify-self-center"
+              className="col-span-1 md:col-span-1 flex items-center gap-2.5 md:gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors md:justify-self-center"
             >
               <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
                 <Phone size={16} />
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">Call Support</p>
-                <p className="text-xs text-white font-bold group-hover:text-[#C9A227] transition-colors">+91 93110 59100</p>
+                <p className="text-[11px] md:text-xs text-white font-bold group-hover:text-[#C9A227] transition-colors">+91 93110 59100</p>
               </div>
             </a>
 
             {/* Email */}
             <a
               href="mailto:info@ssrealty.org"
-              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors sm:justify-self-end"
+              className="col-span-1 md:col-span-1 flex items-center gap-2.5 md:gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors md:justify-self-end"
             >
               <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
                 <Mail size={16} />
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">Email Inquiries</p>
-                <p className="text-xs text-white font-bold group-hover:text-[#C9A227] transition-colors">info@ssrealty.org</p>
+                <p className="text-[11px] md:text-xs text-white font-bold group-hover:text-[#C9A227] transition-colors truncate max-w-[135px] md:max-w-none">info@ssrealty.org</p>
               </div>
             </a>
           </div>

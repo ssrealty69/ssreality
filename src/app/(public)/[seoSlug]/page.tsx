@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSeoLandingPage, SEO_LANDING_PAGES } from '@/lib/seo-landing-pages';
+import { FALLBACK_PROPERTIES } from '@/constants/properties';
 import PropertyCard from '@/components/properties/PropertyCard';
 import PropertyModel from '@/models/Property';
 import { connectDB } from '@/lib/mongodb';
@@ -42,6 +43,63 @@ export async function generateMetadata({ params }: SeoLandingPageProps): Promise
   };
 }
 
+function filterFallbackProperties(filters: { location?: string; bedrooms?: number; propertyType?: string }): Property[] {
+  let list = [...FALLBACK_PROPERTIES];
+
+  // 1. Strict location matching first
+  if (filters.location) {
+    const locLower = filters.location.toLowerCase();
+
+    // Priority 1: Exact location keyword in city, address, or title
+    let matched = list.filter((p) => {
+      const city = (p.location?.city || '').toLowerCase();
+      const addr = (p.location?.address || '').toLowerCase();
+      const title = (p.title || '').toLowerCase();
+      return city.includes(locLower) || addr.includes(locLower) || title.includes(locLower);
+    });
+
+    // Priority 2: Broad regional matching if exact match is empty
+    if (matched.length === 0) {
+      let aliases: string[] = [locLower];
+      if (locLower.includes('south delhi')) {
+        aliases = ['south delhi', 'chattarpur', 'mandi', 'jonapur', 'gadaipur'];
+      } else if (locLower.includes('chattarpur')) {
+        aliases = ['chattarpur', 'chhatarpur'];
+      } else if (locLower.includes('mandi')) {
+        aliases = ['mandi'];
+      } else if (locLower.includes('gwal pahari')) {
+        aliases = ['gwal pahari'];
+      } else if (locLower.includes('gurgaon')) {
+        aliases = ['gurgaon', 'gurugram', 'gwal pahari'];
+      } else if (locLower.includes('gadaipur')) {
+        aliases = ['gadaipur'];
+      }
+
+      matched = list.filter((p) => {
+        const city = (p.location?.city || '').toLowerCase();
+        const addr = (p.location?.address || '').toLowerCase();
+        const title = (p.title || '').toLowerCase();
+        const desc = (p.description || '').toLowerCase();
+        return aliases.some((a) => city.includes(a) || addr.includes(a) || title.includes(a) || desc.includes(a));
+      });
+    }
+
+    if (matched.length > 0) {
+      list = matched;
+    }
+  }
+
+  // 2. Filter by bedrooms on the location-matched list
+  if (filters.bedrooms) {
+    const bedMatch = list.filter((p) => p.features?.bedrooms === filters.bedrooms);
+    if (bedMatch.length > 0) {
+      return bedMatch;
+    }
+  }
+
+  return list;
+}
+
 async function getMatchingProperties(filters: { location?: string; bedrooms?: number; propertyType?: string }): Promise<Property[]> {
   try {
     await connectDB();
@@ -49,31 +107,60 @@ async function getMatchingProperties(filters: { location?: string; bedrooms?: nu
     const query: Record<string, any> = {};
 
     if (filters.location) {
+      const loc = filters.location.toLowerCase();
+      let locationPattern = filters.location;
+      if (loc.includes('south delhi')) {
+        locationPattern = 'South Delhi|Chattarpur|Chhatarpur|Mandi|Jonapur|Gadaipur';
+      } else if (loc.includes('chattarpur')) {
+        locationPattern = 'Chattarpur|Chhatarpur';
+      } else if (loc.includes('mandi')) {
+        locationPattern = 'Mandi';
+      } else if (loc.includes('gwal pahari')) {
+        locationPattern = 'Gwal Pahari';
+      } else if (loc.includes('gurgaon')) {
+        locationPattern = 'Gurgaon|Gurugram|Gwal Pahari';
+      } else if (loc.includes('gadaipur')) {
+        locationPattern = 'Gadaipur';
+      }
+
       query.$or = [
-        { 'location.city': { $regex: filters.location, $options: 'i' } },
-        { 'location.address': { $regex: filters.location, $options: 'i' } },
-        { title: { $regex: filters.location, $options: 'i' } },
-        { description: { $regex: filters.location, $options: 'i' } }
+        { 'location.city': { $regex: locationPattern, $options: 'i' } },
+        { 'location.address': { $regex: locationPattern, $options: 'i' } },
+        { title: { $regex: locationPattern, $options: 'i' } }
       ];
     }
 
     if (filters.bedrooms) {
-      query.bedrooms = filters.bedrooms;
+      query['features.bedrooms'] = filters.bedrooms;
     }
 
     if (filters.propertyType) {
       query.propertyType = filters.propertyType;
     }
 
-    const properties = await PropertyModel.find(query)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let properties: any[] = await PropertyModel.find(query)
       .sort({ featured: -1, createdAt: -1 })
       .limit(12)
       .lean();
 
+    if (properties.length === 0 && filters.bedrooms) {
+      delete query['features.bedrooms'];
+      properties = await PropertyModel.find(query)
+        .sort({ featured: -1, createdAt: -1 })
+        .limit(12)
+        .lean();
+    }
+
+    // If DB returned no properties, use fallback list
+    if (!properties || properties.length === 0) {
+      properties = filterFallbackProperties(filters);
+    }
+
     return JSON.parse(JSON.stringify(properties));
   } catch (error) {
     console.error('Failed to fetch properties for SEO landing page:', error);
-    return [];
+    return filterFallbackProperties(filters);
   }
 }
 
@@ -238,8 +325,8 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
             <div className="flex items-center gap-3">
               <Banknote className="text-[#C9A227]" size={24} />
               <div>
-                <h4 className="text-xs font-bold uppercase text-[#1A1800]">Up to 90% Bank Loan</h4>
-                <p className="text-xs text-[#a09060]">SBI, HDFC, ICICI & PNB assistance</p>
+                <h4 className="text-xs font-bold uppercase text-[#1A1800]">Up to 80% Loan</h4>
+                <p className="text-xs text-[#a09060]">Leading NBFCs Loan Assistance</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
