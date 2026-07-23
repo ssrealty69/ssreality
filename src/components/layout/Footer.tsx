@@ -22,14 +22,6 @@ const YoutubeIcon = () => (
   </svg>
 );
 
-const companyLinks = [
-  { href: '/about-us', label: 'About Us' },
-  { href: '/blog', label: 'Blog & News' },
-  { href: '/contact-us', label: 'Contact Us' },
-  { href: '/careers', label: 'Careers' },
-  { href: '/emi-calculator', label: 'EMI Calculator' },
-];
-
 const socials = [
   { href: 'https://www.facebook.com/profile.php?id=61571897675312', Icon: FacebookIcon, label: 'Facebook' },
   { href: 'https://www.instagram.com/ssrealtyorg', Icon: InstagramIcon, label: 'Instagram' },
@@ -63,7 +55,7 @@ export default function Footer() {
       )}
 
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 space-y-10">
         {/* Main Grid: Brand + 4 Location Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Info */}
@@ -81,16 +73,6 @@ export default function Footer() {
             <p className="text-xs text-[#a09060] leading-relaxed max-w-sm">
               Your trusted real estate partner based in Jonapur, serving the entirety of Delhi NCR — from Chattarpur, Mandi, Chandan Hola, and South Delhi to Gwal Pahari, Gurugram, Noida, and beyond.
             </p>
-            <div className="flex items-center gap-3 pt-2">
-              {socials.map(({ href, Icon, label }) => (
-                <a key={label} href={href} aria-label={label}
-                  target="_blank" rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-lg bg-white/5 border border-[#C9A227]/20 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-[#1A1800] transition-all duration-200"
-                >
-                  <Icon />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Column 1: Flats in Chattarpur */}
@@ -150,22 +132,35 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Dedicated Slim Contact Details Banner ── */}
-        <div className="mt-8 py-3.5 px-5 sm:px-6 rounded-xl bg-gradient-to-r from-[#171500] via-[#242100] to-[#171500] border border-[#C9A227]/30 shadow-lg">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        {/* ── Social Media Icons + Contact Details Integrated Row ── */}
+        <div className="pt-6 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          {/* Social Icons */}
+          <div className="flex items-center gap-3 shrink-0">
+            {socials.map(({ href, Icon, label }) => (
+              <a key={label} href={href} aria-label={label}
+                target="_blank" rel="noopener noreferrer"
+                className="w-9 h-9 rounded-lg bg-white/5 border border-[#C9A227]/20 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-[#1A1800] transition-all duration-200"
+              >
+                <Icon />
+              </a>
+            ))}
+          </div>
+
+          {/* Contact Details Items */}
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center pl-0 md:pl-8 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0">
             {/* Address */}
             <a
               href="https://share.google/DuHqosVcJ03udejB8"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 group p-1 rounded-lg hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors"
             >
-              <div className="w-9 h-9 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
-                <MapPin size={17} />
+              <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
+                <MapPin size={16} />
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">Office Address</p>
-                <p className="text-[11px] text-white font-medium leading-snug">
+                <p className="text-[11px] text-[#d4c48a] font-medium leading-snug group-hover:text-white transition-colors">
                   Plot No-2, Dalmia Farm, Jonapur, New Delhi 110047
                 </p>
               </div>
@@ -174,28 +169,28 @@ export default function Footer() {
             {/* Phone */}
             <a
               href="tel:+919311059100"
-              className="flex items-center gap-3 group p-1 rounded-lg hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors"
             >
-              <div className="w-9 h-9 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
-                <Phone size={17} />
+              <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
+                <Phone size={16} />
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">Call Support</p>
-                <p className="text-xs text-white font-bold">+91 93110 59100</p>
+                <p className="text-xs text-white font-bold group-hover:text-[#C9A227] transition-colors">+91 93110 59100</p>
               </div>
             </a>
 
             {/* Email */}
             <a
               href="mailto:info@ssrealty.org"
-              className="flex items-center gap-3 group p-1 rounded-lg hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors"
             >
-              <div className="w-9 h-9 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
-                <Mail size={17} />
+              <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
+                <Mail size={16} />
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">Email Inquiries</p>
-                <p className="text-xs text-white font-bold">info@ssrealty.org</p>
+                <p className="text-xs text-white font-bold group-hover:text-[#C9A227] transition-colors">info@ssrealty.org</p>
               </div>
             </a>
           </div>
