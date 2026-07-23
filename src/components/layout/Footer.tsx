@@ -66,8 +66,8 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
         {/* Main Grid: Brand + 4 Location & Link Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
-          {/* Brand Info (Spans 2 columns on large screens) */}
-          <div className="lg:col-span-2 space-y-4">
+          {/* Brand Info */}
+          <div className="lg:col-span-1 space-y-4">
             <Link href="/" className="inline-block group">
               <div className="relative w-40 h-14 transition-transform duration-300 group-hover:scale-105">
                 <Image
@@ -135,14 +135,26 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Gurgaon & Company */}
+          {/* Column 4: Gurgaon & NCR */}
           <div className="space-y-3">
             <h4 className="font-bold text-white text-xs uppercase tracking-wider border-b border-[#C9A227]/30 pb-2">
-              Gurgaon & Company
+              Gurgaon & NCR
             </h4>
             <ul className="space-y-2 text-xs text-[#a09060]">
               <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">Ready to Move Gurgaon</Link></li>
-              <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">3 & 4 BHK Builder Floor</Link></li>
+              <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">3 BHK Builder Floor Gurgaon</Link></li>
+              <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">4 BHK Builder Floor Gurgaon</Link></li>
+              <li><Link href="/properties?propertyType=villa" className="hover:text-[#C9A227] transition-colors">Farmhouses & Villas</Link></li>
+              <li><Link href="/properties?propertyType=plot" className="hover:text-[#C9A227] transition-colors">Plots & Land Delhi NCR</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 5: Company */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider border-b border-[#C9A227]/30 pb-2">
+              Company
+            </h4>
+            <ul className="space-y-2 text-xs text-[#a09060]">
               {companyLinks.map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="hover:text-[#C9A227] transition-colors">
