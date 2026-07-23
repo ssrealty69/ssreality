@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-// Inline SVG brand icons (lucide-react v1 removed brand icons)
+// Inline SVG brand icons
 const FacebookIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
@@ -16,31 +16,18 @@ const InstagramIcon = () => (
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
   </svg>
 );
-const LinkedinIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
-    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" />
-  </svg>
-);
 const YoutubeIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
     <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.97C5.12 20 12 20 12 20s6.88 0 8.59-.45a2.78 2.78 0 0 0 1.95-1.97A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" /><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#1A1800" />
   </svg>
 );
 
-const quickLinks = [
-  { href: '/properties?priceType=sale', label: 'Properties for Sale' },
-  { href: '/properties?priceType=rent', label: 'Properties for Rent' },
-  { href: '/properties?propertyType=apartment', label: 'Apartments' },
-  { href: '/properties?propertyType=villa', label: 'Villas & Bungalows' },
-  { href: '/properties?propertyType=commercial', label: 'Commercial Spaces' },
-  { href: '/properties?propertyType=plot', label: 'Plots & Land' },
-];
-
 const companyLinks = [
   { href: '/about-us', label: 'About Us' },
   { href: '/blog', label: 'Blog & News' },
   { href: '/contact-us', label: 'Contact Us' },
   { href: '/careers', label: 'Careers' },
+  { href: '/emi-calculator', label: 'EMI Calculator' },
 ];
 
 const socials = [
@@ -75,12 +62,13 @@ export default function Footer() {
         </div>
       )}
 
-      {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center mb-5 group">
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+        {/* Main Grid: Brand + 4 Location & Link Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
+          {/* Brand Info (Spans 2 columns on large screens) */}
+          <div className="lg:col-span-2 space-y-4">
+            <Link href="/" className="inline-block group">
               <div className="relative w-40 h-14 transition-transform duration-300 group-hover:scale-105">
                 <Image
                   src="/SS Realty.png"
@@ -90,14 +78,14 @@ export default function Footer() {
                 />
               </div>
             </Link>
-            <p className="text-sm text-[#a09060] leading-relaxed mb-6">
-              Your trusted real estate partner based in Jonapur, serving the entirety of Delhi NCR — from Chattarpur, Mandi, Chandan Hola, and South Delhi to Gwal Pahari, Gurugram, Noida, and beyond. We help you find the perfect property — be it a home, investment, or commercial space.
+            <p className="text-xs text-[#a09060] leading-relaxed max-w-sm">
+              Your trusted real estate partner based in Jonapur, serving the entirety of Delhi NCR — from Chattarpur, Mandi, Chandan Hola, and South Delhi to Gwal Pahari, Gurugram, Noida, and beyond.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 pt-2">
               {socials.map(({ href, Icon, label }) => (
                 <a key={label} href={href} aria-label={label}
                   target="_blank" rel="noopener noreferrer"
-                  className="w-9 h-9 rounded-lg bg-white/5 border border-[#C9A227]/20 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-[#1A1800] transition-all duration-200"
+                  className="w-8 h-8 rounded-lg bg-white/5 border border-[#C9A227]/20 flex items-center justify-center text-[#C9A227] hover:bg-[#C9A227] hover:text-[#1A1800] transition-all duration-200"
                 >
                   <Icon />
                 </a>
@@ -105,129 +93,117 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Combined Properties & Company for Mobile Side-by-Side */}
-          <div className="lg:col-span-2 grid grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-10">
-            {/* Quick Links */}
-            <div>
-              <h4 className="font-semibold text-white mb-5 text-sm tracking-wider uppercase">Properties</h4>
-              <ul className="space-y-3">
-                {quickLinks.map(({ href, label }) => (
-                  <li key={href}>
-                    <Link href={href}
-                      className="text-sm text-[#a09060] hover:text-[#C9A227] transition-colors flex items-center gap-2 group"
-                    >
-                      <span className="w-1 h-1 rounded-full bg-[#C9A227]/40 group-hover:bg-[#C9A227] transition-colors" />
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h4 className="font-semibold text-white mb-5 text-sm tracking-wider uppercase">Company</h4>
-              <ul className="space-y-3">
-                {companyLinks.map(({ href, label }) => (
-                  <li key={href}>
-                    <Link href={href}
-                      className="text-sm text-[#a09060] hover:text-[#C9A227] transition-colors flex items-center gap-2 group"
-                    >
-                      <span className="w-1 h-1 rounded-full bg-[#C9A227]/40 group-hover:bg-[#C9A227] transition-colors" />
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Column 1: Flats in Chattarpur */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider border-b border-[#C9A227]/30 pb-2">
+              Flats in Chattarpur
+            </h4>
+            <ul className="space-y-2 text-xs text-[#a09060]">
+              <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Flats in Chattarpur</Link></li>
+              <li><Link href="/2-bhk-flat-in-chattarpur" className="hover:text-[#C9A227] transition-colors">2 BHK Flats Chattarpur</Link></li>
+              <li><Link href="/3-bhk-flats-for-sale-chattarpur" className="hover:text-[#C9A227] transition-colors">3 BHK Flats Chattarpur</Link></li>
+              <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Builder Floor Chattarpur</Link></li>
+              <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Bank Loan Flats</Link></li>
+            </ul>
           </div>
 
-          {/* Contact Info */}
-          <div className="lg:col-span-1">
-            <h4 className="font-semibold text-white mb-5 text-sm tracking-wider uppercase">Contact</h4>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <MapPin size={16} className="text-[#C9A227] mt-0.5 shrink-0" />
-                <a
-                  href="https://share.google/DuHqosVcJ03udejB8"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-[#a09060] hover:text-[#C9A227] transition-colors"
-                >
-                  Plot No-2, Dalmia Farm, Jonapur,<br />New Delhi, Delhi 110047
-                </a>
-              </li>
-              <li>
-                <a href="tel:+919311059100" className="flex items-center gap-3 text-sm text-[#a09060] hover:text-[#C9A227] transition-colors">
-                  <Phone size={16} className="text-[#C9A227] shrink-0" />
-                  +91 93110 59100
-                </a>
-              </li>
-              <li>
-                <a href="mailto:info@ssrealty.org" className="flex items-center gap-3 text-sm text-[#a09060] hover:text-[#C9A227] transition-colors">
-                  <Mail size={16} className="text-[#C9A227] shrink-0" />
-                  info@ssrealty.org
-                </a>
-              </li>
+          {/* Column 2: Flats in South Delhi */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider border-b border-[#C9A227]/30 pb-2">
+              Flats in South Delhi
+            </h4>
+            <ul className="space-y-2 text-xs text-[#a09060]">
+              <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Flats for Sale South Delhi</Link></li>
+              <li><Link href="/2bhk-flats-for-sale-south-delhi" className="hover:text-[#C9A227] transition-colors">2 BHK Flats South Delhi</Link></li>
+              <li><Link href="/3-bhk-flats-in-south-delhi" className="hover:text-[#C9A227] transition-colors">3 BHK Flats South Delhi</Link></li>
+              <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Builder Floors South Delhi</Link></li>
+              <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Flats in Jonapur Delhi</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 3: Nearby Locations */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider border-b border-[#C9A227]/30 pb-2">
+              Nearby Locations
+            </h4>
+            <ul className="space-y-2 text-xs text-[#a09060]">
+              <li><Link href="/flats-in-mandi" className="hover:text-[#C9A227] transition-colors">Flats in Mandi Gurgaon</Link></li>
+              <li><Link href="/2-bhk-flats-in-mandi" className="hover:text-[#C9A227] transition-colors">2 BHK Flats in Mandi</Link></li>
+              <li><Link href="/flats-in-gadaipur" className="hover:text-[#C9A227] transition-colors">Flats in Gadaipur</Link></li>
+              <li><Link href="/flats-near-gwal-pahari-gurgaon" className="hover:text-[#C9A227] transition-colors">Flats in Gwal Pahari</Link></li>
+              <li><Link href="/properties?location=Ghitorni" className="hover:text-[#C9A227] transition-colors">Flats in Ghitorni</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 4: Gurgaon & Company */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider border-b border-[#C9A227]/30 pb-2">
+              Gurgaon & Company
+            </h4>
+            <ul className="space-y-2 text-xs text-[#a09060]">
+              <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">Ready to Move Gurgaon</Link></li>
+              <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">3 & 4 BHK Builder Floor</Link></li>
+              {companyLinks.map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} className="hover:text-[#C9A227] transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        {/* ── SEO Location & Category Link Mesh Grid ── */}
-        <div className="mt-14 pt-10 border-t border-white/10">
-          <h4 className="font-semibold text-white mb-6 text-sm tracking-wider uppercase flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#C9A227]" />
-            Explore Properties by Top Locations
-          </h4>
+        {/* ── Dedicated Premium Contact Details Card Banner ── */}
+        <div className="mt-14 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#171500] via-[#242100] to-[#171500] border border-[#C9A227]/30 shadow-xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+            {/* Address */}
+            <a
+              href="https://share.google/DuHqosVcJ03udejB8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 group p-3 rounded-xl hover:bg-white/5 transition-colors"
+            >
+              <div className="w-12 h-12 rounded-xl bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-110 transition-transform">
+                <MapPin size={22} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#C9A227]">Office Address</p>
+                <p className="text-xs text-white font-medium mt-0.5 leading-snug">
+                  Plot No-2, Dalmia Farm, Jonapur,<br />New Delhi, Delhi 110047
+                </p>
+              </div>
+            </a>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs text-[#a09060]">
-            {/* Chattarpur */}
-            <div className="space-y-2">
-              <h5 className="font-bold text-[#d4c48a] text-xs uppercase tracking-wide">Flats in Chattarpur</h5>
-              <ul className="space-y-1.5">
-                <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Flats in Chattarpur</Link></li>
-                <li><Link href="/2-bhk-flat-in-chattarpur" className="hover:text-[#C9A227] transition-colors">2 BHK Flats in Chattarpur</Link></li>
-                <li><Link href="/3-bhk-flats-for-sale-chattarpur" className="hover:text-[#C9A227] transition-colors">3 BHK Flats in Chattarpur</Link></li>
-                <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Builder Floor in Chattarpur</Link></li>
-                <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Chattarpur Bank Loan Flats</Link></li>
-              </ul>
-            </div>
+            {/* Phone */}
+            <a
+              href="tel:+919311059100"
+              className="flex items-center gap-4 group p-3 rounded-xl hover:bg-white/5 transition-colors"
+            >
+              <div className="w-12 h-12 rounded-xl bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-110 transition-transform">
+                <Phone size={22} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#C9A227]">Call Support</p>
+                <p className="text-sm text-white font-bold mt-0.5">+91 93110 59100</p>
+                <p className="text-[10px] text-[#a09060]">Mon - Sat: 9:00 AM - 7:00 PM</p>
+              </div>
+            </a>
 
-            {/* South Delhi */}
-            <div className="space-y-2">
-              <h5 className="font-bold text-[#d4c48a] text-xs uppercase tracking-wide">Flats in South Delhi</h5>
-              <ul className="space-y-1.5">
-                <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Flats for Sale South Delhi</Link></li>
-                <li><Link href="/2bhk-flats-for-sale-south-delhi" className="hover:text-[#C9A227] transition-colors">2 BHK Flats South Delhi</Link></li>
-                <li><Link href="/3-bhk-flats-in-south-delhi" className="hover:text-[#C9A227] transition-colors">3 BHK Flats South Delhi</Link></li>
-                <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Builder Floors South Delhi</Link></li>
-                <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Flats in Jonapur Delhi</Link></li>
-              </ul>
-            </div>
-
-            {/* Nearby Locations */}
-            <div className="space-y-2">
-              <h5 className="font-bold text-[#d4c48a] text-xs uppercase tracking-wide">Nearby Locations</h5>
-              <ul className="space-y-1.5">
-                <li><Link href="/flats-in-mandi" className="hover:text-[#C9A227] transition-colors">Flats in Mandi Gurgaon</Link></li>
-                <li><Link href="/2-bhk-flats-in-mandi" className="hover:text-[#C9A227] transition-colors">2 BHK Flats in Mandi</Link></li>
-                <li><Link href="/flats-in-gadaipur" className="hover:text-[#C9A227] transition-colors">Flats in Gadaipur</Link></li>
-                <li><Link href="/flats-near-gwal-pahari-gurgaon" className="hover:text-[#C9A227] transition-colors">Flats in Gwal Pahari</Link></li>
-                <li><Link href="/properties?location=Ghitorni" className="hover:text-[#C9A227] transition-colors">Flats in Ghitorni</Link></li>
-              </ul>
-            </div>
-
-            {/* Gurgaon & NCR */}
-            <div className="space-y-2">
-              <h5 className="font-bold text-[#d4c48a] text-xs uppercase tracking-wide">Gurgaon & NCR</h5>
-              <ul className="space-y-1.5">
-                <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">Ready to Move Gurgaon</Link></li>
-                <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">3 BHK Builder Floor Gurgaon</Link></li>
-                <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">4 BHK Builder Floor Gurgaon</Link></li>
-                <li><Link href="/properties?propertyType=villa" className="hover:text-[#C9A227] transition-colors">Farmhouses & Villas</Link></li>
-                <li><Link href="/properties?propertyType=plot" className="hover:text-[#C9A227] transition-colors">Plots & Land Delhi NCR</Link></li>
-              </ul>
-            </div>
+            {/* Email */}
+            <a
+              href="mailto:info@ssrealty.org"
+              className="flex items-center gap-4 group p-3 rounded-xl hover:bg-white/5 transition-colors"
+            >
+              <div className="w-12 h-12 rounded-xl bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-110 transition-transform">
+                <Mail size={22} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#C9A227]">Email Inquiries</p>
+                <p className="text-sm text-white font-bold mt-0.5">info@ssrealty.org</p>
+                <p className="text-[10px] text-[#a09060]">Instant 24/7 Response</p>
+              </div>
+            </a>
           </div>
         </div>
       </div>
