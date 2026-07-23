@@ -125,8 +125,8 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
             <span>Verified Builder Floors • 0% Brokerage</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-[var(--font-playfair)] font-bold text-white mb-6 leading-tight max-w-4xl mx-auto">
-            {config.h1}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-[var(--font-playfair)] font-bold !text-white text-white mb-6 leading-tight max-w-4xl mx-auto">
+            <span className="!text-white text-white drop-shadow-sm">{config.h1}</span>
           </h1>
 
           <p className="text-base sm:text-xl text-[#d4c490] max-w-2xl mx-auto mb-8 font-light leading-relaxed">
