@@ -64,8 +64,8 @@ export default function Footer() {
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
-        {/* Main Grid: Brand + 4 Location & Link Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
+        {/* Main Grid: Brand + 4 Location Columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand Info */}
           <div className="lg:col-span-1 space-y-4">
             <Link href="/" className="inline-block group">
@@ -148,22 +148,6 @@ export default function Footer() {
               <li><Link href="/properties?propertyType=plot" className="hover:text-[#C9A227] transition-colors">Plots & Land Delhi NCR</Link></li>
             </ul>
           </div>
-
-          {/* Column 5: Company */}
-          <div className="space-y-3">
-            <h4 className="font-bold text-white text-xs uppercase tracking-wider border-b border-[#C9A227]/30 pb-2">
-              Company
-            </h4>
-            <ul className="space-y-2 text-xs text-[#a09060]">
-              {companyLinks.map(({ href, label }) => (
-                <li key={href}>
-                  <Link href={href} className="hover:text-[#C9A227] transition-colors">
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
 
         {/* ── Dedicated Slim Contact Details Banner ── */}
@@ -225,6 +209,10 @@ export default function Footer() {
             © {year} SS Realty. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
+            <Link href="/emi-calculator" className="text-xs text-[#d4c48a] font-semibold hover:text-[#C9A227] transition-colors flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227]" />
+              EMI Calculator
+            </Link>
             <Link href="/privacy" className="text-xs text-[#9a8060] hover:text-[#C9A227] transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="text-xs text-[#9a8060] hover:text-[#C9A227] transition-colors">Terms of Service</Link>
           </div>
