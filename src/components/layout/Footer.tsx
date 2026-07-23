@@ -172,6 +172,64 @@ export default function Footer() {
             </ul>
           </div>
         </div>
+
+        {/* ── SEO Location & Category Link Mesh Grid ── */}
+        <div className="mt-14 pt-10 border-t border-white/10">
+          <h4 className="font-semibold text-white mb-6 text-sm tracking-wider uppercase flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#C9A227]" />
+            Explore Properties by Top Locations
+          </h4>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs text-[#a09060]">
+            {/* Chattarpur */}
+            <div className="space-y-2">
+              <h5 className="font-bold text-[#d4c48a] text-xs uppercase tracking-wide">Flats in Chattarpur</h5>
+              <ul className="space-y-1.5">
+                <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Flats in Chattarpur</Link></li>
+                <li><Link href="/2-bhk-flat-in-chattarpur" className="hover:text-[#C9A227] transition-colors">2 BHK Flats in Chattarpur</Link></li>
+                <li><Link href="/3-bhk-flats-for-sale-chattarpur" className="hover:text-[#C9A227] transition-colors">3 BHK Flats in Chattarpur</Link></li>
+                <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Builder Floor in Chattarpur</Link></li>
+                <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Chattarpur Bank Loan Flats</Link></li>
+              </ul>
+            </div>
+
+            {/* South Delhi */}
+            <div className="space-y-2">
+              <h5 className="font-bold text-[#d4c48a] text-xs uppercase tracking-wide">Flats in South Delhi</h5>
+              <ul className="space-y-1.5">
+                <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Flats for Sale South Delhi</Link></li>
+                <li><Link href="/2bhk-flats-for-sale-south-delhi" className="hover:text-[#C9A227] transition-colors">2 BHK Flats South Delhi</Link></li>
+                <li><Link href="/3-bhk-flats-in-south-delhi" className="hover:text-[#C9A227] transition-colors">3 BHK Flats South Delhi</Link></li>
+                <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Builder Floors South Delhi</Link></li>
+                <li><Link href="/flats-for-sale-in-south-delhi" className="hover:text-[#C9A227] transition-colors">Flats in Jonapur Delhi</Link></li>
+              </ul>
+            </div>
+
+            {/* Nearby Locations */}
+            <div className="space-y-2">
+              <h5 className="font-bold text-[#d4c48a] text-xs uppercase tracking-wide">Nearby Locations</h5>
+              <ul className="space-y-1.5">
+                <li><Link href="/flats-in-mandi" className="hover:text-[#C9A227] transition-colors">Flats in Mandi Gurgaon</Link></li>
+                <li><Link href="/2-bhk-flats-in-mandi" className="hover:text-[#C9A227] transition-colors">2 BHK Flats in Mandi</Link></li>
+                <li><Link href="/flats-in-gadaipur" className="hover:text-[#C9A227] transition-colors">Flats in Gadaipur</Link></li>
+                <li><Link href="/flats-near-gwal-pahari-gurgaon" className="hover:text-[#C9A227] transition-colors">Flats in Gwal Pahari</Link></li>
+                <li><Link href="/properties?location=Ghitorni" className="hover:text-[#C9A227] transition-colors">Flats in Ghitorni</Link></li>
+              </ul>
+            </div>
+
+            {/* Gurgaon & NCR */}
+            <div className="space-y-2">
+              <h5 className="font-bold text-[#d4c48a] text-xs uppercase tracking-wide">Gurgaon & NCR</h5>
+              <ul className="space-y-1.5">
+                <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">Ready to Move Gurgaon</Link></li>
+                <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">3 BHK Builder Floor Gurgaon</Link></li>
+                <li><Link href="/ready-to-move-flats-in-gurgaon" className="hover:text-[#C9A227] transition-colors">4 BHK Builder Floor Gurgaon</Link></li>
+                <li><Link href="/properties?propertyType=villa" className="hover:text-[#C9A227] transition-colors">Farmhouses & Villas</Link></li>
+                <li><Link href="/properties?propertyType=plot" className="hover:text-[#C9A227] transition-colors">Plots & Land Delhi NCR</Link></li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Bottom Bar */}

@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import Script from 'next/script';
 import { getTrackingSettings } from '@/lib/tracking-service';
 import TrackingProvider from '@/components/tracking/TrackingProvider';
+import MobileStickyBar from '@/components/layout/MobileStickyBar';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -546,8 +547,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </noscript>
         )}
         <TrackingProvider settings={settings}>
-          {/* Second JSON-LD Block Removed as we consolidated everything above */}
           {children}
+          <MobileStickyBar />
         </TrackingProvider>
         <Toaster
           position="top-right"
