@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Suspense } from 'react';
-import BlogCard from '@/components/blog/BlogCard';
 import type { Blog } from '@/types';
 import { getAllBlogs } from '@/lib/blog-service';
+import BlogListClient from '@/components/blog/BlogListClient';
 
 export const metadata: Metadata = {
-  title: 'Real Estate Blog | Delhi NCR Market Insights',
+  title: 'Real Estate Blog | Delhi NCR Market Insights | SS Realty',
   description:
     'Expert real estate guides, property investment tips & Delhi NCR market trends. Stay informed with SS Realty\'s blog for buyers, sellers & NRI investors.',
   alternates: { canonical: 'https://ssrealty.org/blog' },
@@ -14,53 +13,31 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-async function getBlogs(category?: string): Promise<Blog[]> {
+async function getInitialBlogs(category?: string): Promise<{ data: Blog[], total: number }> {
   try {
-    const { data } = await getAllBlogs(category, 9, 1);
-    return JSON.parse(JSON.stringify(data || []));
+    const { data, total } = await getAllBlogs(category, 9, 1);
+    return {
+      data: JSON.parse(JSON.stringify(data || [])),
+      total: total || 0,
+    };
   } catch (error) {
     console.error("Direct service fetch for blogs failed:", error);
-    return [];
+    return { data: [], total: 0 };
   }
 }
-
-
 
 const CATEGORIES = ['All', 'Market Trends', 'Investment', 'Legal', 'Home Tips', 'NRI'];
 
 async function BlogPageContent({ currentCategory }: { currentCategory: string }) {
-  const blogs = await getBlogs(currentCategory);
+  const { data: initialBlogs, total: initialTotal } = await getInitialBlogs(currentCategory);
 
   return (
-    <div>
-      {/* Category pills */}
-      <div className="flex flex-wrap gap-3 mb-10">
-        {CATEGORIES.map((c) => (
-          <Link 
-            key={c}
-            href={c === 'All' ? '/blog' : `/blog?category=${encodeURIComponent(c)}`}
-            className={`px-4 py-2 rounded-full text-sm font-semibold cursor-pointer border transition-all ${
-              c === currentCategory
-                ? 'bg-[#C9A227] text-white border-[#C9A227] shadow-lg shadow-[#C9A227]/20'
-                : 'border-[#E8D5A3] text-[#6b6450] hover:border-[#C9A227] hover:text-[#C9A227] bg-white'
-            }`}
-          >
-            {c}
-          </Link>
-        ))}
-      </div>
-
-      {blogs.length > 0 ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogs.map((b) => <BlogCard key={b._id} blog={b} />)}
-        </div>
-      ) : (
-        <div className="text-center py-24 bg-white rounded-2xl border border-[#E8D5A3]">
-          <p className="text-xl font-semibold text-[#1A1800] mb-2">No posts in this category</p>
-          <p className="text-sm text-[#a09060]">We&apos;re working on great content. Check back soon!</p>
-        </div>
-      )}
-    </div>
+    <BlogListClient
+      initialBlogs={initialBlogs}
+      initialTotal={initialTotal}
+      initialCategory={currentCategory}
+      categories={CATEGORIES}
+    />
   );
 }
 
