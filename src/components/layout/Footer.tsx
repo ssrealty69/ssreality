@@ -147,13 +147,13 @@ export default function Footer() {
           </div>
 
           {/* Contact Details Items */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center pl-0 md:pl-8 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0">
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6 items-center pl-0 md:pl-8 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0">
             {/* Address */}
             <a
               href="https://share.google/DuHqosVcJ03udejB8"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors sm:justify-self-start"
             >
               <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
                 <MapPin size={16} />
@@ -169,7 +169,7 @@ export default function Footer() {
             {/* Phone */}
             <a
               href="tel:+919311059100"
-              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors sm:justify-self-center"
             >
               <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
                 <Phone size={16} />
@@ -183,7 +183,7 @@ export default function Footer() {
             {/* Email */}
             <a
               href="mailto:info@ssrealty.org"
-              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white/5 transition-colors sm:justify-self-end"
             >
               <div className="w-8 h-8 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
                 <Mail size={16} />
