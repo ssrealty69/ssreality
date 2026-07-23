@@ -154,23 +154,23 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── Dedicated Premium Contact Details Card Banner ── */}
-        <div className="mt-14 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#171500] via-[#242100] to-[#171500] border border-[#C9A227]/30 shadow-xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+        {/* ── Dedicated Slim Contact Details Banner ── */}
+        <div className="mt-8 py-3.5 px-5 sm:px-6 rounded-xl bg-gradient-to-r from-[#171500] via-[#242100] to-[#171500] border border-[#C9A227]/30 shadow-lg">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
             {/* Address */}
             <a
               href="https://share.google/DuHqosVcJ03udejB8"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4 group p-3 rounded-xl hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1 rounded-lg hover:bg-white/5 transition-colors"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-110 transition-transform">
-                <MapPin size={22} />
+              <div className="w-9 h-9 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
+                <MapPin size={17} />
               </div>
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#C9A227]">Office Address</p>
-                <p className="text-xs text-white font-medium mt-0.5 leading-snug">
-                  Plot No-2, Dalmia Farm, Jonapur,<br />New Delhi, Delhi 110047
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">Office Address</p>
+                <p className="text-[11px] text-white font-medium leading-snug">
+                  Plot No-2, Dalmia Farm, Jonapur, New Delhi 110047
                 </p>
               </div>
             </a>
@@ -178,30 +178,28 @@ export default function Footer() {
             {/* Phone */}
             <a
               href="tel:+919311059100"
-              className="flex items-center gap-4 group p-3 rounded-xl hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1 rounded-lg hover:bg-white/5 transition-colors"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-110 transition-transform">
-                <Phone size={22} />
+              <div className="w-9 h-9 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
+                <Phone size={17} />
               </div>
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#C9A227]">Call Support</p>
-                <p className="text-sm text-white font-bold mt-0.5">+91 93110 59100</p>
-                <p className="text-[10px] text-[#a09060]">Mon - Sat: 9:00 AM - 7:00 PM</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">Call Support</p>
+                <p className="text-xs text-white font-bold">+91 93110 59100</p>
               </div>
             </a>
 
             {/* Email */}
             <a
               href="mailto:info@ssrealty.org"
-              className="flex items-center gap-4 group p-3 rounded-xl hover:bg-white/5 transition-colors"
+              className="flex items-center gap-3 group p-1 rounded-lg hover:bg-white/5 transition-colors"
             >
-              <div className="w-12 h-12 rounded-xl bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-110 transition-transform">
-                <Mail size={22} />
+              <div className="w-9 h-9 rounded-lg bg-[#C9A227]/15 border border-[#C9A227]/30 flex items-center justify-center text-[#C9A227] shrink-0 group-hover:scale-105 transition-transform">
+                <Mail size={17} />
               </div>
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#C9A227]">Email Inquiries</p>
-                <p className="text-sm text-white font-bold mt-0.5">info@ssrealty.org</p>
-                <p className="text-[10px] text-[#a09060]">Instant 24/7 Response</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A227]">Email Inquiries</p>
+                <p className="text-xs text-white font-bold">info@ssrealty.org</p>
               </div>
             </a>
           </div>
