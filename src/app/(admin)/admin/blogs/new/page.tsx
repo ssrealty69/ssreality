@@ -109,6 +109,28 @@ export default function AddBlog() {
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
+    } else if (name === 'status' && value === 'published') {
+      // When switching to 'published', auto-fill publishDate with NOW if empty
+      setFormData(prev => ({
+        ...prev,
+        status: 'published',
+        publishDate: prev.publishDate || new Date().toISOString().slice(0, 16),
+      }));
+    } else if (name === 'publishDate') {
+      // Auto-switch status based on whether picked date is future or past
+      const pickedDate = new Date(value);
+      const now = new Date();
+      setFormData(prev => {
+        let newStatus = prev.status;
+        if (!isNaN(pickedDate.getTime())) {
+          if (pickedDate > now) {
+            newStatus = 'scheduled';
+          } else if (prev.status === 'scheduled') {
+            newStatus = 'published';
+          }
+        }
+        return { ...prev, publishDate: value, status: newStatus };
+      });
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -160,8 +182,17 @@ export default function AddBlog() {
     setLoading(true);
 
     try {
+      // Auto-correct status: if publishDate is in the future, force 'scheduled'
+      const pickedDate = formData.publishDate ? new Date(formData.publishDate) : null;
+      const now = new Date();
+      let finalStatus = formData.status;
+      if (pickedDate && !isNaN(pickedDate.getTime()) && pickedDate > now) {
+        finalStatus = 'scheduled';
+      }
+
       const payload = {
         ...formData,
+        status: finalStatus,
         publishDate: formData.publishDate ? new Date(formData.publishDate).toISOString() : null,
         seo: seoData,
         author: {

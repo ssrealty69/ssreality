@@ -124,6 +124,30 @@ export default function EditBlog({ params }: EditBlogProps) {
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
+    } else if (name === 'status' && value === 'published') {
+      // When switching to 'published', auto-fill publishDate with NOW if empty
+      setFormData(prev => ({
+        ...prev,
+        status: 'published',
+        publishDate: prev.publishDate || new Date().toISOString().slice(0, 16),
+      }));
+    } else if (name === 'publishDate') {
+      // When a date is picked: auto-switch status based on whether it's future or past
+      const pickedDate = new Date(value);
+      const now = new Date();
+      setFormData(prev => {
+        let newStatus = prev.status;
+        if (!isNaN(pickedDate.getTime())) {
+          if (pickedDate > now) {
+            // Future date → auto-set to scheduled
+            newStatus = 'scheduled';
+          } else if (prev.status === 'scheduled') {
+            // Past/today date and was scheduled → switch back to published
+            newStatus = 'published';
+          }
+        }
+        return { ...prev, publishDate: value, status: newStatus };
+      });
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -175,6 +199,14 @@ export default function EditBlog({ params }: EditBlogProps) {
     setLoading(true);
     
     try {
+      // Auto-correct status: if publishDate is in the future, force 'scheduled'
+      const pickedDate = formData.publishDate ? new Date(formData.publishDate) : null;
+      const now = new Date();
+      let finalStatus = formData.status;
+      if (pickedDate && !isNaN(pickedDate.getTime()) && pickedDate > now) {
+        finalStatus = 'scheduled';
+      }
+
       // Structure nested properties for the PUT API endpoint
       const payload = {
         title: formData.title,
@@ -183,13 +215,14 @@ export default function EditBlog({ params }: EditBlogProps) {
         content: formData.content,
         coverImage: formData.coverImage,
         category: formData.category,
-        status: formData.status,
+        status: finalStatus,
         publishDate: formData.publishDate ? new Date(formData.publishDate).toISOString() : null,
         seo: seoData,
         author: { name: formData.authorName },
         linkedPropertyId: formData.linkedPropertyId,
         linkedPropertyName: formData.linkedPropertyName,
       };
+
 
       const res = await fetch(`/api/admin/blogs/${id}`, {
         method: 'PUT',
@@ -404,7 +437,9 @@ export default function EditBlog({ params }: EditBlogProps) {
 
             {/* Scheduled Date Picker */}
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Publish Date {formData.status === 'scheduled' && '*'}</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">
+                Publish Date {formData.status === 'scheduled' && '*'}
+              </label>
               <input 
                 type="datetime-local"
                 lang="en-GB"
@@ -414,6 +449,11 @@ export default function EditBlog({ params }: EditBlogProps) {
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 text-xs outline-none focus:ring-1 focus:ring-[#C9A227] transition-all bg-white" 
                 required={formData.status === 'scheduled'}
               />
+              <p className="text-[10px] text-gray-400 mt-1">
+                {formData.publishDate && new Date(formData.publishDate) > new Date()
+                  ? '⏰ Future date selected — article will auto-publish at this time (Scheduled).'
+                  : 'Leave blank to publish immediately, or pick a future date to auto-schedule.'}
+              </p>
             </div>
           </div>
         </section>

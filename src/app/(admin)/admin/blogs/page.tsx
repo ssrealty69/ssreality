@@ -13,8 +13,15 @@ export default async function AdminBlogs() {
 
   try {
     await connectDB();
-    // Serialize MongoDB documents so they can be passed safely as plain objects to client components
-    const rawBlogs = await Blog.find({}).sort('-createdAt').lean();
+    // Sort by effectiveDate DESC (publishDate || createdAt)
+    const rawBlogs = await Blog.aggregate([
+      {
+        $addFields: {
+          effectiveDate: { $ifNull: ["$publishDate", "$createdAt"] }
+        }
+      },
+      { $sort: { effectiveDate: -1 } }
+    ]);
     blogs = JSON.parse(JSON.stringify(rawBlogs));
   } catch (error) {
     console.error("MongoDB Connection Error:", error);
@@ -23,12 +30,18 @@ export default async function AdminBlogs() {
 
   // Fallback to demo blogs when MongoDB connection fails so local testing works seamlessly
   if (dbError || blogs.length === 0) {
-    blogs = FALLBACK_BLOGS.map(b => ({
-      ...b,
-      _id: b._id.toString(),
-      createdAt: b.createdAt || new Date().toISOString(),
-      updatedAt: b.updatedAt || new Date().toISOString(),
-    }));
+    const getEffectiveTime = (b: any) => {
+      const d = b.publishDate || b.createdAt;
+      return d ? new Date(d).getTime() : 0;
+    };
+    blogs = [...FALLBACK_BLOGS]
+      .map(b => ({
+        ...b,
+        _id: b._id.toString(),
+        createdAt: b.createdAt || new Date().toISOString(),
+        updatedAt: b.updatedAt || new Date().toISOString(),
+      }))
+      .sort((a, b) => getEffectiveTime(b) - getEffectiveTime(a));
   }
 
   return (

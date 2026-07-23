@@ -37,6 +37,8 @@ export const FALLBACK_BLOGS: any[] = [
     author: { name: 'SS Realty' },
     tags: ['Real Estate', 'Delhi NCR', 'Investment', 'Noida', 'Gurugram'],
     views: 1250,
+    status: 'published',
+    publishDate: '2026-04-28T10:00:00Z',
     createdAt: '2026-04-28T10:00:00Z',
     updatedAt: '2026-04-28T10:00:00Z'
   },
@@ -104,6 +106,8 @@ export const FALLBACK_BLOGS: any[] = [
     author: { name: 'SS Realty' },
     tags: ['NRI', 'FEMA', 'Investment', 'Legal', 'India'],
     views: 980,
+    status: 'published',
+    publishDate: '2026-04-25T14:30:00Z',
     createdAt: '2026-04-25T14:30:00Z',
     updatedAt: '2026-04-25T14:30:00Z'
   },
@@ -166,6 +170,8 @@ export const FALLBACK_BLOGS: any[] = [
     author: { name: 'SS Realty' },
     tags: ['Gurugram', 'Luxury', 'Gwal Pahari', 'Independent Floors'],
     views: 1100,
+    status: 'published',
+    publishDate: '2026-04-22T09:00:00Z',
     createdAt: '2026-04-22T09:00:00Z',
     updatedAt: '2026-04-22T09:00:00Z'
   },
@@ -239,6 +245,8 @@ export const FALLBACK_BLOGS: any[] = [
     author: { name: 'SS Realty' },
     tags: ['Smart Home', 'IoT', 'Luxury', 'Technology'],
     views: 850,
+    status: 'published',
+    publishDate: '2026-04-18T16:00:00Z',
     createdAt: '2026-04-18T16:00:00Z',
     updatedAt: '2026-04-18T16:00:00Z'
   },
@@ -297,6 +305,8 @@ export const FALLBACK_BLOGS: any[] = [
     author: { name: 'SS Realty' },
     tags: ['Noida', 'Commercial', 'Jewar Airport', 'Investment'],
     views: 2100,
+    status: 'published',
+    publishDate: '2026-04-15T11:00:00Z',
     createdAt: '2026-04-15T11:00:00Z',
     updatedAt: '2026-04-15T11:00:00Z'
   },
@@ -382,6 +392,8 @@ export const FALLBACK_BLOGS: any[] = [
     author: { name: 'SS Realty' },
     tags: ['Legal', 'Checklist', 'Delhi', 'Independent Floors', 'Property'],
     views: 1540,
+    status: 'published',
+    publishDate: '2026-04-10T13:00:00Z',
     createdAt: '2026-04-10T13:00:00Z',
     updatedAt: '2026-04-10T13:00:00Z'
   }

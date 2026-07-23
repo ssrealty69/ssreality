@@ -17,7 +17,14 @@ export async function GET(req: NextRequest) {
   }
   try {
     await connectDB();
-    const blogs = await Blog.find({}).sort('-createdAt').lean();
+    const blogs = await Blog.aggregate([
+      {
+        $addFields: {
+          effectiveDate: { $ifNull: ["$publishDate", "$createdAt"] }
+        }
+      },
+      { $sort: { effectiveDate: -1 } }
+    ]);
     return NextResponse.json({ success: true, data: blogs });
   } catch (error) {
     console.error('Error fetching blogs:', error);
@@ -48,6 +55,13 @@ export async function POST(req: NextRequest) {
       body.published = true;
     } else {
       body.published = false;
+    }
+
+    // Always ensure publishDate is set (fallback to NOW if empty)
+    if (!body.publishDate) {
+      body.publishDate = new Date();
+    } else {
+      body.publishDate = new Date(body.publishDate);
     }
 
     const blog = await Blog.create(body);

@@ -45,6 +45,10 @@ export async function PUT(
       }
     }
 
+    if (body.publishDate) {
+      body.publishDate = new Date(body.publishDate);
+    }
+
     const blog = await Blog.findByIdAndUpdate(id, body, { new: true }).lean();
     if (!blog) {
       return NextResponse.json({ success: false, error: 'Blog not found' }, { status: 404 });

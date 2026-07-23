@@ -19,20 +19,27 @@ export default function BlogsTable({ initialBlogs }: BlogsTableProps) {
   // Extract unique categories for filter
   const categories = Array.from(new Set(blogs.map((b) => b.category || 'General')));
 
-  // Filter blogs
-  const filteredBlogs = blogs.filter((blog) => {
-    const matchesSearch =
-      blog.title.toLowerCase().includes(search.toLowerCase()) ||
-      (blog.excerpt || '').toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = categoryFilter ? blog.category === categoryFilter : true;
-    
-    let matchesStatus = true;
-    if (publishedFilter) {
-      matchesStatus = blog.status === publishedFilter || (!blog.status && blog.published && publishedFilter === 'published') || (!blog.status && !blog.published && publishedFilter === 'draft');
-    }
+  // Filter & sort blogs by effective date (latest top)
+  const getEffectiveTime = (b: any) => {
+    const d = b.publishDate || b.createdAt;
+    return d ? new Date(d).getTime() : 0;
+  };
 
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
+  const filteredBlogs = blogs
+    .filter((blog) => {
+      const matchesSearch =
+        blog.title.toLowerCase().includes(search.toLowerCase()) ||
+        (blog.excerpt || '').toLowerCase().includes(search.toLowerCase());
+      const matchesCategory = categoryFilter ? blog.category === categoryFilter : true;
+      
+      let matchesStatus = true;
+      if (publishedFilter) {
+        matchesStatus = blog.status === publishedFilter || (!blog.status && blog.published && publishedFilter === 'published') || (!blog.status && !blog.published && publishedFilter === 'draft');
+      }
+
+      return matchesSearch && matchesCategory && matchesStatus;
+    })
+    .sort((a, b) => getEffectiveTime(b) - getEffectiveTime(a));
 
   // Handle Delete
   const handleDelete = async (id: string, title: string) => {

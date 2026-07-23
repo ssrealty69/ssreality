@@ -14,7 +14,8 @@ export async function getAllBlogs(category?: string, limit: number = 9, page: nu
       $or: [
         { published: true }, // Legacy
         { status: 'published' },
-        { status: 'scheduled', publishDate: { $lte: new Date() } }
+        { status: 'scheduled' },
+        { status: 'draft' }
       ]
     };
     if (category && category !== 'All') {
@@ -23,10 +24,19 @@ export async function getAllBlogs(category?: string, limit: number = 9, page: nu
 
     const skip = (page - 1) * limit;
     
-    // We cast to any because the model might have slight differences from the Blog interface
-    // but we want to ensure it matches as closely as possible.
+    // We compute effectiveDate dynamically so posts missing publishDate fallback to createdAt
     const [dbData, dbTotal] = await Promise.all([
-      BlogModel.find(filter).sort('-createdAt').skip(skip).limit(limit).lean() as any,
+      BlogModel.aggregate([
+        { $match: filter },
+        {
+          $addFields: {
+            effectiveDate: { $ifNull: ["$publishDate", "$createdAt"] }
+          }
+        },
+        { $sort: { effectiveDate: -1 } },
+        { $skip: skip },
+        { $limit: limit }
+      ]) as any,
       BlogModel.countDocuments(filter),
     ]);
 
@@ -38,11 +48,18 @@ export async function getAllBlogs(category?: string, limit: number = 9, page: nu
 
   // Always use fallback data if DB is empty or connection failed
   if (data.length === 0 && page === 1) {
+    const getEffectiveTime = (b: any) => {
+      const d = b.publishDate || b.createdAt;
+      return d ? new Date(d).getTime() : 0;
+    };
+
     const filteredFallbacks = category && category !== 'All' 
       ? FALLBACK_BLOGS.filter((b: any) => b.category === category)
       : FALLBACK_BLOGS;
     
-    data = filteredFallbacks.slice((page - 1) * limit, page * limit) as Blog[];
+    const sortedFallbacks = [...filteredFallbacks].sort((a: any, b: any) => getEffectiveTime(b) - getEffectiveTime(a));
+
+    data = sortedFallbacks.slice((page - 1) * limit, page * limit) as Blog[];
     total = filteredFallbacks.length;
   }
 
