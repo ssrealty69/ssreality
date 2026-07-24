@@ -104,7 +104,7 @@ async function getMatchingProperties(filters: { location?: string; bedrooms?: nu
   try {
     await connectDB();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const query: Record<string, any> = {};
+    const andConditions: any[] = [];
 
     if (filters.location) {
       const loc = filters.location.toLowerCase();
@@ -116,27 +116,40 @@ async function getMatchingProperties(filters: { location?: string; bedrooms?: nu
       } else if (loc.includes('mandi')) {
         locationPattern = 'Mandi';
       } else if (loc.includes('gwal pahari')) {
-        locationPattern = 'Gwal Pahari';
+        locationPattern = 'Gwal Pahari|GwalPahari';
       } else if (loc.includes('gurgaon')) {
         locationPattern = 'Gurgaon|Gurugram|Gwal Pahari';
       } else if (loc.includes('gadaipur')) {
         locationPattern = 'Gadaipur';
       }
 
-      query.$or = [
-        { 'location.city': { $regex: locationPattern, $options: 'i' } },
-        { 'location.address': { $regex: locationPattern, $options: 'i' } },
-        { title: { $regex: locationPattern, $options: 'i' } }
-      ];
+      andConditions.push({
+        $or: [
+          { 'location.city': { $regex: locationPattern, $options: 'i' } },
+          { 'location.address': { $regex: locationPattern, $options: 'i' } },
+          { 'location.state': { $regex: locationPattern, $options: 'i' } },
+          { title: { $regex: locationPattern, $options: 'i' } },
+          { description: { $regex: locationPattern, $options: 'i' } }
+        ]
+      });
     }
 
     if (filters.bedrooms) {
-      query['features.bedrooms'] = filters.bedrooms;
+      const bedNum = filters.bedrooms;
+      andConditions.push({
+        $or: [
+          { 'features.bedrooms': bedNum },
+          { title: { $regex: `${bedNum}\\s*bhk`, $options: 'i' } },
+          { description: { $regex: `${bedNum}\\s*bhk`, $options: 'i' } }
+        ]
+      });
     }
 
     if (filters.propertyType) {
-      query.propertyType = filters.propertyType;
+      andConditions.push({ propertyType: filters.propertyType });
     }
+
+    const query = andConditions.length > 0 ? { $and: andConditions } : {};
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let properties: any[] = await PropertyModel.find(query)
@@ -144,9 +157,11 @@ async function getMatchingProperties(filters: { location?: string; bedrooms?: nu
       .limit(12)
       .lean();
 
-    if (properties.length === 0 && filters.bedrooms) {
-      delete query['features.bedrooms'];
-      properties = await PropertyModel.find(query)
+    // If 0 properties match with bedroom constraint, fallback to location-only matching
+    if (properties.length === 0 && filters.bedrooms && andConditions.length > 1) {
+      const locConditions = andConditions.filter(c => !c.$or || !c.$or.some((sc: any) => sc['features.bedrooms'] !== undefined));
+      const fallbackQuery = locConditions.length > 0 ? { $and: locConditions } : {};
+      properties = await PropertyModel.find(fallbackQuery)
         .sort({ featured: -1, createdAt: -1 })
         .limit(12)
         .lean();
