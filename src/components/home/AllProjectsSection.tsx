@@ -117,6 +117,8 @@ function mergeProjectData(project: typeof PROJECTS[0], dbProperties: Property[])
     image: dbProp?.images?.[0] || null,
     propertyId: dbProp?._id || null,
     href: `/properties/${project.slug}`,
+    // Used for auto-sorting: newest DB entry appears first in the table
+    dbCreatedAt: dbProp?.createdAt || null,
   };
 }
 
@@ -323,13 +325,20 @@ interface AllProjectsSectionProps {
 }
 
 export default function AllProjectsSection({ allProperties }: AllProjectsSectionProps) {
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  // Default to table view as per design
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('table');
 
-  // Merge static config with DB images
-  const mergedProjects = useMemo(
-    () => PROJECTS.map((p) => mergeProjectData(p, allProperties)),
-    [allProperties]
-  );
+  // Merge static config with DB data, then sort newest DB entry first
+  // so any newly listed property automatically appears at the top of the table
+  const mergedProjects = useMemo(() => {
+    const merged = PROJECTS.map((p) => mergeProjectData(p, allProperties));
+    return merged.sort((a, b) => {
+      if (!a.dbCreatedAt && !b.dbCreatedAt) return 0;
+      if (!a.dbCreatedAt) return 1;   // no DB record → push to bottom
+      if (!b.dbCreatedAt) return -1;  // no DB record → push to bottom
+      return new Date(b.dbCreatedAt).getTime() - new Date(a.dbCreatedAt).getTime();
+    });
+  }, [allProperties]);
 
   return (
     <section className="section-padding bg-[#FAF8F2]" aria-label="SS Realty Projects Portfolio">
