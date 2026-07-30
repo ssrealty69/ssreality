@@ -4,9 +4,8 @@ import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  MapPin, BedDouble, Maximize2, ExternalLink,
-  CheckCircle2, Clock4, Building2, ChevronRight, IndianRupee,
-  Sparkles, LayoutGrid, Table2
+  MapPin, ExternalLink,
+  ChevronRight
 } from 'lucide-react';
 import type { Property } from '@/types';
 
@@ -122,137 +121,6 @@ function mergeProjectData(project: typeof PROJECTS[0], dbProperties: Property[])
   };
 }
 
-// ─── Status Badge ─────────────────────────────────────────────────────────────
-function StatusBadge({ status, label }: { status: 'ready' | 'under-construction'; label: string }) {
-  if (status === 'ready') {
-    return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        {label}
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border bg-amber-50 text-amber-700 border-amber-200">
-      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-      {label}
-    </span>
-  );
-}
-
-// ─── Project Image Card ───────────────────────────────────────────────────────
-function ProjectCard({
-  project,
-}: {
-  project: ReturnType<typeof mergeProjectData>;
-}) {
-  const [imgError, setImgError] = useState(false);
-  const mainImage = imgError || !project.image ? '/SS Realty.png' : project.image;
-  const startingPrice = project.priceList[0]?.price;
-
-  return (
-    <div className="group bg-white rounded-2xl overflow-hidden border border-[#C9A227]/20 shadow-[0_4px_16px_rgba(201,162,39,0.06)] hover:shadow-[0_16px_40px_rgba(201,162,39,0.14)] hover:border-[#C9A227]/45 transition-all duration-500 flex flex-col">
-
-      {/* Image */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden bg-[#FAF8F2]">
-        <Image
-          src={mainImage}
-          alt={`${project.name} by SS Realty - ${project.location}`}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          quality={82}
-          onError={() => setImgError(true)}
-        />
-        {/* Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/5 to-transparent" />
-
-        {/* Possession badge — top left */}
-        <div className="absolute top-3 left-3 z-10">
-          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-sm ${
-            project.status === 'ready'
-              ? 'bg-emerald-500/90 text-white'
-              : 'bg-amber-500/90 text-white'
-          }`}>
-            {project.status === 'ready' ? <CheckCircle2 size={11} /> : <Clock4 size={11} />}
-            {project.possession}
-          </span>
-        </div>
-
-        {/* Highlight badge (e.g. 4BHK Family Suite) */}
-        {project.highlight && (
-          <div className="absolute top-3 right-3 z-10">
-            <span className="inline-flex items-center gap-1 px-2 py-1 bg-[#C9A227]/90 text-white text-[10px] font-bold rounded-full backdrop-blur-sm">
-              <Sparkles size={10} />
-              {project.highlight}
-            </span>
-          </div>
-        )}
-
-        {/* Starting price at bottom of image */}
-        {startingPrice && (
-          <div className="absolute bottom-3 left-3 z-10">
-            <span className="text-white font-bold text-sm drop-shadow-md">
-              Starts {startingPrice}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Card body */}
-      <div className="p-4 flex flex-col flex-1">
-        <div className="flex items-start justify-between mb-1">
-          <h3 className="text-[#1A1800] font-bold text-lg leading-tight group-hover:text-[#C9A227] transition-colors duration-300">
-            {project.name}
-          </h3>
-          <StatusBadge status={project.status} label={project.readyLabel} />
-        </div>
-
-        <div className="flex items-center gap-1.5 text-[#64748B] text-xs mb-3">
-          <MapPin size={12} className="text-[#C9A227] shrink-0" />
-          <span>{project.location}</span>
-        </div>
-
-        {/* Price list */}
-        <div className="space-y-1.5 mb-4">
-          {project.priceList.map((pl, i) => (
-            <div key={i} className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-1.5">
-                <BedDouble size={11} className="text-[#C9A227]" />
-                <span className="text-[#64748B] font-medium">{pl.type}</span>
-                {pl.size !== '—' && (
-                  <>
-                    <span className="text-[#C9A227]/50">·</span>
-                    <Maximize2 size={10} className="text-[#94A3B8]" />
-                    <span className="text-[#94A3B8]">{pl.size}</span>
-                  </>
-                )}
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="font-bold text-[#1A1800]">{pl.price}</span>
-                {pl.negotiable && (
-                  <span className="text-[10px] text-emerald-600 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">
-                    Negotiable
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* View More CTA */}
-        <Link
-          href={project.href}
-          className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-[#C9A227] hover:bg-[#B8860B] text-white text-sm font-bold rounded-xl transition-colors duration-300 group/btn"
-        >
-          View More Details
-          <ChevronRight size={15} className="group-hover/btn:translate-x-0.5 transition-transform duration-200" />
-        </Link>
-      </div>
-    </div>
-  );
-}
-
 // ─── Table Row ────────────────────────────────────────────────────────────────
 function TableRow({
   project,
@@ -325,9 +193,6 @@ interface AllProjectsSectionProps {
 }
 
 export default function AllProjectsSection({ allProperties }: AllProjectsSectionProps) {
-  // Default to table view as per design
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('table');
-
   // Merge static config with DB data, then sort newest DB entry first
   // so any newly listed property automatically appears at the top of the table
   const mergedProjects = useMemo(() => {
@@ -362,61 +227,28 @@ export default function AllProjectsSection({ allProperties }: AllProjectsSection
           </p>
         </div>
 
-        {/* ── View Toggle ── */}
-        <div className="flex justify-end mb-6">
-          <div className="flex items-center bg-white border border-[#E8E0C0] rounded-xl p-1 shadow-sm gap-1">
-            <button
-              onClick={() => setViewMode('cards')}
-              title="Card View"
-              aria-label="Card View"
-              className={`p-2 rounded-lg transition-all duration-300 ${viewMode === 'cards' ? 'bg-[#C9A227] text-white shadow-md' : 'text-[#64748B] hover:text-[#C9A227]'}`}
-            >
-              <LayoutGrid size={17} />
-            </button>
-            <button
-              onClick={() => setViewMode('table')}
-              title="Table View"
-              aria-label="Table View"
-              className={`p-2 rounded-lg transition-all duration-300 ${viewMode === 'table' ? 'bg-[#C9A227] text-white shadow-md' : 'text-[#64748B] hover:text-[#C9A227]'}`}
-            >
-              <Table2 size={17} />
-            </button>
-          </div>
-        </div>
-
         {/* ── TABLE VIEW ── */}
-        {viewMode === 'table' && (
-          <div className="bg-white rounded-2xl border border-[#E8E0C0] shadow-sm overflow-hidden overflow-x-auto mb-8">
-            {/* Header */}
-            <div
-              className="grid items-center gap-3 px-4 py-3 bg-[#FAF8F2] border-b border-[#E8E0C0] min-w-[820px]"
-              style={{ gridTemplateColumns: 'auto 1.8fr 1.2fr 0.7fr 1.8fr 0.8fr auto' }}
-            >
-              <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider w-11">#</span>
-              <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Project</span>
-              <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Location</span>
-              <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Possession</span>
-              <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Sizes &amp; Prices</span>
-              <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Price</span>
-              <span className="w-4" />
-            </div>
-            {/* Rows */}
-            <div className="min-w-[820px]">
-              {mergedProjects.map((p, i) => (
-                <TableRow key={p.key} project={p} index={i} />
-              ))}
-            </div>
+        <div className="bg-white rounded-2xl border border-[#E8E0C0] shadow-sm overflow-hidden overflow-x-auto mb-8">
+          {/* Header */}
+          <div
+            className="grid items-center gap-3 px-4 py-3 bg-[#FAF8F2] border-b border-[#E8E0C0] min-w-[820px]"
+            style={{ gridTemplateColumns: 'auto 1.8fr 1.2fr 0.7fr 1.8fr 0.8fr auto' }}
+          >
+            <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider w-11">#</span>
+            <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Project</span>
+            <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Location</span>
+            <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Possession</span>
+            <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Sizes &amp; Prices</span>
+            <span className="text-[11px] font-black text-[#7A5C00] uppercase tracking-wider">Price</span>
+            <span className="w-4" />
           </div>
-        )}
-
-        {/* ── CARDS VIEW ── */}
-        {viewMode === 'cards' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {mergedProjects.map((p) => (
-              <ProjectCard key={p.key} project={p} />
+          {/* Rows */}
+          <div className="min-w-[820px]">
+            {mergedProjects.map((p, i) => (
+              <TableRow key={p.key} project={p} index={i} />
             ))}
           </div>
-        )}
+        </div>
 
         {/* ── View All CTA ── */}
         <div className="text-center mt-4">
