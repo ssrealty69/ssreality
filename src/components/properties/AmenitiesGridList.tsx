@@ -12,7 +12,8 @@ interface AmenityImageProps {
 
 function AmenityImage({ src, alt, fallbackText }: AmenityImageProps) {
   const [error, setError] = useState(false);
-  const safeSrc = src.replace(/'/g, '’'); // Replace straight quote with curly apostrophe
+  // Use src directly — apostrophes are already stripped before this component receives the path
+  const safeSrc = src;
 
   if (error) {
     return (
@@ -136,7 +137,7 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
               >
                 <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-gray-100 rounded-xs mb-2 md:mb-3 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(25px)] group-hover:shadow-[0_12px_24px_rgba(0,0,0,0.22)]">
                   <AmenityImage
-                    src={`/Project Amenities/${col.items[0].replace(/'/g, "").toUpperCase()}.jpg`}
+                    src={`/Project Amenities/${col.items[0].replace(/['\u2019\u2018\u02BC]/g, "").toUpperCase()}.jpg`}
                     alt={col.items[0]}
                     fallbackText="✦"
                   />
@@ -169,7 +170,7 @@ export function ProjectAmenitiesGrid({ amenities = [] }: { amenities?: string[] 
                     >
                       <div className="relative w-full aspect-square shrink-0 overflow-hidden bg-gray-100 rounded-xs mb-1.5 md:mb-2 [transform-style:preserve-3d] transition-all duration-500 ease-out group-hover:[transform:translateZ(20px)] group-hover:shadow-[0_8px_20px_rgba(0,0,0,0.2)]">
                         <AmenityImage
-                          src={`/Project Amenities/${item.replace(/'/g, "").toUpperCase()}.jpg`}
+                          src={`/Project Amenities/${item.replace(/['\u2019\u2018\u02BC]/g, "").toUpperCase()}.jpg`}
                           alt={item}
                           fallbackText="✦"
                         />
