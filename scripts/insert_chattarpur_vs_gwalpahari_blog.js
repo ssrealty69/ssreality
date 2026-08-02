@@ -279,9 +279,9 @@ const blogContent = [
   '<p><strong>Zero pressure. Full transparency. Free site visit within 24 hours.</strong></p>',
 
   '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;">',
-  '<a href="tel:+919311059100" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#1A1800;color:#F0D060;font-weight:700;border-radius:12px;text-decoration:none;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">📞 Call: +91-9311059100</a>',
-  '<a href="/properties" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#C9A227;color:#1A1800;font-weight:700;border-radius:12px;text-decoration:none;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">🏠 Browse All Properties</a>',
-  '<a href="/contact-us" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#ffffff;color:#1A1800;font-weight:700;border-radius:12px;text-decoration:none;font-size:15px;border:2px solid #1A1800;">📅 Book Free Site Visit</a>',
+  '<a href="tel:+919311059100" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#1A1800 !important;color:#F0D060 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">📞 Call: +91-9311059100</a>',
+  '<a href="/properties" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#C9A227 !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">🏠 Browse All Properties</a>',
+  '<a href="/contact-us" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#ffffff !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;border:2px solid #1A1800;">📅 Book Free Site Visit</a>',
   '</div>',
 
   '</article>'

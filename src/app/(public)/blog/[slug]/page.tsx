@@ -294,10 +294,12 @@ export default async function BlogPostPage({ params }: Props) {
               {blog.excerpt}
             </p>
 
+
             <div 
-              className="prose prose-sm md:prose-lg max-w-full w-full break-words overflow-x-auto text-[#3a3828] leading-relaxed"
+              className="prose prose-sm md:prose-lg max-w-full w-full break-words overflow-x-auto text-[#3a3828] leading-relaxed [&_a[style]]:text-inherit [&_a[style]]:no-underline [&_a[style]]:font-[inherit]"
               dangerouslySetInnerHTML={{ __html: blog.content }}
             />
+
 
             {/* Tags */}
             {blog.tags && blog.tags.length > 0 && (
