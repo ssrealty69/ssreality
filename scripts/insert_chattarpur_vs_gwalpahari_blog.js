@@ -279,9 +279,13 @@ const blogContent = [
   '<p><strong>Zero pressure. Full transparency. Free site visit within 24 hours.</strong></p>',
 
   '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;">',
-  '<a href="tel:+919311059100" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#E8D5A3 !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">📞 Call: +91-9311059100</a>',
-  '<a href="/properties" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#E4CC76 !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">🏠 Browse All Properties</a>',
-  '<a href="/contact-us" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#ffffff !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;border:2px solid #1A1800;">📅 Book Free Site Visit</a>',
+  '<style>',
+  '  .blog-cta-btn { transition: all 0.2s ease; }',
+  '  .blog-cta-btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important; }',
+  '</style>',
+  '<a href="tel:+919311059100" class="blog-cta-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#E8D5A3 !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">📞 Call: +91-9311059100</a>',
+  '<a href="/properties" class="blog-cta-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#E4CC76 !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">🏠 Browse All Properties</a>',
+  '<a href="/contact-us" class="blog-cta-btn" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#ffffff !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;border:2px solid #1A1800;">📅 Book Free Site Visit</a>',
   '</div>',
   '</article>'
 ].join('\n');
