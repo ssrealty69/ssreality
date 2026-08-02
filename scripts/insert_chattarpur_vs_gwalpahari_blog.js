@@ -278,10 +278,10 @@ const blogContent = [
   '<p>SS Realty has been building and selling projects in both <strong>Chattarpur</strong> and <strong>Gwal Pahari</strong> since 2008 — 17+ years of on-ground experience in these two micro-markets. We can show you exactly what ₹75 Lakhs buys you in Gwal Pahari vs what ₹1.25 Crore buys you in Chattarpur — and help you decide which option genuinely fits your life, your commute, and your long-term goals.</p>',
   '<p><strong>Zero pressure. Full transparency. Free site visit within 24 hours.</strong></p>',
 
-  '<div class="flex flex-wrap gap-3 mt-4">',
-  '<a href="tel:+919311059100" class="inline-flex items-center gap-2 px-5 py-3 bg-[#C9A227] text-[#1A1800] font-bold rounded-xl hover:brightness-105 transition-all shadow-sm">📞 Call: +91-9311059100</a>',
-  '<a href="/properties" class="inline-flex items-center gap-2 px-5 py-3 bg-[#1A1800] text-[#F0D060] font-bold rounded-xl hover:bg-[#2a2700] transition-all shadow-sm">🏠 Browse All Properties</a>',
-  '<a href="/contact-us" class="inline-flex items-center gap-2 px-5 py-3 bg-white border-2 border-[#1A1800] text-[#1A1800] font-bold rounded-xl hover:bg-gray-50 transition-all shadow-sm">📅 Book Free Site Visit</a>',
+  '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;">',
+  '<a href="tel:+919311059100" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#1A1800;color:#F0D060;font-weight:700;border-radius:12px;text-decoration:none;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">📞 Call: +91-9311059100</a>',
+  '<a href="/properties" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#C9A227;color:#1A1800;font-weight:700;border-radius:12px;text-decoration:none;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">🏠 Browse All Properties</a>',
+  '<a href="/contact-us" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#ffffff;color:#1A1800;font-weight:700;border-radius:12px;text-decoration:none;font-size:15px;border:2px solid #1A1800;">📅 Book Free Site Visit</a>',
   '</div>',
 
   '</article>'
