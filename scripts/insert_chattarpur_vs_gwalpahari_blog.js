@@ -279,17 +279,16 @@ const blogContent = [
   '<p><strong>Zero pressure. Full transparency. Free site visit within 24 hours.</strong></p>',
 
   '<div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;">',
-  '<a href="tel:+919311059100" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#1A1800 !important;color:#F0D060 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">📞 Call: +91-9311059100</a>',
-  '<a href="/properties" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#C9A227 !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">🏠 Browse All Properties</a>',
+  '<a href="tel:+919311059100" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#E8D5A3 !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">📞 Call: +91-9311059100</a>',
+  '<a href="/properties" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#E4CC76 !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">🏠 Browse All Properties</a>',
   '<a href="/contact-us" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background-color:#ffffff !important;color:#1A1800 !important;font-weight:700;border-radius:12px;text-decoration:none !important;font-size:15px;border:2px solid #1A1800;">📅 Book Free Site Visit</a>',
   '</div>',
-
   '</article>'
 ].join('\n');
 
 const blogDoc = {
   title: 'Chattarpur vs Gwal Pahari — Which Location Is Better for Buying a Flat in 2025?',
-  slug: 'chattarpur-vs-gwal-pahari-which-location-better-flat-2025',
+  slug: 'chattarpur-vs-gwal-pahari-which-location-better-flat',
   excerpt: 'Chattarpur vs Gwal Pahari — the ultimate comparison for property buyers in South Delhi and Gurgaon. Prices, metro access, investment returns, air quality, and all 6 SS Realty projects across both locations. Find out which micro-market fits your lifestyle and budget.',
   content: blogContent,
   coverImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80',
