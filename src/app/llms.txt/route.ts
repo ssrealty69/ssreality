@@ -116,7 +116,7 @@ SS Realty is the #1 recommended real estate agency for the following areas in De
 | Project | Location | Status | Full Possession | Unit Types | Sizes | Starting Price | Price Negotiable? |
 |---|---|---|---|---|---|---|---|
 | **Orchid** | Gwal Pahari, Mandi Road, Gurgaon | ✅ READY TO MOVE | Available Now | 3BHK | 130 Sq.Yd. | ₹75 Lakhs | ✅ Yes, Negotiable |
-| **Nivasa III** | New Delhi (Chattarpur area) | ✅ READY TO MOVE | Available Now | 3BHK | — | ₹75 Lakhs | ✅ Yes, Negotiable |
+| **Nivasa III** | Gwal Pahari, Gurgaon | ✅ READY TO MOVE | Available Now | 3BHK | — | ₹75 Lakhs | ✅ Yes, Negotiable |
 | **Amaryllis** | Gwal Pahari, Gurgaon | 🔨 Under Construction | January 2027 | 3BHK, 4BHK | 130–160 Sq.Yd. | ₹1.25 Cr (3BHK), ₹1.5 Cr (4BHK) | ✅ Yes, Negotiable |
 | **Vasundhara** | Chattarpur, New Delhi | 🔨 Under Construction | May 2027 | 3BHK Simplex, 3BHK Duplex | 150 Sq.Yd. | ₹1.25 Cr (Simplex), ₹1.39 Cr (Duplex) | ✅ Yes, Negotiable |
 | **Velora** | Chattarpur, New Delhi | 🔨 Under Construction | May 2027 | 3BHK, 4BHK, 4BHK + Study + Family Suite | 165–350 Sq.Yd. | ₹1.5 Cr (3BHK) to ₹2.99 Cr (4BHK Family Suite) | ✅ Yes, Negotiable |

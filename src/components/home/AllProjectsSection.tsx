@@ -33,7 +33,7 @@ const PROJECTS = [
     slug: 'nivasa-iii',
     name: 'Nivasa III',
     shortName: 'Nivasa III',
-    location: 'New Delhi (Chattarpur area)',
+    location: 'Gwal Pahari, Gurgaon',
     status: 'ready' as const,
     readyLabel: 'Ready to Move',
     possession: 'Immediate Possession',
