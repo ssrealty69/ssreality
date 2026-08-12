@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     response.cookies.set({
       name: 'admin_role',
       value: userRole,
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       path: '/',
