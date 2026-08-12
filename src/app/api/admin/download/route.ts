@@ -9,31 +9,21 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch file: ${response.statusText}`);
+    let downloadUrl = url;
+    
+    // Add fl_attachment to Cloudinary URLs to force download natively
+    if (downloadUrl.includes('res.cloudinary.com') && downloadUrl.includes('/upload/')) {
+      const formattedName = name.replace(/[^a-zA-Z0-9]/g, '_');
+      // We don't append the extension to the custom filename flag because Cloudinary automatically appends the original extension
+      downloadUrl = downloadUrl.replace('/upload/', `/upload/fl_attachment:Resume_${formattedName}/`);
     }
 
-    const contentType = response.headers.get('content-type') || 'application/pdf';
-    let ext = 'pdf';
-    if (contentType.includes('wordprocessingml')) ext = 'docx';
-    else if (contentType.includes('msword')) ext = 'doc';
-    else if (url.toLowerCase().endsWith('.pdf')) ext = 'pdf';
-    else if (url.toLowerCase().endsWith('.docx')) ext = 'docx';
-    else if (url.toLowerCase().endsWith('.doc')) ext = 'doc';
-
-    const filename = `Resume-${name.replace(/\s+/g, '_')}.${ext}`;
-
-    const headers = new Headers();
-    headers.set('Content-Type', contentType);
-    headers.set('Content-Disposition', `attachment; filename="${filename}"`);
-
-    return new NextResponse(response.body, {
-      status: 200,
-      headers,
-    });
+    // Redirect the browser directly to the URL.
+    // Cloudinary will see it as a normal browser request and serve the attachment,
+    // avoiding any 401 Unauthorized errors caused by programmatic Node fetch.
+    return NextResponse.redirect(downloadUrl);
   } catch (error) {
-    console.error('Download error:', error);
-    return NextResponse.json({ error: 'Failed to download file' }, { status: 500 });
+    console.error('Download redirect error:', error);
+    return NextResponse.json({ error: 'Failed to redirect to download' }, { status: 500 });
   }
 }
