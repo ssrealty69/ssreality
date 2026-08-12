@@ -3,18 +3,20 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target, Compass, HelpCircle } from 'lucide-react';
+import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target, Compass, HelpCircle, Phone, BarChart2 } from 'lucide-react';
 import Image from 'next/image';
 
 const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/properties', label: 'Properties', icon: Home },
-  { href: '/admin/floor-plans', label: 'Floor Plans', icon: Layers },
-  { href: '/admin/delivered-landmarks', label: 'Delivered Landmarks', icon: Compass },
+  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, restricted: true },
+  { href: '/admin/properties', label: 'Properties', icon: Home, restricted: true },
+  { href: '/admin/floor-plans', label: 'Floor Plans', icon: Layers, restricted: true },
+  { href: '/admin/delivered-landmarks', label: 'Delivered Landmarks', icon: Compass, restricted: true },
   { href: '/admin/leads', label: 'Leads', icon: Users, hasBadge: true },
+  { href: '/admin/agents', label: 'Team Management', icon: Users },
+  { href: '/admin/reports', label: 'Team Reports', icon: BarChart2 },
   { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
-  { href: '/admin/blogs', label: 'Blogs', icon: FileText },
-  { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target },
+  { href: '/admin/blogs', label: 'Blogs', icon: FileText, restricted: true },
+  { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target, restricted: true },
 ];
 
 export default function AdminSidebar({ 
@@ -26,6 +28,7 @@ export default function AdminSidebar({
 }) {
   const pathname = usePathname();
   const [unreadLeads, setUnreadLeads] = useState(0);
+  const [role, setRole] = useState('admin');
 
   useEffect(() => {
     // Fetch unread leads count initially and poll every 30 seconds
@@ -43,8 +46,26 @@ export default function AdminSidebar({
 
     fetchUnreadCount();
     const interval = setInterval(fetchUnreadCount, 30000);
+    
+    // Read role from cookie
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || '';
+      return '';
+    };
+    setRole(getCookie('admin_role') || 'admin');
+    
     return () => clearInterval(interval);
   }, []);
+
+  const isSuperAdmin = role === 'super_admin';
+  const visibleNavItems = navItems.filter(item => {
+    if (role === 'agent') {
+      return item.href === '/admin/leads';
+    }
+    return !item.restricted || isSuperAdmin;
+  });
 
   return (
     <>
@@ -82,7 +103,7 @@ export default function AdminSidebar({
         </div>
 
         <nav className="p-4 space-y-2">
-          {navItems.map((item) => {
+          {visibleNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
             const showBadge = item.hasBadge && unreadLeads > 0;

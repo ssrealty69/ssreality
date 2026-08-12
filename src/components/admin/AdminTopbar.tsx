@@ -2,6 +2,7 @@
 
 import { Menu, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 export default function AdminTopbar({ 
@@ -10,6 +11,17 @@ export default function AdminTopbar({
   setSidebarOpen: (val: boolean) => void 
 }) {
   const router = useRouter();
+  const [role, setRole] = useState('admin');
+
+  useEffect(() => {
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || '';
+      return '';
+    };
+    setRole(getCookie('admin_role') || 'admin');
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -56,7 +68,7 @@ export default function AdminTopbar({
 
         <div className="hidden sm:flex flex-col items-end mr-4 border-r border-[#E8D5A3] pr-4">
           <span className="text-sm font-bold text-[#1A1800]">Admin</span>
-          <span className="text-xs text-[#6b6450]">Super User</span>
+          <span className="text-xs text-[#6b6450] capitalize">{role.replace('_', ' ')}</span>
         </div>
         
         <button

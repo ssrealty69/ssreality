@@ -322,16 +322,23 @@ export default async function BlogPostPage({ params }: Props) {
                 <div className="space-y-6">
                   {/* We show fallback related posts for better UX if dynamic is missing */}
                   {[
-                    { title: 'NRI Guide to Buying Property', slug: 'nri-guide-buying-property-india', date: '2026-04-25' },
-                    { title: 'Luxury Living in Gwal Pahari', slug: 'luxury-living-gurugram-gwal-pahari', date: '2026-04-22' },
-                    { title: 'Noida Expressway Commercial Boom', slug: 'noida-expressway-commercial-real-estate-boom', date: '2026-04-15' }
-                  ].filter(p => p.slug !== slug).slice(0, 2).map((post) => (
-                    <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
-                      <p className="text-xs text-[#a09060] mb-1">{formatDate(post.date)}</p>
-                      <h4 className="font-semibold text-[#1A1800] group-hover:text-[#C9A227] transition-colors leading-snug">
-                        {post.title}
-                      </h4>
-                    </Link>
+                    { title: 'Luxury Living in Gwal Pahari: New Destination', slug: 'luxury-living-gurugram-gwal-pahari', date: '2026-04-22', views: '1.4k' },
+                    { title: 'Delhi NCR Real Estate Investment 2026 Guide', slug: 'real-estate-investment-delhi-ncr-2026-guide', date: '2026-04-20', views: '1.4k' },
+                    { title: 'Chattarpur vs Gwal Pahari — Which is Better?', slug: 'chattarpur-vs-gwal-pahari-which-location-better-flat', date: '2026-06-10', views: '39' },
+                    { title: 'NRI Guide to Buying Property in India', slug: 'nri-guide-buying-property-india', date: '2026-04-25', views: '1.3k' },
+                    { title: 'First Time Home Buyer Guide Delhi', slug: 'first-time-home-buyer-guide-delhi-step-by-step-flat-purchase', date: '2026-06-15', views: '139' },
+                    { title: 'Builder Floor vs Apartment — South Delhi Guide', slug: 'builder-floor-vs-apartment-delhi-south-delhi-buyers-guide', date: '2026-06-18', views: '178' },
+                  ].filter(p => p.slug !== slug).slice(0, 4).map((post) => (
+                     <Link key={post.slug} href={`/blog/${post.slug}`} className="group block p-3 rounded-xl hover:bg-[#FFFBEB] border border-transparent hover:border-[#E8D5A3] transition-all">
+                       <div className="flex items-center justify-between gap-2 mb-1">
+                         <p className="text-[10px] text-[#a09060]">{formatDate(post.date)}</p>
+                         {(post as any).views && <span className="text-[9px] bg-[#C9A227]/10 text-[#B8860B] font-bold px-1.5 py-0.5 rounded-full">👁 {(post as any).views}</span>}
+                       </div>
+                       <h4 className="font-semibold text-[#1A1800] group-hover:text-[#C9A227] transition-colors leading-snug text-sm">
+                         {post.title}
+                       </h4>
+                       <span className="text-[10px] text-[#C9A227] font-semibold mt-1 inline-block group-hover:translate-x-1 transition-transform">Read more →</span>
+                     </Link>
                   ))}
                 </div>
               </div>

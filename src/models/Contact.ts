@@ -7,6 +7,7 @@ export interface IContact extends Document {
   subject: string;
   message: string;
   propertyId?: string;
+  assignedAgentId?: mongoose.Types.ObjectId;
   status: 'new' | 'read' | 'replied';
   createdAt: Date;
 }
@@ -19,6 +20,7 @@ const ContactSchema = new Schema<IContact>(
     subject: { type: String, required: true },
     message: { type: String, required: true },
     propertyId: { type: String },
+    assignedAgentId: { type: Schema.Types.ObjectId, ref: 'Agent' },
     status: { type: String, enum: ['new', 'read', 'replied'], default: 'new' },
   },
   { timestamps: true }

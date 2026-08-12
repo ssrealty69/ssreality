@@ -11,10 +11,16 @@ export function proxy(request: NextRequest) {
       return NextResponse.next();
     }
 
+    // Agent API routes use their own Bearer token auth — exempt from admin_token check
+    if (pathname.startsWith('/api/agent')) {
+      return NextResponse.next();
+    }
+
 
 
 
     const token = request.cookies.get('admin_token');
+    const roleCookie = request.cookies.get('admin_role');
     const secretHeader = request.headers.get('x-admin-secret');
     const adminSecret = process.env.ADMIN_SECRET;
 
@@ -26,6 +32,43 @@ export function proxy(request: NextRequest) {
       }
       const loginUrl = new URL('/admin/login', request.url);
       return NextResponse.redirect(loginUrl);
+    }
+
+    const role = roleCookie?.value || 'admin';
+    const isSuperAdmin = role === 'super_admin';
+
+    const restrictedPrefixes = [
+      '/admin/properties',
+      '/admin/floor-plans',
+      '/admin/delivered-landmarks',
+      '/admin/blogs',
+      '/admin/marketing/tracking',
+      '/api/admin/properties',
+      '/api/admin/floor-plans',
+      '/api/admin/delivered-landmarks',
+      '/api/admin/blogs',
+      '/api/admin/marketing/tracking'
+    ];
+
+    let isRestricted = false;
+    
+    if (pathname === '/admin' || pathname === '/api/admin/stats') {
+      isRestricted = true;
+    } else {
+      for (const prefix of restrictedPrefixes) {
+        if (pathname === prefix || pathname.startsWith(prefix + '/')) {
+          isRestricted = true;
+          break;
+        }
+      }
+    }
+
+    if (isRestricted && !isSuperAdmin) {
+      if (pathname.startsWith('/api/')) {
+        return NextResponse.json({ error: 'Forbidden: Super Admin only' }, { status: 403 });
+      }
+      const fallbackUrl = new URL('/admin/leads', request.url);
+      return NextResponse.redirect(fallbackUrl);
     }
   }
 

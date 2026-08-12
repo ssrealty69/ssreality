@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     }
 
     await connectDB();
-    const leads = await Contact.find({}).sort('-createdAt').lean();
+    const leads = await Contact.find({}).populate('assignedAgentId', 'name').sort('-createdAt').lean();
 
     // Resolve property titles for leads having a property reference
     const resolvedLeads = await Promise.all(leads.map(async (lead: any) => {

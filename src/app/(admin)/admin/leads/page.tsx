@@ -3,10 +3,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import {
   Users, Search, Trash2, MessageSquare, Loader2, Calendar,
-  MapPin, Briefcase, FileText, CheckCircle2, FileDown, Home, ExternalLink
+  MapPin, Briefcase, FileText, CheckCircle2, FileDown, Home, ExternalLink, UserCheck, X
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
+import AgentLeadsView from '@/components/agent/AgentLeadsView';
 
 interface Lead {
   _id: string;
@@ -17,6 +18,7 @@ interface Lead {
   message: string;
   propertyId?: string;
   propertyTitle?: string;
+  assignedAgentId?: { _id: string, name: string };
   status: string;
   createdAt: string;
 }
@@ -47,6 +49,13 @@ interface PropertyEnquiry {
   createdAt: string;
 }
 
+interface AgentOption {
+  _id: string;
+  name: string;
+  username: string;
+  isActive: boolean;
+}
+
 export default function AdminLeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [propertyEnquiries, setPropertyEnquiries] = useState<PropertyEnquiry[]>([]);
@@ -55,9 +64,30 @@ export default function AdminLeadsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'general' | 'loan' | 'property' | 'brochure'>('general');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [selectedLeads, setSelectedLeads] = useState<{id: string; type: string}[]>([]);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [agents, setAgents] = useState<AgentOption[]>([]);
+  const [selectedAgentId, setSelectedAgentId] = useState('');
+  const [assigning, setAssigning] = useState(false);
+  const [strategy, setStrategy] = useState('manual');
+  const [strategyLoading, setStrategyLoading] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchAll();
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || '';
+      return '';
+    };
+    const currentRole = getCookie('admin_role');
+    setRole(currentRole);
+
+    if (currentRole !== 'agent') {
+      fetchAll();
+      fetchAgents();
+      fetchStrategy();
+    }
   }, []);
 
   const fetchAll = async () => {
@@ -90,6 +120,89 @@ export default function AdminLeadsPage() {
       setLoading(false);
     }
   };
+
+  const fetchAgents = async () => {
+    try {
+      const res = await fetch('/api/admin/agents');
+      const data = await res.json();
+      if (data.success) setAgents(data.data.filter((a: AgentOption) => a.isActive));
+    } catch { /* silent fail */ }
+  };
+
+  const fetchStrategy = async () => {
+    try {
+      const res = await fetch('/api/admin/leads/strategy');
+      const data = await res.json();
+      if (data.success) setStrategy(data.strategy);
+    } catch {}
+  };
+
+  const updateStrategy = async (newStrategy: string) => {
+    setStrategyLoading(true);
+    try {
+      const res = await fetch('/api/admin/leads/strategy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ strategy: newStrategy })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStrategy(newStrategy);
+        toast.success('Assignment Strategy Updated');
+      } else {
+        toast.error('Failed to update strategy');
+      }
+    } catch {
+      toast.error('Server error');
+    } finally {
+      setStrategyLoading(false);
+    }
+  };
+
+  const handleOpenAssignModal = () => {
+    if (selectedLeads.length === 0) {
+      toast.error('Pehle kuch leads select karo');
+      return;
+    }
+    fetchAgents();
+    setShowAssignModal(true);
+  };
+
+  const handleAssignToAgent = async () => {
+    if (!selectedAgentId) {
+      toast.error('Ek agent select karo');
+      return;
+    }
+    setAssigning(true);
+    try {
+      const res = await fetch('/api/admin/leads/assign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agentId: selectedAgentId, leads: selectedLeads }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message);
+        setSelectedLeads([]);
+        setSelectedAgentId('');
+        setShowAssignModal(false);
+        fetchAll(); // Refresh leads to show updated assignments
+      } else {
+        toast.error(data.error || 'Assignment failed');
+      }
+    } catch { toast.error('Server error'); }
+    finally { setAssigning(false); }
+  };
+
+  const toggleLeadSelect = (id: string, type: string) => {
+    setSelectedLeads(prev => {
+      const exists = prev.find(l => l.id === id);
+      if (exists) return prev.filter(l => l.id !== id);
+      return [...prev, { id, type }];
+    });
+  };
+
+  const isLeadSelected = (id: string) => selectedLeads.some(l => l.id === id);
 
   // Parse EMI Home Loan structured text fields
   const parseLoanMessage = (message: string) => {
@@ -394,8 +507,77 @@ export default function AdminLeadsPage() {
     );
   }
 
+  if (role === null) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="animate-spin text-[#C9A227]" size={48} />
+      </div>
+    );
+  }
+
+  if (role === 'agent') {
+    return <AgentLeadsView />;
+  }
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 font-sans">
+    <div className="space-y-8 animate-in fade-in duration-500 pb-12">
+
+      {/* Assign to Agent Modal */}
+      {showAssignModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 w-full max-w-md p-6 space-y-5">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-extrabold text-[#1A1800] flex items-center gap-2">
+                <UserCheck size={20} className="text-[#C9A227]" />
+                Assign {selectedLeads.length} Lead(s) to Agent
+              </h2>
+              <button onClick={() => setShowAssignModal(false)} className="text-gray-400 hover:text-gray-700 p-1">
+                <X size={20} />
+              </button>
+            </div>
+            <select
+              className="w-full border border-gray-200 rounded-xl py-3 px-4 text-sm font-semibold text-gray-800 focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] outline-none bg-gray-50"
+              value={selectedAgentId}
+              onChange={e => setSelectedAgentId(e.target.value)}
+            >
+              <option value="">— Select Agent —</option>
+              {agents.map(a => (
+                <option key={a._id} value={a._id}>{a.name} (@{a.username})</option>
+              ))}
+            </select>
+            <div className="flex gap-3">
+              <button onClick={() => setShowAssignModal(false)} className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl text-sm transition-all">
+                Cancel
+              </button>
+              <button
+                onClick={handleAssignToAgent}
+                disabled={assigning || !selectedAgentId}
+                className="flex-1 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] font-bold rounded-xl text-sm shadow-md hover:scale-[1.01] transition-all disabled:opacity-60 flex items-center justify-center gap-2"
+              >
+                {assigning ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}
+                Assign Leads
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating selection bar */}
+      {selectedLeads.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-[#1A1800] text-white rounded-2xl shadow-2xl px-5 py-3 border border-[#C9A227]/40">
+          <span className="text-sm font-bold">{selectedLeads.length} selected</span>
+          <button
+            onClick={handleOpenAssignModal}
+            className="inline-flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-[#C9A227] to-[#B8860B] text-[#1A1800] font-bold rounded-xl text-xs hover:scale-[1.03] transition-all"
+          >
+            <UserCheck size={14} /> Assign to Agent
+          </button>
+          <button onClick={() => setSelectedLeads([])} className="text-white/60 hover:text-white p-1">
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1A1800] font-[var(--font-playfair)] tracking-tight">
@@ -404,6 +586,20 @@ export default function AdminLeadsPage() {
           <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mt-1.5">
             Manage all customer enquiries and financing requests
           </p>
+        </div>
+        
+        <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-xl p-2 shadow-sm shrink-0">
+          <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider pl-2">Strategy:</span>
+          <select
+            value={strategy}
+            onChange={(e) => updateStrategy(e.target.value)}
+            disabled={strategyLoading}
+            className="bg-gray-50 border border-gray-200 text-xs font-bold text-[#1A1800] py-2 px-3 rounded-lg focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] outline-none cursor-pointer disabled:opacity-50"
+          >
+            <option value="manual">Manual / Unassigned</option>
+            <option value="round_robin">Round-Robin</option>
+            <option value="least_assigned">Least Assigned</option>
+          </select>
         </div>
       </div>
 
@@ -560,7 +756,16 @@ export default function AdminLeadsPage() {
                       lookingFor = enq.requirement.split('Looking for:')[1].trim();
                     }
                     return (
-                    <tr key={enq._id} className={`hover:bg-${activeTab === 'brochure' ? 'rose' : 'amber'}-50/30 transition-colors`}>
+                    <tr key={enq._id} className={`hover:bg-${activeTab === 'brochure' ? 'rose' : 'amber'}-50/30 transition-colors ${isLeadSelected(enq._id) ? 'bg-amber-50/50 ring-1 ring-inset ring-[#C9A227]/30' : ''}`}>
+                      {/* Checkbox */}
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={isLeadSelected(enq._id)}
+                          onChange={() => toggleLeadSelect(enq._id, 'property_enquiry')}
+                          className="w-4 h-4 rounded accent-[#C9A227] cursor-pointer"
+                        />
+                      </td>
                       {/* Date & Time */}
                       <td className="py-4 px-6 font-semibold text-gray-500 whitespace-nowrap">
                         <span className="flex items-center gap-1.5">
@@ -656,6 +861,7 @@ export default function AdminLeadsPage() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-gray-50 text-[10px] font-black text-gray-400 uppercase border-b border-gray-100">
+                    <th className="py-4 px-3"></th>
                     <th className="py-4 px-6">Submitted Date</th>
                     <th className="py-4 px-4">Name</th>
                     <th className="py-4 px-4">Email</th>
@@ -663,12 +869,21 @@ export default function AdminLeadsPage() {
                     <th className="py-4 px-4">Subject</th>
                     <th className="py-4 px-4">Message</th>
                     <th className="py-4 px-4">Property</th>
+                    <th className="py-4 px-4">Assigned To</th>
                     <th className="py-4 px-6 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {(filteredLeads as Lead[]).map((lead) => (
-                    <tr key={lead._id} className="hover:bg-[#FFFEF5]/50 transition-colors">
+                    <tr key={lead._id} className={`hover:bg-[#FFFEF5]/50 transition-colors ${isLeadSelected(lead._id) ? 'bg-amber-50/50 ring-1 ring-inset ring-[#C9A227]/30' : ''}`}>
+                      <td className="py-4 px-3">
+                        <input
+                          type="checkbox"
+                          checked={isLeadSelected(lead._id)}
+                          onChange={() => toggleLeadSelect(lead._id, 'contact')}
+                          className="w-4 h-4 rounded accent-[#C9A227] cursor-pointer"
+                        />
+                      </td>
                       <td className="py-4 px-6 font-semibold text-gray-500 whitespace-nowrap">
                         <span className="flex items-center gap-1.5">
                           <Calendar size={13} className="text-[#C9A227] shrink-0" />
@@ -711,6 +926,16 @@ export default function AdminLeadsPage() {
                           <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 bg-blue-50 text-blue-600 border border-blue-100 text-[8px] font-black rounded uppercase tracking-wider leading-none">
                             General Query
                           </span>
+                        )}
+                      </td>
+                      <td className="py-4 px-4">
+                        {lead.assignedAgentId ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-black rounded-full uppercase tracking-wider leading-none truncate max-w-[100px]" title={lead.assignedAgentId.name}>
+                            <UserCheck size={12} />
+                            {lead.assignedAgentId.name.split(' ')[0]}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">—</span>
                         )}
                       </td>
                       <td className="py-4 px-6 text-right">

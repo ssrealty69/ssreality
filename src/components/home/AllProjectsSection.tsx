@@ -24,7 +24,7 @@ const PROJECTS = [
     readyLabel: 'Ready to Move',
     possession: 'Immediate Possession',
     priceList: [
-      { type: '3BHK', size: '130 Sq.Yd.', price: '₹75 Lakhs', negotiable: true },
+      { type: '3BHK', size: '130 Sq.Yd.', price: '₹85 Lakhs', negotiable: true },
     ],
     badge: 'Ready Now',
   },
