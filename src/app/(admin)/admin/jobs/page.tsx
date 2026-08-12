@@ -187,10 +187,8 @@ export default function AdminJobsPage() {
                     <td className="py-4 px-4">
                       {app.resumeUrl?.startsWith('http') ? (
                         <a
-                          href={app.resumeUrl?.includes('res.cloudinary.com') ? app.resumeUrl.replace('/upload/', '/upload/fl_attachment/') : app.resumeUrl}
-                          download={`Resume-${app.name}.pdf`}
-                          target="_blank"
-                          rel="noreferrer"
+                          href={`/api/admin/download?url=${encodeURIComponent(app.resumeUrl)}&name=${encodeURIComponent(app.name)}`}
+                          download={`Resume-${app.name.replace(/\s+/g, '_')}`}
                           className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-[#B8860B] hover:text-[#C9A227] border border-amber-200/50 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm"
                           title="Download Resume Document"
                         >
