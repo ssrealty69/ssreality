@@ -45,6 +45,7 @@ interface PropertyEnquiry {
   propertyId: string;
   propertyTitle: string;
   propertyUrl: string;
+  assignedAgentId?: { _id: string, name: string };
   status: 'new' | 'contacted' | 'closed';
   createdAt: string;
 }
@@ -69,8 +70,6 @@ export default function AdminLeadsPage() {
   const [agents, setAgents] = useState<AgentOption[]>([]);
   const [selectedAgentId, setSelectedAgentId] = useState('');
   const [assigning, setAssigning] = useState(false);
-  const [strategy, setStrategy] = useState('manual');
-  const [strategyLoading, setStrategyLoading] = useState(false);
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
@@ -86,7 +85,6 @@ export default function AdminLeadsPage() {
     if (currentRole !== 'agent') {
       fetchAll();
       fetchAgents();
-      fetchStrategy();
     }
   }, []);
 
@@ -129,39 +127,10 @@ export default function AdminLeadsPage() {
     } catch { /* silent fail */ }
   };
 
-  const fetchStrategy = async () => {
-    try {
-      const res = await fetch('/api/admin/leads/strategy');
-      const data = await res.json();
-      if (data.success) setStrategy(data.strategy);
-    } catch {}
-  };
-
-  const updateStrategy = async (newStrategy: string) => {
-    setStrategyLoading(true);
-    try {
-      const res = await fetch('/api/admin/leads/strategy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ strategy: newStrategy })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setStrategy(newStrategy);
-        toast.success('Assignment Strategy Updated');
-      } else {
-        toast.error('Failed to update strategy');
-      }
-    } catch {
-      toast.error('Server error');
-    } finally {
-      setStrategyLoading(false);
-    }
-  };
 
   const handleOpenAssignModal = () => {
     if (selectedLeads.length === 0) {
-      toast.error('Pehle kuch leads select karo');
+      toast.error('Please select at least one lead');
       return;
     }
     fetchAgents();
@@ -170,7 +139,7 @@ export default function AdminLeadsPage() {
 
   const handleAssignToAgent = async () => {
     if (!selectedAgentId) {
-      toast.error('Ek agent select karo');
+      toast.error('Please select an agent');
       return;
     }
     setAssigning(true);
@@ -192,6 +161,24 @@ export default function AdminLeadsPage() {
       }
     } catch { toast.error('Server error'); }
     finally { setAssigning(false); }
+  };
+
+  const handleAssignSingleAgent = async (leadId: string, type: string, agentId: string) => {
+    if (!agentId) return;
+    try {
+      const res = await fetch('/api/admin/leads/assign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agentId, leads: [{ id: leadId, type }] }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Assigned successfully');
+        fetchAll();
+      } else {
+        toast.error(data.error || 'Assignment failed');
+      }
+    } catch { toast.error('Server error'); }
   };
 
   const toggleLeadSelect = (id: string, type: string) => {
@@ -587,20 +574,6 @@ export default function AdminLeadsPage() {
             Manage all customer enquiries and financing requests
           </p>
         </div>
-        
-        <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-xl p-2 shadow-sm shrink-0">
-          <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider pl-2">Strategy:</span>
-          <select
-            value={strategy}
-            onChange={(e) => updateStrategy(e.target.value)}
-            disabled={strategyLoading}
-            className="bg-gray-50 border border-gray-200 text-xs font-bold text-[#1A1800] py-2 px-3 rounded-lg focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] outline-none cursor-pointer disabled:opacity-50"
-          >
-            <option value="manual">Manual / Unassigned</option>
-            <option value="round_robin">Round-Robin</option>
-            <option value="least_assigned">Least Assigned</option>
-          </select>
-        </div>
       </div>
 
       {/* Stats Row */}
@@ -741,6 +714,8 @@ export default function AdminLeadsPage() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className={`bg-${activeTab === 'brochure' ? 'rose' : 'amber'}-50/60 text-[10px] font-black text-${activeTab === 'brochure' ? 'rose' : 'amber'}-700 uppercase border-b border-${activeTab === 'brochure' ? 'rose' : 'amber'}-100`}>
+                    <th className="py-4 px-3"></th>
+                    <th className="py-4 px-4">Assign To</th>
                     <th className="py-4 px-6">Date &amp; Time</th>
                     <th className="py-4 px-4">Name</th>
                     <th className="py-4 px-4">Phone</th>
@@ -765,6 +740,19 @@ export default function AdminLeadsPage() {
                           onChange={() => toggleLeadSelect(enq._id, 'property_enquiry')}
                           className="w-4 h-4 rounded accent-[#C9A227] cursor-pointer"
                         />
+                      </td>
+                      {/* Assign To */}
+                      <td className="py-4 px-4">
+                        <select
+                          className="bg-gray-50 border border-gray-200 text-[10px] font-bold text-gray-800 py-1.5 px-2 rounded-lg focus:border-[#C9A227] focus:ring-1 focus:ring-[#C9A227] outline-none cursor-pointer w-[110px]"
+                          value={(enq.assignedAgentId as any)?._id || (typeof enq.assignedAgentId === 'string' ? enq.assignedAgentId : '')}
+                          onChange={(e) => handleAssignSingleAgent(enq._id, 'property_enquiry', e.target.value)}
+                        >
+                          <option value="">Unassigned</option>
+                          {agents.map(a => (
+                            <option key={a._id} value={a._id}>{a.name.split(' ')[0]}</option>
+                          ))}
+                        </select>
                       </td>
                       {/* Date & Time */}
                       <td className="py-4 px-6 font-semibold text-gray-500 whitespace-nowrap">
@@ -869,7 +857,6 @@ export default function AdminLeadsPage() {
                     <th className="py-4 px-4">Subject</th>
                     <th className="py-4 px-4">Message</th>
                     <th className="py-4 px-4">Property</th>
-                    <th className="py-4 px-4">Assigned To</th>
                     <th className="py-4 px-6 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -926,16 +913,6 @@ export default function AdminLeadsPage() {
                           <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 bg-blue-50 text-blue-600 border border-blue-100 text-[8px] font-black rounded uppercase tracking-wider leading-none">
                             General Query
                           </span>
-                        )}
-                      </td>
-                      <td className="py-4 px-4">
-                        {lead.assignedAgentId ? (
-                          <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-black rounded-full uppercase tracking-wider leading-none truncate max-w-[100px]" title={lead.assignedAgentId.name}>
-                            <UserCheck size={12} />
-                            {lead.assignedAgentId.name.split(' ')[0]}
-                          </span>
-                        ) : (
-                          <span className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">—</span>
                         )}
                       </td>
                       <td className="py-4 px-6 text-right">

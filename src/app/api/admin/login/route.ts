@@ -51,9 +51,12 @@ export async function POST(request: NextRequest) {
       userId = user._id.toString();
     } else {
       // Try Agent
-      user = await Agent.findOne({ username: email.toLowerCase().trim(), isActive: true });
+      user = await Agent.findOne({ username: email.toLowerCase().trim() });
       if (!user) {
         return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      }
+      if (!user.isActive) {
+        return NextResponse.json({ error: 'Aapka agent account inactive hai. Kripya admin se sampark karein.' }, { status: 403 });
       }
       const hashed = hashPassword(password, user.salt);
       if (hashed !== user.passwordHash) {

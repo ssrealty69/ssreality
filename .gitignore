@@ -45,3 +45,8 @@ next-env.d.ts
 /public/SS Realty Review, Gurgaon Best Real Estate SS Realty, SS Realty Client Testimonial Video.MP4
 /public/*.MOV
 /public/*.mov
+
+# temp logs and scratch
+*.log
+.next_dev_log*.txt
+scratch/

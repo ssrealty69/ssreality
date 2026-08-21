@@ -1,9 +1,9 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target, Compass, HelpCircle, Phone, BarChart2 } from 'lucide-react';
+import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target, Compass, HelpCircle, Phone, BarChart2, Package2, Navigation } from 'lucide-react';
 import Image from 'next/image';
 
 const navItems = [
@@ -13,7 +13,9 @@ const navItems = [
   { href: '/admin/delivered-landmarks', label: 'Delivered Landmarks', icon: Compass, restricted: true },
   { href: '/admin/leads', label: 'Leads', icon: Users, hasBadge: true },
   { href: '/admin/agents', label: 'Team Management', icon: Users },
+  { href: '/admin/tracking', label: 'Field GPS Radar', icon: Navigation },
   { href: '/admin/reports', label: 'Team Reports', icon: BarChart2 },
+  { href: '/admin/share-kits', label: 'Share Kits', icon: Package2 },
   { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText, restricted: true },
   { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target, restricted: true },

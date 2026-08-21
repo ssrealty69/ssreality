@@ -9,6 +9,7 @@ export interface IPropertyEnquiry extends Document {
   propertyUrl: string;
   isBrochureDownload?: boolean;
   source?: string;
+  assignedAgentId?: mongoose.Types.ObjectId;
   status: 'new' | 'contacted' | 'closed';
   createdAt: Date;
   updatedAt: Date;
@@ -24,6 +25,7 @@ const PropertyEnquirySchema = new Schema<IPropertyEnquiry>(
     propertyUrl:    { type: String, required: true, trim: true },
     isBrochureDownload: { type: Boolean, default: false },
     source:         { type: String, default: '' },
+    assignedAgentId: { type: Schema.Types.ObjectId, ref: 'Agent' },
     status: {
       type: String,
       enum: ['new', 'contacted', 'closed'],
@@ -33,8 +35,11 @@ const PropertyEnquirySchema = new Schema<IPropertyEnquiry>(
   { timestamps: true }
 );
 
+if (mongoose.models.PropertyEnquiry) {
+  delete mongoose.models.PropertyEnquiry;
+}
+
 const PropertyEnquiry: Model<IPropertyEnquiry> =
-  mongoose.models.PropertyEnquiry ||
   mongoose.model<IPropertyEnquiry>('PropertyEnquiry', PropertyEnquirySchema);
 
 export default PropertyEnquiry;

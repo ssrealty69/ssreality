@@ -40,23 +40,23 @@ export async function POST(req: NextRequest) {
     for (const lead of leads) {
       const { id, type } = lead;
 
-      // Prevent duplicate assignment
-      const existing = await AgentLead.findOne({ agentId, originalLeadId: id });
-      if (existing) {
-        skipped.push(id);
-        continue;
-      }
-
       let sourceDoc: any = null;
       if (type === 'contact') {
         sourceDoc = await Contact.findByIdAndUpdate(id, { assignedAgentId: agent._id.toString() }, { new: false }).lean();
       } else if (type === 'property_enquiry') {
-        sourceDoc = await PropertyEnquiry.findById(id).lean();
+        sourceDoc = await PropertyEnquiry.findByIdAndUpdate(id, { assignedAgentId: agent._id.toString() }, { new: false }).lean();
       } else if (type === 'ai_lead') {
         sourceDoc = await AiLead.findById(id).lean();
       }
 
       if (!sourceDoc) {
+        skipped.push(id);
+        continue;
+      }
+
+      // Prevent duplicate assignment
+      const existing = await AgentLead.findOne({ agentId, originalLeadId: id });
+      if (existing) {
         skipped.push(id);
         continue;
       }

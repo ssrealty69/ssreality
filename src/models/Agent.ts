@@ -5,8 +5,10 @@ export interface IAgent extends Document {
   username: string;
   passwordHash: string;
   salt: string;
+  plainPassword?: string;
   employee_id: string;
   isActive: boolean;
+  allowRemotePunchIn?: boolean; // When true, agent can punch-in/login from any location even if global geofence is ON
   lastAssignedLeadAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -14,12 +16,14 @@ export interface IAgent extends Document {
 
 const AgentSchema = new Schema<IAgent>(
   {
-    name:         { type: String, required: true, trim: true },
-    username:     { type: String, required: true, trim: true, lowercase: true, unique: true },
-    passwordHash: { type: String, required: true },
-    salt:         { type: String, required: true },
-    employee_id:  { type: String, required: true, trim: true, unique: true },
-    isActive:     { type: Boolean, default: true },
+    name:          { type: String, required: true, trim: true },
+    username:      { type: String, required: true, trim: true, lowercase: true, unique: true },
+    passwordHash:  { type: String, required: true },
+    salt:          { type: String, required: true },
+    plainPassword: { type: String, default: '' },
+    employee_id:   { type: String, required: true, trim: true, unique: true },
+    isActive:      { type: Boolean, default: true },
+    allowRemotePunchIn: { type: Boolean, default: false },
     lastAssignedLeadAt: { type: Date },
   },
   { timestamps: true }
@@ -27,6 +31,10 @@ const AgentSchema = new Schema<IAgent>(
 
 AgentSchema.index({ username: 1 });
 AgentSchema.index({ employee_id: 1 });
+
+if (mongoose.models.Agent) {
+  delete (mongoose.models as any).Agent;
+}
 
 const Agent: Model<IAgent> =
   mongoose.models.Agent || mongoose.model<IAgent>('Agent', AgentSchema);

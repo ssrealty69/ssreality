@@ -156,7 +156,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   email: 'info@ssrealty.org',
                   address: {
                     '@type': 'PostalAddress',
-                    streetAddress: 'Plot No-2, Dalmia Farm, Jonapur',
+                    streetAddress: 'Dalmia farm, Plot no-2, Jona Pur, Jaunapur',
                     addressLocality: 'New Delhi',
                     addressRegion: 'Delhi',
                     postalCode: '110047',
@@ -164,8 +164,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   },
                   geo: {
                     '@type': 'GeoCoordinates',
-                    latitude: 28.4595,
-                    longitude: 77.1553
+                    latitude: 28.4624272,
+                    longitude: 77.1515298
                   },
                   openingHoursSpecification: [
                     {
@@ -268,15 +268,57 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 },
                 {
                   '@type': 'ItemList',
-                  name: 'SS Realty Property Services',
+                  name: 'SS Realty Site Navigation',
                   itemListElement: [
-                    { '@type': 'SiteNavigationElement', position: 1, name: '3 BHK Flats in Gwal Pahari', url: 'https://ssrealty.org/properties?type=Apartment' },
-                    { '@type': 'SiteNavigationElement', position: 2, name: '3 BHK Flats in Chattarpur', url: 'https://ssrealty.org/properties?type=Apartment' },
-                    { '@type': 'SiteNavigationElement', position: 3, name: 'Builder Floor in Gurgaon', url: 'https://ssrealty.org/properties?type=Villa' },
-                    { '@type': 'SiteNavigationElement', position: 4, name: 'Plots in Gurgaon', url: 'https://ssrealty.org/properties?type=Plot' },
-                    { '@type': 'SiteNavigationElement', position: 5, name: 'Commercial Properties', url: 'https://ssrealty.org/properties?type=Commercial' },
-                    { '@type': 'SiteNavigationElement', position: 6, name: 'Home Loan EMI Calculator', url: 'https://ssrealty.org/emi-calculator' },
-                    { '@type': 'SiteNavigationElement', position: 7, name: 'Contact SS Realty', url: 'https://ssrealty.org/contact-us' }
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 1,
+                      name: 'All Properties & Projects',
+                      description: 'Explore all luxury apartments, builder floors and plots by SS Realty in Delhi NCR',
+                      url: 'https://ssrealty.org/properties'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 2,
+                      name: 'Flats in Chattarpur',
+                      description: '2, 3 & 4 BHK luxury builder floors for sale in Chattarpur with registry and loan',
+                      url: 'https://ssrealty.org/flats-in-chattarpur'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 3,
+                      name: '3 BHK Flats in Chattarpur',
+                      description: 'Spacious luxury 3 BHK builder floor flats in Chattarpur near metro station',
+                      url: 'https://ssrealty.org/3-bhk-flats-for-sale-chattarpur'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 4,
+                      name: '2 BHK Flats in Chattarpur',
+                      description: 'Budget-friendly 2 BHK flats with modern amenities and NBFC loan assistance',
+                      url: 'https://ssrealty.org/2-bhk-flat-in-chattarpur'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 5,
+                      name: 'Flats in South Delhi',
+                      description: 'Premium builder floors and residential apartments for sale in South Delhi',
+                      url: 'https://ssrealty.org/flats-for-sale-in-south-delhi'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 6,
+                      name: 'Home Loan EMI Calculator',
+                      description: 'Calculate your monthly EMI, interest and loan eligibility with SS Realty',
+                      url: 'https://ssrealty.org/emi-calculator'
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 7,
+                      name: 'Contact SS Realty',
+                      description: 'Get in touch with SS Realty experts for site visits and property consultation',
+                      url: 'https://ssrealty.org/contact-us'
+                    }
                   ]
                 }
               ]

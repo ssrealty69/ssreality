@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     const enquiries = await PropertyEnquiry.find({})
+      .populate('assignedAgentId', 'name')
       .sort({ createdAt: -1 })
       .lean();
 

@@ -1,4 +1,4 @@
-﻿import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export type Disposition =
   | 'new'
@@ -16,12 +16,27 @@ export interface ICallLog {
   disposition: Disposition;
   notes?: string;
   calledAt: Date;
+  duration?: string;
+  durationSeconds?: number;
+  recordingUrl?: string;
+  recordingPath?: string;
 }
 
 export interface IVisitDetails {
   day?: string;
   date?: string;
   time?: string;
+}
+
+export interface IBookingDetails {
+  projectName?: string;
+  location?: string;
+  unitType?: string;
+  amount?: number;
+  amountFormatted?: string;
+  downpayment?: string;
+  bookedAt?: Date;
+  receiptNumber?: string;
 }
 
 export interface IAgentLead extends Document {
@@ -36,6 +51,7 @@ export interface IAgentLead extends Document {
   propertyInterest?: string;
   disposition: Disposition;
   visitDetails?: IVisitDetails;
+  bookingDetails?: IBookingDetails;
   followUpDate?: Date;
   history: ICallLog[];
   sharedProjectIds?: string[];
@@ -52,6 +68,10 @@ const CallLogSchema = new Schema<ICallLog>(
     },
     notes: { type: String, trim: true },
     calledAt: { type: Date, default: () => new Date() },
+    duration: { type: String, trim: true },
+    durationSeconds: { type: Number, default: 0 },
+    recordingUrl: { type: String, trim: true },
+    recordingPath: { type: String, trim: true },
   },
   { _id: false }
 );
@@ -61,6 +81,20 @@ const VisitDetailsSchema = new Schema<IVisitDetails>(
     day:  { type: String, trim: true },
     date: { type: String, trim: true },
     time: { type: String, trim: true },
+  },
+  { _id: false }
+);
+
+const BookingDetailsSchema = new Schema<IBookingDetails>(
+  {
+    projectName:    { type: String, trim: true },
+    location:       { type: String, trim: true },
+    unitType:       { type: String, trim: true },
+    amount:         { type: Number },
+    amountFormatted:{ type: String, trim: true },
+    downpayment:    { type: String, trim: true },
+    bookedAt:       { type: Date, default: () => new Date() },
+    receiptNumber:  { type: String, trim: true },
   },
   { _id: false }
 );
@@ -83,6 +117,7 @@ const AgentLeadSchema = new Schema<IAgentLead>(
       index: true,
     },
     visitDetails:    { type: VisitDetailsSchema },
+    bookingDetails:  { type: BookingDetailsSchema },
     followUpDate:    { type: Date },
     history:         { type: [CallLogSchema], default: [] },
     sharedProjectIds:{ type: [String], default: [] },
