@@ -362,8 +362,12 @@ export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) 
       totalNewInserted += inserted;
       totalUpdated += modified;
 
-      // Auto-distribute leads to team agents in real-time
+      // Auto-distribute fresh leads from today onwards (22 Aug 2026+) to team agents in real-time
+      const DISTRIBUTION_START_DATE = new Date('2026-08-21T18:30:00.000Z');
       for (const lead of parsed.leads) {
+        if (lead.createdAt && lead.createdAt < DISTRIBUTION_START_DATE) {
+          continue; // Skip old historical leads
+        }
         try {
           await distributeLead({
             name: lead.name,
