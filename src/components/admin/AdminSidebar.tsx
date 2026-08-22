@@ -19,7 +19,7 @@ const navItems = [
   { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText, restricted: true },
   { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target, restricted: true },
-  { href: '/admin/meta-ads', label: 'Meta Ads', icon: Megaphone, restricted: true },
+  { href: '/admin/meta-ads', label: 'Meta Ads', icon: Megaphone },
 ];
 
 export default function AdminSidebar({ 

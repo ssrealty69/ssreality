@@ -5,7 +5,7 @@ import {
   Megaphone, RefreshCw, Download, Search, Filter, Phone, MessageSquare, 
   ExternalLink, Calendar, CheckCircle, AlertCircle, Clock, Database, 
   Layers, ChevronDown, ChevronRight, X, ArrowUpRight, Copy, Check, Sparkles, FileSpreadsheet,
-  Zap, Radio, CheckCheck
+  Zap, Radio, CheckCheck, Lock, ShieldCheck, ShieldAlert
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -78,12 +78,26 @@ export default function MetaAdsAdminPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  // Modal Detail & Auto-Sync
+  // Modal Detail & Auto-Sync & Role Detection
   const [activeModalLead, setActiveModalLead] = useState<MetaLead | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [autoSync, setAutoSync] = useState(true);
   const [showWebhookGuide, setShowWebhookGuide] = useState(false);
   const [lastAutoSyncTime, setLastAutoSyncTime] = useState<Date>(new Date());
+  const [userRole, setUserRole] = useState<string>('admin');
+
+  useEffect(() => {
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || '';
+      return '';
+    };
+    const role = getCookie('admin_role') || 'admin';
+    setUserRole(role);
+  }, []);
+
+  const isSuperAdmin = userRole === 'super_admin';
 
   const fetchLeads = useCallback(async (isSilent = false) => {
     try {
@@ -293,68 +307,70 @@ export default function MetaAdsAdminPage() {
             <ExternalLink size={12} className="text-[#7A7560]" />
           </a>
 
-          {/* Export Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setShowExportMenu(!showExportMenu)}
-              disabled={exporting}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white border border-[#C9A227]/40 text-[#1A1800] hover:border-[#C9A227] hover:bg-[#F9F6EE] transition-all shadow-sm"
-            >
-              <Download size={15} className="text-[#B38715]" />
-              <span>Export Excel</span>
-              <ChevronDown size={14} className="text-[#7A7560]" />
-            </button>
-
-            {showExportMenu && (
-              <div 
-                className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-[#C9A227]/20 p-2 z-50 animate-in fade-in slide-in-from-top-2"
-                onMouseLeave={() => setShowExportMenu(false)}
+          {/* Export Dropdown (Super Admin only) */}
+          {isSuperAdmin && (
+            <div className="relative">
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                disabled={exporting}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white border border-[#C9A227]/40 text-[#1A1800] hover:border-[#C9A227] hover:bg-[#F9F6EE] transition-all shadow-sm"
               >
-                <div className="px-3 py-1.5 text-[11px] font-bold text-[#7A7560] uppercase tracking-wider">
-                  Excel Export Modes
-                </div>
-                <button
-                  onClick={() => handleExport('all')}
-                  className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-[#FDFBF7] text-[#1A1800] flex items-center justify-between transition-colors"
+                <Download size={15} className="text-[#B38715]" />
+                <span>Export Excel</span>
+                <ChevronDown size={14} className="text-[#7A7560]" />
+              </button>
+
+              {showExportMenu && (
+                <div 
+                  className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-[#C9A227]/20 p-2 z-50 animate-in fade-in slide-in-from-top-2"
+                  onMouseLeave={() => setShowExportMenu(false)}
                 >
-                  <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-                    Master All Leads Dump
-                  </span>
-                  <span className="text-[10px] text-[#7A7560] bg-[#F4EFE6] px-1.5 py-0.5 rounded">All Tabs</span>
-                </button>
-                <button
-                  onClick={() => handleExport('active')}
-                  className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-[#EAF7EE] text-[#0E6228] flex items-center justify-between transition-colors"
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#107C41]"></span>
-                    Active Campaigns Only
-                  </span>
-                  <span className="text-[10px] text-[#0E6228] bg-[#D4F2DE] px-1.5 py-0.5 rounded">Last 2 Days</span>
-                </button>
-                <button
-                  onClick={() => handleExport('inactive')}
-                  className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-[#FDF0F0] text-[#9E1C1C] flex items-center justify-between transition-colors"
-                >
-                  <span className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                    Inactive Campaigns Only
-                  </span>
-                  <span className="text-[10px] text-[#9E1C1C] bg-[#FDE2E2] px-1.5 py-0.5 rounded">&gt; 2 Days Old</span>
-                </button>
-                {selectedSheet !== 'all' && (
+                  <div className="px-3 py-1.5 text-[11px] font-bold text-[#7A7560] uppercase tracking-wider">
+                    Excel Export Modes
+                  </div>
                   <button
-                    onClick={() => handleExport('single')}
-                    className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-[#FFF9E6] text-[#B38715] flex items-center justify-between transition-colors border-t border-[#C9A227]/15 mt-1"
+                    onClick={() => handleExport('all')}
+                    className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-[#FDFBF7] text-[#1A1800] flex items-center justify-between transition-colors"
                   >
-                    <span className="truncate pr-2">Export &quot;{selectedSheet}&quot;</span>
-                    <span className="text-[10px] bg-[#FFF0C2] text-[#8C6B10] px-1.5 py-0.5 rounded shrink-0">Current Tab</span>
+                    <span className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                      Master All Leads Dump
+                    </span>
+                    <span className="text-[10px] text-[#7A7560] bg-[#F4EFE6] px-1.5 py-0.5 rounded">All Tabs</span>
                   </button>
-                )}
-              </div>
-            )}
-          </div>
+                  <button
+                    onClick={() => handleExport('active')}
+                    className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-[#EAF7EE] text-[#0E6228] flex items-center justify-between transition-colors"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#107C41]"></span>
+                      Active Campaigns Only
+                    </span>
+                    <span className="text-[10px] text-[#0E6228] bg-[#D4F2DE] px-1.5 py-0.5 rounded">Last 2 Days</span>
+                  </button>
+                  <button
+                    onClick={() => handleExport('inactive')}
+                    className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-[#FDF0F0] text-[#9E1C1C] flex items-center justify-between transition-colors"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                      Inactive Campaigns Only
+                    </span>
+                    <span className="text-[10px] text-[#9E1C1C] bg-[#FDE2E2] px-1.5 py-0.5 rounded">&gt; 2 Days Old</span>
+                  </button>
+                  {selectedSheet !== 'all' && (
+                    <button
+                      onClick={() => handleExport('single')}
+                      className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-[#FFF9E6] text-[#B38715] flex items-center justify-between transition-colors border-t border-[#C9A227]/15 mt-1"
+                    >
+                      <span className="truncate pr-2">Export &quot;{selectedSheet}&quot;</span>
+                      <span className="text-[10px] bg-[#FFF0C2] text-[#8C6B10] px-1.5 py-0.5 rounded shrink-0">Current Tab</span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Manual Sync Now Button */}
           <button
@@ -564,276 +580,387 @@ export default function MetaAdsAdminPage() {
         </div>
       </div>
 
-      {/* 4. Search and Filter Controls */}
-      <div className="bg-white rounded-2xl p-4 border border-[#C9A227]/20 shadow-sm mb-6">
-        <div className="flex flex-col md:flex-row items-center gap-3">
-          {/* Search Input */}
-          <div className="relative flex-1 w-full">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#7A7560]" size={16} />
-            <input
-              type="text"
-              placeholder="Search by Name, Phone, Email, Campaign, Form..."
-              value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#C9A227]/30 text-xs bg-[#FDFBF7] focus:outline-none focus:border-[#B38715] transition-all"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => { setSearchQuery(''); setPage(1); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <X size={14} />
-              </button>
-            )}
+      {/* 4. Leads Section: Super Admin (Full Customer Rows) vs Normal Admin (Campaign Overview & Vault Info) */}
+      {isSuperAdmin ? (
+        <>
+          {/* Search and Filter Controls */}
+          <div className="bg-white rounded-2xl p-4 border border-[#C9A227]/20 shadow-sm mb-6">
+            <div className="flex flex-col md:flex-row items-center gap-3">
+              {/* Search Input */}
+              <div className="relative flex-1 w-full">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#7A7560]" size={16} />
+                <input
+                  type="text"
+                  placeholder="Search by Name, Phone, Email, Campaign, Form..."
+                  value={searchQuery}
+                  onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#C9A227]/30 text-xs bg-[#FDFBF7] focus:outline-none focus:border-[#B38715] transition-all"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => { setSearchQuery(''); setPage(1); }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              {/* Platform Filter */}
+              <div className="flex items-center gap-2 w-full md:w-auto">
+                <select
+                  value={platformFilter}
+                  onChange={(e) => { setPlatformFilter(e.target.value); setPage(1); }}
+                  className="px-3.5 py-2.5 rounded-xl border border-[#C9A227]/30 text-xs font-semibold bg-[#FDFBF7] text-[#1A1800] focus:outline-none focus:border-[#B38715]"
+                >
+                  <option value="all">All Platforms (FB / IG)</option>
+                  <option value="fb">Facebook Ads</option>
+                  <option value="ig">Instagram Ads</option>
+                </select>
+
+                <button
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSelectedSheet('all');
+                    setStatusFilter('all');
+                    setPlatformFilter('all');
+                    setPage(1);
+                  }}
+                  className="px-3 py-2.5 rounded-xl text-xs font-semibold text-[#7A7560] hover:text-[#1A1800] hover:bg-[#F4EFE6] transition-colors whitespace-nowrap"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            </div>
+
+            {/* Results Info Bar */}
+            <div className="flex items-center justify-between text-xs text-[#7A7560] font-medium pt-3 mt-3 border-t border-gray-100">
+              <span>
+                Showing <strong className="text-[#1A1800]">{leads.length}</strong> of{' '}
+                <strong className="text-[#1A1800]">{totalCount.toLocaleString('en-IN')}</strong> matching leads
+                {selectedSheet !== 'all' && (
+                  <span> in <em>&quot;{selectedSheet}&quot;</em></span>
+                )}
+              </span>
+              <span>Page {page} of {totalPages || 1}</span>
+            </div>
           </div>
 
-          {/* Platform Filter */}
-          <div className="flex items-center gap-2 w-full md:w-auto">
-            <select
-              value={platformFilter}
-              onChange={(e) => { setPlatformFilter(e.target.value); setPage(1); }}
-              className="px-3.5 py-2.5 rounded-xl border border-[#C9A227]/30 text-xs font-semibold bg-[#FDFBF7] text-[#1A1800] focus:outline-none focus:border-[#B38715]"
-            >
-              <option value="all">All Platforms (FB / IG)</option>
-              <option value="fb">Facebook Ads</option>
-              <option value="ig">Instagram Ads</option>
-            </select>
-
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedSheet('all');
-                setStatusFilter('all');
-                setPlatformFilter('all');
-                setPage(1);
-              }}
-              className="px-3 py-2.5 rounded-xl text-xs font-semibold text-[#7A7560] hover:text-[#1A1800] hover:bg-[#F4EFE6] transition-colors whitespace-nowrap"
-            >
-              Reset Filters
-            </button>
-          </div>
-        </div>
-
-        {/* Results Info Bar */}
-        <div className="flex items-center justify-between text-xs text-[#7A7560] font-medium pt-3 mt-3 border-t border-gray-100">
-          <span>
-            Showing <strong className="text-[#1A1800]">{leads.length}</strong> of{' '}
-            <strong className="text-[#1A1800]">{totalCount.toLocaleString('en-IN')}</strong> matching leads
-            {selectedSheet !== 'all' && (
-              <span> in <em>&quot;{selectedSheet}&quot;</em></span>
-            )}
-          </span>
-          <span>Page {page} of {totalPages || 1}</span>
-        </div>
-      </div>
-
-      {/* 5. Master Data Table */}
-      <div className="bg-white rounded-2xl border border-[#C9A227]/20 shadow-sm overflow-hidden mb-6">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-[#1A1800] text-white text-[11px] font-bold uppercase tracking-wider">
-                <th className="py-3 px-4 w-12 text-center">#</th>
-                <th className="py-3 px-4">Date & Time</th>
-                <th className="py-3 px-4">Sheet / Campaign</th>
-                <th className="py-3 px-4">Lead Name</th>
-                <th className="py-3 px-4">Contact</th>
-                <th className="py-3 px-4">Requirement / Form</th>
-                <th className="py-3 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 text-xs">
-              {loading ? (
-                <tr>
-                  <td colSpan={7} className="py-16 text-center text-[#7A7560]">
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <RefreshCw size={24} className="animate-spin text-[#B38715]" />
-                      <span className="font-semibold">Loading Meta Leads...</span>
-                    </div>
-                  </td>
-                </tr>
-              ) : leads.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-16 text-center text-[#7A7560]">
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <AlertCircle size={28} className="text-[#B38715]" />
-                      <span className="font-bold text-sm text-[#1A1800]">No Leads Found</span>
-                      <p className="text-xs max-w-sm">
-                        No leads match your active filters. Try clicking &quot;Sync Now&quot; to fetch latest leads from Google Sheets.
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                leads.map((lead, idx) => {
-                  const sNo = (page - 1) * 50 + idx + 1;
-                  const isIg = lead.platform?.toLowerCase() === 'ig';
-
-                  return (
-                    <tr 
-                      key={lead._id || idx}
-                      className="hover:bg-[#FDFBF7] transition-colors group cursor-pointer"
-                      onClick={() => setActiveModalLead(lead)}
-                    >
-                      {/* S.No */}
-                      <td className="py-3.5 px-4 text-center font-bold text-[#7A7560]">
-                        {sNo}
-                      </td>
-
-                      {/* Date & Time */}
-                      <td className="py-3.5 px-4 whitespace-nowrap">
-                        <div className="font-semibold text-[#1A1800]">
-                          {formatDate(lead.createdAt)}
+          {/* Master Data Table */}
+          <div className="bg-white rounded-2xl border border-[#C9A227]/20 shadow-sm overflow-hidden mb-6">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#1A1800] text-white text-[11px] font-bold uppercase tracking-wider">
+                    <th className="py-3 px-4 w-12 text-center">#</th>
+                    <th className="py-3 px-4">Date & Time</th>
+                    <th className="py-3 px-4">Sheet / Campaign</th>
+                    <th className="py-3 px-4">Lead Name</th>
+                    <th className="py-3 px-4">Contact</th>
+                    <th className="py-3 px-4">Requirement / Form</th>
+                    <th className="py-3 px-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 text-xs">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={7} className="py-16 text-center text-[#7A7560]">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <RefreshCw size={24} className="animate-spin text-[#B38715]" />
+                          <span className="font-semibold">Loading Meta Leads...</span>
                         </div>
-                        <div className="text-[10px] text-[#7A7560]">
-                          {getTimeAgo(lead.createdAt)}
-                        </div>
-                      </td>
-
-                      {/* Sheet Name & Campaign */}
-                      <td className="py-3.5 px-4">
-                        <div className="font-bold text-[#1A1800] truncate max-w-[200px]" title={lead.sheetName}>
-                          {lead.sheetName}
-                        </div>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
-                            isIg 
-                              ? 'bg-pink-100 text-pink-700' 
-                              : 'bg-blue-100 text-blue-700'
-                          }`}>
-                            {lead.platform?.toUpperCase() || 'FB'}
-                          </span>
-                          {lead.formName && (
-                            <span className="text-[10px] text-[#7A7560] truncate max-w-[130px]" title={lead.formName}>
-                              {lead.formName}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Name */}
-                      <td className="py-3.5 px-4">
-                        <div className="font-bold text-[#1A1800]">
-                          {lead.name || 'Lead'}
-                        </div>
-                        {lead.email && (
-                          <div className="text-[11px] text-[#7A7560] truncate max-w-[160px]" title={lead.email}>
-                            {lead.email}
-                          </div>
-                        )}
-                      </td>
-
-                      {/* Contact with Call & WhatsApp buttons */}
-                      <td className="py-3.5 px-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-[#1A1800] tracking-wide">
-                            {lead.phone || lead.rawPhone}
-                          </span>
-                          <button
-                            onClick={() => copyToClipboard(lead.phone || lead.rawPhone || '', lead._id)}
-                            className="p-1 hover:bg-gray-100 rounded text-gray-400 hover:text-[#1A1800] transition-colors"
-                            title="Copy Phone"
-                          >
-                            {copiedId === lead._id ? <Check size={13} className="text-green-600" /> : <Copy size={13} />}
-                          </button>
-                        </div>
-                        <div className="flex items-center gap-2 mt-1.5">
-                          {lead.phone && (
-                            <>
-                              <a
-                                href={`tel:${lead.phone}`}
-                                className="flex items-center gap-1 px-2 py-0.5 bg-[#FFF0C2] text-[#8C6B10] rounded text-[10px] font-bold hover:bg-[#FFE28A] transition-colors"
-                              >
-                                <Phone size={10} />
-                                Call
-                              </a>
-                              <a
-                                href={`https://wa.me/91${lead.phone.slice(-10)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1 px-2 py-0.5 bg-[#D4F2DE] text-[#0E6228] rounded text-[10px] font-bold hover:bg-[#B7E8C6] transition-colors"
-                              >
-                                <MessageSquare size={10} />
-                                WhatsApp
-                              </a>
-                            </>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Requirement / Budget / Timeline */}
-                      <td className="py-3.5 px-4 max-w-xs">
-                        <div className="space-y-0.5">
-                          {lead.budget && (
-                            <div className="text-[11px] font-semibold text-[#1A1800]">
-                              💰 {lead.budget}
-                            </div>
-                          )}
-                          {lead.planning && (
-                            <div className="text-[10px] text-[#7A7560]">
-                              🗓️ Buy: <strong>{lead.planning.replace(/_/g, ' ')}</strong>
-                            </div>
-                          )}
-                          {lead.visitTimeline && (
-                            <div className="text-[10px] text-[#7A7560]">
-                              📍 Visit: <strong>{lead.visitTimeline.replace(/_/g, ' ')}</strong>
-                            </div>
-                          )}
-                          {lead.configuration && (
-                            <div className="text-[10px] text-[#7A7560]">
-                              🏠 {lead.configuration}
-                            </div>
-                          )}
-                          {!lead.budget && !lead.planning && !lead.visitTimeline && (
-                            <span className="text-[11px] text-gray-400 italic">No custom fields</span>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="py-3.5 px-4 text-center whitespace-nowrap">
-                        <button
-                          onClick={() => setActiveModalLead(lead)}
-                          className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-[#F4EFE6] text-[#1A1800] hover:bg-[#E5D7B5] transition-colors"
-                        >
-                          View Details
-                        </button>
                       </td>
                     </tr>
-                  );
+                  ) : leads.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="py-16 text-center text-[#7A7560]">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <AlertCircle size={28} className="text-[#B38715]" />
+                          <span className="font-bold text-sm text-[#1A1800]">No Leads Found</span>
+                          <p className="text-xs max-w-sm">
+                            No leads match your active filters. Try clicking &quot;Sync Now&quot; to fetch latest leads from Google Sheets.
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    leads.map((lead, idx) => {
+                      const sNo = (page - 1) * 50 + idx + 1;
+                      const isIg = lead.platform?.toLowerCase() === 'ig';
+
+                      return (
+                        <tr 
+                          key={lead._id || idx}
+                          className="hover:bg-[#FDFBF7] transition-colors group cursor-pointer"
+                          onClick={() => setActiveModalLead(lead)}
+                        >
+                          {/* S.No */}
+                          <td className="py-3.5 px-4 text-center font-bold text-[#7A7560]">
+                            {sNo}
+                          </td>
+
+                          {/* Date & Time */}
+                          <td className="py-3.5 px-4 whitespace-nowrap">
+                            <div className="font-semibold text-[#1A1800]">
+                              {formatDate(lead.createdAt)}
+                            </div>
+                            <div className="text-[10px] text-[#7A7560]">
+                              {getTimeAgo(lead.createdAt)}
+                            </div>
+                          </td>
+
+                          {/* Sheet Name & Campaign */}
+                          <td className="py-3.5 px-4">
+                            <div className="font-bold text-[#1A1800] truncate max-w-[200px]" title={lead.sheetName}>
+                              {lead.sheetName}
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                                isIg 
+                                  ? 'bg-pink-100 text-pink-700' 
+                                  : 'bg-blue-100 text-blue-700'
+                              }`}>
+                                {lead.platform?.toUpperCase() || 'FB'}
+                              </span>
+                              {lead.formName && (
+                                <span className="text-[10px] text-[#7A7560] truncate max-w-[130px]" title={lead.formName}>
+                                  {lead.formName}
+                                </span>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Name */}
+                          <td className="py-3.5 px-4">
+                            <div className="font-bold text-[#1A1800]">
+                              {lead.name || 'Lead'}
+                            </div>
+                            {lead.email && (
+                              <div className="text-[11px] text-[#7A7560] truncate max-w-[160px]" title={lead.email}>
+                                {lead.email}
+                              </div>
+                            )}
+                          </td>
+
+                          {/* Contact with Call & WhatsApp buttons */}
+                          <td className="py-3.5 px-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-[#1A1800] tracking-wide">
+                                {lead.phone || lead.rawPhone}
+                              </span>
+                              <button
+                                onClick={() => copyToClipboard(lead.phone || lead.rawPhone || '', lead._id)}
+                                className="p-1 hover:bg-gray-100 rounded text-gray-400 hover:text-[#1A1800] transition-colors"
+                                title="Copy Phone"
+                              >
+                                {copiedId === lead._id ? <Check size={13} className="text-green-600" /> : <Copy size={13} />}
+                              </button>
+                            </div>
+                            <div className="flex items-center gap-2 mt-1.5">
+                              {lead.phone && (
+                                <>
+                                  <a
+                                    href={`tel:${lead.phone}`}
+                                    className="flex items-center gap-1 px-2 py-0.5 bg-[#FFF0C2] text-[#8C6B10] rounded text-[10px] font-bold hover:bg-[#FFE28A] transition-colors"
+                                  >
+                                    <Phone size={10} />
+                                    Call
+                                  </a>
+                                  <a
+                                    href={`https://wa.me/91${lead.phone.slice(-10)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 px-2 py-0.5 bg-[#D4F2DE] text-[#0E6228] rounded text-[10px] font-bold hover:bg-[#B7E8C6] transition-colors"
+                                  >
+                                    <MessageSquare size={10} />
+                                    WhatsApp
+                                  </a>
+                                </>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Requirement / Budget / Timeline */}
+                          <td className="py-3.5 px-4 max-w-xs">
+                            <div className="space-y-0.5">
+                              {lead.budget && (
+                                <div className="text-[11px] font-semibold text-[#1A1800]">
+                                  💰 {lead.budget}
+                                </div>
+                              )}
+                              {lead.planning && (
+                                <div className="text-[10px] text-[#7A7560]">
+                                  🗓️ Buy: <strong>{lead.planning.replace(/_/g, ' ')}</strong>
+                                </div>
+                              )}
+                              {lead.visitTimeline && (
+                                <div className="text-[10px] text-[#7A7560]">
+                                  📍 Visit: <strong>{lead.visitTimeline.replace(/_/g, ' ')}</strong>
+                                </div>
+                              )}
+                              {lead.configuration && (
+                                <div className="text-[10px] text-[#7A7560]">
+                                  🏠 {lead.configuration}
+                                </div>
+                              )}
+                              {!lead.budget && !lead.planning && !lead.visitTimeline && (
+                                <span className="text-[11px] text-gray-400 italic">No custom fields</span>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Actions */}
+                          <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                            <button
+                              onClick={() => setActiveModalLead(lead)}
+                              className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-[#F4EFE6] text-[#1A1800] hover:bg-[#E5D7B5] transition-colors"
+                            >
+                              View Details
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Bar */}
+            <div className="flex items-center justify-between px-4 py-3 bg-[#FDFBF7] border-t border-gray-100 text-xs font-semibold">
+              <div className="text-[#7A7560]">
+                Showing page {page} of {totalPages || 1}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1 || loading}
+                  className="px-3 py-1.5 rounded-lg border border-[#C9A227]/30 bg-white text-[#1A1800] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F9F6EE] transition-colors"
+                >
+                  Previous
+                </button>
+                <span className="px-2 font-bold text-[#1A1800]">{page}</span>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages || loading}
+                  className="px-3 py-1.5 rounded-lg border border-[#C9A227]/30 bg-white text-[#1A1800] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F9F6EE] transition-colors"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        /* Normal Admin Overview Section */
+        <div className="space-y-6 mb-6">
+          {/* Campaign Intelligence Matrix */}
+          <div className="bg-white rounded-3xl p-5 lg:p-6 border border-[#C9A227]/20 shadow-sm">
+            <div className="flex items-center justify-between pb-4 border-b border-[#C9A227]/15">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#F9F6EE] border border-[#C9A227]/30 flex items-center justify-center text-[#B38715]">
+                  <Layers size={18} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-extrabold text-[#1A1800]">Campaign Health & Activity Status</h3>
+                  <p className="text-[11px] text-[#7A7560]">Live overview across all connected Meta campaign sheets</p>
+                </div>
+              </div>
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-[#EAF7EE] text-[#0E6228] border border-[#107C41]/20 flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#107C41] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#107C41]"></span>
+                </span>
+                <span>{metrics.activeCampaignsCount} Active Campaigns</span>
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 mt-5">
+              {campaigns
+                .filter((c) => {
+                  if (selectedSheet !== 'all' && c.sheetName !== selectedSheet) return false;
+                  if (statusFilter === 'active') return c.isActive;
+                  if (statusFilter === 'inactive') return !c.isActive;
+                  return true;
                 })
-              )}
-            </tbody>
-          </table>
-        </div>
+                .map((camp) => (
+                  <div 
+                    key={camp.sheetName} 
+                    className={`p-4 rounded-2xl border transition-all ${
+                      camp.isActive 
+                        ? 'bg-gradient-to-br from-white to-[#F6FCF8] border-[#107C41]/30 hover:border-[#107C41] shadow-sm'
+                        : 'bg-[#FDFBF7] border-gray-200 opacity-80'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        {camp.isActive ? (
+                          <span className="relative flex h-2.5 w-2.5 shrink-0">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#107C41] opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#107C41]"></span>
+                          </span>
+                        ) : (
+                          <span className="w-2.5 h-2.5 rounded-full bg-red-400 shrink-0"></span>
+                        )}
+                        <span className="text-xs font-bold text-[#1A1800] truncate max-w-[180px]" title={camp.sheetName}>
+                          {camp.sheetName}
+                        </span>
+                      </div>
+                      <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                        camp.isActive ? 'bg-[#D4F2DE] text-[#0E6228]' : 'bg-gray-100 text-[#7A7560]'
+                      }`}>
+                        {camp.totalLeads.toLocaleString('en-IN')} leads
+                      </span>
+                    </div>
 
-        {/* Pagination Bar */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#FDFBF7] border-t border-gray-100 text-xs font-semibold">
-          <div className="text-[#7A7560]">
-            Showing page {page} of {totalPages || 1}
+                    <div className="mt-3 flex items-center justify-between text-[11px] text-[#7A7560] pt-2 border-t border-gray-100">
+                      <span>Status: <strong className={camp.isActive ? 'text-[#0E6228]' : 'text-[#9E1C1C]'}>{camp.isActive ? '🟢 Active' : '🔴 Inactive'}</strong></span>
+                      <span>{getTimeAgo(camp.latestLeadDate)}</span>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1 || loading}
-              className="px-3 py-1.5 rounded-lg border border-[#C9A227]/30 bg-white text-[#1A1800] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F9F6EE] transition-colors"
-            >
-              Previous
-            </button>
-            <span className="px-2 font-bold text-[#1A1800]">{page}</span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages || loading}
-              className="px-3 py-1.5 rounded-lg border border-[#C9A227]/30 bg-white text-[#1A1800] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#F9F6EE] transition-colors"
-            >
-              Next
-            </button>
+
+          {/* Super Admin Vault Privacy Notice */}
+          <div className="bg-gradient-to-br from-[#FFFBF0] via-[#FFF9E6] to-[#FDFBF7] rounded-3xl p-6 border border-[#C9A227]/30 shadow-md relative overflow-hidden">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1A1800] to-[#3A3300] text-[#D4AF37] flex items-center justify-center shadow-lg shrink-0">
+                  <ShieldCheck size={24} className="text-[#D4AF37]" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm font-extrabold text-[#1A1800]">Super Admin Lead Data Vault & Routing Engine</h4>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#1A1800] text-[#D4AF37]">
+                      Protected
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#7A7560] mt-1 max-w-2xl leading-relaxed">
+                    Customer full names, personal phone numbers, and raw questionnaire records are securely processed and automatically distributed to assigned team sales agents in real-time. Full database access & master Excel downloads are reserved for Super Admin credentials.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href="https://docs.google.com/spreadsheets/d/1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8/edit?gid=2100604883#gid=2100604883"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-white border border-[#C9A227]/40 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm"
+                >
+                  <FileSpreadsheet size={15} className="text-[#107C41]" />
+                  <span>Google Sheet</span>
+                  <ExternalLink size={12} className="text-[#7A7560]" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* 6. Lead Detail Modal */}
-      {activeModalLead && (
+      {/* 5. Lead Detail Modal (Super Admin only) */}
+      {isSuperAdmin && activeModalLead && (
         <div 
           className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in"
           onClick={() => setActiveModalLead(null)}

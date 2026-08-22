@@ -43,13 +43,11 @@ export function proxy(request: NextRequest) {
       '/admin/delivered-landmarks',
       '/admin/blogs',
       '/admin/marketing/tracking',
-      '/admin/meta-ads',
       '/api/admin/properties',
       '/api/admin/floor-plans',
       '/api/admin/delivered-landmarks',
       '/api/admin/blogs',
-      '/api/admin/marketing/tracking',
-      '/api/admin/meta-ads'
+      '/api/admin/marketing/tracking'
     ];
 
     let isRestricted = false;
