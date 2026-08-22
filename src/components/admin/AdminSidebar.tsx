@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -33,16 +33,22 @@ export default function AdminSidebar({
   const [role, setRole] = useState('admin');
 
   useEffect(() => {
+    let isMounted = true;
+
     // Fetch unread leads count initially and poll every 30 seconds
     const fetchUnreadCount = async () => {
+      if (typeof window !== 'undefined' && (!navigator.onLine || document.hidden)) {
+        return;
+      }
       try {
         const res = await fetch('/api/admin/leads/unread-count');
+        if (!res.ok) return;
         const data = await res.json();
-        if (data.success) {
-          setUnreadLeads(data.unreadCount);
+        if (isMounted && data.success) {
+          setUnreadLeads(data.unreadCount || 0);
         }
       } catch (err) {
-        console.error('Failed to fetch unread leads count', err);
+        // Silently ignore transient network drops during background polling
       }
     };
 
@@ -58,7 +64,10 @@ export default function AdminSidebar({
     };
     setRole(getCookie('admin_role') || 'admin');
     
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const isSuperAdmin = role === 'super_admin';

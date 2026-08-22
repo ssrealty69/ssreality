@@ -172,28 +172,36 @@ export default function AdminTrackingPage() {
   };
 
   const fetchLiveTracking = async () => {
+    if (typeof window !== 'undefined' && (!navigator.onLine || document.hidden)) {
+      return;
+    }
     try {
       const res = await fetch('/api/admin/tracking/live');
+      if (!res.ok) return;
       const data = await res.json();
       if (data.success && data.agents) {
         setAgents(data.agents);
       }
     } catch (e) {
-      console.error('Failed to fetch live tracking:', e);
+      // Silently handle transient network drop during background interval
     } finally {
       setLoading(false);
     }
   };
 
   const fetchGeofenceSettings = async () => {
+    if (typeof window !== 'undefined' && (!navigator.onLine || document.hidden)) {
+      return;
+    }
     try {
       const res = await fetch('/api/admin/tracking/settings');
+      if (!res.ok) return;
       const data = await res.json();
       if (data.success) {
         setGeofenceSettings(data.settings);
       }
     } catch (e) {
-      console.error('Failed to fetch geofence settings:', e);
+      // Silently handle transient network drop
     }
   };
 

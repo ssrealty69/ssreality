@@ -187,19 +187,26 @@ export default function AgentReportsPage() {
   // ── Fetch summary reports ──────────────────────────────────────────────────
 
   const fetchReports = useCallback(async (from: string, to: string, isManual = false) => {
+    if (typeof window !== 'undefined' && (!navigator.onLine || document.hidden) && !isManual) {
+      return;
+    }
     if (isManual) toast.loading('Refreshing reports & screen time...', { id: 'reports-refresh' });
     if (!reports.length) setLoading(true);
     try {
       const res = await fetch(`/api/admin/agents/reports?from=${from}&to=${to}`);
+      if (!res.ok) {
+        if (isManual) toast.error('Failed to load reports', { id: 'reports-refresh' });
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         setReports(data.data);
         if (isManual) toast.success('Reports updated', { id: 'reports-refresh' });
       } else {
-        toast.error(data.error, { id: 'reports-refresh' });
+        if (isManual) toast.error(data.error, { id: 'reports-refresh' });
       }
     } catch { 
-      toast.error('Failed to load reports', { id: 'reports-refresh' }); 
+      if (isManual) toast.error('Failed to load reports', { id: 'reports-refresh' }); 
     }
     finally { setLoading(false); }
   }, [reports.length]);
