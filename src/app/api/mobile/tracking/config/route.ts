@@ -31,14 +31,21 @@ export async function GET(req: NextRequest) {
       isRemoteAllowed: !isGeofenceRequired,
       geofenceEnabled: settings.geofenceEnabled,
       isAgentExempted,
-      // Continuous Field Tracking Policy (ALWAYS ON during 10 AM - 7 PM shift)
+      
+      // 🚨 MANDATORY FIELD TRACKING POLICY (10:00 AM - 07:00 PM IST)
+      // Continuous background radar tracking is ALWAYS ENFORCED for all logged-in agents,
+      // regardless of whether they have punched in or already punched out.
       isGpsTrackingAlwaysActive: true,
+      enforceTrackingWithoutPunchIn: true,
+      keepTrackingAfterPunchOut: true,
+      trackingPolicy: 'MANDATORY_10AM_TO_7PM',
       shiftHours: {
         start: '10:00',
         end: '19:00',
         timezone: 'Asia/Kolkata',
       },
       pingIntervalSeconds: 30,
+      minDistanceFilterMeters: 5,
       officeAddress: settings.officeAddress,
       officeLat: settings.officeLat,
       officeLng: settings.officeLng,

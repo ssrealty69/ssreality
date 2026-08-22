@@ -4,7 +4,7 @@ export interface IAgentAttendance extends Document {
   agentId: string;
   agentName: string;
   date: string; // YYYY-MM-DD
-  punchIn: Date;
+  punchIn?: Date;
   punchOut?: Date;
   totalMinutes?: number;
   activeSeconds: number; // Total screen time seconds actively used on mobile app today
@@ -31,7 +31,7 @@ const AgentAttendanceSchema = new Schema<IAgentAttendance>(
     agentId:       { type: String, required: true, index: true },
     agentName:     { type: String, required: true },
     date:          { type: String, required: true }, // YYYY-MM-DD
-    punchIn:       { type: Date, required: true },
+    punchIn:       { type: Date },
     punchOut:      { type: Date },
     totalMinutes:  { type: Number },
     activeSeconds: { type: Number, default: 0 },

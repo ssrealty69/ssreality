@@ -35,15 +35,22 @@ const RouteMapModal = dynamic(() => import('./RouteMapModal'), { ssr: false });
 interface AgentLiveInfo {
   agentId: string;
   agentName: string;
+  employee_id?: string;
   latitude: number;
   longitude: number;
   status: 'IN_OFFICE' | 'ON_FIELD_VISIT' | 'OFF_DUTY';
   speed?: number;
   batteryLevel?: number;
   distanceFromOfficeMeters: number;
+  distanceKm?: number;
+  distanceFormatted?: string;
   address?: string;
   lastPing: string;
   pingCount: number;
+  hasPing?: boolean;
+  isPunchedIn?: boolean;
+  punchStatusText?: string;
+  screenTimeFormatted?: string;
 }
 
 interface RoutePoint {
@@ -569,25 +576,51 @@ export default function AdminTrackingPage() {
                           className={`text-[11px] font-black px-2.5 py-0.5 rounded-lg flex items-center gap-1.5 border shadow-2xs ${
                             isInOffice
                               ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
+                              : (agent.distanceFromOfficeMeters || 0) >= 5000
+                              ? 'bg-rose-100 text-rose-950 border-rose-300 font-extrabold'
                               : 'bg-amber-100/90 text-amber-950 border-amber-300'
                           }`}
                         >
-                          <Navigation size={12} className={isInOffice ? 'text-emerald-700' : 'text-amber-800'} />
+                          <Navigation size={12} className={isInOffice ? 'text-emerald-700' : (agent.distanceFromOfficeMeters || 0) >= 5000 ? 'text-rose-700' : 'text-amber-800'} />
                           <span>
                             {isInOffice
                               ? `In Office (${agent.distanceFromOfficeMeters && agent.distanceFromOfficeMeters >= 1000 ? `${(agent.distanceFromOfficeMeters / 1000).toFixed(2)} km` : `${agent.distanceFromOfficeMeters || 0}m`})`
-                              : `${((agent.distanceFromOfficeMeters || 0) / 1000).toFixed(2)} km from Office`}
+                              : `${((agent.distanceFromOfficeMeters || 0) / 1000).toFixed(2)} km away from Office`}
                           </span>
                         </span>
+
+                        {/* 🏷️ Punch Attendance Status Badge */}
+                        {agent.punchStatusText && (
+                          <span
+                            className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${
+                              agent.isPunchedIn
+                                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                : agent.punchStatusText.includes('Punched Out')
+                                ? 'bg-stone-100 text-stone-700 border-stone-200'
+                                : 'bg-rose-50 text-rose-800 border-rose-200'
+                            }`}
+                          >
+                            {agent.punchStatusText}
+                          </span>
+                        )}
                       </div>
 
                       <div className="flex flex-wrap items-center gap-x-3.5 gap-y-0.5 text-xs text-stone-600 font-semibold">
-                        <span className="flex items-center gap-1 text-stone-800 font-bold">
-                          <MapPin className="w-3.5 h-3.5 text-[#8B6914]" />
+                        <span className={`flex items-center gap-1 font-bold ${
+                          isInOffice ? 'text-stone-800' : (agent.distanceFromOfficeMeters || 0) >= 5000 ? 'text-rose-700 font-black' : 'text-amber-900'
+                        }`}>
+                          <MapPin className={`w-3.5 h-3.5 ${isInOffice ? 'text-[#8B6914]' : 'text-rose-600'}`} />
                           {(agent.distanceFromOfficeMeters || 0) < 200
                             ? 'Inside Jonapur Head Office (Dalmia Farm)'
-                            : `${((agent.distanceFromOfficeMeters || 0) / 1000).toFixed(2)} KM away from Jonapur Head Office`}
+                            : `🚨 ${((agent.distanceFromOfficeMeters || 0) / 1000).toFixed(2)} KM away from Jonapur Head Office`}
                         </span>
+
+                        {agent.screenTimeFormatted && (
+                          <span className="flex items-center gap-1 text-stone-500 font-semibold">
+                            <Clock className="w-3.5 h-3.5 text-stone-400" />
+                            App: {agent.screenTimeFormatted}
+                          </span>
+                        )}
 
                         {agent.speed !== undefined && agent.speed !== null && agent.speed > 0 && (
                           <span className="flex items-center gap-1 text-stone-800 font-bold">

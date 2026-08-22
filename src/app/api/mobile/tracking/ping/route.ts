@@ -5,6 +5,8 @@ import AgentAttendance from '@/models/AgentAttendance';
 import Agent from '@/models/Agent';
 import { getGeofenceSettings } from '@/lib/geofenceConfig';
 
+export const dynamic = 'force-dynamic';
+
 function calculateDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371e3; // Earth radius in meters
   const p1 = (lat1 * Math.PI) / 180;
@@ -74,16 +76,28 @@ export async function POST(req: NextRequest) {
     const todayStr = getISTDateString();
     const inShift = isWithinShiftHours();
 
-    // Check if agent has remote punch-in exemption
-    let isAgentRemoteAllowed = false;
-    const agent = await Agent.findById(agentId).select('allowRemotePunchIn name').lean();
-    if (agent && (agent as any).allowRemotePunchIn) {
-      isAgentRemoteAllowed = true;
+    // Check if agent exists and get details
+    let agent = null;
+    if (agentId.match(/^[0-9a-fA-F]{24}$/)) {
+      agent = await Agent.findById(agentId).select('allowRemotePunchIn name employee_id username').lean();
+    }
+    if (!agent) {
+      agent = await Agent.findOne({
+        $or: [
+          { employee_id: agentId },
+          { employee_id: agentId.toUpperCase() },
+          { username: agentId.toLowerCase() }
+        ]
+      }).select('allowRemotePunchIn name employee_id username').lean();
     }
 
-    const isGeofenceEnforced = geoConfig.geofenceEnabled && !isAgentRemoteAllowed;
-    const isWithinRadius = distanceMeters <= geoConfig.geofenceRadiusMeters;
+    const isWithinRadius = distanceMeters <= (geoConfig.geofenceRadiusMeters || 200);
 
+    // Calculate real status:
+    // Between 10:00 AM and 07:00 PM:
+    // - If <= 200m from office: IN_OFFICE
+    // - If > 200m from office: ON_FIELD_VISIT (even if punched out or not punched in)
+    // Outside 10:00 AM - 07:00 PM: OFF_DUTY
     let calculatedStatus: 'IN_OFFICE' | 'ON_FIELD_VISIT' | 'OFF_DUTY';
     if (!inShift) {
       calculatedStatus = 'OFF_DUTY';
@@ -93,10 +107,13 @@ export async function POST(req: NextRequest) {
       calculatedStatus = 'ON_FIELD_VISIT';
     }
 
-    // 1. Record location log
+    const effectiveAgentName = agentName || agent?.name || 'Agent';
+    const effectiveAgentId = agent ? (agent as any)._id.toString() : String(agentId);
+
+    // 1. Record location breadcrumb in AgentLocationLog
     const log = await AgentLocationLog.create({
-      agentId: String(agentId),
-      agentName: agentName || agent?.name || 'Agent',
+      agentId: effectiveAgentId,
+      agentName: effectiveAgentName,
       latitude: latNum,
       longitude: lngNum,
       accuracy: accuracy ? Number(accuracy) : undefined,
@@ -109,33 +126,27 @@ export async function POST(req: NextRequest) {
       date: todayStr,
     });
 
-    // 2. Auto-manage attendance & active time for today
+    // 2. Track screen/app activity heartbeat WITHOUT altering punchIn or punchOut
     const now = new Date();
-    let attendance = await AgentAttendance.findOne({ agentId: String(agentId), date: todayStr });
     const additionalActiveSeconds = body.activeSeconds ? Number(body.activeSeconds) : 0;
+    let attendance = await AgentAttendance.findOne({ agentId: effectiveAgentId, date: todayStr });
 
-    if (!attendance) {
-      attendance = await AgentAttendance.create({
-        agentId: String(agentId),
-        agentName: agentName || agent?.name || 'Agent',
-        date: todayStr,
-        punchIn: now,
-        punchOut: now,
-        activeSeconds: additionalActiveSeconds,
-        lastActiveAt: now,
-      });
-    } else {
+    if (attendance) {
       attendance.lastActiveAt = now;
-      attendance.punchOut = now;
       if (additionalActiveSeconds > 0) {
         attendance.activeSeconds = (attendance.activeSeconds || 0) + additionalActiveSeconds;
       }
-      if (attendance.punchIn) {
-        attendance.totalMinutes = Math.round(
-          (now.getTime() - new Date(attendance.punchIn).getTime()) / 60000
-        );
-      }
       await attendance.save();
+    } else {
+      // Create lightweight session record without fake punchIn
+      await AgentAttendance.create({
+        agentId: effectiveAgentId,
+        agentName: effectiveAgentName,
+        date: todayStr,
+        activeSeconds: additionalActiveSeconds,
+        lastActiveAt: now,
+        sessionCount: 1,
+      });
     }
 
     const distanceKm = Number((distanceMeters / 1000).toFixed(2));
@@ -149,10 +160,9 @@ export async function POST(req: NextRequest) {
       distanceFromOfficeMeters: distanceMeters,
       distanceFromOfficeKm: distanceKm,
       distanceFormatted,
-      isOfficeGeofence: isWithinRadius || !isGeofenceEnforced,
-      isGeofenceEnforced,
-      isRemoteAllowed: !isGeofenceEnforced,
+      isOfficeGeofence: isWithinRadius,
       isShiftActive: inShift,
+      shiftWindow: '10:00 AM - 07:00 PM IST',
       logId: log._id,
     });
   } catch (error: any) {
