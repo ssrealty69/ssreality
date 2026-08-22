@@ -58,7 +58,7 @@ const blogData = {
   published: true,
   status: 'published',
   publishDate: new Date(),
-  views: 285,
+  views: 310,
   linkedPropertyId: '6a210f719c435ca44605f9ad',
   linkedPropertyName: 'Nivasa II 3BHK Premium Builder Floor',
   seo: {
@@ -115,40 +115,71 @@ const blogData = {
     </p>
   </section>
 
-  <!-- ==================== 3. ULTRA UNIQUE USER-FRIENDLY VIDEO WALKTHROUGH SECTION ==================== -->
+  <!-- ==================== 3. UNIQUE, INTERACTIVE VIDEO SECTION WITH 3BHK THUMBNAIL ==================== -->
   <section class="my-8">
-    <div class="p-6 md:p-8 bg-gradient-to-br from-[#FAF7F2] via-[#FFFDF9] to-[#F3ECE1] rounded-3xl border-2 border-[#D4AF37]/35 shadow-[0_12px_36px_rgba(212,175,55,0.1)]">
+    <div class="p-5 md:p-7 bg-gradient-to-br from-[#FCFBF7] via-[#FFFDF9] to-[#F7F2E7] rounded-3xl border-2 border-[#D4AF37]/35 shadow-[0_10px_30px_rgba(212,175,55,0.08)]">
       
       <!-- Video Header -->
-      <div class="text-center max-w-2xl mx-auto mb-6">
-        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100/80 border border-amber-300/80 rounded-full text-[#8B6914] text-xs font-black uppercase tracking-wider mb-2">
-          <span>Official Project Video Tour</span>
+      <div class="text-center max-w-2xl mx-auto mb-5">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100/90 border border-amber-300 rounded-full text-[#8B6914] text-xs font-black uppercase tracking-wider mb-2">
+          <span>Project Video Tour</span>
         </div>
         <h3 class="text-xl md:text-2xl font-black text-stone-900 tracking-tight">
-          Virtual Walkthrough: The Nivasa II 3 BHK Flat in Mandi
+          3 BHK The Nivasa II in Mandi — Inside Sample Flat Tour
         </h3>
         <p class="text-xs md:text-sm text-stone-600 mt-1 font-medium">
-          Take a complete guided tour inside the actual sample flat — explore room layouts, modular fittings, and finishes.
+          Click below to watch the complete HD walkthrough of living lounge, modular kitchen, and luxury bedrooms.
         </p>
       </div>
 
-      <!-- Video Player Container (Clean 16:9 Aspect Ratio) -->
+      <!-- Interactive 16:9 Video Player with Custom 3BHK Thumbnail & Play Action -->
       <div class="max-w-4xl mx-auto">
-        <div class="relative w-full rounded-2xl overflow-hidden shadow-xl border-2 border-white/80 bg-black" style="padding-top: 56.25%;">
-          <iframe 
-            class="absolute top-0 left-0 w-full h-full"
-            src="https://www.youtube.com/embed/jQme6-XPOUs?si=oeupdtbDJRON4AGj&rel=0&modestbranding=1" 
-            title="3 BHK Flats in Mandi New Delhi - The Nivasa II Walkthrough" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-          </iframe>
+        <div 
+          id="nivasaVideoCard"
+          class="video-wrapper relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-stone-200 cursor-pointer group bg-stone-900"
+          style="min-height: 240px;"
+          onclick="this.innerHTML='<iframe class=\\'video-iframe absolute inset-0 w-full h-full border-0\\' src=\\'https://www.youtube.com/embed/jQme6-XPOUs?autoplay=1&rel=0&modestbranding=1\\' title=\\'3 BHK Flats in Mandi New Delhi - The Nivasa II Walkthrough\\' allow=\\'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\\' allowfullscreen></iframe>';"
+        >
+          <!-- 3BHK Nivasa II Thumbnail Image -->
+          <img 
+            src="/blog/3-bhk-flats-in-mandi-new-delhi-living-room.jpg" 
+            alt="3 BHK Luxury Flat in Mandi New Delhi - The Nivasa II by SS Realty" 
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+          
+          <!-- Subtle Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/40 group-hover:from-black/65 transition-colors"></div>
+
+          <!-- Top Badge on Thumbnail -->
+          <div class="absolute top-3.5 left-3.5 sm:top-4 sm:left-4 z-10">
+            <span class="px-3 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-400/40 rounded-lg text-xs font-bold uppercase tracking-wider">
+              The Nivasa II • Mandi Road
+            </span>
+          </div>
+
+          <!-- Center Pulsing Play Button -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center z-10 gap-2">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-r from-[#C9A227] to-[#B8860B] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform border-4 border-white/90">
+              <svg class="w-7 h-7 sm:w-9 sm:h-9 translate-x-0.5 fill-current" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+            <span class="text-white font-extrabold text-xs sm:text-sm bg-black/60 backdrop-blur-md px-3.5 py-1 rounded-full border border-white/20">
+              Click to Play Video Tour
+            </span>
+          </div>
+
+          <!-- Bottom Bar on Thumbnail -->
+          <div class="absolute bottom-3 left-3.5 right-3.5 z-10 flex items-center justify-between text-white text-xs font-semibold">
+            <span>3 BHK Luxury Builder Floor</span>
+            <span class="bg-amber-500/90 text-stone-900 font-bold px-2 py-0.5 rounded text-[11px]">HD Walkthrough</span>
+          </div>
         </div>
 
         <!-- Video Bottom Feature & Action Bar -->
-        <div class="mt-4 p-4 bg-white/90 rounded-2xl border border-amber-200/70 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+        <div class="mt-3.5 p-3.5 bg-white/90 rounded-2xl border border-amber-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
           <div class="text-xs text-stone-700 font-medium">
-            <span class="font-bold text-stone-900 block sm:inline">The Nivasa II, Mandi Village:</span>
+            <span class="font-bold text-stone-900 block sm:inline">The Nivasa II:</span>
             <span class="text-stone-500"> 3 BHK • Stilt Parking • Lift • Gated Society • 90% Loan</span>
           </div>
           <div class="flex items-center gap-2 shrink-0">
@@ -629,7 +660,7 @@ async function main() {
       { returnDocument: 'after', upsert: true }
     );
 
-    console.log('✅ Blog video section successfully redesigned with premium light champagne styling!');
+    console.log('✅ Blog video section with 3BHK thumbnail successfully published!');
     console.log('Title:', updated.title);
     console.log('Slug:', updated.slug);
     console.log('Live URL:', `https://ssrealty.org/blog/${updated.slug}`);

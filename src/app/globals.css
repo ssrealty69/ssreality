@@ -382,10 +382,30 @@ input:focus, select:focus, textarea:focus {
 
 /* Ensure all media in prose never overflows */
 .prose img,
-.prose video,
-.prose iframe {
+.prose video {
   max-width: 100% !important;
   height: auto !important;
+}
+
+.prose iframe {
+  max-width: 100% !important;
+}
+
+.prose .video-wrapper,
+.prose .aspect-video {
+  position: relative !important;
+  width: 100% !important;
+}
+
+.prose .video-wrapper iframe,
+.prose .aspect-video iframe,
+.prose iframe.video-iframe {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
 }
 
 /* Tables: override editor sizes and allow wrapping */
