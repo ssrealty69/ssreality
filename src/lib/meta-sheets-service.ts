@@ -2,7 +2,7 @@ import * as XLSX from 'xlsx';
 import { connectDB } from '@/lib/mongodb';
 import MetaSheetLead, { IMetaSheetLead } from '@/models/MetaSheetLead';
 import MetaCampaignConfig, { IMetaCampaignConfig } from '@/models/MetaCampaignConfig';
-import { distributeLead } from '@/lib/lead-distributor';
+import { distributeLead, redistributeUnattendedMorningLeads } from '@/lib/lead-distributor';
 
 export const DEFAULT_META_SHEET_ID = '1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8';
 export const ACTIVE_THRESHOLD_MS = 2 * 24 * 60 * 60 * 1000; // 48 Hours / 2 Days
@@ -303,6 +303,8 @@ export async function triggerAutoSyncIfNeeded(sheetId = DEFAULT_META_SHEET_ID): 
   (async () => {
     try {
       await fetchAndSyncGoogleSheets(sheetId);
+      // Run 12 PM no-show unattended lead re-distribution if applicable
+      await redistributeUnattendedMorningLeads();
     } catch (err) {
       console.error('Background Auto-Sync Error:', err);
     } finally {
@@ -455,6 +457,13 @@ export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) 
       latestLeadDate: latestDate,
       isActive,
     });
+  }
+
+  // Execute 12 PM no-show unattended lead re-distribution if applicable
+  try {
+    await redistributeUnattendedMorningLeads();
+  } catch (reassignErr) {
+    console.error('Error during 12 PM lead redistribution:', reassignErr);
   }
 
   return {

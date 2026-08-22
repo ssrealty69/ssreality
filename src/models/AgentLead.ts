@@ -133,6 +133,8 @@ const AgentLeadSchema = new Schema<IAgentLead>(
     adName:           { type: String, trim: true },
     platform:         { type: String, trim: true, default: 'fb' },
     isRead:           { type: Boolean, default: false },
+    isReassignedAtNoon: { type: Boolean, default: false },
+    reassignedFrom:   { type: String, trim: true },
     notes:            { type: String, trim: true },
     disposition: {
       type: String,
@@ -154,6 +156,7 @@ AgentLeadSchema.index({ agentId: 1, isRead: 1 });
 AgentLeadSchema.index({ createdAt: -1 });
 AgentLeadSchema.index({ phone: 1 });
 AgentLeadSchema.index({ agentId: 1, phone: 1 });
+AgentLeadSchema.index({ isReassignedAtNoon: 1 });
 
 const AgentLead: Model<IAgentLead> =
   mongoose.models.AgentLead || mongoose.model<IAgentLead>('AgentLead', AgentLeadSchema);

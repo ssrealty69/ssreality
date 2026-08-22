@@ -371,3 +371,160 @@ export async function bulkDistributeUnassignedLeads(): Promise<{
     distributionSummary,
   };
 }
+
+/**
+ * 12:00 PM No-Show Re-Distribution Engine
+ * 
+ * Rule:
+ * If the current time is past 12:00 PM IST (Noon):
+ * Check all leads that arrived between previous night 9:00 PM (21:00 IST) and today 11:59:59 AM IST.
+ * If an assigned agent has NOT logged in / punched in today (absent / no activity today in AgentAttendance),
+ * AND the lead is still untouched (disposition === 'new' and history.length === 0):
+ * ➡️ RE-ASSIGN the lead to agents who ARE LOGGED IN / ACTIVE today using the priority slabs!
+ */
+export async function redistributeUnattendedMorningLeads(now: Date = new Date()): Promise<{
+  executed: boolean;
+  reason?: string;
+  totalReassigned: number;
+  reassignedLeads: any[];
+}> {
+  await connectDB();
+
+  // 1. Calculate IST Time
+  const istOffset = 5.5 * 60 * 60 * 1000;
+  const istNow = new Date(now.getTime() + istOffset);
+  const istHour = istNow.getUTCHours();
+  const istMinute = istNow.getUTCMinutes();
+
+  // Trigger only at or after 12:00 PM IST (Hour >= 12)
+  if (istHour < 12) {
+    return {
+      executed: false,
+      reason: `Current IST time is ${istHour}:${istMinute.toString().padStart(2, '0')}. Redistribution activates at/after 12:00 PM IST.`,
+      totalReassigned: 0,
+      reassignedLeads: [],
+    };
+  }
+
+  // 2. Define Date Range in UTC for previous night 9:00 PM IST to today 11:59:59 AM IST
+  const todayISTDateStr = istNow.toISOString().split('T')[0]; // "YYYY-MM-DD"
+  const todayMidnightIST = new Date(`${todayISTDateStr}T00:00:00.000+05:30`);
+  const windowStart = new Date(todayMidnightIST.getTime() - 3 * 60 * 60 * 1000); // Yesterday 21:00 IST
+  const windowEnd = new Date(todayMidnightIST.getTime() + (11 * 60 + 59) * 60 * 1000 + 59 * 1000); // Today 11:59:59 IST
+
+  // 3. Find all active logged-in agents today
+  const AgentAttendance = (await import('@/models/AgentAttendance')).default;
+  const AgentSession = (await import('@/models/AgentSession')).default;
+
+  const todayAttendances = await AgentAttendance.find({
+    date: todayISTDateStr,
+    $or: [
+      { punchIn: { $exists: true, $ne: null } },
+      { activeSeconds: { $gt: 0 } },
+      { lastActiveAt: { $gte: todayMidnightIST } }
+    ]
+  }).lean();
+
+  const activeAgentIds = new Set<string>();
+  todayAttendances.forEach(att => {
+    if (att.agentId) activeAgentIds.add(String(att.agentId));
+  });
+
+  const activeSessionsToday = await AgentSession.find({
+    updatedAt: { $gte: todayMidnightIST }
+  }).lean();
+  activeSessionsToday.forEach(sess => {
+    if (sess.agentId) activeAgentIds.add(String(sess.agentId));
+  });
+
+  const allAgents = await Agent.find({ isActive: true }).lean();
+  if (allAgents.length === 0) {
+    return { executed: false, reason: 'No active agents registered', totalReassigned: 0, reassignedLeads: [] };
+  }
+
+  // Eligible pool = agents who ARE logged in today (or all agents if no one logged in yet)
+  let eligibleAgents = allAgents.filter(a => activeAgentIds.has(String(a._id)) || activeAgentIds.has(String(a.employee_id)));
+  if (eligibleAgents.length === 0) {
+    eligibleAgents = allAgents;
+  }
+
+  // 4. Find all candidate uncalled leads in the window
+  const candidateLeads = await AgentLead.find({
+    createdAt: { $gte: windowStart, $lte: windowEnd },
+    disposition: 'new',
+    history: { $size: 0 },
+    isReassignedAtNoon: { $ne: true },
+  });
+
+  const reassignedList: any[] = [];
+
+  for (const lead of candidateLeads) {
+    const isCurrentAgentLogged = activeAgentIds.has(String(lead.agentId)) || 
+      allAgents.some(a => (String(a._id) === String(lead.agentId) || a.name === lead.agentName) && activeAgentIds.has(String(a._id)));
+
+    // If the assigned agent IS logged in today, keep the lead with them!
+    if (isCurrentAgentLogged && activeAgentIds.size > 0) {
+      continue;
+    }
+
+    // Lead belongs to an absent agent ➡️ Re-distribute to an active logged-in agent!
+    const recipientPool = eligibleAgents.filter(a => String(a._id) !== String(lead.agentId) && a.name !== lead.agentName);
+    const pool = recipientPool.length > 0 ? recipientPool : eligibleAgents;
+
+    const agentScores = await Promise.all(
+      pool.map(async (agentDoc) => {
+        const { rank, weight } = getAgentWeightAndRank(agentDoc);
+        const assignedCount = await AgentLead.countDocuments({
+          $or: [{ agentId: String(agentDoc._id) }, { agentName: agentDoc.name }],
+          createdAt: { $gte: todayMidnightIST },
+        });
+
+        const lastAssigned = agentDoc.lastAssignedLeadAt ? new Date(agentDoc.lastAssignedLeadAt).getTime() : 0;
+        return {
+          agent: agentDoc,
+          rank,
+          weight,
+          assignedCount,
+          score: assignedCount / weight,
+          lastAssigned,
+        };
+      })
+    );
+
+    agentScores.sort((a, b) => {
+      if (Math.abs(a.score - b.score) > 0.05) return a.score - b.score;
+      return a.lastAssigned - b.lastAssigned;
+    });
+
+    const chosen = agentScores[0].agent;
+    const oldAgentName = lead.agentName;
+
+    // Update lead
+    lead.agentId = String(chosen._id);
+    lead.agentName = chosen.name;
+    (lead as any).isReassignedAtNoon = true;
+    (lead as any).reassignedFrom = oldAgentName;
+    lead.notes = lead.notes 
+      ? `${lead.notes} | [12 PM Reassignment]: Transferred from ${oldAgentName} (Absent/No Login) to ${chosen.name}`
+      : `[12 PM Reassignment]: Transferred from ${oldAgentName} (Absent/No Login) to ${chosen.name}`;
+    lead.updatedAt = new Date();
+
+    await lead.save();
+    await Agent.findByIdAndUpdate(chosen._id, { lastAssignedLeadAt: new Date() });
+
+    reassignedList.push({
+      leadId: lead._id,
+      phone: lead.phone,
+      from: oldAgentName,
+      to: chosen.name,
+      createdAt: lead.createdAt,
+    });
+  }
+
+  return {
+    executed: true,
+    totalReassigned: reassignedList.length,
+    reassignedLeads: reassignedList,
+  };
+}
+
