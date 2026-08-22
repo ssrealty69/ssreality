@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/mongodb';
 import PropertyEnquiry from '@/models/PropertyEnquiry';
 import nodemailer from 'nodemailer';
 import { formLimiter, getClientIp } from '@/lib/rateLimit';
+import { distributeLead } from '@/lib/lead-distributor';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,6 +72,26 @@ export async function POST(req: NextRequest) {
       isBrochureDownload: !!isBrochureDownload,
       source: source || '',
     });
+
+    // Auto-distribute to team agents in real-time
+    try {
+      const isBrochure = !!isBrochureDownload || (sanitizedReq && sanitizedReq.includes('Brochure'));
+      const leadSource = isBrochure ? 'Brochure Download' : (source || (sanitizedReq.toLowerCase().includes('blog') ? 'Blog Enquiry' : 'Website Enquiry'));
+
+      await distributeLead({
+        name: sanitizedName,
+        phone: sanitizedPhone,
+        source: leadSource,
+        originalLeadId: enquiry._id.toString(),
+        originalLeadType: isBrochure ? 'brochure' : 'property_enquiry',
+        rawProjectName: sanitizedTitle,
+        propertyInterest: sanitizedTitle,
+        notes: sanitizedReq,
+        createdAt: new Date(),
+      });
+    } catch (distErr) {
+      console.error('Lead Auto-Distribute Error:', distErr);
+    }
 
     // Send email notification if configured
     if (process.env.EMAIL_PASS && process.env.EMAIL_USER) {

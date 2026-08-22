@@ -47,8 +47,20 @@ export interface IAgentLead extends Document {
   email?: string;
   source?: string;
   originalLeadId?: string;
-  originalLeadType?: 'contact' | 'property_enquiry' | 'ai_lead' | 'manual';
+  originalLeadType?: 'contact' | 'property_enquiry' | 'ai_lead' | 'manual' | 'meta_lead' | 'brochure';
   propertyInterest?: string;
+  projectName?: string;
+  planning?: string;
+  visitTimeline?: string;
+  budget?: string;
+  configuration?: string;
+  sheetName?: string;
+  formName?: string;
+  campaignName?: string;
+  adName?: string;
+  platform?: string;
+  isRead?: boolean;
+  notes?: string;
   disposition: Disposition;
   visitDetails?: IVisitDetails;
   bookingDetails?: IBookingDetails;
@@ -107,9 +119,21 @@ const AgentLeadSchema = new Schema<IAgentLead>(
     phone:            { type: String, required: true, trim: true },
     email:            { type: String, trim: true, lowercase: true },
     source:           { type: String, trim: true },
-    originalLeadId:   { type: String },
-    originalLeadType: { type: String, enum: ['contact','property_enquiry','ai_lead','manual'] },
+    originalLeadId:   { type: String, index: true },
+    originalLeadType: { type: String, enum: ['contact','property_enquiry','ai_lead','manual','meta_lead','brochure'] },
     propertyInterest: { type: String, trim: true },
+    projectName:      { type: String, trim: true },
+    planning:         { type: String, trim: true },
+    visitTimeline:    { type: String, trim: true },
+    budget:           { type: String, trim: true },
+    configuration:    { type: String, trim: true },
+    sheetName:        { type: String, trim: true },
+    formName:         { type: String, trim: true },
+    campaignName:     { type: String, trim: true },
+    adName:           { type: String, trim: true },
+    platform:         { type: String, trim: true, default: 'fb' },
+    isRead:           { type: Boolean, default: false },
+    notes:            { type: String, trim: true },
     disposition: {
       type: String,
       enum: ['new','ringing','connected','not_connected','switch_off','not_reachable','interested','not_interested','visit_done','follow_up'],
@@ -126,8 +150,10 @@ const AgentLeadSchema = new Schema<IAgentLead>(
 );
 
 AgentLeadSchema.index({ agentId: 1, disposition: 1 });
+AgentLeadSchema.index({ agentId: 1, isRead: 1 });
 AgentLeadSchema.index({ createdAt: -1 });
 AgentLeadSchema.index({ phone: 1 });
+AgentLeadSchema.index({ agentId: 1, phone: 1 });
 
 const AgentLead: Model<IAgentLead> =
   mongoose.models.AgentLead || mongoose.model<IAgentLead>('AgentLead', AgentLeadSchema);

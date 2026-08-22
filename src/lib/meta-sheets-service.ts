@@ -2,6 +2,7 @@ import * as XLSX from 'xlsx';
 import { connectDB } from '@/lib/mongodb';
 import MetaSheetLead, { IMetaSheetLead } from '@/models/MetaSheetLead';
 import MetaCampaignConfig, { IMetaCampaignConfig } from '@/models/MetaCampaignConfig';
+import { distributeLead } from '@/lib/lead-distributor';
 
 export const DEFAULT_META_SHEET_ID = '1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8';
 export const ACTIVE_THRESHOLD_MS = 2 * 24 * 60 * 60 * 1000; // 48 Hours / 2 Days
@@ -360,6 +361,32 @@ export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) 
 
       totalNewInserted += inserted;
       totalUpdated += modified;
+
+      // Auto-distribute leads to team agents in real-time
+      for (const lead of parsed.leads) {
+        try {
+          await distributeLead({
+            name: lead.name,
+            phone: lead.phone,
+            email: lead.email,
+            source: 'Meta Ads',
+            originalLeadId: lead.leadId,
+            originalLeadType: 'meta_lead',
+            rawProjectName: lead.sheetName,
+            propertyInterest: lead.campaignName || lead.formName || lead.sheetName,
+            planning: lead.planning,
+            visitTimeline: lead.visitTimeline,
+            budget: lead.budget,
+            configuration: lead.configuration,
+            sheetName: lead.sheetName,
+            formName: lead.formName,
+            campaignName: lead.campaignName,
+            adName: lead.adName,
+            platform: lead.platform,
+            createdAt: lead.createdAt,
+          });
+        } catch (_) {}
+      }
     }
 
     // Count true total in DB for this sheet (including any historically preserved leads)

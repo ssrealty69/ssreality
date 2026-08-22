@@ -1,34 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 import { connectDB } from '@/lib/mongodb';
-import PropertyEnquiry from '@/models/PropertyEnquiry';
-import Contact from '@/models/Contact';
 import AgentLead from '@/models/AgentLead';
+import Agent from '@/models/Agent';
+import AgentSession from '@/models/AgentSession';
+import { cleanProjectTitle } from '@/lib/lead-distributor';
 
 export const dynamic = 'force-dynamic';
-
-function extractProjectName(title?: string, requirement?: string, fallback = 'SS Realty Project'): string {
-  const combined = `${title || ''} ${requirement || ''}`.toLowerCase();
-  
-  if (combined.includes('velora')) return 'Velora';
-  if (combined.includes('orchid')) return 'Orchid';
-  if (combined.includes('amaryllis')) return 'Amaryllis';
-  if (combined.includes('nivasa')) return 'The Nivasa III';
-  if (combined.includes('ss 100') || combined.includes('sector 100')) return 'SS 100';
-  if (combined.includes('the leaf') || combined.includes('leaf')) return 'SS The Leaf';
-  if (combined.includes('camellias')) return 'SS Camellias';
-
-  if (title) {
-    // Try extracting "in ProjectName," e.g. "Apartments in Velora, Chattarpur"
-    const match = title.match(/in\s+([^,]+)/i);
-    if (match && match[1]) {
-      const p = match[1].trim();
-      if (p.length > 2 && p.length < 30) return p;
-    }
-    return title.split(',')[0].trim();
-  }
-
-  return fallback;
-}
 
 function extractUnitType(requirement?: string, title?: string): string {
   const text = `${requirement || ''} ${title || ''}`;
@@ -132,256 +110,168 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
     const { searchParams } = new URL(req.url);
-    const filter = searchParams.get('filter'); // 'all', 'brochure', 'blog', 'contact', 'meta'
+    const filter = searchParams.get('filter'); // 'all', 'new', 'brochure', 'blog', 'contact', 'meta'
     const search = searchParams.get('search')?.toLowerCase();
 
-    // 1. Fetch Property Enquiries (Brochures + Blog Enquiries + Meta Leads)
-    const propertyEnquiries = await PropertyEnquiry.find({})
+    // 1. Resolve requesting agent if provided
+    let agentParam = searchParams.get('agentId') || searchParams.get('agent') || searchParams.get('employeeId');
+    const authHeader = req.headers.get('authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      const session = await AgentSession.findOne({ token }).lean();
+      if (session && (session as any).agentId) {
+        agentParam = (session as any).agentId;
+      }
+    }
+
+    let agentDoc: any = null;
+    if (agentParam) {
+      const orClauses: any[] = [
+        { employee_id: agentParam.toUpperCase() },
+        { username: agentParam.toLowerCase() },
+        { name: new RegExp(`^${agentParam}$`, 'i') },
+      ];
+      if (mongoose.Types.ObjectId.isValid(agentParam)) {
+        orClauses.unshift({ _id: new mongoose.Types.ObjectId(agentParam) });
+      }
+      agentDoc = await Agent.findOne({ $or: orClauses }).lean();
+    }
+
+    // 2. Fetch Agent Leads
+    let agentLeadsQuery: any = {};
+    if (agentDoc) {
+      const resolvedAgentId = String(agentDoc._id);
+      const employeeId = agentDoc.employee_id;
+      const agentName = agentDoc.name;
+
+      agentLeadsQuery = {
+        $or: [
+          { agentId: resolvedAgentId },
+          { agentId: employeeId },
+          { agentName: new RegExp(`^${agentName}$`, 'i') },
+        ],
+      };
+    }
+
+    const agentLeads = await AgentLead.find(agentLeadsQuery)
       .sort({ createdAt: -1 })
       .lean();
-
-    // 2. Fetch General Contact Leads
-    const contacts = await Contact.find({})
-      .sort({ createdAt: -1 })
-      .lean();
-
-    // 3. Fetch Agent Leads (Manual Calls + Call Histories)
-    const agentLeads = await AgentLead.find({}).sort({ updatedAt: -1 }).lean();
-    const agentLeadMap = new Map<string, any>();
-    const processedPhones = new Set<string>();
-
-    agentLeads.forEach((al: any) => {
-      if (al.originalLeadId) {
-        agentLeadMap.set(al.originalLeadId.toString(), al);
-      }
-      if (al.phone) {
-        const clean = al.phone.replace(/[^0-9]/g, '');
-        if (clean) {
-          agentLeadMap.set(clean.slice(-10), al);
-        }
-      }
-    });
 
     const unifiedLeads: any[] = [];
+    let newLeadsCount = 0;
 
-    // Map Property Enquiries
-    for (const enq of propertyEnquiries as any[]) {
-      const cleanPhone = (enq.phone || '').replace(/[^0-9]/g, '');
-      const searchKey = cleanPhone.slice(-10);
-      if (searchKey) processedPhones.add(searchKey);
-
-      const existingAgentLead = agentLeadMap.get(enq._id.toString()) || (searchKey ? agentLeadMap.get(searchKey) : null);
-
-      const isBrochure = enq.isBrochureDownload === true || (enq.requirement && enq.requirement.includes('Brochure'));
-      const isMeta = enq.source === 'Meta Lead Ads' || enq.source === 'Facebook Ad';
-      const leadSource = isMeta ? 'Meta Lead Ads' : (isBrochure ? 'Brochure Download' : (enq.source || 'Website Enquiry'));
-
-      let status = 'newLead';
-      let priority = 'high';
-      let history: any[] = [];
-      let followUpDate: string | null = null;
-      let visitDetails: any = null;
-
-      if (existingAgentLead) {
-        status = mapDispositionToStatus(existingAgentLead.disposition);
-        history = existingAgentLead.history || [];
-        followUpDate = existingAgentLead.followUpDate ? new Date(existingAgentLead.followUpDate).toISOString() : null;
-        visitDetails = existingAgentLead.visitDetails || null;
-      } else if (enq.status === 'contacted') {
-        status = 'contacted';
-      }
-
-      const createdDateObj = enq.createdAt ? new Date(enq.createdAt) : new Date();
-      const { formattedDate, formattedTime, leadAge } = formatISTDateTime(createdDateObj);
-      const cleanProj = extractProjectName(enq.propertyTitle, enq.requirement);
-      const unitType = extractUnitType(enq.requirement, enq.propertyTitle);
-      const location = extractLocation(enq.propertyTitle);
-
-      unifiedLeads.push({
-        id: enq._id.toString(),
-        fullName: enq.name || 'Website Lead',
-        phone: enq.phone,
-        email: enq.email || '',
-        status: status,
-        priority: priority,
-        source: leadSource,
-        createdAt: createdDateObj.toISOString(),
-        formattedDate,
-        formattedTime,
-        leadAge,
-        lastActivityAt: enq.updatedAt ? new Date(enq.updatedAt).toISOString() : createdDateObj.toISOString(),
-        projectName: cleanProj,
-        fullPropertyTitle: enq.propertyTitle || cleanProj,
-        projectId: enq.propertyId || '',
-        propertyType: unitType,
-        unitType: unitType,
-        location: location,
-        notes: enq.requirement || '',
-        tags: [isMeta ? 'meta-lead' : (isBrochure ? 'brochure' : 'website-enquiry'), 'website'],
-        followUpDate,
-        visitDetails,
-        history: history.map((h: any) => ({
-          id: h._id?.toString() || `${enq._id}_${h.calledAt}`,
-          disposition: h.disposition,
-          notes: h.notes || '',
-          duration: h.duration && h.duration !== '0s' ? h.duration : (h.durationSeconds ? `${h.durationSeconds}s` : '0s'),
-          durationSeconds: h.durationSeconds || 0,
-          agentName: h.agentName || existingAgentLead?.agentName || 'Agent',
-          recordingUrl: h.recordingUrl || null,
-          recordingPath: h.recordingPath || null,
-          calledAt: h.calledAt ? new Date(h.calledAt).toISOString() : new Date().toISOString(),
-        })),
-      });
-    }
-
-    // Map General Contacts
-    for (const c of contacts as any[]) {
-      const cleanPhone = (c.phone || '').replace(/[^0-9]/g, '');
-      const searchKey = cleanPhone.slice(-10);
-      if (searchKey) processedPhones.add(searchKey);
-
-      const existingAgentLead = agentLeadMap.get(c._id.toString()) || (searchKey ? agentLeadMap.get(searchKey) : null);
-
-      let status = 'newLead';
-      let history: any[] = [];
-      let followUpDate: string | null = null;
-      let visitDetails: any = null;
-
-      if (existingAgentLead) {
-        status = mapDispositionToStatus(existingAgentLead.disposition);
-        history = existingAgentLead.history || [];
-        followUpDate = existingAgentLead.followUpDate ? new Date(existingAgentLead.followUpDate).toISOString() : null;
-        visitDetails = existingAgentLead.visitDetails || null;
-      } else if (c.status === 'read' || c.status === 'replied') {
-        status = 'contacted';
-      }
-
-      const createdDateObj = c.createdAt ? new Date(c.createdAt) : new Date();
-      const { formattedDate, formattedTime, leadAge } = formatISTDateTime(createdDateObj);
-      const cleanProj = extractProjectName(c.propertyTitle, c.subject || c.message, 'General Inquiry');
-      const unitType = extractUnitType(c.subject, c.message);
-      const location = extractLocation(c.propertyTitle || c.message);
-
-      unifiedLeads.push({
-        id: c._id.toString(),
-        fullName: c.name || 'General Inquiry',
-        phone: c.phone,
-        email: c.email || '',
-        status: status,
-        priority: 'medium',
-        source: 'Contact Form',
-        createdAt: createdDateObj.toISOString(),
-        formattedDate,
-        formattedTime,
-        leadAge,
-        lastActivityAt: c.updatedAt ? new Date(c.updatedAt).toISOString() : createdDateObj.toISOString(),
-        projectName: cleanProj,
-        fullPropertyTitle: c.propertyTitle || c.subject || 'General Inquiry',
-        projectId: c.propertyId || '',
-        propertyType: unitType,
-        unitType: unitType,
-        location: location,
-        notes: c.message || '',
-        tags: ['contact-form'],
-        followUpDate,
-        visitDetails,
-        history: history.map((h: any) => ({
-          id: h._id?.toString() || `${c._id}_${h.calledAt}`,
-          disposition: h.disposition,
-          notes: h.notes || '',
-          duration: h.duration && h.duration !== '0s' ? h.duration : (h.durationSeconds ? `${h.durationSeconds}s` : '0s'),
-          durationSeconds: h.durationSeconds || 0,
-          agentName: h.agentName || existingAgentLead?.agentName || 'Agent',
-          recordingUrl: h.recordingUrl || null,
-          recordingPath: h.recordingPath || null,
-          calledAt: h.calledAt ? new Date(h.calledAt).toISOString() : new Date().toISOString(),
-        })),
-      });
-    }
-
-    // Map Standalone Manual AgentLeads (e.g. dialed from Dialpad)
     for (const al of agentLeads as any[]) {
-      const cleanPhone = (al.phone || '').replace(/[^0-9]/g, '');
-      const searchKey = cleanPhone.slice(-10);
+      const status = mapDispositionToStatus(al.disposition);
+      if (status === 'newLead' || al.disposition === 'new') {
+        newLeadsCount++;
+      }
 
-      // If this phone is not already in PropertyEnquiries or Contacts, add it!
-      if (searchKey && !processedPhones.has(searchKey)) {
-        processedPhones.add(searchKey);
+      const isMeta = (al.source && al.source.toLowerCase().includes('meta')) || al.originalLeadType === 'meta_lead';
+      const isBrochure = (al.source && al.source.toLowerCase().includes('brochure')) || al.originalLeadType === 'brochure';
+      const isBlog = (al.source && al.source.toLowerCase().includes('blog'));
 
-        const status = mapDispositionToStatus(al.disposition);
-        const history = al.history || [];
+      const createdDateObj = al.createdAt ? new Date(al.createdAt) : new Date();
+      const { formattedDate, formattedTime, leadAge } = formatISTDateTime(createdDateObj);
+      const cleanProj = al.projectName || cleanProjectTitle(al.propertyInterest || al.sheetName || al.formName);
+      const unitType = extractUnitType(al.configuration || al.propertyInterest);
+      const location = extractLocation(al.propertyInterest || cleanProj);
 
-        const createdDateObj = al.createdAt ? new Date(al.createdAt) : new Date();
-        const { formattedDate, formattedTime, leadAge } = formatISTDateTime(createdDateObj);
-        const cleanProj = extractProjectName(al.propertyInterest, undefined, 'Direct Inquiry');
-        const unitType = extractUnitType(al.propertyInterest);
+      unifiedLeads.push({
+        id: al._id.toString(),
+        fullName: al.name && al.name !== 'Lead' ? al.name : `Lead ${al.phone}`,
+        phone: al.phone,
+        email: al.email || '',
+        status: status,
+        disposition: al.disposition || 'new',
+        priority: 'high',
+        source: al.source || (isMeta ? 'Meta Ads' : 'Website Enquiry'),
+        platform: al.platform || (isMeta ? 'fb' : 'web'),
+        createdAt: createdDateObj.toISOString(),
+        formattedDate,
+        formattedTime,
+        leadAge,
+        lastActivityAt: al.updatedAt ? new Date(al.updatedAt).toISOString() : createdDateObj.toISOString(),
+        projectName: cleanProj,
+        fullPropertyTitle: cleanProj,
+        propertyInterest: al.propertyInterest || cleanProj,
+        projectId: '',
+        propertyType: unitType,
+        unitType: unitType,
+        location: location,
+        planning: al.planning || '',
+        visitTimeline: al.visitTimeline || '',
+        budget: al.budget || '',
+        configuration: al.configuration || unitType,
+        sheetName: al.sheetName || '',
+        formName: al.formName || '',
+        campaignName: al.campaignName || '',
+        isRead: al.isRead || false,
+        notes: al.notes || '',
+        tags: [
+          isMeta ? 'meta-ads' : (isBrochure ? 'brochure' : (isBlog ? 'blog' : 'website')),
+          status,
+        ],
+        followUpDate: al.followUpDate ? new Date(al.followUpDate).toISOString() : null,
+        visitDetails: al.visitDetails || null,
+        history: (al.history || []).map((h: any) => ({
+          id: h._id?.toString() || `${al._id}_${h.calledAt}`,
+          disposition: h.disposition,
+          notes: h.notes || '',
+          duration: h.duration && h.duration !== '0s' ? h.duration : (h.durationSeconds ? `${h.durationSeconds}s` : '0s'),
+          durationSeconds: h.durationSeconds || 0,
+          agentName: h.agentName || al.agentName || 'Agent',
+          recordingUrl: h.recordingUrl || null,
+          recordingPath: h.recordingPath || null,
+          calledAt: h.calledAt ? new Date(h.calledAt).toISOString() : new Date().toISOString(),
+        })),
+      });
+    }
 
-        unifiedLeads.unshift({
-          id: al._id.toString(),
-          fullName: al.name && al.name !== 'Unknown Contact' ? al.name : `Lead ${al.phone}`,
-          phone: al.phone,
-          email: al.email || '',
-          status: status,
-          priority: 'medium',
-          source: 'Manual Dial',
-          createdAt: createdDateObj.toISOString(),
-          formattedDate,
-          formattedTime,
-          leadAge,
-          lastActivityAt: al.updatedAt ? new Date(al.updatedAt).toISOString() : createdDateObj.toISOString(),
-          projectName: cleanProj,
-          fullPropertyTitle: al.propertyInterest || 'Direct Inquiry',
-          projectId: '',
-          propertyType: unitType,
-          unitType: unitType,
-          location: 'Delhi NCR',
-          notes: al.notes || '',
-          tags: ['manual-dial'],
-          followUpDate: al.followUpDate ? new Date(al.followUpDate).toISOString() : null,
-          visitDetails: al.visitDetails || null,
-          history: history.map((h: any) => ({
-            id: h._id?.toString() || `${al._id}_${h.calledAt}`,
-            disposition: h.disposition,
-            notes: h.notes || '',
-            duration: h.duration && h.duration !== '0s' ? h.duration : (h.durationSeconds ? `${h.durationSeconds}s` : '0s'),
-            durationSeconds: h.durationSeconds || 0,
-            agentName: h.agentName || al.agentName || 'Agent',
-            recordingUrl: h.recordingUrl || null,
-            recordingPath: h.recordingPath || null,
-            calledAt: h.calledAt ? new Date(h.calledAt).toISOString() : new Date().toISOString(),
-          })),
-        });
+    // Apply Filter if present
+    let filteredLeads = unifiedLeads;
+    if (filter && filter !== 'all') {
+      if (filter === 'new' || filter === 'newLead') {
+        filteredLeads = filteredLeads.filter((l) => l.status === 'newLead' || l.disposition === 'new');
+      } else if (filter === 'meta') {
+        filteredLeads = filteredLeads.filter((l) => l.tags.includes('meta-ads'));
+      } else if (filter === 'brochure') {
+        filteredLeads = filteredLeads.filter((l) => l.tags.includes('brochure'));
+      } else if (filter === 'blog') {
+        filteredLeads = filteredLeads.filter((l) => l.tags.includes('blog'));
       }
     }
 
-    // Filter if requested
-    let result = unifiedLeads;
-    if (filter === 'brochure') {
-      result = result.filter(l => l.source === 'Brochure Download');
-    } else if (filter === 'blog') {
-      result = result.filter(l => l.source === 'Website Enquiry');
-    } else if (filter === 'contact') {
-      result = result.filter(l => l.source === 'Contact Form');
-    } else if (filter === 'meta') {
-      result = result.filter(l => l.source === 'Meta Lead Ads');
-    }
-
+    // Apply Search
     if (search) {
-      result = result.filter(l =>
+      filteredLeads = filteredLeads.filter((l) =>
         l.fullName.toLowerCase().includes(search) ||
         l.phone.includes(search) ||
-        (l.projectName && l.projectName.toLowerCase().includes(search)) ||
-        (l.unitType && l.unitType.toLowerCase().includes(search))
+        l.email.toLowerCase().includes(search) ||
+        l.projectName.toLowerCase().includes(search) ||
+        (l.planning && l.planning.toLowerCase().includes(search))
       );
     }
 
     return NextResponse.json({
       success: true,
-      count: result.length,
-      data: result,
+      count: filteredLeads.length,
+      totalCount: unifiedLeads.length,
+      newLeadsCount,
+      unreadCount: newLeadsCount,
+      metrics: {
+        total: unifiedLeads.length,
+        newLeads: newLeadsCount,
+        contacted: unifiedLeads.filter((l) => l.status === 'contacted').length,
+        followUp: unifiedLeads.filter((l) => l.status === 'followUp').length,
+      },
+      data: filteredLeads,
+      leads: filteredLeads,
     });
   } catch (error: any) {
-    console.error('Mobile Leads GET Error:', error);
-    return NextResponse.json({ success: false, error: 'Server error', details: error.message }, { status: 500 });
+    console.error('Mobile Leads Fetch Error:', error);
+    return NextResponse.json(
+      { success: false, error: error.message || 'Failed to fetch leads' },
+      { status: 500 }
+    );
   }
 }

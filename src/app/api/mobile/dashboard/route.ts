@@ -108,6 +108,7 @@ export async function GET(req: NextRequest) {
     let manualCalls = 0;
     const uniquePhonesSet = new Set<string>();
 
+    let newLeadsCount = 0;
     let interestedLeadsCount = 0;
     let scheduledVisitsCount = 0;
     let completedVisitsCount = 0;
@@ -129,6 +130,7 @@ export async function GET(req: NextRequest) {
     for (const lead of leads) {
       const isManualLead = lead.originalLeadType === 'manual' || lead.source === 'manual' || lead.name?.startsWith('Lead ') || !lead.originalLeadId;
 
+      if (lead.disposition === 'new') newLeadsCount++;
       if (lead.disposition === 'interested') interestedLeadsCount++;
       if (lead.disposition === 'follow_up') pendingFollowups++;
       if (lead.disposition === 'visit_done') completedVisitsCount++;
@@ -278,7 +280,13 @@ export async function GET(req: NextRequest) {
           employeeId: employeeId,
         },
         period,
+        newLeadsCount,
+        unreadCount: newLeadsCount,
         stats: {
+          newLeads: newLeadsCount,
+          newLeadsCount,
+          unreadCount: newLeadsCount,
+          totalAssignedLeads: leads.length,
           totalCalls,
           uniqueCalls,
           manualCalls,

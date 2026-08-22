@@ -8,6 +8,7 @@ import Agent from '@/models/Agent';
 import AgentLead from '@/models/AgentLead';
 import Property from '@/models/Property';
 import mongoose from 'mongoose';
+import { distributeLead } from '@/lib/lead-distributor';
 
 export const dynamic = 'force-dynamic';
 
@@ -62,67 +63,33 @@ export async function POST(req: NextRequest) {
       propertyId: sanitizedPropId,
     });
 
-    // ── Lead Assignment Engine ──────────────────────────────────────────────
+    // ── Lead Auto-Distribution Engine ─────────────────────────────────────────
     try {
-      const setting = await Setting.findOne({ key: 'lead_assignment_strategy' }).lean();
-      const strategy = setting ? (setting as any).value : 'manual';
+      let propertyInterest = sanitizedSubject;
+      if (sanitizedPropId && mongoose.Types.ObjectId.isValid(sanitizedPropId)) {
+        const prop = await Property.findById(sanitizedPropId).lean();
+        if (prop) propertyInterest = (prop as any).title;
+      }
 
-      if (strategy !== 'manual') {
-        const activeAgents = await Agent.find({ isActive: true });
-        
-        if (activeAgents.length > 0) {
-          let selectedAgent = null;
+      const distRes = await distributeLead({
+        name: sanitizedName,
+        phone: sanitizedPhone,
+        email: sanitizedEmail,
+        source: 'Contact Form',
+        originalLeadId: contact._id.toString(),
+        originalLeadType: 'contact',
+        rawProjectName: propertyInterest,
+        propertyInterest: propertyInterest,
+        notes: sanitizedMessage,
+        createdAt: new Date(),
+      });
 
-          if (strategy === 'round_robin') {
-            activeAgents.sort((a, b) => {
-              const timeA = a.lastAssignedLeadAt ? new Date(a.lastAssignedLeadAt).getTime() : 0;
-              const timeB = b.lastAssignedLeadAt ? new Date(b.lastAssignedLeadAt).getTime() : 0;
-              return timeA - timeB;
-            });
-            selectedAgent = activeAgents[0];
-          } 
-          else if (strategy === 'least_assigned') {
-            let minCount = Infinity;
-            for (const agent of activeAgents) {
-              const count = await AgentLead.countDocuments({ agentId: agent._id.toString() });
-              if (count < minCount) {
-                minCount = count;
-                selectedAgent = agent;
-              }
-            }
-            if (!selectedAgent) selectedAgent = activeAgents[0];
-          }
-
-          if (selectedAgent) {
-            contact.assignedAgentId = selectedAgent._id;
-            await contact.save();
-
-            let propertyInterest = sanitizedSubject;
-            if (sanitizedPropId && mongoose.Types.ObjectId.isValid(sanitizedPropId)) {
-              const prop = await Property.findById(sanitizedPropId).lean();
-              if (prop) propertyInterest = (prop as any).title;
-            }
-
-            await AgentLead.create({
-              agentId: selectedAgent._id.toString(),
-              agentName: selectedAgent.name,
-              name: sanitizedName,
-              phone: sanitizedPhone,
-              email: sanitizedEmail,
-              source: 'contact',
-              originalLeadId: contact._id.toString(),
-              originalLeadType: 'contact',
-              propertyInterest: propertyInterest,
-              disposition: 'new',
-              history: [],
-            });
-
-            await Agent.findByIdAndUpdate(selectedAgent._id, { lastAssignedLeadAt: new Date() });
-          }
-        }
+      if (distRes.assigned && distRes.agentId) {
+        contact.assignedAgentId = distRes.agentId;
+        await contact.save();
       }
     } catch (assignmentError) {
-      console.error('Lead Assignment Error:', assignmentError);
+      console.error('Contact Lead Assignment Error:', assignmentError);
     }
     // ────────────────────────────────────────────────────────────────────────
 
