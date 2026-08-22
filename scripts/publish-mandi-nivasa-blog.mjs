@@ -58,7 +58,7 @@ const blogData = {
   published: true,
   status: 'published',
   publishDate: new Date(),
-  views: 260,
+  views: 285,
   linkedPropertyId: '6a210f719c435ca44605f9ad',
   linkedPropertyName: 'Nivasa II 3BHK Premium Builder Floor',
   seo: {
@@ -72,27 +72,27 @@ const blogData = {
 <div class="blog-article space-y-10 text-gray-800 leading-relaxed font-normal">
 
   <!-- ==================== 1. AIO / GEO EXECUTIVE SUMMARY SNIPPET ==================== -->
-  <div class="p-6 md:p-8 bg-gradient-to-br from-amber-50/90 via-white to-amber-100/60 rounded-3xl border-2 border-[#C9A227]/40 shadow-md">
-    <div class="flex items-center gap-3 mb-4">
-      <span class="p-2.5 bg-[#C9A227] text-[#1A1800] rounded-xl font-black text-xs uppercase tracking-wider">Quick Insight</span>
+  <div class="p-6 md:p-8 bg-gradient-to-br from-[#FAF7F0] via-[#FFFDF9] to-[#F5EFE0] rounded-3xl border-2 border-[#D4AF37]/35 shadow-[0_8px_25px_rgba(212,175,55,0.08)]">
+    <div class="flex items-center gap-2.5 mb-4">
+      <span class="px-3 py-1 bg-[#8B6914] text-white rounded-lg font-black text-xs uppercase tracking-wider">Quick Summary</span>
       <h3 class="text-xl md:text-2xl font-black text-[#1A1800] tracking-tight">
         3 BHK Flats in Mandi, New Delhi (The Nivasa II) at a Glance
       </h3>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 font-medium">
-      <div class="bg-white/90 p-4 rounded-2xl border border-amber-200 shadow-xs">
+      <div class="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
         <p class="font-bold text-[#1A1800] mb-1">Location & Strategic Advantage:</p>
         <p>Mandi Village, Mandi Road, South Delhi (5 mins from Gurgaon-Faridabad Rd, 12 mins to Chattarpur Metro, 18 mins to Cyber City & Golf Course Rd).</p>
       </div>
-      <div class="bg-white/90 p-4 rounded-2xl border border-amber-200 shadow-xs">
+      <div class="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
         <p class="font-bold text-[#1A1800] mb-1">Loan & Financial Flexibility:</p>
         <p>Up to <strong>90% Bank & NBFC Loan approval</strong> available. Pay only 10% down payment and own a luxury 3 BHK builder floor in South Delhi.</p>
       </div>
-      <div class="bg-white/90 p-4 rounded-2xl border border-amber-200 shadow-xs">
+      <div class="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
         <p class="font-bold text-[#1A1800] mb-1">Layout & Configuration:</p>
         <p>3 Spacious Bedrooms, 2/3 Modern Bathrooms, Large Living Lounge, Italian Modular Kitchen, Balconies with Aravalli green views (~1350–1450 sq.ft).</p>
       </div>
-      <div class="bg-white/90 p-4 rounded-2xl border border-amber-200 shadow-xs">
+      <div class="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
         <p class="font-bold text-[#1A1800] mb-1">Building Amenities:</p>
         <p>Stilt Car Parking, High-Speed Automatic Lift, Gated Society, 24/7 Water Supply (Submersible + Overhead Tanks), BSES Electricity, CCTV Security.</p>
       </div>
@@ -115,38 +115,62 @@ const blogData = {
     </p>
   </section>
 
-  <!-- ==================== 3. CLEAN COMPACT VIDEO WALKTHROUGH SECTION ==================== -->
-  <section class="space-y-3 my-6">
-    <div class="p-4 md:p-5 bg-white rounded-2xl border border-stone-200 shadow-sm">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-        <div>
-          <span class="px-2.5 py-0.5 bg-amber-100 text-[#8B6914] text-[11px] font-black uppercase rounded-md tracking-wide">Video Tour</span>
-          <h3 class="text-base md:text-lg font-bold text-stone-900 mt-1">
-            3 BHK Luxury Flat in Mandi (The Nivasa II) — Video Walkthrough
-          </h3>
+  <!-- ==================== 3. ULTRA UNIQUE USER-FRIENDLY VIDEO WALKTHROUGH SECTION ==================== -->
+  <section class="my-8">
+    <div class="p-6 md:p-8 bg-gradient-to-br from-[#FAF7F2] via-[#FFFDF9] to-[#F3ECE1] rounded-3xl border-2 border-[#D4AF37]/35 shadow-[0_12px_36px_rgba(212,175,55,0.1)]">
+      
+      <!-- Video Header -->
+      <div class="text-center max-w-2xl mx-auto mb-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100/80 border border-amber-300/80 rounded-full text-[#8B6914] text-xs font-black uppercase tracking-wider mb-2">
+          <span>Official Project Video Tour</span>
         </div>
-        <a 
-          href="tel:+919311059100" 
-          class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-[#8B6914] hover:bg-[#72540F] text-white font-bold text-xs rounded-xl shadow-xs transition-all shrink-0 cursor-pointer"
-        >
-          <span>Schedule Site Visit: +91 93110 59100</span>
-        </a>
+        <h3 class="text-xl md:text-2xl font-black text-stone-900 tracking-tight">
+          Virtual Walkthrough: The Nivasa II 3 BHK Flat in Mandi
+        </h3>
+        <p class="text-xs md:text-sm text-stone-600 mt-1 font-medium">
+          Take a complete guided tour inside the actual sample flat — explore room layouts, modular fittings, and finishes.
+        </p>
       </div>
 
-      <!-- Compact 16:9 Video Frame -->
-      <div class="relative w-full overflow-hidden rounded-xl border border-stone-200 shadow-sm" style="padding-top: 56.25%;">
-        <iframe 
-          class="absolute top-0 left-0 w-full h-full"
-          src="https://www.youtube.com/embed/jQme6-XPOUs?si=oeupdtbDJRON4AGj" 
-          title="3 BHK Flats in Mandi New Delhi - The Nivasa II Walkthrough" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          allowfullscreen>
-        </iframe>
+      <!-- Video Player Container (Clean 16:9 Aspect Ratio) -->
+      <div class="max-w-4xl mx-auto">
+        <div class="relative w-full rounded-2xl overflow-hidden shadow-xl border-2 border-white/80 bg-black" style="padding-top: 56.25%;">
+          <iframe 
+            class="absolute top-0 left-0 w-full h-full"
+            src="https://www.youtube.com/embed/jQme6-XPOUs?si=oeupdtbDJRON4AGj&rel=0&modestbranding=1" 
+            title="3 BHK Flats in Mandi New Delhi - The Nivasa II Walkthrough" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+          </iframe>
+        </div>
+
+        <!-- Video Bottom Feature & Action Bar -->
+        <div class="mt-4 p-4 bg-white/90 rounded-2xl border border-amber-200/70 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div class="text-xs text-stone-700 font-medium">
+            <span class="font-bold text-stone-900 block sm:inline">The Nivasa II, Mandi Village:</span>
+            <span class="text-stone-500"> 3 BHK • Stilt Parking • Lift • Gated Society • 90% Loan</span>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <a 
+              href="tel:+919311059100" 
+              class="px-4 py-2 bg-[#8B6914] hover:bg-[#72540F] text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+              style="color: #FFFFFF;"
+            >
+              <span>Call: +91 93110 59100</span>
+            </a>
+            <a 
+              href="https://wa.me/919311059100?text=Hi%20SS%20Realty,%20I%20watched%20The%20Nivasa%20II%20video%20tour%20and%20want%20to%20book%20a%20site%20visit." 
+              target="_blank" 
+              class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+              style="color: #FFFFFF;"
+            >
+              <span>Book Site Visit</span>
+            </a>
+          </div>
+        </div>
       </div>
-      <p class="text-xs text-stone-500 mt-2 font-medium">
-        Actual sample flat walkthrough of 3 BHK Luxury Builder Floor at The Nivasa II, Mandi Village, South Delhi.
-      </p>
+
     </div>
   </section>
 
@@ -560,7 +584,7 @@ const blogData = {
   </section>
 
   <!-- ==================== 11. CLEAN PREMIUM LIGHT CTA BOX ==================== -->
-  <div class="p-6 md:p-8 bg-gradient-to-br from-amber-50 via-white to-amber-100/50 text-stone-900 rounded-3xl border-2 border-[#C9A227]/50 shadow-md text-center space-y-4">
+  <div class="p-6 md:p-8 bg-gradient-to-br from-[#FAF7F2] via-white to-[#F5EFE4] text-stone-900 rounded-3xl border-2 border-[#D4AF37]/40 shadow-sm text-center space-y-4">
     <span class="px-3.5 py-1 bg-[#8B6914] text-white font-extrabold text-xs uppercase rounded-full tracking-wider">
       Limited Inventory
     </span>
@@ -605,7 +629,7 @@ async function main() {
       { returnDocument: 'after', upsert: true }
     );
 
-    console.log('✅ Blog successfully updated with clean light theme and official contact numbers!');
+    console.log('✅ Blog video section successfully redesigned with premium light champagne styling!');
     console.log('Title:', updated.title);
     console.log('Slug:', updated.slug);
     console.log('Live URL:', `https://ssrealty.org/blog/${updated.slug}`);
