@@ -283,6 +283,34 @@ export function parseSheetData(workbook: XLSX.WorkBook, sheetName: string): Pars
   };
 }
 
+let lastAutoSyncTimestamp = 0;
+let isSyncInProgress = false;
+const AUTO_SYNC_COOLDOWN_MS = 30 * 1000; // 30 seconds debounce
+
+/**
+ * Intelligent Non-blocking Auto-Sync Engine
+ * Automatically fetches fresh leads from Google Sheets in the background whenever called.
+ */
+export async function triggerAutoSyncIfNeeded(sheetId = DEFAULT_META_SHEET_ID): Promise<void> {
+  const now = Date.now();
+  if (isSyncInProgress) return;
+  if (now - lastAutoSyncTimestamp < AUTO_SYNC_COOLDOWN_MS) return;
+
+  isSyncInProgress = true;
+  lastAutoSyncTimestamp = now;
+
+  // Run in background without blocking the caller
+  (async () => {
+    try {
+      await fetchAndSyncGoogleSheets(sheetId);
+    } catch (err) {
+      console.error('Background Auto-Sync Error:', err);
+    } finally {
+      isSyncInProgress = false;
+    }
+  })();
+}
+
 export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) {
   await connectDB();
 

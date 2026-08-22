@@ -4,6 +4,7 @@ import { connectDB } from '@/lib/mongodb';
 import Agent from '@/models/Agent';
 import AgentLead from '@/models/AgentLead';
 import AgentSession from '@/models/AgentSession';
+import { triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,6 +52,9 @@ const CONNECTED_DISPOSITIONS = [
 
 export async function GET(req: NextRequest) {
   try {
+    // Non-blocking background real-time sync with Google Sheets
+    triggerAutoSyncIfNeeded();
+
     await connectDB();
     const { searchParams } = new URL(req.url);
     const period = searchParams.get('period') || 'today';

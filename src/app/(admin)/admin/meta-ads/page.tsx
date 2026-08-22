@@ -4,7 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Megaphone, RefreshCw, Download, Search, Filter, Phone, MessageSquare, 
   ExternalLink, Calendar, CheckCircle, AlertCircle, Clock, Database, 
-  Layers, ChevronDown, ChevronRight, X, ArrowUpRight, Copy, Check, Sparkles, FileSpreadsheet
+  Layers, ChevronDown, ChevronRight, X, ArrowUpRight, Copy, Check, Sparkles, FileSpreadsheet,
+  Zap, Radio, CheckCheck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -77,13 +78,16 @@ export default function MetaAdsAdminPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  // Modal Detail
+  // Modal Detail & Auto-Sync
   const [activeModalLead, setActiveModalLead] = useState<MetaLead | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [autoSync, setAutoSync] = useState(true);
+  const [showWebhookGuide, setShowWebhookGuide] = useState(false);
+  const [lastAutoSyncTime, setLastAutoSyncTime] = useState<Date>(new Date());
 
-  const fetchLeads = useCallback(async () => {
+  const fetchLeads = useCallback(async (isSilent = false) => {
     try {
-      setLoading(true);
+      if (!isSilent) setLoading(true);
       const params = new URLSearchParams();
       if (selectedSheet !== 'all') params.append('sheetName', selectedSheet);
       if (statusFilter !== 'all') params.append('status', statusFilter);
@@ -103,20 +107,30 @@ export default function MetaAdsAdminPage() {
           setTotalPages(data.pagination.totalPages || 1);
           setTotalCount(data.pagination.totalCount || 0);
         }
-      } else {
+        setLastAutoSyncTime(new Date());
+      } else if (!isSilent) {
         toast.error(data.error || 'Failed to load leads');
       }
     } catch (err: any) {
       console.error('Fetch error:', err);
-      toast.error('Network error loading Meta leads');
+      if (!isSilent) toast.error('Network error loading Meta leads');
     } finally {
-      setLoading(false);
+      if (!isSilent) setLoading(false);
     }
   }, [selectedSheet, statusFilter, searchQuery, platformFilter, page]);
 
   useEffect(() => {
     fetchLeads();
   }, [fetchLeads]);
+
+  // Automated 30-Second Real-Time Poller
+  useEffect(() => {
+    if (!autoSync) return;
+    const interval = setInterval(() => {
+      fetchLeads(true); // Silent background auto-sync
+    }, 25000); // Poll every 25 seconds
+    return () => clearInterval(interval);
+  }, [autoSync, fetchLeads]);
 
   // Handle Live Sync
   const handleSyncNow = async () => {
@@ -235,6 +249,38 @@ export default function MetaAdsAdminPage() {
 
         {/* Action Controls */}
         <div className="flex flex-wrap items-center gap-2.5">
+          {/* Live Auto-Sync Status & Toggle */}
+          <button
+            onClick={() => {
+              setAutoSync(!autoSync);
+              toast.success(autoSync ? 'Auto-Sync paused' : 'Auto-Sync activated (Every 25s)');
+            }}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all shadow-sm ${
+              autoSync
+                ? 'bg-[#EAF7EE] text-[#0E6228] border-[#107C41]/30 hover:border-[#107C41]'
+                : 'bg-white text-[#7A7560] border-gray-200 hover:border-gray-300'
+            }`}
+            title="Auto-Sync checks Google Sheets every 25s automatically in background"
+          >
+            <span className="relative flex h-2.5 w-2.5">
+              {autoSync && (
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#107C41] opacity-75"></span>
+              )}
+              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${autoSync ? 'bg-[#107C41]' : 'bg-gray-400'}`}></span>
+            </span>
+            <span>{autoSync ? 'Live Auto-Sync (25s)' : 'Auto-Sync Paused'}</span>
+          </button>
+
+          {/* Instant Webhook Button */}
+          <button
+            onClick={() => setShowWebhookGuide(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm"
+            title="Setup 0-second instant Google Sheets trigger"
+          >
+            <Zap size={14} className="text-[#C9A227]" />
+            <span>Instant Trigger</span>
+          </button>
+
           {/* External Google Sheet link */}
           <a
             href="https://docs.google.com/spreadsheets/d/1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8/edit?gid=2100604883#gid=2100604883"
@@ -310,7 +356,7 @@ export default function MetaAdsAdminPage() {
             )}
           </div>
 
-          {/* Sync Button */}
+          {/* Manual Sync Now Button */}
           <button
             onClick={handleSyncNow}
             disabled={syncing}
@@ -934,6 +980,117 @@ export default function MetaAdsAdminPage() {
                 className="px-4 py-2 rounded-xl bg-[#1A1800] text-white text-xs font-bold hover:bg-[#333] transition-colors"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. Instant Webhook Setup Guide Modal */}
+      {showWebhookGuide && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowWebhookGuide(false)}
+        >
+          <div 
+            className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-[#C9A227]/30 shadow-2xl p-6 relative animate-in fade-in zoom-in-95"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between pb-4 border-b border-[#C9A227]/15">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#FFF0C2] text-[#8C6B10] flex items-center justify-center shadow-inner">
+                  <Zap size={20} className="text-[#B38715]" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-[#1A1800]">
+                    Instant Real-Time Google Sheets Webhook
+                  </h3>
+                  <p className="text-xs text-[#7A7560]">
+                    0-Second Auto-Push Trigger for New Meta Leads
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowWebhookGuide(false)}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-[#7A7560] flex items-center justify-center transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="my-5 space-y-4 text-xs text-[#1A1800]">
+              <div className="p-3.5 rounded-2xl bg-[#EAF7EE] border border-[#107C41]/20 flex items-start gap-2.5">
+                <CheckCircle size={18} className="text-[#107C41] shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold text-[#0E6228]">Auto-Sync is already running automatically!</p>
+                  <p className="text-[#0E6228]/80 text-[11px] mt-0.5">
+                    Har 25 seconds me background system Google Sheets se fresh leads auto-fetch karta hai. Agar aap chahte hain ki Google Sheet me row aate hi instant 0-second me update ho jaye, to niche diya Apps Script use karein.
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <p className="font-bold mb-1.5 text-xs text-[#1A1800]">
+                  📌 Step 1: Google Sheet me Apps Script Open karein
+                </p>
+                <p className="text-[#7A7560] text-[11px]">
+                  Apni Google Sheet me upar <strong>Extensions &gt; Apps Script</strong> par click karein.
+                </p>
+              </div>
+
+              <div>
+                <p className="font-bold mb-1.5 text-xs text-[#1A1800]">
+                  📌 Step 2: Niche diye code ko paste karein
+                </p>
+                <div className="relative">
+                  <pre className="bg-[#1A1800] text-[#E5D7B5] p-4 rounded-2xl text-[11px] font-mono overflow-x-auto leading-relaxed">
+{`function onEdit(e) {
+  triggerSync();
+}
+
+function triggerSync() {
+  var url = "https://ssrealty.org/api/webhooks/meta-sheet-sync";
+  try {
+    UrlFetchApp.fetch(url, {
+      method: "POST",
+      muteHttpExceptions: true
+    });
+  } catch (err) {
+    Logger.log(err);
+  }
+}`}
+                  </pre>
+                  <button
+                    onClick={() => {
+                      copyToClipboard(`function onEdit(e) {\n  triggerSync();\n}\n\nfunction triggerSync() {\n  var url = "https://ssrealty.org/api/webhooks/meta-sheet-sync";\n  try {\n    UrlFetchApp.fetch(url, {\n      method: "POST",\n      muteHttpExceptions: true\n    });\n  } catch (err) {\n    Logger.log(err);\n  }\n}`, 'script-code');
+                    }}
+                    className="absolute top-2.5 right-2.5 px-2.5 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-[10px] font-bold flex items-center gap-1 transition-colors"
+                  >
+                    {copiedId === 'script-code' ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
+                    <span>{copiedId === 'script-code' ? 'Copied' : 'Copy Script'}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <p className="font-bold mb-1.5 text-xs text-[#1A1800]">
+                  📌 Step 3: Trigger set karein (Optional for Automatic Form Submissions)
+                </p>
+                <p className="text-[#7A7560] text-[11px]">
+                  Apps Script me left menu me <strong>Triggers (Clock icon)</strong> &gt; <strong>Add Trigger</strong> par click karein &gt; Choose <em>&quot;triggerSync&quot;</em> &gt; Event type: <strong>&quot;On change&quot;</strong> ya Time-driven (Every 1 minute).
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#C9A227]/15">
+              <button
+                onClick={() => setShowWebhookGuide(false)}
+                className="px-5 py-2.5 rounded-xl bg-[#1A1800] text-white text-xs font-bold hover:bg-[#333] transition-colors shadow"
+              >
+                Done
               </button>
             </div>
           </div>
