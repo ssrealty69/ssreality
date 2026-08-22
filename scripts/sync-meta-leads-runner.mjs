@@ -37,141 +37,179 @@ function parseSheetData(workbook, sheetName) {
   const rawRows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
   if (rawRows.length === 0) return { sheetName, totalRows: 0, latestLeadDate: null, isActive: false, leads: [] };
 
-  let headerRowIndex = -1;
-  const colMap = {};
-  const headerKeys = [];
-
-  for (let r = 0; r < Math.min(10, rawRows.length); r++) {
-    const row = rawRows[r] || [];
-    const stringRow = row.map(c => String(c).toLowerCase().trim());
-
-    const hasPhone = stringRow.some(c => c.includes('phone') || c.includes('mobile'));
-    const hasTime = stringRow.some(c => c.includes('created') || c.includes('time') || c.includes('date'));
-    const hasName = stringRow.some(c => c.includes('name'));
-
-    if ((hasPhone && hasTime) || (hasPhone && hasName)) {
-      headerRowIndex = r;
-      row.forEach((col, idx) => {
-        const val = String(col).toLowerCase().trim();
-        if (!val) return;
-        headerKeys[idx] = String(col).trim();
-
-        if (val === 'id' || val === 'lead_id') colMap.id = idx;
-        else if (val.includes('created_time') || val.includes('created time') || val === 'date') colMap.created_time = idx;
-        else if (val === 'ad_id') colMap.ad_id = idx;
-        else if (val === 'ad_name') colMap.ad_name = idx;
-        else if (val === 'adset_id') colMap.adset_id = idx;
-        else if (val === 'adset_name') colMap.adset_name = idx;
-        else if (val === 'campaign_id') colMap.campaign_id = idx;
-        else if (val === 'campaign_name') colMap.campaign_name = idx;
-        else if (val === 'form_id') colMap.form_id = idx;
-        else if (val === 'form_name') colMap.form_name = idx;
-        else if (val === 'platform') colMap.platform = idx;
-        else if (val === 'is_organic') colMap.is_organic = idx;
-        else if (val.includes('full_name') || val === 'name' || val === 'full name') colMap.full_name = idx;
-        else if (val.includes('phone') || val.includes('mobile')) colMap.phone = idx;
-        else if (val.includes('email')) colMap.email = idx;
-        else if (val.includes('lead_status') || val === 'status') colMap.lead_status = idx;
-        else if (val.includes('budget')) colMap.budget = idx;
-        else if (val.includes('when_are_you') || val.includes('planning_to_buy') || val.includes('planning')) colMap.planning = idx;
-        else if (val.includes('visit') || val.includes('how_soon')) colMap.visitTimeline = idx;
-        else if (val.includes('configuration') || val.includes('preferred')) colMap.configuration = idx;
-        else if (val.includes('city')) colMap.city = idx;
-      });
-      break;
-    }
-  }
-
-  if (headerRowIndex === -1) headerRowIndex = 0;
-
   const leads = [];
   let latestLeadDate = null;
 
   for (let r = 0; r < rawRows.length; r++) {
-    if (r === headerRowIndex) continue;
     const row = rawRows[r];
     if (!row || row.length === 0) continue;
 
-    const rowStr = row.map(c => String(c).toLowerCase().trim()).join(' ');
-    if (rowStr.includes('created_time') && rowStr.includes('phone_number')) continue;
+    // 1. Locate phone number column
+    let phoneIdx = -1;
+    let cleanPhone = '';
+    let rawPhone = '';
 
-    let leadId = colMap.id !== undefined ? String(row[colMap.id] || '').trim() : '';
-    let createdTimeRaw = colMap.created_time !== undefined ? row[colMap.created_time] : null;
-    let name = colMap.full_name !== undefined ? String(row[colMap.full_name] || '').trim() : '';
-    let phoneRaw = colMap.phone !== undefined ? String(row[colMap.phone] || '').trim() : '';
-    let email = colMap.email !== undefined ? String(row[colMap.email] || '').trim() : '';
-    let campaignName = colMap.campaign_name !== undefined ? String(row[colMap.campaign_name] || '').trim() : '';
-    let campaignId = colMap.campaign_id !== undefined ? String(row[colMap.campaign_id] || '').trim() : '';
-    let adName = colMap.ad_name !== undefined ? String(row[colMap.ad_name] || '').trim() : '';
-    let adId = colMap.ad_id !== undefined ? String(row[colMap.ad_id] || '').trim() : '';
-    let adsetName = colMap.adset_name !== undefined ? String(row[colMap.adset_name] || '').trim() : '';
-    let adsetId = colMap.adset_id !== undefined ? String(row[colMap.adset_id] || '').trim() : '';
-    let formName = colMap.form_name !== undefined ? String(row[colMap.form_name] || '').trim() : '';
-    let formId = colMap.form_id !== undefined ? String(row[colMap.form_id] || '').trim() : '';
-    let platform = colMap.platform !== undefined ? String(row[colMap.platform] || '').trim() : 'fb';
-    let isOrganic = colMap.is_organic !== undefined ? String(row[colMap.is_organic]).toLowerCase() === 'true' : false;
-    let budget = colMap.budget !== undefined ? String(row[colMap.budget] || '').trim() : '';
-    let planning = colMap.planning !== undefined ? String(row[colMap.planning] || '').trim() : '';
-    let visitTimeline = colMap.visitTimeline !== undefined ? String(row[colMap.visitTimeline] || '').trim() : '';
-    let configuration = colMap.configuration !== undefined ? String(row[colMap.configuration] || '').trim() : '';
-    let city = colMap.city !== undefined ? String(row[colMap.city] || '').trim() : '';
-    let leadStatus = colMap.lead_status !== undefined ? String(row[colMap.lead_status] || '').trim() : 'CREATED';
+    for (let i = 0; i < row.length; i++) {
+      const val = String(row[i] || '').trim();
+      if (!val) continue;
+      const testPhone = normalizePhone(val);
+      if (testPhone.length === 10 && /^[6-9]\d{9}$/.test(testPhone)) {
+        phoneIdx = i;
+        cleanPhone = testPhone;
+        rawPhone = val;
+        break;
+      }
+    }
 
-    let cleanPhone = normalizePhone(phoneRaw);
-    if (!cleanPhone || cleanPhone.length < 10) {
-      for (const cell of row) {
-        const testPhone = normalizePhone(cell);
-        if (testPhone.length >= 10 && testPhone.length <= 13) {
-          cleanPhone = testPhone.slice(-10);
-          phoneRaw = String(cell);
+    if (phoneIdx === -1) continue;
+
+    // 2. Full Name: In Meta exports, full_name is immediately to the left of phone_number (phoneIdx - 1)
+    let name = '';
+    if (phoneIdx > 0) {
+      const candidateName = String(row[phoneIdx - 1] || '').trim();
+      if (
+        candidateName &&
+        candidateName !== ' ' &&
+        !candidateName.startsWith('p:') &&
+        !candidateName.startsWith('l:') &&
+        !candidateName.includes('@') &&
+        !/^(within_1_month|1–3_months|after_3_months|today|this_week|next_week|3bhk|2bhk|4bhk|created|true|false|fb|ig)$/i.test(candidateName)
+      ) {
+        name = candidateName;
+      }
+    }
+
+    // 3. Email: In Meta exports, email is immediately to the right of phone_number (phoneIdx + 1)
+    let email = '';
+    if (phoneIdx + 1 < row.length) {
+      const candidateEmail = String(row[phoneIdx + 1] || '').trim();
+      if (candidateEmail.includes('@') && candidateEmail.includes('.')) {
+        email = candidateEmail.toLowerCase();
+      }
+    }
+    if (!email) {
+      for (let i = 0; i < row.length; i++) {
+        const val = String(row[i] || '').trim();
+        if (val.includes('@') && val.includes('.') && !val.includes(' ')) {
+          email = val.toLowerCase();
           break;
         }
       }
     }
 
-    if (!name && email) name = email.split('@')[0];
+    // Fallback for Name if blank: derive from email
+    if (!name && email) {
+      const prefix = email.split('@')[0].replace(/[0-9._-]/g, ' ').trim();
+      if (prefix.length >= 2) {
+        name = prefix.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+      }
+    }
+    if (!name) name = 'Meta Lead';
 
-    let parsedDate = parseDateSafe(createdTimeRaw);
-    if (!parsedDate) {
-      for (const cell of row) {
-        if (typeof cell === 'string' && /^\d{4}-\d{2}-\d{2}/.test(cell.trim())) {
-          parsedDate = parseDateSafe(cell.trim());
-          if (parsedDate) break;
+    // 4. Meta IDs, Campaign, Ad, Form & Questionnaire details
+    let leadId = '';
+    let createdAt = null;
+    let adId = '';
+    let adName = '';
+    let adsetName = '';
+    let adsetId = '';
+    let campaignId = '';
+    let campaignName = '';
+    let formId = '';
+    let formName = '';
+    let platform = 'fb';
+    let isOrganic = false;
+    let leadStatus = 'CREATED';
+    let planning = '';
+    let visitTimeline = '';
+    let budget = '';
+    let configuration = '';
+    let city = '';
+    const customAnswers = {};
+
+    for (let i = 0; i < row.length; i++) {
+      const val = row[i];
+      if (val === undefined || val === null) continue;
+      const str = String(val).trim();
+      if (!str) continue;
+
+      if (str.startsWith('l:') || (i === 0 && /^\d{14,19}$/.test(str))) {
+        leadId = str.replace(/^l:/, '');
+      } else if (str.startsWith('ag:')) {
+        adId = str.replace(/^ag:/, '');
+        if (i + 1 < row.length && !String(row[i + 1]).startsWith('as:')) {
+          adName = String(row[i + 1]).trim();
+        }
+      } else if (str.startsWith('as:')) {
+        adsetId = str.replace(/^as:/, '');
+        if (i + 1 < row.length && !String(row[i + 1]).startsWith('c:')) {
+          adsetName = String(row[i + 1]).trim();
+        }
+      } else if (str.startsWith('c:')) {
+        campaignId = str.replace(/^c:/, '');
+        if (i + 1 < row.length && !String(row[i + 1]).startsWith('f:')) {
+          campaignName = String(row[i + 1]).trim();
+        }
+      } else if (str.startsWith('f:')) {
+        formId = str.replace(/^f:/, '');
+        if (i + 1 < row.length && String(row[i + 1]).toLowerCase() !== 'false' && String(row[i + 1]).toLowerCase() !== 'true') {
+          formName = String(row[i + 1]).trim();
+        }
+      } else if (str.toLowerCase() === 'ig' || str.toLowerCase() === 'instagram') {
+        platform = 'ig';
+      } else if (str.toLowerCase() === 'fb' || str.toLowerCase() === 'facebook') {
+        platform = 'fb';
+      } else if (str.toLowerCase() === 'created' || str.toLowerCase() === 'follow up') {
+        leadStatus = str;
+      }
+
+      // Check Date
+      if (!createdAt) {
+        const d = parseDateSafe(str);
+        if (d && d.getFullYear() >= 2024 && d.getFullYear() <= 2027) {
+          createdAt = d;
         }
       }
-    }
 
-    if (!cleanPhone && !name && !email) continue;
-
-    if (parsedDate) {
-      if (!latestLeadDate || parsedDate > latestLeadDate) {
-        latestLeadDate = parsedDate;
+      // Questionnaire Answers
+      if (/within_1_month|1–3_months|after_3_months|immediate|planning/i.test(str)) {
+        planning = str;
+      } else if (/today|tomorrow|this_week|next_week|weekend|soon/i.test(str)) {
+        visitTimeline = str;
+      } else if (
+        !/created|false|true|ad\b|copy/i.test(str) &&
+        (/₹|cr\b|lakh|budget|crore/i.test(str) || /^₹?[\d.,\s]+(?:cr|lakh|crore)?$/i.test(str)) &&
+        !str.startsWith('ag:') &&
+        !str.startsWith('as:') &&
+        !str.startsWith('c:')
+      ) {
+        budget = str;
+      } else if (/^(1bhk|2bhk|3bhk|4bhk|3\s*bhk|2\s*bhk|plot|villa|commercial)$/i.test(str)) {
+        configuration = str;
       }
     }
 
-    const customAnswers = {};
-    row.forEach((val, idx) => {
-      const headerTitle = headerKeys[idx] || `Column_${idx}`;
-      if (val !== undefined && val !== null && String(val).trim() !== '') {
-        customAnswers[headerTitle] = String(val).trim();
-      }
-    });
+    if (!createdAt) createdAt = new Date();
+
+    if (!latestLeadDate || createdAt > latestLeadDate) {
+      latestLeadDate = createdAt;
+    }
 
     leads.push({
       sheetName,
-      leadId: leadId.replace(/^l:/, ''),
-      name: name || 'Lead',
-      phone: cleanPhone || phoneRaw,
-      rawPhone: phoneRaw,
+      leadId,
+      name,
+      phone: cleanPhone,
+      rawPhone,
       email,
       campaignName,
-      campaignId: campaignId.replace(/^c:/, ''),
+      campaignId,
       adName,
-      adId: adId.replace(/^ag:/, ''),
+      adId,
       adsetName,
-      adsetId: adsetId.replace(/^as:/, ''),
+      adsetId,
       formName,
-      formId: formId.replace(/^f:/, ''),
+      formId,
       platform,
       isOrganic,
       budget,
@@ -182,7 +220,7 @@ function parseSheetData(workbook, sheetName) {
       leadStatus,
       notes: '',
       customAnswers,
-      createdAt: parsedDate || new Date(),
+      createdAt,
     });
   }
 
@@ -209,12 +247,6 @@ async function run() {
   const leadsColl = db.collection('metasheetleads');
   const configColl = db.collection('metacampaignconfigs');
 
-  // Create indexes
-  await leadsColl.createIndex({ sheetName: 1, phone: 1 });
-  await leadsColl.createIndex({ sheetName: 1, leadId: 1 });
-  await leadsColl.createIndex({ createdAt: -1 });
-  await configColl.createIndex({ sheetName: 1 }, { unique: true });
-
   console.log('--- Fetching Live Google Sheet ---');
   const exportUrl = `https://docs.google.com/spreadsheets/d/${DEFAULT_META_SHEET_ID}/export?format=xlsx`;
   const response = await fetch(exportUrl, {
@@ -224,10 +256,10 @@ async function run() {
   const workbook = XLSX.read(Buffer.from(arrayBuffer), { type: 'buffer' });
 
   const sheetNames = workbook.SheetNames;
-  console.log(`Found ${sheetNames.length} sheet tabs in Google Sheet.`);
+  console.log(`Processing ${sheetNames.length} sheet tabs with upgraded parser...`);
 
-  let totalNewInserted = 0;
   let totalUpdated = 0;
+  let totalNew = 0;
 
   for (let i = 0; i < sheetNames.length; i++) {
     const sheetName = sheetNames[i];
@@ -279,7 +311,7 @@ async function run() {
       });
 
       const bulkRes = await leadsColl.bulkWrite(bulkOps, { ordered: false });
-      totalNewInserted += bulkRes.upsertedCount || 0;
+      totalNew += bulkRes.upsertedCount || 0;
       totalUpdated += bulkRes.modifiedCount || 0;
     }
 
@@ -307,20 +339,26 @@ async function run() {
       { upsert: true }
     );
 
-    console.log(`- [${isActive ? '🟢 ACTIVE' : '🔴 INACTIVE'}] "${sheetName}": ${dbTotalForSheet} leads in DB | Latest: ${latestDate ? latestDate.toISOString() : 'None'}`);
+    console.log(`- [${isActive ? '🟢 ACTIVE' : '🔴 INACTIVE'}] "${sheetName}": ${dbTotalForSheet} leads updated`);
   }
 
-  const grandTotal = await leadsColl.countDocuments();
-  const activeCount = await configColl.countDocuments({ isActive: true });
-  const inactiveCount = await configColl.countDocuments({ isActive: false });
+  // Verify sample lead Yog Raj 9810178984
+  const sampleDoc = await leadsColl.findOne({ phone: '9810178984' });
+  console.log('\n🌟 Verified MongoDB Lead for 9810178984:');
+  console.log({
+    name: sampleDoc?.name,
+    phone: sampleDoc?.phone,
+    sheetName: sampleDoc?.sheetName,
+    planning: sampleDoc?.planning,
+    visitTimeline: sampleDoc?.visitTimeline,
+    campaignName: sampleDoc?.campaignName,
+    formName: sampleDoc?.formName
+  });
 
-  console.log(`\n================ SYNC SUMMARY ================`);
-  console.log(`Total Sheets Synced: ${sheetNames.length}`);
-  console.log(`Total Leads in Database: ${grandTotal}`);
-  console.log(`Active Campaigns: ${activeCount}`);
-  console.log(`Inactive Campaigns: ${inactiveCount}`);
-  console.log(`New Leads Inserted: ${totalNewInserted}`);
-  console.log(`Existing Leads Updated: ${totalUpdated}`);
+  const totalWithRealNames = await leadsColl.countDocuments({ name: { $ne: 'Meta Lead' } });
+  const grandTotal = await leadsColl.countDocuments();
+  console.log(`\n🎉 Total Leads in DB: ${grandTotal}`);
+  console.log(`🎉 Leads with Accurate Customer Names: ${totalWithRealNames} / ${grandTotal} (${((totalWithRealNames/grandTotal)*100).toFixed(1)}%)`);
 
   await mongoose.disconnect();
   console.log('✅ Disconnected from MongoDB. Sync complete!');
