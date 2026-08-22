@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target, Compass, HelpCircle, Phone, BarChart2, Package2, Navigation } from 'lucide-react';
+import { LayoutDashboard, Home, Users, Briefcase, FileText, Settings, X, Layers, Target, Compass, HelpCircle, Phone, BarChart2, Package2, Navigation, Megaphone } from 'lucide-react';
 import Image from 'next/image';
 
 const navItems = [
@@ -19,6 +19,7 @@ const navItems = [
   { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText, restricted: true },
   { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target, restricted: true },
+  { href: '/admin/meta-ads', label: 'Meta Ads', icon: Megaphone, restricted: true },
 ];
 
 export default function AdminSidebar({ 
