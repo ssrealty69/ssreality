@@ -28,7 +28,7 @@ export interface AgentPriorityConfig {
 
 export const AGENT_PRIORITY_SLABS: AgentPriorityConfig[] = [
   { rank: 1, namePattern: /nikhil/i, employeeId: 'SSR001', weight: 1.30, isTop3: true },
-  { rank: 2, namePattern: /ayaan/i,  employeeId: 'SSR002', weight: 1.25, isTop3: true },
+  { rank: 2, namePattern: /ayaan/i,  employeeId: 'SSR002', weight: 1.30, isTop3: true },
   { rank: 3, namePattern: /nihal/i,  employeeId: 'SSR005', weight: 1.20, isTop3: true },
   { rank: 4, namePattern: /gulshan/i,employeeId: 'SSR004', weight: 1.05, isTop3: false },
   { rank: 5, namePattern: /nikita/i, employeeId: 'SSR013', weight: 1.00, isTop3: false },
