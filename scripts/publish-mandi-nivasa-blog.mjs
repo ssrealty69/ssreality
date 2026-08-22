@@ -58,7 +58,7 @@ const blogData = {
   published: true,
   status: 'published',
   publishDate: new Date(),
-  views: 325,
+  views: 340,
   linkedPropertyId: '6a210f719c435ca44605f9ad',
   linkedPropertyName: 'Nivasa II 3BHK Premium Builder Floor',
   seo: {
@@ -117,11 +117,11 @@ const blogData = {
 
   <!-- ==================== 3. COMPACT & TIGHT VIDEO WALKTHROUGH SECTION ==================== -->
   <section class="my-5">
-    <div class="p-3.5 sm:p-4 md:p-5 bg-gradient-to-br from-[#FAF7F2] via-[#FFFDF9] to-[#F5EFE4] rounded-2xl border border-[#D4AF37]/40 shadow-sm">
+    <div class="p-3.5 sm:p-4 bg-gradient-to-br from-[#FAF7F2] via-[#FFFDF9] to-[#F5EFE4] rounded-2xl border border-[#D4AF37]/40 shadow-sm">
       
       <!-- Ultra-Compact Header -->
       <div class="flex items-center justify-between gap-2 mb-2.5">
-        <h3 class="text-sm sm:text-base md:text-lg font-extrabold text-stone-900 tracking-tight">
+        <h3 class="text-sm sm:text-base font-extrabold text-stone-900 tracking-tight">
           3 BHK The Nivasa II (Mandi Road) — Video Tour
         </h3>
         <span class="px-2 py-0.5 bg-amber-100/90 text-[#8B6914] text-[10px] font-black uppercase rounded tracking-wide shrink-0">
@@ -172,26 +172,37 @@ const blogData = {
           </div>
         </div>
 
-        <!-- Compact Bottom Feature & Action Bar -->
-        <div class="mt-2.5 p-2.5 sm:p-3 bg-white/90 rounded-xl border border-amber-200/70 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
-          <div class="text-[11px] sm:text-xs text-stone-700 font-medium">
-            <span class="font-bold text-stone-900 block sm:inline">The Nivasa II:</span>
-            <span class="text-stone-500"> 3 BHK • Parking • Lift • Gated Society • 90% Loan</span>
+        <!-- Ultra-Clean Luxury Feature & Action Bar -->
+        <div class="mt-2.5 p-3 bg-white rounded-xl border border-stone-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div class="flex flex-wrap items-center gap-1.5 text-xs text-stone-700 font-medium text-center sm:text-left">
+            <span class="font-bold text-stone-900">The Nivasa II:</span>
+            <span class="px-2 py-0.5 bg-stone-100 text-stone-700 rounded text-[11px] font-semibold">3 BHK</span>
+            <span class="px-2 py-0.5 bg-stone-100 text-stone-700 rounded text-[11px] font-semibold">Parking</span>
+            <span class="px-2 py-0.5 bg-stone-100 text-stone-700 rounded text-[11px] font-semibold">Lift</span>
+            <span class="px-2 py-0.5 bg-amber-50 text-[#8B6914] border border-amber-200 rounded text-[11px] font-bold">90% Loan</span>
           </div>
+
+          <!-- Beautiful High-Contrast Action Buttons -->
           <div class="flex items-center gap-2 shrink-0">
             <a 
               href="tel:+919311059100" 
-              class="px-3 py-1.5 bg-[#8B6914] hover:bg-[#72540F] text-white font-bold text-xs rounded-lg shadow-2xs transition-all cursor-pointer flex items-center gap-1"
-              style="color: #FFFFFF;"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#B38715] hover:brightness-105 rounded-xl shadow-xs transition-all cursor-pointer font-black text-xs"
+              style="color: #1A1800 !important; text-decoration: none !important;"
             >
-              <span>Call: +91 93110 59100</span>
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/>
+              </svg>
+              <span>+91 93110 59100</span>
             </a>
             <a 
               href="https://wa.me/919311059100?text=Hi%20SS%20Realty,%20I%20watched%20The%20Nivasa%20II%20video%20tour%20and%20want%20to%20book%20a%20site%20visit." 
               target="_blank" 
-              class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-2xs transition-all cursor-pointer flex items-center gap-1"
-              style="color: #FFFFFF;"
+              class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#25D366] hover:bg-[#20bd5a] rounded-xl shadow-xs transition-all cursor-pointer font-bold text-xs"
+              style="color: #FFFFFF !important; text-decoration: none !important;"
             >
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2z"/>
+              </svg>
               <span>Book Site Visit</span>
             </a>
           </div>
@@ -506,14 +517,14 @@ const blogData = {
           <tr>
             <td class="py-2 px-3 font-bold">Surrounding Environment</td>
             <td class="py-2 px-3 font-medium bg-amber-50/50">Lush Green Farms & Serene AQI</td>
-            <td class="py-2 px-3">Densely populated urban</td>
-            <td class="py-2 px-3">High-density concrete towers</td>
+            <td class="py-2.5 px-3">Densely populated urban</td>
+            <td class="py-2.5 px-3">High-density concrete towers</td>
           </tr>
           <tr>
             <td class="py-2 px-3 font-bold">Delhi/Gurgaon Dual Access</td>
             <td class="py-2 px-3 font-extrabold text-emerald-800 bg-amber-50/50">5 mins to both borders</td>
-            <td class="py-2 px-3">Heavy traffic via MG Road</td>
-            <td class="py-2 px-3">Gurgaon only (Toll jams to Delhi)</td>
+            <td class="py-2.5 px-3">Heavy traffic via MG Road</td>
+            <td class="py-2.5 px-3">Gurgaon only (Toll jams to Delhi)</td>
           </tr>
         </tbody>
       </table>
@@ -624,18 +635,24 @@ const blogData = {
     <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
       <a 
         href="tel:+919311059100" 
-        class="px-5 py-2.5 bg-[#8B6914] hover:bg-[#72540F] text-white font-bold text-xs sm:text-sm uppercase rounded-xl transition-all shadow-sm cursor-pointer"
-        style="color: #FFFFFF;"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#D4AF37] via-[#C59B27] to-[#B38715] hover:brightness-105 rounded-xl shadow-xs transition-all cursor-pointer font-black text-xs sm:text-sm"
+        style="color: #1A1800 !important; text-decoration: none !important;"
       >
-        Call: +91 93110 59100
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+          <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/>
+        </svg>
+        <span>Call: +91 93110 59100</span>
       </a>
       <a 
         href="https://wa.me/919311059100?text=Hi%20SS%20Realty,%20I%20am%20interested%20in%20The%20Nivasa%20II%203%20BHK%20Flats%20in%20Mandi%20New%20Delhi%20with%2090%25%20Loan." 
         target="_blank" 
-        class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm uppercase rounded-xl transition-all shadow-sm cursor-pointer"
-        style="color: #FFFFFF;"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#25D366] hover:bg-[#20bd5a] rounded-xl shadow-xs transition-all cursor-pointer font-bold text-xs sm:text-sm"
+        style="color: #FFFFFF !important; text-decoration: none !important;"
       >
-        WhatsApp Inquiry
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+          <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2z"/>
+        </svg>
+        <span>WhatsApp Inquiry</span>
       </a>
     </div>
   </div>
@@ -656,7 +673,7 @@ async function main() {
       { returnDocument: 'after', upsert: true }
     );
 
-    console.log('✅ Blog video section spacing tightened successfully!');
+    console.log('✅ Blog bottom bar buttons completely restyled with premium luxury colors!');
     console.log('Title:', updated.title);
     console.log('Slug:', updated.slug);
     console.log('Live URL:', `https://ssrealty.org/blog/${updated.slug}`);
