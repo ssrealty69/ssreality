@@ -58,7 +58,7 @@ const blogData = {
   published: true,
   status: 'published',
   publishDate: new Date(),
-  views: 310,
+  views: 325,
   linkedPropertyId: '6a210f719c435ca44605f9ad',
   linkedPropertyName: 'Nivasa II 3BHK Premium Builder Floor',
   seo: {
@@ -69,39 +69,39 @@ const blogData = {
     canonicalUrl: 'https://ssrealty.org/blog/3-bhk-flats-in-mandi-new-delhi-with-90-loan-nivasa'
   },
   content: `
-<div class="blog-article space-y-10 text-gray-800 leading-relaxed font-normal">
+<div class="blog-article space-y-8 text-gray-800 leading-relaxed font-normal">
 
   <!-- ==================== 1. AIO / GEO EXECUTIVE SUMMARY SNIPPET ==================== -->
-  <div class="p-6 md:p-8 bg-gradient-to-br from-[#FAF7F0] via-[#FFFDF9] to-[#F5EFE0] rounded-3xl border-2 border-[#D4AF37]/35 shadow-[0_8px_25px_rgba(212,175,55,0.08)]">
-    <div class="flex items-center gap-2.5 mb-4">
-      <span class="px-3 py-1 bg-[#8B6914] text-white rounded-lg font-black text-xs uppercase tracking-wider">Quick Summary</span>
-      <h3 class="text-xl md:text-2xl font-black text-[#1A1800] tracking-tight">
+  <div class="p-5 md:p-7 bg-gradient-to-br from-[#FAF7F0] via-[#FFFDF9] to-[#F5EFE0] rounded-2xl border-2 border-[#D4AF37]/35 shadow-[0_4px_20px_rgba(212,175,55,0.06)]">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="px-2.5 py-0.5 bg-[#8B6914] text-white rounded-md font-black text-[11px] uppercase tracking-wider">Quick Summary</span>
+      <h3 class="text-lg md:text-xl font-black text-[#1A1800] tracking-tight">
         3 BHK Flats in Mandi, New Delhi (The Nivasa II) at a Glance
       </h3>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 font-medium">
-      <div class="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
-        <p class="font-bold text-[#1A1800] mb-1">Location & Strategic Advantage:</p>
-        <p>Mandi Village, Mandi Road, South Delhi (5 mins from Gurgaon-Faridabad Rd, 12 mins to Chattarpur Metro, 18 mins to Cyber City & Golf Course Rd).</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs md:text-sm text-gray-700 font-medium">
+      <div class="bg-white/95 p-3.5 rounded-xl border border-amber-200/80 shadow-xs">
+        <p class="font-bold text-[#1A1800] mb-0.5">Location & Strategic Advantage:</p>
+        <p>Mandi Village, Mandi Road, South Delhi (5 mins to Gurgaon-Faridabad Rd, 12 mins to Chattarpur Metro, 18 mins to Cyber City).</p>
       </div>
-      <div class="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
-        <p class="font-bold text-[#1A1800] mb-1">Loan & Financial Flexibility:</p>
+      <div class="bg-white/95 p-3.5 rounded-xl border border-amber-200/80 shadow-xs">
+        <p class="font-bold text-[#1A1800] mb-0.5">Loan & Financial Flexibility:</p>
         <p>Up to <strong>90% Bank & NBFC Loan approval</strong> available. Pay only 10% down payment and own a luxury 3 BHK builder floor in South Delhi.</p>
       </div>
-      <div class="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
-        <p class="font-bold text-[#1A1800] mb-1">Layout & Configuration:</p>
-        <p>3 Spacious Bedrooms, 2/3 Modern Bathrooms, Large Living Lounge, Italian Modular Kitchen, Balconies with Aravalli green views (~1350–1450 sq.ft).</p>
+      <div class="bg-white/95 p-3.5 rounded-xl border border-amber-200/80 shadow-xs">
+        <p class="font-bold text-[#1A1800] mb-0.5">Layout & Configuration:</p>
+        <p>3 Spacious Bedrooms, 2/3 Modern Bathrooms, Large Living Lounge, Italian Modular Kitchen, Balconies (~1350–1450 sq.ft).</p>
       </div>
-      <div class="bg-white/95 p-4 rounded-2xl border border-amber-200/80 shadow-xs">
-        <p class="font-bold text-[#1A1800] mb-1">Building Amenities:</p>
-        <p>Stilt Car Parking, High-Speed Automatic Lift, Gated Society, 24/7 Water Supply (Submersible + Overhead Tanks), BSES Electricity, CCTV Security.</p>
+      <div class="bg-white/95 p-3.5 rounded-xl border border-amber-200/80 shadow-xs">
+        <p class="font-bold text-[#1A1800] mb-0.5">Building Amenities:</p>
+        <p>Stilt Car Parking, High-Speed Automatic Lift, Gated Society, 24/7 Water Supply, BSES Electricity, CCTV Security.</p>
       </div>
     </div>
   </div>
 
   <!-- ==================== 2. INTRODUCTION ==================== -->
-  <section class="space-y-4">
-    <h2 class="text-2xl md:text-3xl font-extrabold text-[#1A1800] tracking-tight">
+  <section class="space-y-3">
+    <h2 class="text-xl md:text-2xl font-extrabold text-[#1A1800] tracking-tight">
       1. Why 3 BHK Flats in Mandi, New Delhi Are the Top Choice for Smart Homebuyers in 2026
     </h2>
     <p>
@@ -115,29 +115,25 @@ const blogData = {
     </p>
   </section>
 
-  <!-- ==================== 3. UNIQUE, INTERACTIVE VIDEO SECTION WITH 3BHK THUMBNAIL ==================== -->
-  <section class="my-8">
-    <div class="p-5 md:p-7 bg-gradient-to-br from-[#FCFBF7] via-[#FFFDF9] to-[#F7F2E7] rounded-3xl border-2 border-[#D4AF37]/35 shadow-[0_10px_30px_rgba(212,175,55,0.08)]">
+  <!-- ==================== 3. COMPACT & TIGHT VIDEO WALKTHROUGH SECTION ==================== -->
+  <section class="my-5">
+    <div class="p-3.5 sm:p-4 md:p-5 bg-gradient-to-br from-[#FAF7F2] via-[#FFFDF9] to-[#F5EFE4] rounded-2xl border border-[#D4AF37]/40 shadow-sm">
       
-      <!-- Video Header -->
-      <div class="text-center max-w-2xl mx-auto mb-5">
-        <div class="inline-flex items-center gap-2 px-3 py-1 bg-amber-100/90 border border-amber-300 rounded-full text-[#8B6914] text-xs font-black uppercase tracking-wider mb-2">
-          <span>Project Video Tour</span>
-        </div>
-        <h3 class="text-xl md:text-2xl font-black text-stone-900 tracking-tight">
-          3 BHK The Nivasa II in Mandi — Inside Sample Flat Tour
+      <!-- Ultra-Compact Header -->
+      <div class="flex items-center justify-between gap-2 mb-2.5">
+        <h3 class="text-sm sm:text-base md:text-lg font-extrabold text-stone-900 tracking-tight">
+          3 BHK The Nivasa II (Mandi Road) — Video Tour
         </h3>
-        <p class="text-xs md:text-sm text-stone-600 mt-1 font-medium">
-          Click below to watch the complete HD walkthrough of living lounge, modular kitchen, and luxury bedrooms.
-        </p>
+        <span class="px-2 py-0.5 bg-amber-100/90 text-[#8B6914] text-[10px] font-black uppercase rounded tracking-wide shrink-0">
+          HD Tour
+        </span>
       </div>
 
-      <!-- Interactive 16:9 Video Player with Custom 3BHK Thumbnail & Play Action -->
+      <!-- Interactive 16:9 Video Player with 3BHK Thumbnail & Play Action -->
       <div class="max-w-4xl mx-auto">
         <div 
           id="nivasaVideoCard"
-          class="video-wrapper relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-stone-200 cursor-pointer group bg-stone-900"
-          style="min-height: 240px;"
+          class="video-wrapper relative w-full aspect-video rounded-xl overflow-hidden shadow-md border border-stone-200 cursor-pointer group bg-stone-900"
           onclick="this.innerHTML='<iframe class=\\'video-iframe absolute inset-0 w-full h-full border-0\\' src=\\'https://www.youtube.com/embed/jQme6-XPOUs?autoplay=1&rel=0&modestbranding=1\\' title=\\'3 BHK Flats in Mandi New Delhi - The Nivasa II Walkthrough\\' allow=\\'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\\' allowfullscreen></iframe>';"
         >
           <!-- 3BHK Nivasa II Thumbnail Image -->
@@ -151,41 +147,41 @@ const blogData = {
           <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/40 group-hover:from-black/65 transition-colors"></div>
 
           <!-- Top Badge on Thumbnail -->
-          <div class="absolute top-3.5 left-3.5 sm:top-4 sm:left-4 z-10">
-            <span class="px-3 py-1 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-400/40 rounded-lg text-xs font-bold uppercase tracking-wider">
-              The Nivasa II • Mandi Road
+          <div class="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-10">
+            <span class="px-2.5 py-0.5 bg-black/60 backdrop-blur-md text-amber-300 border border-amber-400/30 rounded text-[11px] font-bold uppercase tracking-wider">
+              The Nivasa II • Mandi
             </span>
           </div>
 
           <!-- Center Pulsing Play Button -->
-          <div class="absolute inset-0 flex flex-col items-center justify-center z-10 gap-2">
-            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-r from-[#C9A227] to-[#B8860B] text-white flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform border-4 border-white/90">
-              <svg class="w-7 h-7 sm:w-9 sm:h-9 translate-x-0.5 fill-current" viewBox="0 0 24 24">
+          <div class="absolute inset-0 flex flex-col items-center justify-center z-10 gap-1.5">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-[#C9A227] to-[#B8860B] text-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform border-2 border-white/90">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7 translate-x-0.5 fill-current" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
             </div>
-            <span class="text-white font-extrabold text-xs sm:text-sm bg-black/60 backdrop-blur-md px-3.5 py-1 rounded-full border border-white/20">
+            <span class="text-white font-bold text-[11px] sm:text-xs bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20">
               Click to Play Video Tour
             </span>
           </div>
 
           <!-- Bottom Bar on Thumbnail -->
-          <div class="absolute bottom-3 left-3.5 right-3.5 z-10 flex items-center justify-between text-white text-xs font-semibold">
-            <span>3 BHK Luxury Builder Floor</span>
-            <span class="bg-amber-500/90 text-stone-900 font-bold px-2 py-0.5 rounded text-[11px]">HD Walkthrough</span>
+          <div class="absolute bottom-2.5 left-3 right-3 z-10 flex items-center justify-between text-white text-[11px] font-semibold">
+            <span>3 BHK Luxury Flat Walkthrough</span>
+            <span class="bg-amber-500/90 text-stone-900 font-bold px-1.5 py-0.5 rounded text-[10px]">0:52 HD</span>
           </div>
         </div>
 
-        <!-- Video Bottom Feature & Action Bar -->
-        <div class="mt-3.5 p-3.5 bg-white/90 rounded-2xl border border-amber-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-          <div class="text-xs text-stone-700 font-medium">
+        <!-- Compact Bottom Feature & Action Bar -->
+        <div class="mt-2.5 p-2.5 sm:p-3 bg-white/90 rounded-xl border border-amber-200/70 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+          <div class="text-[11px] sm:text-xs text-stone-700 font-medium">
             <span class="font-bold text-stone-900 block sm:inline">The Nivasa II:</span>
-            <span class="text-stone-500"> 3 BHK • Stilt Parking • Lift • Gated Society • 90% Loan</span>
+            <span class="text-stone-500"> 3 BHK • Parking • Lift • Gated Society • 90% Loan</span>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <a 
               href="tel:+919311059100" 
-              class="px-4 py-2 bg-[#8B6914] hover:bg-[#72540F] text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+              class="px-3 py-1.5 bg-[#8B6914] hover:bg-[#72540F] text-white font-bold text-xs rounded-lg shadow-2xs transition-all cursor-pointer flex items-center gap-1"
               style="color: #FFFFFF;"
             >
               <span>Call: +91 93110 59100</span>
@@ -193,7 +189,7 @@ const blogData = {
             <a 
               href="https://wa.me/919311059100?text=Hi%20SS%20Realty,%20I%20watched%20The%20Nivasa%20II%20video%20tour%20and%20want%20to%20book%20a%20site%20visit." 
               target="_blank" 
-              class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+              class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-2xs transition-all cursor-pointer flex items-center gap-1"
               style="color: #FFFFFF;"
             >
               <span>Book Site Visit</span>
@@ -206,8 +202,8 @@ const blogData = {
   </section>
 
   <!-- ==================== 4. REAL INTERIOR PHOTOS & ARCHITECTURAL HIGHLIGHTS ==================== -->
-  <section class="space-y-6">
-    <h2 class="text-2xl md:text-3xl font-extrabold text-[#1A1800] tracking-tight">
+  <section class="space-y-5">
+    <h2 class="text-xl md:text-2xl font-extrabold text-[#1A1800] tracking-tight">
       2. Step Inside The Nivasa II: Premium Interiors & Detailed Photo Tour
     </h2>
     <p>
@@ -215,15 +211,15 @@ const blogData = {
     </p>
 
     <!-- Photo 1: Living & Dining -->
-    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm my-5">
+    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm my-4">
       <img 
         src="/blog/3-bhk-flats-in-mandi-new-delhi-living-room.jpg" 
         alt="Spacious 3 BHK Living Room and Open Modular Kitchen in The Nivasa II Mandi New Delhi" 
         class="w-full h-auto object-cover max-h-[500px]"
         loading="lazy"
       />
-      <div class="p-4 bg-stone-50/70 border-t border-stone-100">
-        <h4 class="font-bold text-stone-900 text-sm mb-1">Grand Living & Dining Lounge with Designer False Ceiling</h4>
+      <div class="p-3.5 bg-stone-50/70 border-t border-stone-100">
+        <h4 class="font-bold text-stone-900 text-sm mb-0.5">Grand Living & Dining Lounge with Designer False Ceiling</h4>
         <p class="text-xs text-stone-600">
           The living room features high-grade Italian-pattern vitrified tiles, warm cove lighting, custom wall paneling, and an open layout connecting seamlessly with the modular kitchen area, creating a regal ambiance for hosting guests.
         </p>
@@ -231,15 +227,15 @@ const blogData = {
     </div>
 
     <!-- Photo 2: Living Lounge Wainscoting Wall Art -->
-    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm my-5">
+    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm my-4">
       <img 
         src="/blog/3-bhk-flats-in-mandi-new-delhi-modular-kitchen.jpg" 
         alt="Living room with royal wainscoting wall paneling in 3 BHK flat Mandi South Delhi" 
         class="w-full h-auto object-cover max-h-[500px]"
         loading="lazy"
       />
-      <div class="p-4 bg-stone-50/70 border-t border-stone-100">
-        <h4 class="font-bold text-stone-900 text-sm mb-1">European Style Wall Moldings & Ambient Illumination</h4>
+      <div class="p-3.5 bg-stone-50/70 border-t border-stone-100">
+        <h4 class="font-bold text-stone-900 text-sm mb-0.5">European Style Wall Moldings & Ambient Illumination</h4>
         <p class="text-xs text-stone-600">
           Sophisticated wainscoting moldings on the accent wall paired with recessed LED spotlights bring a Parisian luxury vibe to everyday living in South Delhi.
         </p>
@@ -247,7 +243,7 @@ const blogData = {
     </div>
 
     <!-- Photo 3 & 4: Master Bedroom & Balcony View Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 my-4">
       <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
         <img 
           src="/blog/3-bhk-flats-in-mandi-new-delhi-master-bedroom.jpg" 
@@ -255,9 +251,9 @@ const blogData = {
           class="w-full h-auto object-cover max-h-[380px]"
           loading="lazy"
         />
-        <div class="p-4 bg-stone-50/70 border-t border-stone-100">
-          <h4 class="font-bold text-stone-900 text-sm mb-1">Master Bedroom with Acoustic Window</h4>
-          <p class="text-xs text-stone-600">
+        <div class="p-3 bg-stone-50/70 border-t border-stone-100">
+          <h4 class="font-bold text-stone-900 text-xs sm:text-sm mb-0.5">Master Bedroom with Acoustic Window</h4>
+          <p class="text-[11px] sm:text-xs text-stone-600">
             King-size bedroom equipped with premium floor-to-ceiling wooden wardrobes, cushioned headboards, and large soundproof windows overlooking green foliage.
           </p>
         </div>
@@ -270,9 +266,9 @@ const blogData = {
           class="w-full h-auto object-cover max-h-[380px]"
           loading="lazy"
         />
-        <div class="p-4 bg-stone-50/70 border-t border-stone-100">
-          <h4 class="font-bold text-stone-900 text-sm mb-1">Attached Balcony with Private Tree-Lined Views</h4>
-          <p class="text-xs text-stone-600">
+        <div class="p-3 bg-stone-50/70 border-t border-stone-100">
+          <h4 class="font-bold text-stone-900 text-xs sm:text-sm mb-0.5">Attached Balcony with Private Tree-Lined Views</h4>
+          <p class="text-[11px] sm:text-xs text-stone-600">
             Full-height UPVC sliding glass doors open directly to a spacious private balcony where you can enjoy your morning tea amidst chirping birds and fresh breeze.
           </p>
         </div>
@@ -280,15 +276,15 @@ const blogData = {
     </div>
 
     <!-- Photo 5: Deluxe Bedroom Angle -->
-    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm my-5">
+    <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm my-4">
       <img 
         src="/blog/3-bhk-flats-in-mandi-new-delhi-nivasa-interior.jpg" 
         alt="Spacious 3 BHK Bedroom Interior at The Nivasa II Mandi South Delhi" 
         class="w-full h-auto object-cover max-h-[480px]"
         loading="lazy"
       />
-      <div class="p-4 bg-stone-50/70 border-t border-stone-100">
-        <h4 class="font-bold text-stone-900 text-sm mb-1">En-Suite Dressing & Designer Bathrooms</h4>
+      <div class="p-3.5 bg-stone-50/70 border-t border-stone-100">
+        <h4 class="font-bold text-stone-900 text-sm mb-0.5">En-Suite Dressing & Designer Bathrooms</h4>
         <p class="text-xs text-stone-600">
           Modern bathroom fittings with branded Jaguar/Cera sanitaryware, anti-skid floor tiles, vanity mirrors, and separate wet/dry zones.
         </p>
@@ -297,62 +293,62 @@ const blogData = {
   </section>
 
   <!-- ==================== 5. TECHNICAL SPECIFICATIONS & AMENITIES TABLE ==================== -->
-  <section class="space-y-4">
-    <h2 class="text-2xl md:text-3xl font-extrabold text-[#1A1800] tracking-tight">
+  <section class="space-y-3">
+    <h2 class="text-xl md:text-2xl font-extrabold text-[#1A1800] tracking-tight">
       3. Complete Project Specifications: The Nivasa II
     </h2>
     <p>
       Below is the comprehensive technical breakdown of building infrastructure, structural design, and unit specifications at The Nivasa II:
     </p>
 
-    <div class="overflow-x-auto rounded-2xl border border-stone-200 shadow-sm my-4">
+    <div class="overflow-x-auto rounded-2xl border border-stone-200 shadow-sm my-3">
       <table class="w-full text-left text-sm text-stone-700 border-collapse bg-white">
         <thead class="bg-[#8B6914] text-white uppercase text-xs font-bold tracking-wider">
           <tr>
-            <th class="py-3 px-4 border-b border-stone-200">Feature / Specification</th>
-            <th class="py-3 px-4 border-b border-stone-200">Details & Quality Standards</th>
+            <th class="py-2.5 px-3.5 border-b border-stone-200">Feature / Specification</th>
+            <th class="py-2.5 px-3.5 border-b border-stone-200">Details & Quality Standards</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-stone-100">
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Typology & Layout</td>
-            <td class="py-3 px-4">3 Bedrooms + 2/3 Bathrooms + Spacious Living & Dining + Kitchen + 2 Balconies</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Typology & Layout</td>
+            <td class="py-2.5 px-3.5">3 Bedrooms + 2/3 Bathrooms + Spacious Living & Dining + Kitchen + 2 Balconies</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Super Built-up Area</td>
-            <td class="py-3 px-4">Approx. 1,350 sq.ft to 1,450 sq.ft</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Super Built-up Area</td>
+            <td class="py-2.5 px-3.5">Approx. 1,350 sq.ft to 1,450 sq.ft</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Structure & Elevation</td>
-            <td class="py-3 px-4">Earthquake-resistant RCC framed structure (Stilt + 4 Floors)</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Structure & Elevation</td>
+            <td class="py-2.5 px-3.5">Earthquake-resistant RCC framed structure (Stilt + 4 Floors)</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Elevator / Lift</td>
-            <td class="py-3 px-4">Fully Automatic 6-Passenger High-Speed Lift with ARD safety device</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Elevator / Lift</td>
+            <td class="py-2.5 px-3.5">Fully Automatic 6-Passenger High-Speed Lift with ARD safety device</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Car Parking</td>
-            <td class="py-3 px-4">Dedicated Stilt Parking Bay for 1 Car + Two-Wheeler per unit</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Car Parking</td>
+            <td class="py-2.5 px-3.5">Dedicated Stilt Parking Bay for 1 Car + Two-Wheeler per unit</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Kitchen Amenities</td>
-            <td class="py-3 px-4">Modular cabinets with hydraulic hinges, Granite/Quartz top, Chimney provision, Double bowl sink</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Kitchen Amenities</td>
+            <td class="py-2.5 px-3.5">Modular cabinets with hydraulic hinges, Granite/Quartz top, Chimney provision, Double bowl sink</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Flooring & Finishes</td>
-            <td class="py-3 px-4">Double-charged Glazed Vitrified Italian Marble-Finish Tiles in all rooms</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Flooring & Finishes</td>
+            <td class="py-2.5 px-3.5">Double-charged Glazed Vitrified Italian Marble-Finish Tiles in all rooms</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Water & Utilities</td>
-            <td class="py-3 px-4">24-Hour Sweet Water Supply, Dedicated Overhead Water Tanks, Submersible Pump</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Water & Utilities</td>
+            <td class="py-2.5 px-3.5">24-Hour Sweet Water Supply, Dedicated Overhead Water Tanks, Submersible Pump</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Electricity & Metering</td>
-            <td class="py-3 px-4">Individual BSES Rajdhani Electricity Meter + Inverter wiring installed</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Electricity & Metering</td>
+            <td class="py-2.5 px-3.5">Individual BSES Rajdhani Electricity Meter + Inverter wiring installed</td>
           </tr>
           <tr class="hover:bg-amber-50/40 transition-colors">
-            <td class="py-3 px-4 font-bold text-stone-900">Security System</td>
-            <td class="py-3 px-4">Gated compound, 24/7 CCTV surveillance on all common corridors & parking</td>
+            <td class="py-2.5 px-3.5 font-bold text-stone-900">Security System</td>
+            <td class="py-2.5 px-3.5">Gated compound, 24/7 CCTV surveillance on all common corridors & parking</td>
           </tr>
         </tbody>
       </table>
@@ -360,8 +356,8 @@ const blogData = {
   </section>
 
   <!-- ==================== 6. 90% BANK LOAN & FINANCIAL ELIGIBILITY GUIDE ==================== -->
-  <section class="space-y-4">
-    <h2 class="text-2xl md:text-3xl font-extrabold text-[#1A1800] tracking-tight">
+  <section class="space-y-3">
+    <h2 class="text-xl md:text-2xl font-extrabold text-[#1A1800] tracking-tight">
       4. How the 90% Bank Loan Facility Works (Own a Flat with Just 10% Down Payment)
     </h2>
     <p>
@@ -369,11 +365,11 @@ const blogData = {
     </p>
 
     <!-- EMI Calculation Table -->
-    <div class="p-6 bg-gradient-to-r from-stone-50 via-white to-amber-50/40 rounded-2xl border border-stone-200 shadow-sm my-4">
-      <h3 class="text-base md:text-lg font-bold text-stone-900 mb-2">
+    <div class="p-5 bg-gradient-to-r from-stone-50 via-white to-amber-50/40 rounded-2xl border border-stone-200 shadow-sm my-3">
+      <h3 class="text-sm md:text-base font-bold text-stone-900 mb-1.5">
         Estimated Loan & EMI Calculation (Illustrative)
       </h3>
-      <p class="text-xs text-stone-600 mb-4">
+      <p class="text-xs text-stone-600 mb-3">
         *Exact loan amount and interest rates depend on applicant profile, CIBIL score (750+ recommended), and income documents. Use our <a href="https://ssrealty.org/emi-calculator" class="font-bold underline text-[#8B6914]">Online EMI Calculator</a> for instant custom calculations.
       </p>
 
@@ -381,30 +377,30 @@ const blogData = {
         <table class="w-full text-left text-xs md:text-sm text-stone-700 bg-white">
           <thead class="bg-[#8B6914] text-white uppercase text-[11px] font-bold">
             <tr>
-              <th class="py-3 px-3">Property Value (Approx)</th>
-              <th class="py-3 px-3">Your Down Payment (10%)</th>
-              <th class="py-3 px-3">Bank Loan (90%)</th>
-              <th class="py-3 px-3">Approx Monthly EMI (20 Yrs @ 8.5%)</th>
+              <th class="py-2.5 px-3">Property Value (Approx)</th>
+              <th class="py-2.5 px-3">Your Down Payment (10%)</th>
+              <th class="py-2.5 px-3">Bank Loan (90%)</th>
+              <th class="py-2.5 px-3">Approx Monthly EMI (20 Yrs @ 8.5%)</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-stone-100">
             <tr>
-              <td class="py-2.5 px-3 font-bold text-stone-900">₹ 65 Lakhs</td>
-              <td class="py-2.5 px-3 text-emerald-800 font-bold">₹ 6.5 Lakhs</td>
-              <td class="py-2.5 px-3 text-blue-800 font-bold">₹ 58.5 Lakhs</td>
-              <td class="py-2.5 px-3 font-extrabold text-stone-900">₹ 50,750 / mo</td>
+              <td class="py-2 px-3 font-bold text-stone-900">₹ 65 Lakhs</td>
+              <td class="py-2 px-3 text-emerald-800 font-bold">₹ 6.5 Lakhs</td>
+              <td class="py-2 px-3 text-blue-800 font-bold">₹ 58.5 Lakhs</td>
+              <td class="py-2 px-3 font-extrabold text-stone-900">₹ 50,750 / mo</td>
             </tr>
             <tr>
-              <td class="py-2.5 px-3 font-bold text-stone-900">₹ 75 Lakhs</td>
-              <td class="py-2.5 px-3 text-emerald-800 font-bold">₹ 7.5 Lakhs</td>
-              <td class="py-2.5 px-3 text-blue-800 font-bold">₹ 67.5 Lakhs</td>
-              <td class="py-2.5 px-3 font-extrabold text-stone-900">₹ 58,560 / mo</td>
+              <td class="py-2 px-3 font-bold text-stone-900">₹ 75 Lakhs</td>
+              <td class="py-2 px-3 text-emerald-800 font-bold">₹ 7.5 Lakhs</td>
+              <td class="py-2 px-3 text-blue-800 font-bold">₹ 67.5 Lakhs</td>
+              <td class="py-2 px-3 font-extrabold text-stone-900">₹ 58,560 / mo</td>
             </tr>
             <tr>
-              <td class="py-2.5 px-3 font-bold text-stone-900">₹ 85 Lakhs</td>
-              <td class="py-2.5 px-3 text-emerald-800 font-bold">₹ 8.5 Lakhs</td>
-              <td class="py-2.5 px-3 text-blue-800 font-bold">₹ 76.5 Lakhs</td>
-              <td class="py-2.5 px-3 font-extrabold text-stone-900">₹ 66,370 / mo</td>
+              <td class="py-2 px-3 font-bold text-stone-900">₹ 85 Lakhs</td>
+              <td class="py-2 px-3 text-emerald-800 font-bold">₹ 8.5 Lakhs</td>
+              <td class="py-2 px-3 text-blue-800 font-bold">₹ 76.5 Lakhs</td>
+              <td class="py-2 px-3 font-extrabold text-stone-900">₹ 66,370 / mo</td>
             </tr>
           </tbody>
         </table>
@@ -412,10 +408,10 @@ const blogData = {
     </div>
 
     <!-- Required Documents Checklist -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-      <div class="p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
-        <h4 class="font-bold text-stone-900 text-sm mb-2">Documentation Checklist for Salaried Buyers:</h4>
-        <ul class="text-xs text-stone-600 space-y-1.5 list-disc list-inside">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 my-3">
+      <div class="p-4 bg-white rounded-xl border border-stone-200 shadow-xs">
+        <h4 class="font-bold text-stone-900 text-xs sm:text-sm mb-1.5">Documentation Checklist for Salaried Buyers:</h4>
+        <ul class="text-[11px] sm:text-xs text-stone-600 space-y-1 list-disc list-inside">
           <li>Last 3 months salary slips</li>
           <li>Last 6 months bank statement (Salary account)</li>
           <li>Form 16 & ITR for last 2 years</li>
@@ -423,9 +419,9 @@ const blogData = {
         </ul>
       </div>
 
-      <div class="p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
-        <h4 class="font-bold text-stone-900 text-sm mb-2">Documentation Checklist for Self-Employed Buyers:</h4>
-        <ul class="text-xs text-stone-600 space-y-1.5 list-disc list-inside">
+      <div class="p-4 bg-white rounded-xl border border-stone-200 shadow-xs">
+        <h4 class="font-bold text-stone-900 text-xs sm:text-sm mb-1.5">Documentation Checklist for Self-Employed Buyers:</h4>
+        <ul class="text-[11px] sm:text-xs text-stone-600 space-y-1 list-disc list-inside">
           <li>Last 3 years ITR with computation of income & balance sheet</li>
           <li>Last 12 months current & savings bank statement</li>
           <li>Business Registration proof (GST / MSME / Shop Act)</li>
@@ -436,38 +432,38 @@ const blogData = {
   </section>
 
   <!-- ==================== 7. LOCATION & CONNECTIVITY ADVANTAGE ==================== -->
-  <section class="space-y-4">
-    <h2 class="text-2xl md:text-3xl font-extrabold text-[#1A1800] tracking-tight">
+  <section class="space-y-3">
+    <h2 class="text-xl md:text-2xl font-extrabold text-[#1A1800] tracking-tight">
       5. Location Map & Landmark Distances (South Delhi Meets Millennium City)
     </h2>
     <p>
       The key unique selling proposition (USP) of Mandi Road is that it acts as the <strong>golden bridge between South Delhi's heritage charm and Gurugram's corporate hub</strong>.
     </p>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 my-4">
-      <div class="p-3.5 bg-amber-50/70 rounded-xl border border-amber-200 text-center">
-        <p class="text-xs text-stone-500 font-bold uppercase">Chattarpur Metro</p>
-        <p class="text-base font-black text-stone-900 mt-0.5">12 Mins</p>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 my-3">
+      <div class="p-3 bg-amber-50/70 rounded-xl border border-amber-200 text-center">
+        <p class="text-[11px] text-stone-500 font-bold uppercase">Chattarpur Metro</p>
+        <p class="text-sm sm:text-base font-black text-stone-900 mt-0.5">12 Mins</p>
         <p class="text-[10px] text-stone-500">Yellow Line Metro</p>
       </div>
-      <div class="p-3.5 bg-blue-50/70 rounded-xl border border-blue-200 text-center">
-        <p class="text-xs text-stone-500 font-bold uppercase">Gwal Pahari</p>
-        <p class="text-base font-black text-stone-900 mt-0.5">5 Mins</p>
+      <div class="p-3 bg-blue-50/70 rounded-xl border border-blue-200 text-center">
+        <p class="text-[11px] text-stone-500 font-bold uppercase">Gwal Pahari</p>
+        <p class="text-sm sm:text-base font-black text-stone-900 mt-0.5">5 Mins</p>
         <p class="text-[10px] text-stone-500">Gurgaon Border</p>
       </div>
-      <div class="p-3.5 bg-emerald-50/70 rounded-xl border border-emerald-200 text-center">
-        <p class="text-xs text-stone-500 font-bold uppercase">Cyber Hub / DLF</p>
-        <p class="text-base font-black text-stone-900 mt-0.5">20 Mins</p>
+      <div class="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200 text-center">
+        <p class="text-[11px] text-stone-500 font-bold uppercase">Cyber Hub / DLF</p>
+        <p class="text-sm sm:text-base font-black text-stone-900 mt-0.5">20 Mins</p>
         <p class="text-[10px] text-stone-500">Rapid Travel</p>
       </div>
-      <div class="p-3.5 bg-stone-100 rounded-xl border border-stone-200 text-center">
-        <p class="text-xs text-stone-500 font-bold uppercase">IGI Airport (T3)</p>
-        <p class="text-base font-black text-stone-900 mt-0.5">30 Mins</p>
+      <div class="p-3 bg-stone-100 rounded-xl border border-stone-200 text-center">
+        <p class="text-[11px] text-stone-500 font-bold uppercase">IGI Airport (T3)</p>
+        <p class="text-sm sm:text-base font-black text-stone-900 mt-0.5">30 Mins</p>
         <p class="text-[10px] text-stone-500">Via Mahipalpur/Aero</p>
       </div>
     </div>
 
-    <ul class="space-y-2 text-sm text-stone-700 list-disc list-inside bg-white p-5 rounded-2xl border border-stone-200">
+    <ul class="space-y-1.5 text-xs sm:text-sm text-stone-700 list-disc list-inside bg-white p-4 rounded-xl border border-stone-200">
       <li><strong>Reputed Schools Nearby:</strong> Pathways School Gurgaon, The Heritage School, St. Mary's School, GD Goenka World School (within 10-15 mins).</li>
       <li><strong>Hospitals & Healthcare:</strong> Fortis Hospital Vasant Kunj, Max Super Speciality Hospital Saket, and Medanta Mediclinic (15-25 mins).</li>
       <li><strong>Retail & Shopping:</strong> DLF Promenade Vasant Kunj, Select CITYWALK Saket, Ambience Mall Vasant Kunj, and local daily markets in Mandi Village.</li>
@@ -476,48 +472,48 @@ const blogData = {
   </section>
 
   <!-- ==================== 8. COMPARISON TABLE: MANDI VS CHATTARPUR VS GURGAON ==================== -->
-  <section class="space-y-4">
-    <h2 class="text-2xl md:text-3xl font-extrabold text-[#1A1800] tracking-tight">
+  <section class="space-y-3">
+    <h2 class="text-xl md:text-2xl font-extrabold text-[#1A1800] tracking-tight">
       6. Comparative Analysis: Mandi Road vs Chattarpur Main vs Gurgaon Core
     </h2>
     <p>
       To help you make an informed decision, let us compare buying a 3 BHK flat in Mandi Road against other nearby micro-markets:
     </p>
 
-    <div class="overflow-x-auto rounded-2xl border border-stone-200 shadow-sm my-4">
+    <div class="overflow-x-auto rounded-2xl border border-stone-200 shadow-sm my-3">
       <table class="w-full text-left text-xs md:text-sm text-stone-700 bg-white">
         <thead class="bg-[#8B6914] text-white uppercase text-[11px] font-bold">
           <tr>
-            <th class="py-3 px-3">Parameter</th>
-            <th class="py-3 px-3 bg-[#72540F] text-white font-black">The Nivasa II (Mandi)</th>
-            <th class="py-3 px-3">Chattarpur Main</th>
-            <th class="py-3 px-3">Gurgaon Core (Golf Course)</th>
+            <th class="py-2.5 px-3">Parameter</th>
+            <th class="py-2.5 px-3 bg-[#72540F] text-white font-black">The Nivasa II (Mandi)</th>
+            <th class="py-2.5 px-3">Chattarpur Main</th>
+            <th class="py-2.5 px-3">Gurgaon Core (Golf Course)</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-stone-100">
           <tr>
-            <td class="py-2.5 px-3 font-bold">3 BHK Price Bracket</td>
-            <td class="py-2.5 px-3 font-extrabold text-emerald-800 bg-amber-50/50">₹ 65 L – ₹ 85 Lakhs</td>
-            <td class="py-2.5 px-3">₹ 75 L – ₹ 1.2 Crore</td>
-            <td class="py-2.5 px-3">₹ 2.5 Crore – ₹ 5 Crore+</td>
+            <td class="py-2 px-3 font-bold">3 BHK Price Bracket</td>
+            <td class="py-2 px-3 font-extrabold text-emerald-800 bg-amber-50/50">₹ 65 L – ₹ 85 Lakhs</td>
+            <td class="py-2 px-3">₹ 75 L – ₹ 1.2 Crore</td>
+            <td class="py-2 px-3">₹ 2.5 Crore – ₹ 5 Crore+</td>
           </tr>
           <tr>
-            <td class="py-2.5 px-3 font-bold">Loan Availability</td>
-            <td class="py-2.5 px-3 font-extrabold text-emerald-800 bg-amber-50/50">Up to 90% Approved</td>
-            <td class="py-2.5 px-3">70% – 80%</td>
-            <td class="py-2.5 px-3">75% – 80%</td>
+            <td class="py-2 px-3 font-bold">Loan Availability</td>
+            <td class="py-2 px-3 font-extrabold text-emerald-800 bg-amber-50/50">Up to 90% Approved</td>
+            <td class="py-2 px-3">70% – 80%</td>
+            <td class="py-2 px-3">75% – 80%</td>
           </tr>
           <tr>
-            <td class="py-2.5 px-3 font-bold">Surrounding Environment</td>
-            <td class="py-2.5 px-3 font-medium bg-amber-50/50">Lush Green Farms & Serene AQI</td>
-            <td class="py-2.5 px-3">Densely populated urban</td>
-            <td class="py-2.5 px-3">High-density concrete towers</td>
+            <td class="py-2 px-3 font-bold">Surrounding Environment</td>
+            <td class="py-2 px-3 font-medium bg-amber-50/50">Lush Green Farms & Serene AQI</td>
+            <td class="py-2 px-3">Densely populated urban</td>
+            <td class="py-2 px-3">High-density concrete towers</td>
           </tr>
           <tr>
-            <td class="py-2.5 px-3 font-bold">Delhi/Gurgaon Dual Access</td>
-            <td class="py-2.5 px-3 font-extrabold text-emerald-800 bg-amber-50/50">5 mins to both borders</td>
-            <td class="py-2.5 px-3">Heavy traffic via MG Road</td>
-            <td class="py-2.5 px-3">Gurgaon only (Toll jams to Delhi)</td>
+            <td class="py-2 px-3 font-bold">Delhi/Gurgaon Dual Access</td>
+            <td class="py-2 px-3 font-extrabold text-emerald-800 bg-amber-50/50">5 mins to both borders</td>
+            <td class="py-2 px-3">Heavy traffic via MG Road</td>
+            <td class="py-2 px-3">Gurgaon only (Toll jams to Delhi)</td>
           </tr>
         </tbody>
       </table>
@@ -525,62 +521,62 @@ const blogData = {
   </section>
 
   <!-- ==================== 9. FREQUENTLY ASKED QUESTIONS (FAQ SCHEMA / AEO OPTIMIZED) ==================== -->
-  <section class="space-y-4 my-8">
-    <h2 class="text-2xl md:text-3xl font-extrabold text-[#1A1800] tracking-tight">
+  <section class="space-y-3 my-6">
+    <h2 class="text-xl md:text-2xl font-extrabold text-[#1A1800] tracking-tight">
       7. Frequently Asked Questions (FAQs) — 3 BHK Flats in Mandi, New Delhi
     </h2>
 
-    <div class="space-y-3">
-      <div class="p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
-        <h4 class="font-bold text-stone-900 text-base mb-1">
+    <div class="space-y-2.5">
+      <div class="p-4 bg-white rounded-xl border border-stone-200 shadow-xs">
+        <h4 class="font-bold text-stone-900 text-sm sm:text-base mb-1">
           Q1: Is bank loan available up to 90% on 3 BHK flats in The Nivasa II Mandi?
         </h4>
-        <p class="text-sm text-stone-600">
+        <p class="text-xs sm:text-sm text-stone-600">
           <strong>Yes.</strong> SS Realty has direct tie-ups with leading nationalized and private banking institutions (HDFC, ICICI, LIC Housing, PNB HFL, etc.) which provide up to 90% loan for eligible salaried and self-employed buyers with transparent processing.
         </p>
       </div>
 
-      <div class="p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
-        <h4 class="font-bold text-stone-900 text-base mb-1">
+      <div class="p-4 bg-white rounded-xl border border-stone-200 shadow-xs">
+        <h4 class="font-bold text-stone-900 text-sm sm:text-base mb-1">
           Q2: What is the starting price of 3 BHK flats in Mandi, South Delhi?
         </h4>
-        <p class="text-sm text-stone-600">
+        <p class="text-xs sm:text-sm text-stone-600">
           The starting price for a spacious 3 BHK luxury builder floor in Mandi is approximately <strong>₹ 65 Lakhs to ₹ 85 Lakhs</strong>, depending on the floor level, frontal road width, and custom woodwork packages.
         </p>
       </div>
 
-      <div class="p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
-        <h4 class="font-bold text-stone-900 text-base mb-1">
+      <div class="p-4 bg-white rounded-xl border border-stone-200 shadow-xs">
+        <h4 class="font-bold text-stone-900 text-sm sm:text-base mb-1">
           Q3: What are the registry and legal papers available for The Nivasa II?
         </h4>
-        <p class="text-sm text-stone-600">
+        <p class="text-xs sm:text-sm text-stone-600">
           The property has a 100% crystal-clear title chain with complete chain of GPA/Registry, electricity load sanction from BSES Rajdhani, and loan approval verified by senior legal advocates.
         </p>
       </div>
 
-      <div class="p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
-        <h4 class="font-bold text-stone-900 text-base mb-1">
+      <div class="p-4 bg-white rounded-xl border border-stone-200 shadow-xs">
+        <h4 class="font-bold text-stone-900 text-sm sm:text-base mb-1">
           Q4: How far is the nearest Metro station from Mandi Road?
         </h4>
-        <p class="text-sm text-stone-600">
+        <p class="text-xs sm:text-sm text-stone-600">
           <strong>Chattarpur Metro Station (Yellow Line)</strong> is just 12 minutes drive away. Qutub Minar Metro and Arjan Garh Metro are also within 15 minutes reach with frequent auto, bus, and cab availability.
         </p>
       </div>
 
-      <div class="p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
-        <h4 class="font-bold text-stone-900 text-base mb-1">
+      <div class="p-4 bg-white rounded-xl border border-stone-200 shadow-xs">
+        <h4 class="font-bold text-stone-900 text-sm sm:text-base mb-1">
           Q5: Is covered car parking and lift provided in the building?
         </h4>
-        <p class="text-sm text-stone-600">
+        <p class="text-xs sm:text-sm text-stone-600">
           Yes, The Nivasa II features dedicated stilt car parking on the ground level and a high-speed automatic 6-passenger elevator serving all residential floors.
         </p>
       </div>
 
-      <div class="p-5 bg-white rounded-2xl border border-stone-200 shadow-xs">
-        <h4 class="font-bold text-stone-900 text-base mb-1">
+      <div class="p-4 bg-white rounded-xl border border-stone-200 shadow-xs">
+        <h4 class="font-bold text-stone-900 text-sm sm:text-base mb-1">
           Q6: How can I schedule a physical site visit of The Nivasa II?
         </h4>
-        <p class="text-sm text-stone-600">
+        <p class="text-xs sm:text-sm text-stone-600">
           You can easily schedule a complimentary pick-and-drop site visit by calling SS Realty at <strong><a href="tel:+919311059100" class="text-[#8B6914] font-bold underline">+91 93110 59100</a></strong> or booking through our website portal.
         </p>
       </div>
@@ -588,47 +584,47 @@ const blogData = {
   </section>
 
   <!-- ==================== 10. INTERNAL LINKS & RELATED READS ==================== -->
-  <section class="space-y-4 my-8 p-6 bg-stone-50 rounded-2xl border border-stone-200">
-    <h3 class="text-lg font-bold text-stone-900">
+  <section class="space-y-3 my-6 p-4 sm:p-5 bg-stone-50 rounded-2xl border border-stone-200">
+    <h3 class="text-base sm:text-lg font-bold text-stone-900">
       Explore Related Properties & In-Depth Buying Guides
     </h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs font-bold text-stone-800">
-      <a href="https://ssrealty.org/properties/nivasa-ii" class="p-3 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 text-xs font-bold text-stone-800">
+      <a href="https://ssrealty.org/properties/nivasa-ii" class="p-2.5 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
         <span>The Nivasa II Property Page</span>
       </a>
-      <a href="https://ssrealty.org/properties/velora" class="p-3 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
+      <a href="https://ssrealty.org/properties/velora" class="p-2.5 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
         <span>Velora Chattarpur Apartments</span>
       </a>
-      <a href="https://ssrealty.org/properties/orchid" class="p-3 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
+      <a href="https://ssrealty.org/properties/orchid" class="p-2.5 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
         <span>Orchid Mandi Road Gwal Pahari</span>
       </a>
-      <a href="https://ssrealty.org/blog/delhi-circle-rate-hike-2026-buyers-guide" class="p-3 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
+      <a href="https://ssrealty.org/blog/delhi-circle-rate-hike-2026-buyers-guide" class="p-2.5 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
         <span>Delhi Circle Rate Hike 2026</span>
       </a>
-      <a href="https://ssrealty.org/blog/chattarpur-vs-gwalpahari-which-location-better-flat" class="p-3 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
+      <a href="https://ssrealty.org/blog/chattarpur-vs-gwalpahari-which-location-better-flat" class="p-2.5 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
         <span>Chattarpur vs Gwal Pahari Comparison</span>
       </a>
-      <a href="https://ssrealty.org/emi-calculator" class="p-3 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
+      <a href="https://ssrealty.org/emi-calculator" class="p-2.5 bg-white rounded-xl border border-stone-200 hover:border-[#8B6914] hover:shadow-xs transition-all flex items-center gap-2">
         <span>Interactive EMI Calculator</span>
       </a>
     </div>
   </section>
 
   <!-- ==================== 11. CLEAN PREMIUM LIGHT CTA BOX ==================== -->
-  <div class="p-6 md:p-8 bg-gradient-to-br from-[#FAF7F2] via-white to-[#F5EFE4] text-stone-900 rounded-3xl border-2 border-[#D4AF37]/40 shadow-sm text-center space-y-4">
-    <span class="px-3.5 py-1 bg-[#8B6914] text-white font-extrabold text-xs uppercase rounded-full tracking-wider">
+  <div class="p-5 md:p-7 bg-gradient-to-br from-[#FAF7F2] via-white to-[#F5EFE4] text-stone-900 rounded-2xl border-2 border-[#D4AF37]/40 shadow-sm text-center space-y-3">
+    <span class="px-3 py-0.5 bg-[#8B6914] text-white font-extrabold text-[11px] uppercase rounded-full tracking-wider">
       Limited Inventory
     </span>
-    <h3 class="text-2xl md:text-3xl font-extrabold text-stone-900">
+    <h3 class="text-xl md:text-2xl font-extrabold text-stone-900">
       Ready to Own Your Dream 3 BHK in Mandi, South Delhi?
     </h3>
-    <p class="text-sm text-stone-600 max-w-xl mx-auto">
+    <p class="text-xs sm:text-sm text-stone-600 max-w-xl mx-auto">
       Only a few units remaining at <strong>The Nivasa II</strong> with 90% loan facility. Schedule your priority site visit today and get exclusive spot-booking festival discounts directly from SS Realty.
     </p>
-    <div class="flex flex-wrap items-center justify-center gap-3.5 pt-2">
+    <div class="flex flex-wrap items-center justify-center gap-3 pt-1">
       <a 
         href="tel:+919311059100" 
-        class="px-6 py-3 bg-[#8B6914] hover:bg-[#72540F] text-white font-bold text-sm uppercase rounded-xl transition-all shadow-sm cursor-pointer"
+        class="px-5 py-2.5 bg-[#8B6914] hover:bg-[#72540F] text-white font-bold text-xs sm:text-sm uppercase rounded-xl transition-all shadow-sm cursor-pointer"
         style="color: #FFFFFF;"
       >
         Call: +91 93110 59100
@@ -636,7 +632,7 @@ const blogData = {
       <a 
         href="https://wa.me/919311059100?text=Hi%20SS%20Realty,%20I%20am%20interested%20in%20The%20Nivasa%20II%203%20BHK%20Flats%20in%20Mandi%20New%20Delhi%20with%2090%25%20Loan." 
         target="_blank" 
-        class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm uppercase rounded-xl transition-all shadow-sm cursor-pointer"
+        class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm uppercase rounded-xl transition-all shadow-sm cursor-pointer"
         style="color: #FFFFFF;"
       >
         WhatsApp Inquiry
@@ -660,7 +656,7 @@ async function main() {
       { returnDocument: 'after', upsert: true }
     );
 
-    console.log('✅ Blog video section with 3BHK thumbnail successfully published!');
+    console.log('✅ Blog video section spacing tightened successfully!');
     console.log('Title:', updated.title);
     console.log('Slug:', updated.slug);
     console.log('Live URL:', `https://ssrealty.org/blog/${updated.slug}`);
