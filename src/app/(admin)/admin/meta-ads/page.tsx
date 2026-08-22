@@ -261,38 +261,38 @@ export default function MetaAdsAdminPage() {
           </div>
         </div>
 
-        {/* Action Controls */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        {/* Action Controls in a single sleek row */}
+        <div className="flex flex-wrap lg:flex-nowrap items-center gap-2 shrink-0">
           {/* Live Auto-Sync Status & Toggle */}
           <button
             onClick={() => {
               setAutoSync(!autoSync);
               toast.success(autoSync ? 'Auto-Sync paused' : 'Auto-Sync activated (Every 25s)');
             }}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all shadow-sm ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all shadow-sm shrink-0 ${
               autoSync
                 ? 'bg-[#EAF7EE] text-[#0E6228] border-[#107C41]/30 hover:border-[#107C41]'
                 : 'bg-white text-[#7A7560] border-gray-200 hover:border-gray-300'
             }`}
             title="Auto-Sync checks Google Sheets every 25s automatically in background"
           >
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-2 w-2">
               {autoSync && (
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#107C41] opacity-75"></span>
               )}
-              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${autoSync ? 'bg-[#107C41]' : 'bg-gray-400'}`}></span>
+              <span className={`relative inline-flex rounded-full h-2 w-2 ${autoSync ? 'bg-[#107C41]' : 'bg-gray-400'}`}></span>
             </span>
-            <span>{autoSync ? 'Live Auto-Sync (25s)' : 'Auto-Sync Paused'}</span>
+            <span>{autoSync ? 'Live (25s)' : 'Paused'}</span>
           </button>
 
           {/* Instant Webhook Button */}
           <button
             onClick={() => setShowWebhookGuide(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm shrink-0"
             title="Setup 0-second instant Google Sheets trigger"
           >
-            <Zap size={14} className="text-[#C9A227]" />
-            <span>Instant Trigger</span>
+            <Zap size={13} className="text-[#C9A227]" />
+            <span>Trigger</span>
           </button>
 
           {/* External Google Sheet link */}
@@ -300,24 +300,24 @@ export default function MetaAdsAdminPage() {
             href="https://docs.google.com/spreadsheets/d/1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8/edit?gid=2100604883#gid=2100604883"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm shrink-0"
           >
-            <FileSpreadsheet size={15} className="text-[#107C41]" />
-            <span>Google Sheet</span>
-            <ExternalLink size={12} className="text-[#7A7560]" />
+            <FileSpreadsheet size={14} className="text-[#107C41]" />
+            <span>Sheet</span>
+            <ExternalLink size={11} className="text-[#7A7560]" />
           </a>
 
           {/* Export Dropdown (Super Admin only) */}
           {isSuperAdmin && (
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 onClick={() => setShowExportMenu(!showExportMenu)}
                 disabled={exporting}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white border border-[#C9A227]/40 text-[#1A1800] hover:border-[#C9A227] hover:bg-[#F9F6EE] transition-all shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-white border border-[#C9A227]/40 text-[#1A1800] hover:border-[#C9A227] hover:bg-[#F9F6EE] transition-all shadow-sm"
               >
-                <Download size={15} className="text-[#B38715]" />
-                <span>Export Excel</span>
-                <ChevronDown size={14} className="text-[#7A7560]" />
+                <Download size={14} className="text-[#B38715]" />
+                <span>Export</span>
+                <ChevronDown size={12} className="text-[#7A7560]" />
               </button>
 
               {showExportMenu && (
@@ -376,13 +376,13 @@ export default function MetaAdsAdminPage() {
           <button
             onClick={handleSyncNow}
             disabled={syncing}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-md shrink-0 ${
               syncing
                 ? 'bg-[#E5D7B5] text-[#7A7560] cursor-not-allowed'
                 : 'bg-gradient-to-r from-[#D4AF37] via-[#C9A227] to-[#B38715] text-[#1A1800] hover:brightness-105 active:scale-[0.98]'
             }`}
           >
-            <RefreshCw size={15} className={syncing ? 'animate-spin' : ''} />
+            <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
             <span>{syncing ? 'Syncing...' : 'Sync Now'}</span>
           </button>
         </div>
