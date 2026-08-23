@@ -307,7 +307,7 @@ export default function MetaAdsAdminPage() {
             <ExternalLink size={11} className="text-[#7A7560]" />
           </a>
 
-          {/* Export Dropdown (Super Admin only) */}
+          {/* Export Dropdown */}
           {isSuperAdmin && (
             <div className="relative shrink-0">
               <button
@@ -580,7 +580,7 @@ export default function MetaAdsAdminPage() {
         </div>
       </div>
 
-      {/* 4. Leads Section: Super Admin (Full Customer Rows) vs Normal Admin (Campaign Overview & Vault Info) */}
+      {/* 4. Leads Section: Full Customer Rows vs Campaign Overview */}
       {isSuperAdmin ? (
         <>
           {/* Search and Filter Controls */}
@@ -921,45 +921,10 @@ export default function MetaAdsAdminPage() {
                 ))}
             </div>
           </div>
-
-          {/* Super Admin Vault Privacy Notice */}
-          <div className="bg-gradient-to-br from-[#FFFBF0] via-[#FFF9E6] to-[#FDFBF7] rounded-3xl p-6 border border-[#C9A227]/30 shadow-md relative overflow-hidden">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#1A1800] to-[#3A3300] text-[#D4AF37] flex items-center justify-center shadow-lg shrink-0">
-                  <ShieldCheck size={24} className="text-[#D4AF37]" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-extrabold text-[#1A1800]">Super Admin Lead Data Vault & Routing Engine</h4>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#1A1800] text-[#D4AF37]">
-                      Protected
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#7A7560] mt-1 max-w-2xl leading-relaxed">
-                    Customer full names, personal phone numbers, and raw questionnaire records are securely processed and automatically distributed to assigned team sales agents in real-time. Full database access & master Excel downloads are reserved for Super Admin credentials.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <a
-                  href="https://docs.google.com/spreadsheets/d/1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8/edit?gid=2100604883#gid=2100604883"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-white border border-[#C9A227]/40 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm"
-                >
-                  <FileSpreadsheet size={15} className="text-[#107C41]" />
-                  <span>Google Sheet</span>
-                  <ExternalLink size={12} className="text-[#7A7560]" />
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
       )}
 
-      {/* 5. Lead Detail Modal (Super Admin only) */}
+      {/* 5. Lead Detail Modal */}
       {isSuperAdmin && activeModalLead && (
         <div 
           className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in"

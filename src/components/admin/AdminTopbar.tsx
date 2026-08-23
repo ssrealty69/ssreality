@@ -68,7 +68,7 @@ export default function AdminTopbar({
 
         <div className="hidden sm:flex flex-col items-end mr-4 border-r border-[#E8D5A3] pr-4">
           <span className="text-sm font-bold text-[#1A1800]">Admin</span>
-          <span className="text-xs text-[#6b6450] capitalize">{role.replace('_', ' ')}</span>
+          <span className="text-[11px] text-[#6b6450] font-medium">Portal</span>
         </div>
         
         <button

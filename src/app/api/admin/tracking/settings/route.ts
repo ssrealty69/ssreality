@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   const isSuperAdmin = roleCookie === 'super_admin' || req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET;
   if (!isSuperAdmin) {
     return NextResponse.json(
-      { success: false, error: 'Forbidden: Only Super Admins can modify office location and geofence settings' },
+      { success: false, error: 'Forbidden: Administrative permissions required' },
       { status: 403 }
     );
   }

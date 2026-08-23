@@ -65,7 +65,7 @@ export function proxy(request: NextRequest) {
 
     if (isRestricted && !isSuperAdmin) {
       if (pathname.startsWith('/api/')) {
-        return NextResponse.json({ error: 'Forbidden: Super Admin only' }, { status: 403 });
+        return NextResponse.json({ error: 'Access denied' }, { status: 403 });
       }
       const fallbackUrl = new URL('/admin/leads', request.url);
       return NextResponse.redirect(fallbackUrl);

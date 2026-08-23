@@ -326,7 +326,7 @@ export default function AdminTrackingPage() {
         </div>
       </div>
 
-      {/* 🛡️ Super Admin Geofence & Emergency Remote Login Access Control Card */}
+      {/* 🛡️ Master Geofence & Emergency Remote Login Access Control Card */}
       <div className={`p-5 rounded-3xl border transition-all duration-300 shadow-sm ${
         geofenceSettings?.geofenceEnabled
           ? 'bg-gradient-to-r from-emerald-50/90 via-white to-emerald-50/50 border-emerald-300/80'
@@ -427,7 +427,7 @@ export default function AdminTrackingPage() {
                 <button
                   onClick={() => setShowEditOfficeModal(true)}
                   className="text-[10px] font-black text-blue-600 hover:text-blue-800 underline cursor-pointer flex items-center gap-0.5"
-                  title="Change coordinates (Super Admin only)"
+                  title="Edit coordinates"
                 >
                   <Edit3 size={10} /> Edit Coords
                 </button>
@@ -444,7 +444,7 @@ export default function AdminTrackingPage() {
             <button
               onClick={() => setShowEditOfficeModal(true)}
               className="p-2.5 rounded-xl bg-amber-50 text-[#8B6914] border border-amber-200/60 hover:bg-amber-100 transition-all cursor-pointer"
-              title="Edit Office Location & Coordinates (Super Admin only)"
+              title="Edit Office Location & Coordinates"
             >
               <Building2 className="w-4 h-4" />
             </button>
@@ -693,7 +693,7 @@ export default function AdminTrackingPage() {
         />
       )}
 
-      {/* 🏢 Edit Office Location & Coordinates Modal (Super Admin Only) */}
+      {/* 🏢 Edit Office Location & Coordinates Modal */}
       {isSuperAdmin && showEditOfficeModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-stone-200 space-y-4">
