@@ -20,7 +20,7 @@ function toLocalDateStr(d: Date): string {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { agentId: string } }
+  props: { params: Promise<{ agentId: string }> | { agentId: string } }
 ) {
   if (!checkAdminAuth(req)) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
@@ -28,10 +28,15 @@ export async function GET(
 
   try {
     await connectDB();
-    const { agentId } = params;
+    const resolvedParams = await Promise.resolve(props.params);
+    const agentId = String(resolvedParams?.agentId || '');
     const { searchParams } = new URL(req.url);
     const from = searchParams.get('from');
     const to = searchParams.get('to');
+
+    if (!agentId) {
+      return NextResponse.json({ success: false, error: 'Agent ID is required' }, { status: 400 });
+    }
 
     // Find agent for robust multi-field lookup
     let agent = null;
@@ -152,7 +157,7 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { agentId: string } }
+  props: { params: Promise<{ agentId: string }> | { agentId: string } }
 ) {
   if (!checkAdminAuth(req)) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
@@ -160,10 +165,18 @@ export async function PATCH(
 
   try {
     await connectDB();
-    const { agentId } = params;
+    const resolvedParams = await Promise.resolve(props.params);
+    const agentId = String(resolvedParams?.agentId || '');
     const todayStr = toLocalDateStr(new Date()); // LOCAL date
 
-    const record = await AgentAttendance.findOne({ agentId, date: todayStr });
+    const record = await AgentAttendance.findOne({
+      $or: [
+        { agentId },
+        { agentId: agentId.toUpperCase() },
+        { agentId: agentId.toLowerCase() }
+      ],
+      date: todayStr
+    });
     if (!record) {
       return NextResponse.json({ success: false, error: 'No punch-in found for today' }, { status: 404 });
     }

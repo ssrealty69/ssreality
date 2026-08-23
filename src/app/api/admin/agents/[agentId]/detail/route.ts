@@ -14,7 +14,7 @@ function checkAdminAuth(req: NextRequest): boolean {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { agentId: string } }
+  props: { params: Promise<{ agentId: string }> | { agentId: string } }
 ) {
   if (!checkAdminAuth(req)) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
@@ -22,13 +22,31 @@ export async function GET(
 
   try {
     await connectDB();
-    const { agentId } = params;
+    const resolvedParams = await Promise.resolve(props.params);
+    const agentId = String(resolvedParams?.agentId || '');
     const { searchParams } = new URL(req.url);
     const from = searchParams.get('from');
     const to = searchParams.get('to');
     const disposition = searchParams.get('disposition') || 'all';
 
-    const agent = await Agent.findById(agentId).lean();
+    if (!agentId) {
+      return NextResponse.json({ success: false, error: 'Agent ID is required' }, { status: 400 });
+    }
+
+    let agent = null;
+    if (agentId.match(/^[0-9a-fA-F]{24}$/)) {
+      agent = await Agent.findById(agentId).lean();
+    }
+    if (!agent) {
+      agent = await Agent.findOne({
+        $or: [
+          { employee_id: agentId },
+          { employee_id: agentId.toUpperCase() },
+          { username: agentId.toLowerCase() }
+        ]
+      }).lean();
+    }
+
     if (!agent) {
       return NextResponse.json({ success: false, error: 'Agent not found' }, { status: 404 });
     }
