@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 
   try {
     await connectDB();
-    const properties = await Property.find({ status: 'available' })
+    const properties = await Property.find({ status: { $ne: 'archived' } })
       .select('title slug propertyName price priceType propertyType location brochureUrl videoUrl images highlights features')
       .sort({ featured: -1, createdAt: -1 })
       .lean();
@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
       priceType: p.priceType,
       propertyType: p.propertyType,
       city: p.location?.city,
+      location: p.location?.address || p.location?.city || 'Delhi NCR',
       brochureUrl: p.brochureUrl || null,
       videoUrl: p.videoUrl || null,
       mainImage: p.images?.[0] || null,
@@ -37,7 +38,12 @@ export async function GET(req: NextRequest) {
       bedrooms: p.features?.bedrooms,
     }));
 
-    return NextResponse.json({ success: true, data: formatted });
+    return NextResponse.json({
+      success: true,
+      count: formatted.length,
+      data: formatted,
+      properties: formatted,
+    });
   } catch (err: any) {
     console.error('Agent Properties GET Error:', err);
     return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });

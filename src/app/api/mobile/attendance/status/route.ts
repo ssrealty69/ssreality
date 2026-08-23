@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
     let agent = null;
     if (agentId.match(/^[0-9a-fA-F]{24}$/)) {
-      agent = await Agent.findById(agentId).select('name username employee_id allowRemotePunchIn isActive').lean();
+      agent = await Agent.findById(agentId).select('name username employee_id allowRemotePunchIn isActive role isExecutive').lean();
     }
     if (!agent) {
       agent = await Agent.findOne({
@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
           { employee_id: agentId.toUpperCase() },
           { username: agentId.toLowerCase() }
         ]
-      }).select('name username employee_id allowRemotePunchIn isActive').lean();
+      }).select('name username employee_id allowRemotePunchIn isActive role isExecutive').lean();
     }
 
     if (!agent) {

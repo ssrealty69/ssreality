@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     // Check if agent exists and get details
     let agent = null;
     if (agentId.match(/^[0-9a-fA-F]{24}$/)) {
-      agent = await Agent.findById(agentId).select('allowRemotePunchIn name employee_id username').lean();
+      agent = await Agent.findById(agentId).select('allowRemotePunchIn name employee_id username role isExecutive').lean();
     }
     if (!agent) {
       agent = await Agent.findOne({
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
           { employee_id: agentId.toUpperCase() },
           { username: agentId.toLowerCase() }
         ]
-      }).select('allowRemotePunchIn name employee_id username').lean();
+      }).select('allowRemotePunchIn name employee_id username role isExecutive').lean();
     }
 
     const isWithinRadius = distanceMeters <= (geoConfig.geofenceRadiusMeters || 200);
