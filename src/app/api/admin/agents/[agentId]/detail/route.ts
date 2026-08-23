@@ -56,7 +56,19 @@ export async function GET(
     };
 
     const leadsQuery: Record<string, any> = { ...agentMatchFilter };
-    if (disposition !== 'all') leadsQuery.disposition = disposition;
+    if (disposition === 'visit_scheduled') {
+      leadsQuery.$or = [
+        { disposition: 'visit_scheduled' },
+        { disposition: 'visitScheduled' },
+        { 'visitDetails.date': { $exists: true, $ne: '' } },
+        { disposition: 'follow_up', 'visitDetails.date': { $exists: true, $ne: '' } }
+      ];
+      leadsQuery.disposition = { $nin: ['booked', 'not_interested', 'visit_done'] };
+    } else if (disposition === 'visit_done') {
+      leadsQuery.disposition = 'visit_done';
+    } else if (disposition !== 'all') {
+      leadsQuery.disposition = disposition;
+    }
 
     const allLeads = await AgentLead.find(leadsQuery).sort({ updatedAt: -1 }).lean();
 
@@ -86,7 +98,7 @@ export async function GET(
       callsInRange,
       manualDialed,
       interested: dispositionMap['interested'] || 0,
-      visitScheduled: dispositionMap['follow_up'] || 0,
+      visitScheduled: (dispositionMap['visit_scheduled'] || 0) + (dispositionMap['visitScheduled'] || 0) + (dispositionMap['follow_up'] || 0),
       visitDone: dispositionMap['visit_done'] || 0,
       followUp: dispositionMap['follow_up'] || 0,
       notInterested: dispositionMap['not_interested'] || 0,

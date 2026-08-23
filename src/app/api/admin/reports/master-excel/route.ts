@@ -39,8 +39,11 @@ function formatDisposition(disp?: string): string {
     not_reachable: 'Not Reachable',
     interested: 'Interested',
     not_interested: 'Not Interested',
+    visit_scheduled: 'Visit Scheduled',
+    visitscheduled: 'Visit Scheduled',
     visit_done: 'Visit Done',
-    follow_up: 'Follow Up / Visit Scheduled',
+    follow_up: 'Follow Up',
+    booked: 'Booked',
   };
   return map[disp.toLowerCase()] || disp.toUpperCase();
 }
@@ -227,7 +230,20 @@ export async function GET(req: NextRequest) {
     // 3. SPECIFIC DISPOSITION DOWNLOAD (e.g. Interested, Visit Done, Follow Up, Not Interested)
     // ──────────────────────────────────────────────────────────────────────────
     if (type === 'disposition' && disposition) {
-      const query: Record<string, any> = { disposition };
+      const query: Record<string, any> = {};
+      if (disposition === 'visit_scheduled') {
+        query.$or = [
+          { disposition: 'visit_scheduled' },
+          { disposition: 'visitScheduled' },
+          { 'visitDetails.date': { $exists: true, $ne: '' } },
+          { disposition: 'follow_up', 'visitDetails.date': { $exists: true, $ne: '' } }
+        ];
+        query.disposition = { $nin: ['booked', 'not_interested', 'visit_done'] };
+      } else if (disposition === 'visit_done') {
+        query.disposition = 'visit_done';
+      } else {
+        query.disposition = disposition;
+      }
       const matchingLeads = (await AgentLead.find(query).sort({ updatedAt: -1 }).lean()) as any[];
       const rows: any[] = [];
       let sNo = 1;

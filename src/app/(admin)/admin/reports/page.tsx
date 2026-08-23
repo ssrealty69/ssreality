@@ -150,12 +150,14 @@ const DISPOSITION_LABELS: Record<string, string> = {
   new: 'New', ringing: 'Ringing', connected: 'Connected',
   not_connected: 'Not Connected', switch_off: 'Switch Off',
   not_reachable: 'Not Reachable', interested: 'Interested',
-  not_interested: 'Not Interested', visit_done: 'Visit Done', follow_up: 'Follow Up',
+  not_interested: 'Not Interested', visit_scheduled: 'Visit Scheduled',
+  visit_done: 'Visit Done', follow_up: 'Follow Up',
 };
 const DISPOSITION_COLORS: Record<string, string> = {
   new: '#94A3B8', ringing: '#60A5FA', connected: '#3B82F6',
   not_connected: '#EF4444', switch_off: '#F97316', not_reachable: '#EF4444',
-  interested: '#10B981', not_interested: '#DC2626', visit_done: '#8B5CF6', follow_up: '#F59E0B',
+  interested: '#10B981', not_interested: '#DC2626', visit_scheduled: '#6366F1',
+  visit_done: '#8B5CF6', follow_up: '#F59E0B',
 };
 
 // ─── Main Component ──────────────────────────────────────────────────────────
@@ -719,7 +721,7 @@ export default function AgentReportsPage() {
               >
                 <FileSpreadsheet size={12} /> Full History
               </button>
-              {['interested', 'visit_done', 'follow_up', 'not_interested'].map(d => (
+              {['interested', 'visit_scheduled', 'visit_done', 'not_interested'].map(d => (
                 <button
                   key={d}
                   onClick={() => downloadAgentExcel(selectedAgent.agentId, selectedAgent.name, d)}
@@ -972,8 +974,8 @@ export default function AgentReportsPage() {
           </button>
           {[
             { label: 'Interested', disp: 'interested', color: 'emerald' },
+            { label: 'Visit Scheduled', disp: 'visit_scheduled', color: 'indigo' },
             { label: 'Visit Done', disp: 'visit_done', color: 'purple' },
-            { label: 'Follow Up', disp: 'follow_up', color: 'amber' },
             { label: 'Not Interested', disp: 'not_interested', color: 'red' },
           ].map(item => (
             <button

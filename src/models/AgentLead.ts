@@ -9,8 +9,10 @@ export type Disposition =
   | 'not_reachable'
   | 'interested'
   | 'not_interested'
+  | 'visit_scheduled'
   | 'visit_done'
-  | 'follow_up';
+  | 'follow_up'
+  | 'booked';
 
 export interface ICallLog {
   disposition: Disposition;
@@ -75,7 +77,7 @@ const CallLogSchema = new Schema<ICallLog>(
   {
     disposition: {
       type: String,
-      enum: ['new','ringing','connected','not_connected','switch_off','not_reachable','interested','not_interested','visit_done','follow_up'],
+      enum: ['new','ringing','connected','not_connected','switch_off','not_reachable','interested','not_interested','visit_scheduled','visit_done','follow_up','booked'],
       required: true,
     },
     notes: { type: String, trim: true },
@@ -138,7 +140,7 @@ const AgentLeadSchema = new Schema<IAgentLead>(
     notes:            { type: String, trim: true },
     disposition: {
       type: String,
-      enum: ['new','ringing','connected','not_connected','switch_off','not_reachable','interested','not_interested','visit_done','follow_up'],
+      enum: ['new','ringing','connected','not_connected','switch_off','not_reachable','interested','not_interested','visit_scheduled','visit_done','follow_up','booked'],
       default: 'new',
       index: true,
     },

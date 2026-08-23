@@ -33,8 +33,11 @@ function formatDisposition(disp?: string): string {
     not_reachable: 'Not Reachable',
     interested: 'Interested',
     not_interested: 'Not Interested',
+    visit_scheduled: 'Visit Scheduled',
+    visitscheduled: 'Visit Scheduled',
     visit_done: 'Visit Done',
-    follow_up: 'Follow Up / Visit Scheduled',
+    follow_up: 'Follow Up',
+    booked: 'Booked',
   };
   return map[disp.toLowerCase()] || disp.toUpperCase();
 }
@@ -82,7 +85,19 @@ export async function GET(
     };
 
     const query: Record<string, any> = { ...agentMatchFilter };
-    if (disposition !== 'all') query.disposition = disposition;
+    if (disposition === 'visit_scheduled') {
+      query.$or = [
+        { disposition: 'visit_scheduled' },
+        { disposition: 'visitScheduled' },
+        { 'visitDetails.date': { $exists: true, $ne: '' } },
+        { disposition: 'follow_up', 'visitDetails.date': { $exists: true, $ne: '' } }
+      ];
+      query.disposition = { $nin: ['booked', 'not_interested', 'visit_done'] };
+    } else if (disposition === 'visit_done') {
+      query.disposition = 'visit_done';
+    } else if (disposition !== 'all') {
+      query.disposition = disposition;
+    }
 
     const leads = (await AgentLead.find(query).sort({ updatedAt: -1 }).lean()) as any[];
 

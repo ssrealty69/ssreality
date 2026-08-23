@@ -158,6 +158,10 @@ export async function POST(req: NextRequest) {
 function normalizeDisposition(disp?: string): any {
   if (!disp) return 'new';
   const lower = disp.toLowerCase();
+  if (lower.includes('book')) return 'booked';
+  if (lower.includes('sched') || lower.includes('plan') || lower.includes('fixed')) return 'visit_scheduled';
+  if (lower.includes('visit_done') || (lower.includes('visit') && lower.includes('done')) || lower.includes('completed')) return 'visit_done';
+  if (lower.includes('visit')) return 'visit_scheduled';
   if (lower.includes('ring')) return 'ringing';
   if (lower.includes('connect') && !lower.includes('not')) return 'connected';
   if (lower.includes('not_connected') || lower.includes('no answer') || lower.includes('busy')) return 'not_connected';
@@ -165,7 +169,6 @@ function normalizeDisposition(disp?: string): any {
   if (lower.includes('reach') || lower.includes('unreach')) return 'not_reachable';
   if (lower.includes('interest') && !lower.includes('not')) return 'interested';
   if (lower.includes('not_interest') || lower.includes('lost') || lower.includes('junk')) return 'not_interested';
-  if (lower.includes('visit')) return 'visit_done';
   if (lower.includes('follow')) return 'follow_up';
   return 'new';
 }

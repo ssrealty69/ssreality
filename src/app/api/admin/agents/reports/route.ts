@@ -127,7 +127,7 @@ export async function GET(req: NextRequest) {
           callsToday: callsInRange,
           manualDialed,
           interested: dispositionMap['interested'] || 0,
-          visitScheduled: dispositionMap['follow_up'] || 0,
+          visitScheduled: (dispositionMap['visit_scheduled'] || 0) + (dispositionMap['visitScheduled'] || 0) + (dispositionMap['follow_up'] || 0),
           visitDone: dispositionMap['visit_done'] || 0,
           followUp: dispositionMap['follow_up'] || 0,
           notInterested: dispositionMap['not_interested'] || 0,
