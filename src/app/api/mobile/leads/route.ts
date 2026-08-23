@@ -141,9 +141,16 @@ export async function GET(req: NextRequest) {
       agentDoc = await Agent.findOne({ $or: orClauses }).lean();
     }
 
-    // 2. Fetch Agent Leads
+    const isExecutive = 
+      agentDoc?.role === 'director' || 
+      agentDoc?.isExecutive === true ||
+      agentDoc?.employee_id === 'SSR000' || 
+      /yogesh/i.test(agentDoc?.name || '') || 
+      agentDoc?.username === 'info@ssrealty.org';
+
+    // 2. Fetch Agent Leads (For Executive/Director, fetch ALL company leads)
     let agentLeadsQuery: any = {};
-    if (agentDoc) {
+    if (agentDoc && !isExecutive) {
       const resolvedAgentId = String(agentDoc._id);
       const employeeId = agentDoc.employee_id;
       const agentName = agentDoc.name;
@@ -188,6 +195,8 @@ export async function GET(req: NextRequest) {
         status: status,
         disposition: al.disposition || 'new',
         priority: 'high',
+        assignedAgentName: al.agentName || 'Agent',
+        assignedAgentId: al.agentId || '',
         source: al.source || (isMeta ? 'Meta Ads' : 'Website Enquiry'),
         platform: al.platform || (isMeta ? 'fb' : 'web'),
         createdAt: createdDateObj.toISOString(),

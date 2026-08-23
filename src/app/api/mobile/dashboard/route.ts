@@ -93,7 +93,14 @@ export async function GET(req: NextRequest) {
 
     const { start, end } = getISTDateRange(period);
 
-    // 2. Fetch leads belonging strictly to this agent
+    const isExecutive = 
+      (agent as any)?.role === 'director' || 
+      (agent as any)?.isExecutive === true ||
+      (agent as any)?.employee_id === 'SSR000' || 
+      /yogesh/i.test((agent as any)?.name || '') || 
+      (agent as any)?.username === 'info@ssrealty.org';
+
+    // 2. Fetch leads (For Director/Executive, fetch all company leads)
     const leadOrClauses: any[] = [
       { agentId: resolvedAgentId },
       { agentId: employeeId },
@@ -101,9 +108,9 @@ export async function GET(req: NextRequest) {
       { 'history.agentName': new RegExp(`^${agentName}$`, 'i') },
     ];
 
-    const leads = await AgentLead.find({
-      $or: leadOrClauses,
-    }).lean();
+    const leads = isExecutive
+      ? await AgentLead.find({}).lean()
+      : await AgentLead.find({ $or: leadOrClauses }).lean();
 
     // 3. Compute Real-time Call Metrics strictly from calls made in date range
     let totalCalls = 0;
@@ -233,8 +240,14 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // 5. Generate Real Leaderboard across all Active Agents
-    const allAgents = await Agent.find({ isActive: true }).lean();
+    // 5. Generate Real Leaderboard across all Active Telecallers
+    const allAgents = await Agent.find({
+      isActive: true,
+      role: { $ne: 'director' },
+      employee_id: { $ne: 'SSR000' },
+      name: { $not: /yogesh/i },
+      username: { $ne: 'info@ssrealty.org' },
+    }).lean();
     const leaderboardEntries = await Promise.all(
       allAgents.map(async (ag: any) => {
         const agLeads = await AgentLead.find({
@@ -282,8 +295,11 @@ export async function GET(req: NextRequest) {
           id: resolvedAgentId,
           name: agentName,
           employeeId: employeeId,
+          isExecutive,
+          role: isExecutive ? 'Director' : 'Agent',
         },
         period,
+        isExecutive,
         newLeadsCount,
         unreadCount: newLeadsCount,
         stats: {
