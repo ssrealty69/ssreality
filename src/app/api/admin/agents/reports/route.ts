@@ -147,6 +147,12 @@ export async function GET(req: NextRequest) {
           ? (lastDistanceMeters < 200 ? `Inside Office (${lastDistanceMeters}m)` : `${lastDistanceKm} km away from Office`)
           : null;
 
+        const assignedLeadsCount = allLeads.filter((l: any) => l.originalLeadType !== 'manual').length;
+        const bookedCount = dispositionMap['booked'] || 0;
+        const notInterestedCount = dispositionMap['not_interested'] || 0;
+        const visitScheduledCount = (dispositionMap['visit_scheduled'] || 0) + (dispositionMap['visitScheduled'] || 0);
+        const visitDoneCount = dispositionMap['visit_done'] || 0;
+
         return {
           agentId,
           name: agent.name,
@@ -166,14 +172,17 @@ export async function GET(req: NextRequest) {
           punchIn: todayAtt?.punchIn ? new Date(todayAtt.punchIn).toISOString() : null,
           punchOut: todayAtt?.punchOut ? new Date(todayAtt.punchOut).toISOString() : null,
           sessionCount: todayAtt?.sessionCount || 0,
-          totalLeads,
+          totalLeads: assignedLeadsCount,
+          assigned: assignedLeadsCount,
           callsToday: callsInRange,
           manualDialed,
+          notInterested: notInterestedCount,
+          visitScheduled: visitScheduledCount,
+          visitDone: visitDoneCount,
+          booked: bookedCount,
+          bookingDone: bookedCount,
           interested: dispositionMap['interested'] || 0,
-          visitScheduled: (dispositionMap['visit_scheduled'] || 0) + (dispositionMap['visitScheduled'] || 0) + (dispositionMap['follow_up'] || 0),
-          visitDone: dispositionMap['visit_done'] || 0,
           followUp: dispositionMap['follow_up'] || 0,
-          notInterested: dispositionMap['not_interested'] || 0,
           connected: dispositionMap['connected'] || 0,
           notConnected: (dispositionMap['not_connected'] || 0) + (dispositionMap['switch_off'] || 0) + (dispositionMap['not_reachable'] || 0),
           newLeads: dispositionMap['new'] || 0,

@@ -33,13 +33,16 @@ interface AgentReport {
   punchOut?: string | null;
   sessionCount?: number;
   totalLeads: number;
+  assigned?: number;
   callsToday: number;
   manualDialed: number;
-  interested: number;
+  notInterested: number;
   visitScheduled: number;
   visitDone: number;
+  booked?: number;
+  bookingDone?: number;
+  interested: number;
   followUp: number;
-  notInterested: number;
   connected: number;
   notConnected: number;
   newLeads: number;
@@ -47,13 +50,16 @@ interface AgentReport {
 
 interface AgentDetailStats {
   totalLeads: number;
+  assigned?: number;
   callsInRange: number;
   manualDialed: number;
-  interested: number;
+  notInterested: number;
   visitScheduled: number;
   visitDone: number;
+  booked?: number;
+  bookingDone?: number;
+  interested: number;
   followUp: number;
-  notInterested: number;
   connected: number;
   notConnected: number;
   newLeads: number;
@@ -150,14 +156,14 @@ const DISPOSITION_LABELS: Record<string, string> = {
   new: 'New', ringing: 'Ringing', connected: 'Connected',
   not_connected: 'Not Connected', switch_off: 'Switch Off',
   not_reachable: 'Not Reachable', interested: 'Interested',
-  not_interested: 'Not Interested', visit_scheduled: 'Visit Scheduled',
-  visit_done: 'Visit Done', follow_up: 'Follow Up',
+  not_interested: 'Not Interested', visit_scheduled: 'V. Scheduled',
+  visit_done: 'Visit Done', booked: 'Booking Done', follow_up: 'Follow Up',
 };
 const DISPOSITION_COLORS: Record<string, string> = {
   new: '#94A3B8', ringing: '#60A5FA', connected: '#3B82F6',
   not_connected: '#EF4444', switch_off: '#F97316', not_reachable: '#EF4444',
   interested: '#10B981', not_interested: '#DC2626', visit_scheduled: '#6366F1',
-  visit_done: '#8B5CF6', follow_up: '#F59E0B',
+  visit_done: '#8B5CF6', booked: '#10B981', follow_up: '#F59E0B',
 };
 
 // ─── Main Component ──────────────────────────────────────────────────────────
@@ -257,21 +263,23 @@ export default function AgentReportsPage() {
   // ── Totals across all agents ───────────────────────────────────────────────
 
   const totals = useMemo(() => reports.reduce((acc, r) => ({
-    leads: acc.leads + r.totalLeads,
+    leads: acc.leads + (r.assigned !== undefined ? r.assigned : r.totalLeads),
     dialed: acc.dialed + r.manualDialed,
     calls: acc.calls + r.callsToday,
-    interested: acc.interested + r.interested,
-    visitScheduled: acc.visitScheduled + r.visitScheduled,
-    visitDone: acc.visitDone + r.visitDone,
+    notInterested: acc.notInterested + (r.notInterested || 0),
+    visitScheduled: acc.visitScheduled + (r.visitScheduled || 0),
+    visitDone: acc.visitDone + (r.visitDone || 0),
+    booked: acc.booked + (r.booked || r.bookingDone || 0),
     activeSeconds: acc.activeSeconds + (r.todayActiveSeconds || 0),
     onlineCount: acc.onlineCount + (r.isOnline ? 1 : 0),
   }), { 
     leads: 0, 
     dialed: 0, 
     calls: 0, 
-    interested: 0, 
+    notInterested: 0,
     visitScheduled: 0, 
     visitDone: 0,
+    booked: 0,
     activeSeconds: 0,
     onlineCount: 0
   }), [reports]);
@@ -636,14 +644,13 @@ export default function AgentReportsPage() {
 
             {/* Stats Row */}
             {detailStats && (
-              <div className="grid grid-cols-3 sm:grid-cols-6 border-b border-gray-100 shrink-0">
+              <div className="grid grid-cols-5 border-b border-gray-100 shrink-0">
                 {[
-                  { label: 'Assigned', value: detailStats.totalLeads, color: '#3B82F6' },
-                  { label: 'Dialed', value: detailStats.manualDialed, color: '#F59E0B' },
-                  { label: 'Interested', value: detailStats.interested, color: '#10B981' },
-                  { label: 'Visit Scheduled', value: detailStats.visitScheduled, color: '#6366F1' },
-                  { label: 'Visit Done', value: detailStats.visitDone, color: '#8B5CF6' },
-                  { label: 'Not Interested', value: detailStats.notInterested, color: '#EF4444' },
+                  { label: 'Assigned', value: detailStats.assigned !== undefined ? detailStats.assigned : detailStats.totalLeads, color: '#3B82F6' },
+                  { label: 'Not Interested', value: detailStats.notInterested || 0, color: '#EF4444' },
+                  { label: 'V. Scheduled', value: detailStats.visitScheduled || 0, color: '#6366F1' },
+                  { label: 'Visit Done', value: detailStats.visitDone || 0, color: '#8B5CF6' },
+                  { label: 'Booking Done', value: detailStats.booked || detailStats.bookingDone || 0, color: '#10B981' },
                 ].map(s => (
                   <div key={s.label} className="p-4 text-center border-r border-gray-50 last:border-r-0">
                     <p className="text-xl font-black" style={{ color: s.color }}>{s.value}</p>
@@ -720,13 +727,13 @@ export default function AgentReportsPage() {
               >
                 <FileSpreadsheet size={12} /> Full History
               </button>
-              {['interested', 'visit_scheduled', 'visit_done', 'not_interested'].map(d => (
+              {['not_interested', 'visit_scheduled', 'visit_done', 'booked'].map(d => (
                 <button
                   key={d}
                   onClick={() => downloadAgentExcel(selectedAgent.agentId, selectedAgent.name, d)}
                   className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-100 text-gray-600 border border-gray-200 rounded-lg text-[11px] font-black transition-all cursor-pointer shrink-0"
                 >
-                  <Download size={11} /> {DISPOSITION_LABELS[d]}
+                  <Download size={11} /> {DISPOSITION_LABELS[d] || d}
                 </button>
               ))}
               <button
@@ -970,10 +977,10 @@ export default function AgentReportsPage() {
             <PhoneCall size={12} /> Full History
           </button>
           {[
-            { label: 'Interested', disp: 'interested', color: 'emerald' },
-            { label: 'Visit Scheduled', disp: 'visit_scheduled', color: 'indigo' },
-            { label: 'Visit Done', disp: 'visit_done', color: 'purple' },
             { label: 'Not Interested', disp: 'not_interested', color: 'red' },
+            { label: 'V. Scheduled', disp: 'visit_scheduled', color: 'indigo' },
+            { label: 'Visit Done', disp: 'visit_done', color: 'purple' },
+            { label: 'Booking Done', disp: 'booked', color: 'emerald' },
           ].map(item => (
             <button
               key={item.disp}
@@ -995,16 +1002,15 @@ export default function AgentReportsPage() {
       </div>
 
       {/* ── Team Summary Stats Cards (Including App Live Status & Screen Time) ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
         {[
           { label: 'Online on App', value: totals.onlineCount, icon: Radio, color: 'emerald', bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700' },
           { label: 'Screen Time', value: totalScreenTimeFormatted, icon: Smartphone, color: 'amber', bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-800' },
-          { label: 'Total Leads', value: totals.leads, icon: Users, color: 'blue', bg: 'bg-blue-50', border: 'border-blue-100', text: 'text-blue-600' },
-          { label: 'Manual Dialed', value: totals.dialed, icon: PhoneCall, color: 'amber', bg: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-600' },
-          { label: "Today's Calls", value: totals.calls, icon: Phone, color: 'indigo', bg: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-600' },
-          { label: 'Interested', value: totals.interested, icon: Star, color: 'emerald', bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-600' },
-          { label: 'Visit Scheduled', value: totals.visitScheduled, icon: CalendarCheck, color: 'violet', bg: 'bg-violet-50', border: 'border-violet-100', text: 'text-violet-600' },
+          { label: 'Assigned', value: totals.leads, icon: Users, color: 'blue', bg: 'bg-blue-50', border: 'border-blue-100', text: 'text-blue-600' },
+          { label: 'Not Interested', value: totals.notInterested, icon: XCircle, color: 'red', bg: 'bg-red-50', border: 'border-red-100', text: 'text-red-600' },
+          { label: 'V. Scheduled', value: totals.visitScheduled, icon: CalendarCheck, color: 'violet', bg: 'bg-violet-50', border: 'border-violet-100', text: 'text-violet-600' },
           { label: 'Visit Done', value: totals.visitDone, icon: Home, color: 'purple', bg: 'bg-purple-50', border: 'border-purple-100', text: 'text-purple-600' },
+          { label: 'Booking Done', value: totals.booked, icon: CheckCircle2, color: 'emerald', bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-600' },
         ].map(stat => (
           <div key={stat.label} className={`bg-white rounded-2xl p-3.5 border ${stat.border} shadow-sm flex flex-col justify-between`}>
             <div className="flex items-center justify-between mb-1.5">
@@ -1120,11 +1126,11 @@ export default function AgentReportsPage() {
               {/* Stats Grid */}
               <div className="grid grid-cols-5 divide-x divide-gray-50">
                 {[
-                  { label: 'Assigned', value: r.totalLeads, color: '#3B82F6' },
-                  { label: 'Interested', value: r.interested, color: '#10B981' },
-                  { label: 'V. Scheduled', value: r.visitScheduled, color: '#6366F1' },
-                  { label: 'Visit Done', value: r.visitDone, color: '#8B5CF6' },
-                  { label: 'Follow-up', value: r.followUp, color: '#F59E0B' },
+                  { label: 'Assigned', value: r.assigned !== undefined ? r.assigned : r.totalLeads, color: '#3B82F6' },
+                  { label: 'Not Interested', value: r.notInterested || 0, color: '#EF4444' },
+                  { label: 'V. Scheduled', value: r.visitScheduled || 0, color: '#6366F1' },
+                  { label: 'Visit Done', value: r.visitDone || 0, color: '#8B5CF6' },
+                  { label: 'Booking Done', value: r.booked || r.bookingDone || 0, color: '#10B981' },
                 ].map(stat => (
                   <div key={stat.label} className="p-3 text-center">
                     <p className="text-lg font-black" style={{ color: stat.color }}>{stat.value}</p>
