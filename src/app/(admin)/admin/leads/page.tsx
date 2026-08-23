@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import {
   Users, Search, Trash2, MessageSquare, Loader2, Calendar,
-  MapPin, Briefcase, FileText, CheckCircle2, FileDown, Home, ExternalLink, UserCheck, X
+  MapPin, Briefcase, FileText, CheckCircle2, FileDown, Home, ExternalLink, UserCheck, X, Megaphone
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
@@ -574,6 +575,14 @@ export default function AdminLeadsPage() {
             Manage all customer enquiries and financing requests
           </p>
         </div>
+
+        <Link
+          href="/admin/meta-ads"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#C9A227] via-[#D4AF37] to-[#B8860B] text-[#1A1800] font-black rounded-xl text-xs shadow-md hover:scale-[1.02] transition-all cursor-pointer self-start sm:self-auto"
+        >
+          <Megaphone size={15} />
+          <span>Meta Ads Leads (Live Hub)</span>
+        </Link>
       </div>
 
       {/* Stats Row */}
@@ -630,7 +639,7 @@ export default function AdminLeadsPage() {
         {/* Card Header */}
         <div className="p-6 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Tabs */}
-          <div className="flex bg-gray-50 p-1 border border-gray-100 rounded-xl self-start md:self-auto flex-wrap gap-1">
+          <div className="flex bg-gray-50 p-1 border border-gray-100 rounded-xl self-start md:self-auto flex-wrap gap-1 items-center">
             <button
               onClick={() => handleTabClick('general')}
               className={`relative flex items-center gap-2 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
@@ -675,6 +684,15 @@ export default function AdminLeadsPage() {
               📄 Brochures ({stats.brochure})
               {hasNewBrochure && <span className="absolute top-1 right-1 flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>}
             </button>
+
+            {/* Direct Meta Ads Tab */}
+            <Link
+              href="/admin/meta-ads"
+              className="flex items-center gap-1.5 py-2 px-3 rounded-lg text-xs font-black uppercase tracking-wider text-[#9E7B15] bg-[#C9A227]/10 hover:bg-[#C9A227]/20 border border-[#C9A227]/30 transition-all cursor-pointer"
+            >
+              <Megaphone size={13} />
+              <span>Meta Ads Hub →</span>
+            </Link>
           </div>
 
           {/* Search + Download */}

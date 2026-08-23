@@ -17,9 +17,9 @@ const navItems = [
   { href: '/admin/reports', label: 'Team Reports', icon: BarChart2 },
   { href: '/admin/share-kits', label: 'Share Kits', icon: Package2 },
   { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
+  { href: '/admin/meta-ads', label: 'Meta Ads', icon: Megaphone },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText, restricted: true },
   { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target, restricted: true },
-  { href: '/admin/meta-ads', label: 'Meta Ads', icon: Megaphone },
 ];
 
 export default function AdminSidebar({ 
