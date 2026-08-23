@@ -714,10 +714,10 @@ export default function AgentReportsPage() {
             </div>
 
             {/* Download Buttons */}
-            <div className="px-6 py-3 bg-gray-50/80 border-b border-gray-100 flex flex-wrap gap-2 shrink-0">
+            <div className="px-6 py-2.5 bg-gray-50/80 border-b border-gray-100 flex items-center gap-1.5 flex-nowrap overflow-x-auto shrink-0 scrollbar-none">
               <button
                 onClick={() => downloadAgentExcel(selectedAgent.agentId, selectedAgent.name, 'all')}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg text-[11px] font-black transition-all cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg text-[11px] font-black transition-all cursor-pointer shrink-0"
               >
                 <FileSpreadsheet size={12} /> Full History
               </button>
@@ -725,16 +725,16 @@ export default function AgentReportsPage() {
                 <button
                   key={d}
                   onClick={() => downloadAgentExcel(selectedAgent.agentId, selectedAgent.name, d)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-100 text-gray-600 border border-gray-200 rounded-lg text-[11px] font-black transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-white hover:bg-gray-100 text-gray-600 border border-gray-200 rounded-lg text-[11px] font-black transition-all cursor-pointer shrink-0"
                 >
                   <Download size={11} /> {DISPOSITION_LABELS[d]}
                 </button>
               ))}
               <button
                 onClick={() => downloadAttendanceExcel(selectedAgent.agentId, selectedAgent.name)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-[11px] font-black transition-all cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-[11px] font-black transition-all cursor-pointer shrink-0"
               >
-                <CalendarCheck size={12} /> Attendance & Screen Time
+                <CalendarCheck size={12} /> Attendance
               </button>
             </div>
 
@@ -744,7 +744,7 @@ export default function AgentReportsPage() {
                 onClick={() => handleTabChange('leads')}
                 className={`pb-3 px-1 text-xs font-black uppercase tracking-wider border-b-2 transition-all cursor-pointer ${detailTab === 'leads' ? 'border-[#C9A227] text-[#C9A227]' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
               >
-                <span className="flex items-center gap-1.5"><ClipboardList size={13} /> Leads</span>
+                <span className="flex items-center gap-1.5"><FileSpreadsheet size={13} /> Leads</span>
               </button>
               <button
                 onClick={() => handleTabChange('attendance')}
@@ -765,7 +765,7 @@ export default function AgentReportsPage() {
                   {/* Disposition filter */}
                   <div className="px-6 py-3 flex items-center gap-2 flex-wrap border-b border-gray-50">
                     <span className="text-[10px] font-black text-gray-400 uppercase">Filter:</span>
-                    {['all', 'interested', 'visit_done', 'follow_up', 'not_interested', 'connected', 'not_connected', 'new'].map(d => (
+                    {['all', 'interested', 'visit_scheduled', 'visit_done', 'not_interested', 'connected', 'not_connected', 'new'].map(d => (
                       <button
                         key={d}
                         onClick={() => setDispositionFilter(d)}
