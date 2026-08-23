@@ -179,6 +179,12 @@ export default function AgentReportsPage() {
   const [dispositionFilter, setDispositionFilter] = useState('all');
   const [expandedLeadId, setExpandedLeadId] = useState<string | null>(null);
 
+  // Drawer Date Filter State (Defaults to 'this_month' so full month stats & downloads are available)
+  const [drawerPreset, setDrawerPreset] = useState<DatePreset>('this_month');
+  const [drawerFromDate, setDrawerFromDate] = useState(thisMonthStart());
+  const [drawerToDate, setDrawerToDate] = useState(today());
+  const [drawerShowCustom, setDrawerShowCustom] = useState(false);
+
   // Attendance
   const [attendance, setAttendance] = useState<AttendanceRow[]>([]);
   const [attendanceLoading, setAttendanceLoading] = useState(false);
@@ -218,31 +224,35 @@ export default function AgentReportsPage() {
 
     // Auto-refresh presence every 30s
     const interval = setInterval(() => {
-      fetchReports(fromDate, toDate, false);
+      fetchReports(fromDate, toDate);
     }, 30000);
     return () => clearInterval(interval);
   }, [fetchReports, fromDate, toDate]);
 
-  // ── Preset handler ─────────────────────────────────────────────────────────
+  // ── Preset change on main page ─────────────────────────────────────────────
 
   const handlePreset = (p: DatePreset) => {
     setPreset(p);
-    if (p === 'custom') { setShowCustom(true); return; }
+    if (p === 'custom') {
+      setShowCustom(true);
+      return;
+    }
     setShowCustom(false);
-    const { from, to } = getPresetRange(p);
-    setFromDate(from);
-    setToDate(to);
-    fetchReports(from, to);
+    const range = getPresetRange(p);
+    setFromDate(range.from);
+    setToDate(range.to);
+    fetchReports(range.from, range.to, true);
   };
 
   const handleCustomApply = () => {
-    if (!fromDate || !toDate) { toast.error('Please select both dates'); return; }
-    setShowCustom(false);
-    setPreset('custom');
-    fetchReports(fromDate, toDate);
+    if (new Date(fromDate) > new Date(toDate)) {
+      toast.error('From date cannot be after To date');
+      return;
+    }
+    fetchReports(fromDate, toDate, true);
   };
 
-  // ── Team totals ────────────────────────────────────────────────────────────
+  // ── Totals across all agents ───────────────────────────────────────────────
 
   const totals = useMemo(() => reports.reduce((acc, r) => ({
     leads: acc.leads + r.totalLeads,
@@ -275,7 +285,9 @@ export default function AgentReportsPage() {
 
   // ── Open agent detail drawer ───────────────────────────────────────────────
 
-  const openAgentDetail = async (r: AgentReport) => {
+  const openAgentDetail = async (r: AgentReport, customFrom?: string, customTo?: string) => {
+    const from = customFrom || drawerFromDate;
+    const to = customTo || drawerToDate;
     setSelectedAgent(r);
     setDetailTab('leads');
     setDispositionFilter('all');
@@ -283,8 +295,9 @@ export default function AgentReportsPage() {
     setDetailLoading(true);
     setDetailStats(null);
     setDetailLeads([]);
+    setAttendance([]);
     try {
-      const res = await fetch(`/api/admin/agents/${r.agentId}/detail?from=${fromDate}&to=${toDate}`);
+      const res = await fetch(`/api/admin/agents/${r.agentId}/detail?from=${from}&to=${to}`);
       const data = await res.json();
       if (data.success) {
         if (data.agent?.employee_id) {
@@ -297,6 +310,37 @@ export default function AgentReportsPage() {
     finally { setDetailLoading(false); }
   };
 
+  const handleDrawerPreset = (p: DatePreset) => {
+    setDrawerPreset(p);
+    if (p === 'custom') {
+      setDrawerShowCustom(true);
+      return;
+    }
+    setDrawerShowCustom(false);
+    const range = getPresetRange(p);
+    setDrawerFromDate(range.from);
+    setDrawerToDate(range.to);
+    if (selectedAgent) {
+      openAgentDetail(selectedAgent, range.from, range.to);
+      if (detailTab === 'attendance') {
+        fetchAttendance(selectedAgent.agentId, range.from, range.to);
+      }
+    }
+  };
+
+  const handleDrawerCustomApply = () => {
+    if (new Date(drawerFromDate) > new Date(drawerToDate)) {
+      toast.error('From date cannot be after To date');
+      return;
+    }
+    if (selectedAgent) {
+      openAgentDetail(selectedAgent, drawerFromDate, drawerToDate);
+      if (detailTab === 'attendance') {
+        fetchAttendance(selectedAgent.agentId, drawerFromDate, drawerToDate);
+      }
+    }
+  };
+
   const closeDrawer = () => {
     setSelectedAgent(null);
     setDetailStats(null);
@@ -306,10 +350,12 @@ export default function AgentReportsPage() {
 
   // ── Attendance ─────────────────────────────────────────────────────────────
 
-  const fetchAttendance = async (agentId: string) => {
+  const fetchAttendance = async (agentId: string, customFrom?: string, customTo?: string) => {
+    const from = customFrom || drawerFromDate;
+    const to = customTo || drawerToDate;
     setAttendanceLoading(true);
     try {
-      const res = await fetch(`/api/admin/agents/${agentId}/attendance?from=${fromDate}&to=${toDate}`);
+      const res = await fetch(`/api/admin/agents/${agentId}/attendance?from=${from}&to=${to}`);
       const data = await res.json();
       if (data.success) setAttendance(data.attendance);
       else toast.error(data.error);
@@ -320,7 +366,7 @@ export default function AgentReportsPage() {
   const handleTabChange = (tab: 'leads' | 'attendance') => {
     setDetailTab(tab);
     if (tab === 'attendance' && selectedAgent && attendance.length === 0) {
-      fetchAttendance(selectedAgent.agentId);
+      fetchAttendance(selectedAgent.agentId, drawerFromDate, drawerToDate);
     }
   };
 
@@ -364,7 +410,9 @@ export default function AgentReportsPage() {
   const downloadAgentExcel = async (agentId: string, agentName: string, disposition = 'all') => {
     try {
       toast.loading('Preparing Excel...', { id: 'excel' });
-      const url = `/api/admin/agents/${agentId}/excel?disposition=${disposition}&from=${fromDate}&to=${toDate}`;
+      const from = drawerFromDate || fromDate;
+      const to = drawerToDate || toDate;
+      const url = `/api/admin/agents/${agentId}/excel?disposition=${disposition}&from=${from}&to=${to}`;
       const res = await fetch(url);
       const data = await res.json();
       if (!data.success) { toast.error(data.error, { id: 'excel' }); return; }
@@ -377,7 +425,7 @@ export default function AgentReportsPage() {
       const maxLens = Object.keys(data.rows[0] || {}).map(k => ({ wch: Math.max(k.length, 18) }));
       ws['!cols'] = maxLens;
 
-      const fileName = `${agentName.replace(/\s/g, '_')}_${disposition === 'all' ? 'Full_History' : disposition}_${fromDate}_to_${toDate}.xlsx`;
+      const fileName = `${agentName.replace(/\s/g, '_')}_${disposition === 'all' ? 'Full_History' : disposition}_${from}_to_${to}.xlsx`;
       XLSX.writeFile(wb, fileName);
       toast.success('Downloaded!', { id: 'excel' });
     } catch { toast.error('Download failed', { id: 'excel' }); }
@@ -388,7 +436,9 @@ export default function AgentReportsPage() {
   const downloadAttendanceExcel = async (agentId: string, agentName: string) => {
     try {
       toast.loading('Preparing Attendance...', { id: 'att' });
-      const res = await fetch(`/api/admin/agents/${agentId}/attendance?from=${fromDate}&to=${toDate}`);
+      const from = drawerFromDate || fromDate;
+      const to = drawerToDate || toDate;
+      const res = await fetch(`/api/admin/agents/${agentId}/attendance?from=${from}&to=${to}`);
       const data = await res.json();
       if (!data.success) { toast.error(data.error, { id: 'att' }); return; }
 
@@ -601,6 +651,65 @@ export default function AgentReportsPage() {
                 ))}
               </div>
             )}
+
+            {/* Date Range Selector Bar inside Employee Detail Drawer */}
+            <div className="bg-gradient-to-r from-amber-50/90 via-amber-50/40 to-white px-6 py-3 border-b border-amber-200/80 flex flex-wrap items-center justify-between gap-3 shrink-0">
+              <div className="flex items-center gap-2">
+                <Calendar size={14} className="text-[#C9A227]" />
+                <span className="text-xs font-black text-gray-800 uppercase tracking-wider">
+                  Report Period:
+                </span>
+                <span className="text-[11px] font-extrabold text-[#8B6914] bg-white px-2.5 py-0.5 rounded-lg border border-amber-300 shadow-2xs font-mono">
+                  {fmtDate(drawerFromDate)} — {fmtDate(drawerToDate)}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-1.5">
+                {[
+                  { id: 'this_month', label: 'This Month' },
+                  { id: 'today', label: 'Today' },
+                  { id: 'yesterday', label: 'Yesterday' },
+                  { id: 'this_week', label: 'This Week' },
+                  { id: 'custom', label: 'Custom Date' },
+                ].map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => handleDrawerPreset(p.id as DatePreset)}
+                    className={`px-3 py-1 rounded-lg text-[11px] font-black transition-all cursor-pointer ${
+                      drawerPreset === p.id
+                        ? 'bg-[#C9A227] text-[#1A1800] shadow-sm font-extrabold'
+                        : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+
+                {drawerShowCustom && (
+                  <div className="flex items-center gap-1.5 bg-white border border-amber-300 rounded-lg px-2.5 py-1 shadow-xs ml-1">
+                    <input
+                      type="date"
+                      value={drawerFromDate}
+                      onChange={e => setDrawerFromDate(e.target.value)}
+                      className="text-xs font-bold text-gray-800 outline-none bg-transparent"
+                    />
+                    <span className="text-gray-400 text-xs">→</span>
+                    <input
+                      type="date"
+                      value={drawerToDate}
+                      onChange={e => setDrawerToDate(e.target.value)}
+                      className="text-xs font-bold text-gray-800 outline-none bg-transparent"
+                    />
+                    <button
+                      onClick={handleDrawerCustomApply}
+                      className="px-2.5 py-0.5 bg-[#C9A227] text-[#1A1800] text-[10px] font-black rounded hover:bg-[#B8860B] transition-all cursor-pointer"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Download Buttons */}
             <div className="px-6 py-3 bg-gray-50/80 border-b border-gray-100 flex flex-wrap gap-2 shrink-0">
