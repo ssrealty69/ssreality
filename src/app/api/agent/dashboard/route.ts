@@ -20,9 +20,23 @@ export async function GET(req: NextRequest) {
     const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 
     const agentId = auth.agentId!;
+    const isExecutive = 
+      auth.agent?.role === 'director' || 
+      auth.agent?.isExecutive === true || 
+      auth.agent?.employee_id === 'SSR000' || 
+      /yogesh/i.test(auth.agent?.name || '') || 
+      auth.agent?.username === 'info@ssrealty.org';
 
-    // All leads for this agent
-    const allLeads = await AgentLead.find({ agentId }).lean();
+    // All leads (For Director/Executive, fetch ALL company leads)
+    const allLeads = isExecutive
+      ? await AgentLead.find({}).lean()
+      : await AgentLead.find({
+          $or: [
+            { agentId },
+            { agentId: auth.agent?.employee_id },
+            { agentName: new RegExp(`^${auth.agent?.name}$`, 'i') },
+          ]
+        }).lean();
 
     // Calls made today: leads with at least one history entry today
     const callsMadeToday = allLeads.filter((lead: any) =>

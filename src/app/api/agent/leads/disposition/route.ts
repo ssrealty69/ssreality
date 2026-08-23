@@ -21,7 +21,23 @@ export async function POST(req: NextRequest) {
     }
 
     await connectDB();
-    const lead = await AgentLead.findOne({ _id: leadId, agentId: auth.agentId });
+    const isExecutive = 
+      auth.agent?.role === 'director' || 
+      auth.agent?.isExecutive === true || 
+      auth.agent?.employee_id === 'SSR000' || 
+      /yogesh/i.test(auth.agent?.name || '') || 
+      auth.agent?.username === 'info@ssrealty.org';
+
+    const lead = isExecutive
+      ? await AgentLead.findById(leadId)
+      : await AgentLead.findOne({
+          _id: leadId,
+          $or: [
+            { agentId: auth.agentId },
+            { agentId: auth.agent?.employee_id },
+            { agentName: new RegExp(`^${auth.agent?.name}$`, 'i') },
+          ]
+        });
 
     if (!lead) {
       return NextResponse.json({ success: false, error: 'Lead not found' }, { status: 404 });
