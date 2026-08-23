@@ -98,12 +98,33 @@ export async function POST(req: NextRequest) {
       await AgentSession.create({ agentId: agent._id.toString(), token, expiresAt });
     } catch (_) {}
 
+    const isExecutive = 
+      agent.role === 'director' || 
+      agent.role === 'admin' || 
+      agent.isExecutive === true ||
+      agent.employee_id === 'SSR000' || 
+      /yogesh/i.test(agent.name) || 
+      agent.username === 'info@ssrealty.org';
+
+    // Auto-update agent record to director/executive if not set
+    if (isExecutive && (agent.role !== 'director' || !agent.isExecutive)) {
+      try {
+        agent.role = 'director';
+        agent.isExecutive = true;
+        agent.allowRemotePunchIn = true;
+        await agent.save();
+      } catch (_) {}
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Team Agent Login Successful',
+      message: isExecutive ? 'Director Executive Login Successful' : 'Team Agent Login Successful',
       data: {
         token,
         refreshToken,
+        isExecutive,
+        adminPortalUrl: isExecutive ? '/mobile-admin' : undefined,
+        canAccessAdmin: isExecutive,
         user: {
           id: agent._id.toString(),
           fullName: agent.name,
@@ -111,11 +132,15 @@ export async function POST(req: NextRequest) {
           employeeId: agent.employee_id,
           phone: '+919876543210',
           orgId: 'SSRealty',
+          isExecutive,
           role: {
-            name: 'Agent',
-            slug: 'agent',
+            name: isExecutive ? 'Director' : 'Agent',
+            slug: isExecutive ? 'director' : 'agent',
             permissions: {
               'leads.view.assigned': true,
+              'leads.view.all': isExecutive,
+              'team.view': isExecutive,
+              'admin.panel': isExecutive,
               'calls.log': true,
               'reports.self': true,
             },

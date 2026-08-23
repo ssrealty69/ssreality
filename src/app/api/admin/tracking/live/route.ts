@@ -41,8 +41,15 @@ export async function GET(req: NextRequest) {
     const geofence = await getGeofenceSettings();
     const geofenceRadius = geofence.geofenceRadiusMeters || 200;
 
-    // 1. Fetch all active agents
-    const allAgents = await Agent.find({ isActive: true })
+    // 1. Fetch all active telecaller agents (excluding Executive/Director)
+    const allAgents = await Agent.find({
+      isActive: true,
+      role: { $ne: 'director' },
+      isExecutive: { $ne: true },
+      employee_id: { $ne: 'SSR000' },
+      name: { $not: /yogesh/i },
+      username: { $ne: 'info@ssrealty.org' },
+    })
       .select('name username phone employee_id allowRemotePunchIn')
       .lean();
 

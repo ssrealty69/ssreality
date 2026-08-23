@@ -35,7 +35,13 @@ export async function GET(req: NextRequest) {
     const { start, end } = getLocalDateRange(from, to);
     const todayStr = localToday();
 
-    const agents = await Agent.find({}).select('name username phone employee_id isActive').lean();
+    const agents = await Agent.find({
+      role: { $ne: 'director' },
+      isExecutive: { $ne: true },
+      employee_id: { $ne: 'SSR000' },
+      name: { $not: /yogesh/i },
+      username: { $ne: 'info@ssrealty.org' },
+    }).select('name username phone employee_id isActive').lean();
 
     const nowMs = Date.now();
     const ONLINE_THRESHOLD_MS = 3 * 60 * 1000; // 3 mins

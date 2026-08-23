@@ -223,10 +223,15 @@ export async function distributeLead(payload: LeadDistributionPayload): Promise<
     };
   }
 
-  // 3. Fetch all active agents who are NOT on leave (isReceivingLeads !== false)
+  // 3. Fetch all active telecallers who are NOT on leave and NOT executive/director
   const allActiveAgents = await Agent.find({
     isActive: true,
     isReceivingLeads: { $ne: false },
+    role: { $ne: 'director' },
+    isExecutive: { $ne: true },
+    employee_id: { $ne: 'SSR000' },
+    name: { $not: /yogesh/i },
+    username: { $ne: 'info@ssrealty.org' },
   }).lean();
 
   if (allActiveAgents.length === 0) {

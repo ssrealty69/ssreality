@@ -92,9 +92,16 @@ export async function POST(req: NextRequest) {
       isMockLocation = false,
     } = body;
 
+    const isExecutive = 
+      agent.role === 'director' || 
+      agent.isExecutive === true ||
+      agent.employee_id === 'SSR000' || 
+      /yogesh/i.test(agent.name) || 
+      agent.username === 'info@ssrealty.org';
+
     const geoConfig = await getGeofenceSettings();
-    const isAgentRemoteExempted = Boolean(agent.allowRemotePunchIn);
-    const isGeofenceRequired = geoConfig.geofenceEnabled && !isAgentRemoteExempted;
+    const isAgentRemoteExempted = Boolean(agent.allowRemotePunchIn) || isExecutive;
+    const isGeofenceRequired = !isExecutive && geoConfig.geofenceEnabled && !isAgentRemoteExempted;
 
     // 2. Device & GPS Check: Verify if GPS hardware/coordinates are found
     const hasLat = latitude !== undefined && latitude !== null && latitude !== '';
@@ -103,7 +110,7 @@ export async function POST(req: NextRequest) {
     const lngNum = Number(longitude);
     const isValidCoords = hasLat && hasLng && !isNaN(latNum) && !isNaN(lngNum) && (latNum !== 0 || lngNum !== 0);
 
-    if (!isValidCoords) {
+    if (!isValidCoords && !isExecutive) {
       // Device GPS is NOT found or disabled
       if (isGeofenceRequired) {
         return NextResponse.json(

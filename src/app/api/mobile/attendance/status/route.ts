@@ -57,19 +57,28 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const isExecutive = 
+      (agent as any).role === 'director' || 
+      (agent as any).isExecutive === true ||
+      (agent as any).employee_id === 'SSR000' || 
+      /yogesh/i.test((agent as any).name) || 
+      (agent as any).username === 'info@ssrealty.org';
+
     const geoConfig = await getGeofenceSettings();
-    const isAgentRemoteExempted = Boolean((agent as any).allowRemotePunchIn);
-    const isGeofenceRequired = geoConfig.geofenceEnabled && !isAgentRemoteExempted;
+    const isAgentRemoteExempted = Boolean((agent as any).allowRemotePunchIn) || isExecutive;
+    const isGeofenceRequired = !isExecutive && geoConfig.geofenceEnabled && !isAgentRemoteExempted;
 
     const todayStr = getISTDateString();
     const attendance = await AgentAttendance.findOne({ agentId: String(agent._id), date: todayStr }).lean();
 
-    const isPunchedIn = Boolean(attendance && attendance.punchIn && !attendance.punchOut);
-    const isShiftCompleted = Boolean(attendance && attendance.punchIn && attendance.punchOut && attendance.totalMinutes);
+    const isPunchedIn = isExecutive ? true : Boolean(attendance && attendance.punchIn && !attendance.punchOut);
+    const isShiftCompleted = isExecutive ? false : Boolean(attendance && attendance.punchIn && attendance.punchOut && attendance.totalMinutes);
 
     return NextResponse.json({
       success: true,
       todayDate: todayStr,
+      isExecutive,
+      isExempt: isExecutive,
       isPunchedIn,
       isShiftCompleted,
       attendance: attendance || null,

@@ -107,24 +107,34 @@ export async function POST(req: NextRequest) {
       calculatedStatus = 'ON_FIELD_VISIT';
     }
 
+    const isExecutive = 
+      (agent as any)?.role === 'director' || 
+      (agent as any)?.isExecutive === true ||
+      (agent as any)?.employee_id === 'SSR000' || 
+      /yogesh/i.test((agent as any)?.name || '') || 
+      (agent as any)?.username === 'info@ssrealty.org';
+
     const effectiveAgentName = agentName || agent?.name || 'Agent';
     const effectiveAgentId = agent ? (agent as any)._id.toString() : String(agentId);
 
-    // 1. Record location breadcrumb in AgentLocationLog
-    const log = await AgentLocationLog.create({
-      agentId: effectiveAgentId,
-      agentName: effectiveAgentName,
-      latitude: latNum,
-      longitude: lngNum,
-      accuracy: accuracy ? Number(accuracy) : undefined,
-      speed: speed ? Number(speed) : undefined,
-      batteryLevel: batteryLevel ? Number(batteryLevel) : undefined,
-      status: calculatedStatus,
-      distanceFromOfficeMeters: distanceMeters,
-      address: address || undefined,
-      timestamp: new Date(),
-      date: todayStr,
-    });
+    // 1. Record location breadcrumb in AgentLocationLog (Exempt Director / Executive)
+    let log = null;
+    if (!isExecutive) {
+      log = await AgentLocationLog.create({
+        agentId: effectiveAgentId,
+        agentName: effectiveAgentName,
+        latitude: latNum,
+        longitude: lngNum,
+        accuracy: accuracy ? Number(accuracy) : undefined,
+        speed: speed ? Number(speed) : undefined,
+        batteryLevel: batteryLevel ? Number(batteryLevel) : undefined,
+        status: calculatedStatus,
+        distanceFromOfficeMeters: distanceMeters,
+        address: address || undefined,
+        timestamp: new Date(),
+        date: todayStr,
+      });
+    }
 
     // 2. Track screen/app activity heartbeat WITHOUT altering punchIn or punchOut
     const now = new Date();
