@@ -8,6 +8,7 @@ export interface IAgent extends Document {
   plainPassword?: string;
   employee_id: string;
   isActive: boolean;
+  isReceivingLeads?: boolean; // When false (on leave/absent), agent is skipped from lead distribution
   allowRemotePunchIn?: boolean; // When true, agent can punch-in/login from any location even if global geofence is ON
   lastAssignedLeadAt?: Date;
   createdAt: Date;
@@ -23,6 +24,7 @@ const AgentSchema = new Schema<IAgent>(
     plainPassword: { type: String, default: '' },
     employee_id:   { type: String, required: true, trim: true, unique: true },
     isActive:      { type: Boolean, default: true },
+    isReceivingLeads: { type: Boolean, default: true },
     allowRemotePunchIn: { type: Boolean, default: false },
     lastAssignedLeadAt: { type: Date },
   },

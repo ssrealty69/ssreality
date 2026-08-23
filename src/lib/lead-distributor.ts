@@ -97,18 +97,26 @@ export function getAgentWeightAndRank(agent: any): { rank: number; weight: numbe
 }
 
 /**
- * Global Switch Check: Check if Master Auto-Distribution is Enabled in Database
+ * Global Switch Check: Check if Master Auto-Distribution is Enabled in Database & its activation timestamp
  */
-export async function isAutoDistributionEnabled(): Promise<boolean> {
+export async function getAutoDistributionConfig(): Promise<{ enabled: boolean; enabledAt: Date | null }> {
   try {
     await connectDB();
     const Setting = (await import('@/models/Setting')).default;
     const setting = await Setting.findOne({ key: 'auto_lead_distribution_enabled' }).lean();
-    if (!setting) return false;
-    return (setting as any).value === 'true';
+    if (!setting) return { enabled: false, enabledAt: null };
+    const enabled = (setting as any).value === 'true';
+    const atSetting = await Setting.findOne({ key: 'auto_lead_distribution_enabled_at' }).lean();
+    const enabledAt = atSetting && (atSetting as any).value ? new Date((atSetting as any).value) : null;
+    return { enabled, enabledAt };
   } catch {
-    return false;
+    return { enabled: false, enabledAt: null };
   }
+}
+
+export async function isAutoDistributionEnabled(): Promise<boolean> {
+  const { enabled } = await getAutoDistributionConfig();
+  return enabled;
 }
 
 /**
@@ -122,6 +130,21 @@ export async function setAutoDistributionEnabled(enabled: boolean): Promise<bool
     { key: 'auto_lead_distribution_enabled', value: enabled ? 'true' : 'false' },
     { upsert: true, new: true }
   );
+
+  if (enabled) {
+    await Setting.findOneAndUpdate(
+      { key: 'auto_lead_distribution_enabled_at' },
+      { key: 'auto_lead_distribution_enabled_at', value: new Date().toISOString() },
+      { upsert: true, new: true }
+    );
+  } else {
+    await Setting.findOneAndUpdate(
+      { key: 'auto_lead_distribution_enabled_at' },
+      { key: 'auto_lead_distribution_enabled_at', value: '' },
+      { upsert: true, new: true }
+    );
+  }
+
   return enabled;
 }
 
@@ -160,11 +183,21 @@ export async function distributeLead(payload: LeadDistributionPayload): Promise<
 }> {
   await connectDB();
 
-  // Master Switch Check: If auto distribution is disabled and this is not a forced manual assignment, return
+  // 1. Master Switch & Time-Gate Check
+  // If auto-distribution is OFF or this lead arrived before switch was turned ON, skip assignment!
   if (!payload.forceManual) {
-    const isEnabled = await isAutoDistributionEnabled();
-    if (!isEnabled) {
+    const { enabled, enabledAt } = await getAutoDistributionConfig();
+    if (!enabled) {
       return { assigned: false, reason: 'Auto lead distribution is currently paused by Admin' };
+    }
+
+    if (payload.createdAt && enabledAt) {
+      const leadTime = new Date(payload.createdAt).getTime();
+      const onTime = enabledAt.getTime();
+      // Allow 5-second clock drift buffer; leads older than switch activation are NOT assigned
+      if (leadTime < onTime - 5000) {
+        return { assigned: false, reason: 'Lead arrived before auto-distribution was turned ON' };
+      }
     }
   }
 
@@ -175,7 +208,7 @@ export async function distributeLead(payload: LeadDistributionPayload): Promise<
 
   const phone10 = cleanPhone.slice(-10);
 
-  // 1. Anti-Duplicate Check: If this phone is already assigned to an agent, do not re-assign
+  // 2. Anti-Duplicate Check: If this phone is already assigned to an agent, do not re-assign
   const existing = await AgentLead.findOne({
     phone: { $regex: `${phone10}$` },
   }).lean();
@@ -190,10 +223,14 @@ export async function distributeLead(payload: LeadDistributionPayload): Promise<
     };
   }
 
-  // 2. Fetch all active agents
-  const allActiveAgents = await Agent.find({ isActive: true }).lean();
+  // 3. Fetch all active agents who are NOT on leave (isReceivingLeads !== false)
+  const allActiveAgents = await Agent.find({
+    isActive: true,
+    isReceivingLeads: { $ne: false },
+  }).lean();
+
   if (allActiveAgents.length === 0) {
-    return { assigned: false, reason: 'No active agents available' };
+    return { assigned: false, reason: 'No active agents available to receive leads' };
   }
 
   const leadTime = payload.createdAt || new Date();
@@ -475,9 +512,9 @@ export async function redistributeUnattendedMorningLeads(now: Date = new Date())
     if (sess.agentId) activeAgentIds.add(String(sess.agentId));
   });
 
-  const allAgents = await Agent.find({ isActive: true }).lean();
+  const allAgents = await Agent.find({ isActive: true, isReceivingLeads: { $ne: false } }).lean();
   if (allAgents.length === 0) {
-    return { executed: false, reason: 'No active agents registered', totalReassigned: 0, reassignedLeads: [] };
+    return { executed: false, reason: 'No active agents available to receive leads', totalReassigned: 0, reassignedLeads: [] };
   }
 
   // Eligible pool = agents who ARE logged in today (or all agents if no one logged in yet)

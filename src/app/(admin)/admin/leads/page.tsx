@@ -8,7 +8,6 @@ import {
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
 import AgentLeadsView from '@/components/agent/AgentLeadsView';
-import AutoDistributionToggle from '@/components/admin/AutoDistributionToggle';
 
 interface Lead {
   _id: string;
@@ -575,9 +574,6 @@ export default function AdminLeadsPage() {
             Manage all customer enquiries and financing requests
           </p>
         </div>
-
-        {/* Master Auto-Distribution Switch */}
-        <AutoDistributionToggle compact />
       </div>
 
       {/* Stats Row */}

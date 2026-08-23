@@ -20,6 +20,7 @@ interface AgentReport {
   username: string;
   employee_id?: string;
   isActive: boolean;
+  isReceivingLeads?: boolean;
   isOnline?: boolean;
   lastActiveAt?: string | null;
   lastDistanceKm?: number | null;
@@ -323,6 +324,34 @@ export default function AgentReportsPage() {
     }
   };
 
+  // ── Toggle Individual Agent Lead Queue (Active vs On Leave / Absent) ───────
+  const handleToggleAgentQueue = async (agentId: string, agentName: string, nextStatus: boolean) => {
+    // Optimistic UI update
+    setReports(prev => prev.map(a => a.agentId === agentId ? { ...a, isReceivingLeads: nextStatus } : a));
+    if (selectedAgent && selectedAgent.agentId === agentId) {
+      setSelectedAgent(prev => prev ? { ...prev, isReceivingLeads: nextStatus } : prev);
+    }
+
+    try {
+      const res = await fetch(`/api/admin/agents/${agentId}/distribution-status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isReceivingLeads: nextStatus }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.error || 'Failed to update agent status');
+        // Revert
+        setReports(prev => prev.map(a => a.agentId === agentId ? { ...a, isReceivingLeads: !nextStatus } : a));
+      }
+    } catch {
+      toast.error('Network error updating agent queue status');
+      setReports(prev => prev.map(a => a.agentId === agentId ? { ...a, isReceivingLeads: !nextStatus } : a));
+    }
+  };
+
   // ── Filtered leads in detail drawer ────────────────────────────────────────
 
   const filteredDetailLeads = useMemo(() => {
@@ -499,6 +528,29 @@ export default function AgentReportsPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                {/* Agent Queue Distribution Switch in Drawer */}
+                <button
+                  onClick={() => handleToggleAgentQueue(selectedAgent.agentId, selectedAgent.name, !selectedAgent.isReceivingLeads)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border shadow-sm cursor-pointer ${
+                    selectedAgent.isReceivingLeads !== false
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40 hover:bg-emerald-500/30'
+                      : 'bg-red-500/20 text-red-300 border-red-400/40 hover:bg-red-500/30'
+                  }`}
+                  title={
+                    selectedAgent.isReceivingLeads !== false
+                      ? 'Queue Active: Click to pause lead distribution for this agent'
+                      : 'On Leave: Click to activate lead queue for this agent'
+                  }
+                >
+                  <span className="relative flex h-2 w-2">
+                    {selectedAgent.isReceivingLeads !== false && (
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    )}
+                    <span className={`relative inline-flex rounded-full h-2 w-2 ${selectedAgent.isReceivingLeads !== false ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
+                  </span>
+                  <span>{selectedAgent.isReceivingLeads !== false ? 'Queue: ON' : 'Queue: OFF (Leave)'}</span>
+                </button>
+
                 <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${selectedAgent.isActive ? 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30' : 'bg-red-400/20 text-red-300 border border-red-400/30'}`}>
                   {selectedAgent.isActive ? '● Active' : '● Inactive'}
                 </span>
@@ -757,9 +809,6 @@ export default function AgentReportsPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {/* Master Auto-Distribution Switch */}
-          <AutoDistributionToggle compact />
-
           {/* Date presets */}
           <div className="flex bg-white border border-gray-200 rounded-xl p-1 gap-0.5 shadow-sm">
             {PRESETS.map(p => (
@@ -790,6 +839,9 @@ export default function AgentReportsPage() {
           </button>
         </div>
       </div>
+
+      {/* ── Central Master Lead Distribution Router (Website & Meta Ads) ── */}
+      <AutoDistributionToggle className="my-1" />
 
       {/* ── Master Download Buttons ── */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
@@ -913,6 +965,33 @@ export default function AgentReportsPage() {
                         {r.employee_id || 'SSR-AGENT'}
                       </span>
                     </div>
+
+                    {/* Individual Lead Distribution Switch for this Agent */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleAgentQueue(r.agentId, r.name, !r.isReceivingLeads);
+                      }}
+                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all border shadow-2xs cursor-pointer ${
+                        r.isReceivingLeads !== false
+                          ? 'bg-[#EAF7EE] text-[#0E6228] border-[#107C41]/30 hover:bg-[#D4F2DE]'
+                          : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+                      }`}
+                      title={
+                        r.isReceivingLeads !== false
+                          ? `${r.name} is ACTIVE in lead queue. Click to mark On Leave / Absent.`
+                          : `${r.name} is ON LEAVE / ABSENT. Click to Activate Lead Queue.`
+                      }
+                    >
+                      <span className="relative flex h-2 w-2">
+                        {r.isReceivingLeads !== false && (
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#107C41] opacity-75"></span>
+                        )}
+                        <span className={`relative inline-flex rounded-full h-2 w-2 ${r.isReceivingLeads !== false ? 'bg-[#107C41]' : 'bg-red-500'}`}></span>
+                      </span>
+                      <span>{r.isReceivingLeads !== false ? 'Queue: Active' : 'On Leave (Off)'}</span>
+                    </button>
+
                     {r.lastDistanceFormatted && (
                       <span className="text-[10px] font-extrabold text-[#8B6914] bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded flex items-center gap-1">
                         <MapPin size={10} className="text-[#8B6914]" />

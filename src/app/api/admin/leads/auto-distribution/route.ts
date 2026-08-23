@@ -7,7 +7,7 @@ import MetaSheetLead from '@/models/MetaSheetLead';
 import PropertyEnquiry from '@/models/PropertyEnquiry';
 import Contact from '@/models/Contact';
 import { 
-  isAutoDistributionEnabled, 
+  getAutoDistributionConfig, 
   setAutoDistributionEnabled, 
   bulkDistributeUnassignedLeads 
 } from '@/lib/lead-distributor';
@@ -30,16 +30,17 @@ export async function GET(req: NextRequest) {
 
   try {
     await connectDB();
-    const enabled = await isAutoDistributionEnabled();
+    const { enabled, enabledAt } = await getAutoDistributionConfig();
     const totalAssignedLeads = await AgentLead.countDocuments();
     const totalMetaLeads = await MetaSheetLead.countDocuments();
     const totalWebsiteEnquiries = await PropertyEnquiry.countDocuments();
     const totalContactLeads = await Contact.countDocuments();
-    const activeAgentsCount = await Agent.countDocuments({ isActive: true });
+    const activeAgentsCount = await Agent.countDocuments({ isActive: true, isReceivingLeads: { $ne: false } });
 
     return NextResponse.json({
       success: true,
       enabled,
+      enabledAt: enabledAt ? enabledAt.toISOString() : null,
       stats: {
         totalAssignedLeads,
         totalMetaLeads,

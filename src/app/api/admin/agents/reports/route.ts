@@ -110,6 +110,7 @@ export async function GET(req: NextRequest) {
           username: agent.username,
           employee_id: (agent as any).employee_id,
           isActive: agent.isActive,
+          isReceivingLeads: (agent as any).isReceivingLeads !== false,
           isOnline,
           lastActiveAt: lastActive ? lastActive.toISOString() : null,
           lastDistanceKm,
