@@ -33,6 +33,26 @@ export async function GET(
     const from = searchParams.get('from');
     const to = searchParams.get('to');
 
+    // Find agent for robust multi-field lookup
+    let agent = null;
+    if (agentId.match(/^[0-9a-fA-F]{24}$/)) {
+      agent = await Agent.findById(agentId).lean();
+    }
+    if (!agent) {
+      agent = await Agent.findOne({
+        $or: [
+          { employee_id: agentId },
+          { employee_id: agentId.toUpperCase() },
+          { username: agentId.toLowerCase() }
+        ]
+      }).lean();
+    }
+
+    const agentObjId = agent ? (agent as any)._id.toString() : agentId;
+    const empId = agent ? (agent as any).employee_id : '';
+    const un = agent ? (agent as any).username : '';
+    const agName = agent ? (agent as any).name : '';
+
     // Default: last 30 days
     const todayStr = localToday();
     const fromStr = from || (() => {
@@ -45,9 +65,21 @@ export async function GET(
     const endDate = parseLocalDate(toStr);
     endDate.setHours(23, 59, 59, 999);
 
+    const agentMatch = {
+      $or: [
+        { agentId: agentObjId },
+        { agentId: empId },
+        { agentId: un },
+        { agentId: agentId },
+        { agentName: new RegExp(`^${agName}$`, 'i') }
+      ].filter(Boolean)
+    };
+
     const records = await AgentAttendance.find({
-      agentId,
-      date: { $gte: fromStr, $lte: toStr },
+      $and: [
+        agentMatch,
+        { date: { $gte: fromStr, $lte: toStr } }
+      ]
     }).sort({ date: -1 }).lean();
 
     const formatDuration = (totalSeconds: number): string => {
@@ -67,36 +99,44 @@ export async function GET(
       activeFormatted?: string;
       lastActiveAt?: string;
       sessionCount?: number;
-      status: 'present' | 'absent' | 'off';
+      status: 'present' | 'absent';
     }[] = [];
 
     const cur = new Date(startDate);
     while (cur <= endDate) {
       const dateStr = toLocalDateStr(cur); // LOCAL date string
-      const dayOfWeek = cur.getDay(); // 0=Sun
       const record = records.find((r) => r.date === dateStr);
 
-      if (record) {
-        const punchIn = new Date(record.punchIn);
+      if (record && (record.punchIn || (record.activeSeconds && record.activeSeconds > 0))) {
+        const punchIn = record.punchIn ? new Date(record.punchIn) : (record.createdAt ? new Date(record.createdAt) : new Date());
         const punchOut = record.punchOut ? new Date(record.punchOut) : null;
+        
+        let activeSecs = record.activeSeconds || 0;
+        if (activeSecs === 0 && punchIn) {
+          const endRef = punchOut || (record.lastActiveAt ? new Date(record.lastActiveAt) : new Date());
+          const elapsedSecs = Math.max(0, Math.round((endRef.getTime() - punchIn.getTime()) / 1000));
+          if (elapsedSecs > 0) {
+            activeSecs = elapsedSecs;
+          }
+        }
+
         const totalMinutes = punchOut
-          ? Math.round((punchOut.getTime() - punchIn.getTime()) / 60000)
-          : undefined;
+          ? Math.max(1, Math.round((punchOut.getTime() - punchIn.getTime()) / 60000))
+          : Math.max(0, Math.round(activeSecs / 60));
 
         allDays.push({
           date: dateStr,
-          punchIn: punchIn.toISOString(),
-          punchOut: punchOut?.toISOString(),
+          punchIn: record.punchIn ? new Date(record.punchIn).toISOString() : undefined,
+          punchOut: punchOut ? punchOut.toISOString() : undefined,
           totalMinutes,
-          activeSeconds: record.activeSeconds || 0,
-          activeFormatted: formatDuration(record.activeSeconds || 0),
+          activeSeconds: activeSecs,
+          activeFormatted: formatDuration(activeSecs),
           lastActiveAt: record.lastActiveAt ? new Date(record.lastActiveAt).toISOString() : undefined,
-          sessionCount: record.sessionCount || 0,
+          sessionCount: record.sessionCount || 1,
           status: 'present',
         });
-      } else if (dayOfWeek === 0) {
-        allDays.push({ date: dateStr, status: 'off', activeSeconds: 0, activeFormatted: '0m' });
       } else {
+        // No punch-in record -> Always mark as Absent (rotational off policy: no mandatory Sunday Day Off)
         allDays.push({ date: dateStr, status: 'absent', activeSeconds: 0, activeFormatted: '0m' });
       }
 

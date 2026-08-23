@@ -848,11 +848,10 @@ export default function AgentReportsPage() {
                   ) : (
                     <div className="space-y-4">
                       {/* Summary Cards */}
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-2 gap-3">
                         {[
                           { label: 'Present Days', count: attendance.filter(a => a.status === 'present').length, color: '#10B981' },
-                          { label: 'Absent Days', count: attendance.filter(a => a.status === 'absent').length, color: '#EF4444' },
-                          { label: 'Day Off', count: attendance.filter(a => a.status === 'off').length, color: '#94A3B8' },
+                          { label: 'Absent Days', count: attendance.filter(a => a.status === 'absent' || a.status === 'off').length, color: '#EF4444' },
                         ].map(s => (
                           <div key={s.label} className="rounded-xl p-3 text-center" style={{ backgroundColor: `${s.color}15`, border: `1px solid ${s.color}30` }}>
                             <p className="text-xl font-black" style={{ color: s.color }}>{s.count}</p>
@@ -879,10 +878,9 @@ export default function AgentReportsPage() {
                               <td className="py-3 px-3">
                                 <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
                                   row.status === 'present' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                                  row.status === 'off' ? 'bg-gray-100 text-gray-500 border border-gray-200' :
                                   'bg-red-50 text-red-600 border border-red-200'
                                 }`}>
-                                  {row.status === 'present' ? '✓ Present' : row.status === 'off' ? '— Day Off' : '✗ Absent'}
+                                  {row.status === 'present' ? '✓ Present' : '✗ Absent'}
                                 </span>
                               </td>
                               <td className="py-3 px-3">

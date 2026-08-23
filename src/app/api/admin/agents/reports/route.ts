@@ -71,8 +71,23 @@ export async function GET(req: NextRequest) {
           dispositionMap[lead.disposition] = (dispositionMap[lead.disposition] || 0) + 1;
         });
 
+        const agentAttMatch = {
+          $or: [
+            { agentId },
+            { agentId: (agent as any).employee_id },
+            { agentId: agent.username },
+            { agentName: new RegExp(`^${agent.name}$`, 'i') },
+          ].filter(Boolean)
+        };
+
         // Today's attendance & live online presence
-        const todayAtt: any = await AgentAttendance.findOne({ agentId, date: todayStr }).lean();
+        const todayAtt: any = await AgentAttendance.findOne({
+          $and: [
+            agentAttMatch,
+            { date: todayStr }
+          ]
+        }).sort({ updatedAt: -1 }).lean();
+
         const isOnline = Boolean(
           todayAtt?.punchIn &&
           !todayAtt?.punchOut &&
@@ -85,17 +100,45 @@ export async function GET(req: NextRequest) {
 
         // Attendance & Screen Time in range
         const attendanceRecords = await AgentAttendance.find({
-          agentId,
-          date: { $gte: from || todayStr, $lte: to || todayStr },
+          $and: [
+            agentAttMatch,
+            { date: { $gte: from || todayStr, $lte: to || todayStr } }
+          ]
         }).lean();
 
+        // Calculate today's active seconds accurately
+        let todayActiveSecs = todayAtt?.activeSeconds || 0;
+        if (todayAtt?.punchIn) {
+          const punchInTime = new Date(todayAtt.punchIn).getTime();
+          const endRefTime = todayAtt.punchOut 
+            ? new Date(todayAtt.punchOut).getTime() 
+            : (todayAtt.lastActiveAt ? new Date(todayAtt.lastActiveAt).getTime() : nowMs);
+          const elapsedSecs = Math.max(0, Math.round((endRefTime - punchInTime) / 1000));
+          if (todayActiveSecs === 0 || elapsedSecs > todayActiveSecs) {
+            todayActiveSecs = elapsedSecs;
+          }
+        }
+
         const totalActiveSecondsInRange = attendanceRecords.reduce(
-          (sum: number, att: any) => sum + (att.activeSeconds || 0),
+          (sum: number, att: any) => {
+            let secs = att.activeSeconds || 0;
+            if (secs === 0 && att.punchIn) {
+              const pIn = new Date(att.punchIn).getTime();
+              const pEnd = att.punchOut ? new Date(att.punchOut).getTime() : (att.lastActiveAt ? new Date(att.lastActiveAt).getTime() : pIn);
+              secs = Math.max(0, Math.round((pEnd - pIn) / 1000));
+            }
+            return sum + secs;
+          },
           0
         );
 
         // Check today's latest location log
-        const lastLocation: any = await AgentLocationLog.findOne({ agentId, date: todayStr })
+        const lastLocation: any = await AgentLocationLog.findOne({
+          $and: [
+            agentAttMatch,
+            { date: todayStr }
+          ]
+        })
           .sort({ timestamp: -1 })
           .lean();
         const lastDistanceMeters = lastLocation?.distanceFromOfficeMeters;
@@ -116,8 +159,8 @@ export async function GET(req: NextRequest) {
           lastDistanceKm,
           lastDistanceFormatted,
           lastLocationAddress: lastLocation?.address || null,
-          todayActiveSeconds: todayAtt?.activeSeconds || 0,
-          todayActiveFormatted: formatDuration(todayAtt?.activeSeconds || 0),
+          todayActiveSeconds: todayActiveSecs,
+          todayActiveFormatted: formatDuration(todayActiveSecs),
           totalActiveSecondsInRange,
           activeFormattedInRange: formatDuration(totalActiveSecondsInRange),
           punchIn: todayAtt?.punchIn ? new Date(todayAtt.punchIn).toISOString() : null,
