@@ -934,11 +934,6 @@ export default function AgentReportsPage() {
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#C9A227] to-[#B8860B] flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition-transform">
                     {r.name.charAt(0).toUpperCase()}
                   </div>
-                  {i < 3 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400 text-[#1A1800] text-[10px] font-black rounded-full flex items-center justify-center shadow">
-                      {i + 1}
-                    </span>
-                  )}
                 </div>
 
                 <div className="flex-1 min-w-0">
