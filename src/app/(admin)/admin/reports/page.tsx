@@ -1124,7 +1124,7 @@ export default function AgentReportsPage() {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-5 divide-x divide-gray-50">
+              <div className="grid grid-cols-5 divide-x divide-gray-50 bg-gray-50/30">
                 {[
                   { label: 'Assigned', value: r.assigned !== undefined ? r.assigned : r.totalLeads, color: '#3B82F6' },
                   { label: 'Not Interested', value: r.notInterested || 0, color: '#EF4444' },
@@ -1132,41 +1132,11 @@ export default function AgentReportsPage() {
                   { label: 'Visit Done', value: r.visitDone || 0, color: '#8B5CF6' },
                   { label: 'Booking Done', value: r.booked || r.bookingDone || 0, color: '#10B981' },
                 ].map(stat => (
-                  <div key={stat.label} className="p-3 text-center">
+                  <div key={stat.label} className="p-3.5 text-center">
                     <p className="text-lg font-black" style={{ color: stat.color }}>{stat.value}</p>
-                    <p className="text-[8px] font-black text-gray-400 uppercase tracking-wider mt-0.5 leading-tight">{stat.label}</p>
+                    <p className="text-[8.5px] font-black text-gray-400 uppercase tracking-wider mt-0.5 leading-tight">{stat.label}</p>
                   </div>
                 ))}
-              </div>
-
-              {/* Progress Bar */}
-              <div className="px-5 pb-4 pt-1">
-                <div className="flex rounded-full overflow-hidden h-1.5 bg-gray-100">
-                  {r.totalLeads > 0 && [
-                    { value: r.interested, color: '#10B981' },
-                    { value: r.visitDone, color: '#8B5CF6' },
-                    { value: r.connected, color: '#3B82F6' },
-                    { value: r.followUp, color: '#F59E0B' },
-                    { value: r.notConnected, color: '#EF4444' },
-                    { value: r.newLeads, color: '#E5E7EB' },
-                  ].filter(x => x.value > 0).map((seg, idx) => (
-                    <div key={idx} className="h-full" style={{ flex: seg.value, backgroundColor: seg.color, minWidth: 3 }} />
-                  ))}
-                </div>
-                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
-                  {[
-                    { label: 'Interested', color: '#10B981', value: r.interested },
-                    { label: 'Visit', color: '#8B5CF6', value: r.visitDone },
-                    { label: 'Connected', color: '#3B82F6', value: r.connected },
-                    { label: 'Follow-up', color: '#F59E0B', value: r.followUp },
-                    { label: 'Unreachable', color: '#EF4444', value: r.notConnected },
-                  ].map(item => (
-                    <span key={item.label} className="inline-flex items-center gap-1 text-[9px] font-bold text-gray-400">
-                      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                      {item.label}: {item.value}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           ))}
