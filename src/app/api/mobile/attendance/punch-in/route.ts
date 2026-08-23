@@ -160,7 +160,14 @@ export async function POST(req: NextRequest) {
     const todayStr = getISTDateString();
     const now = new Date();
 
-    let attendance = await AgentAttendance.findOne({ agentId: String(agent._id), date: todayStr });
+    let attendance = await AgentAttendance.findOne({
+      $or: [
+        { agentId: String(agent._id) },
+        { agentId: agent.employee_id },
+        { agentId: agent.username },
+      ].filter(Boolean),
+      date: todayStr,
+    });
 
     const punchInStatus: 'IN_OFFICE' | 'REMOTE' = isWithinRadius ? 'IN_OFFICE' : 'REMOTE';
 
@@ -185,8 +192,10 @@ export async function POST(req: NextRequest) {
         punchInStatus: punchInStatus,
       });
     } else {
-      // If resuming or re-punching in today:
-      attendance.punchIn = now;
+      // If resuming or re-punching in today: ALWAYS keep the FIRST punchIn of the day!
+      if (!attendance.punchIn) {
+        attendance.punchIn = now;
+      }
       attendance.punchOut = undefined;
       attendance.totalMinutes = undefined;
       attendance.lastActiveAt = now;

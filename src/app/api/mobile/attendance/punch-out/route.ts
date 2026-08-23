@@ -78,7 +78,14 @@ export async function POST(req: NextRequest) {
     const todayStr = getISTDateString();
     const now = new Date();
 
-    const attendance = await AgentAttendance.findOne({ agentId: String(agent._id), date: todayStr });
+    const attendance = await AgentAttendance.findOne({
+      $or: [
+        { agentId: String(agent._id) },
+        { agentId: agent.employee_id },
+        { agentId: agent.username },
+      ].filter(Boolean),
+      date: todayStr
+    });
     if (!attendance) {
       return NextResponse.json(
         { success: false, error: 'No punch-in record found for today. Please punch-in first.' },

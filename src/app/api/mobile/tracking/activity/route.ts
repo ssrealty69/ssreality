@@ -47,26 +47,39 @@ export async function POST(req: NextRequest) {
     const todayStr = localToday();
     const now = new Date();
 
-    let resolvedName = agentName;
-    if (!resolvedName) {
-      const agent = await Agent.findById(agentId).select('name').lean();
-      resolvedName = agent?.name || 'Agent';
+    let agent = null;
+    if (typeof agentId === 'string' && agentId.match(/^[0-9a-fA-F]{24}$/)) {
+      agent = await Agent.findById(agentId).select('name employee_id username').lean();
     }
+    if (!agent && typeof agentId === 'string') {
+      agent = await Agent.findOne({
+        $or: [
+          { employee_id: agentId },
+          { employee_id: agentId.toUpperCase() },
+          { username: agentId.toLowerCase() }
+        ]
+      }).select('name employee_id username').lean();
+    }
+
+    const effectiveAgentId = agent ? (agent as any)._id.toString() : String(agentId);
+    let resolvedName = agentName || agent?.name || 'Agent';
 
     // 1. Find or create today's attendance & screen time
     let attendance = await AgentAttendance.findOne({
-      agentId: String(agentId),
+      $or: [
+        { agentId: effectiveAgentId },
+        { agentId: agentId },
+        { agentId: (agent as any)?.employee_id },
+        { agentId: (agent as any)?.username }
+      ].filter(Boolean),
       date: todayStr,
     });
 
     if (!attendance) {
       attendance = await AgentAttendance.create({
-        agentId: String(agentId),
+        agentId: effectiveAgentId,
         agentName: resolvedName,
         date: todayStr,
-        punchIn: now,
-        punchOut: now,
-        totalMinutes: 0,
         activeSeconds: secondsToAdd,
         lastActiveAt: now,
         sessionCount: 1,
@@ -75,12 +88,6 @@ export async function POST(req: NextRequest) {
     } else {
       attendance.activeSeconds = (attendance.activeSeconds || 0) + secondsToAdd;
       attendance.lastActiveAt = now;
-      attendance.punchOut = now;
-      if (attendance.punchIn) {
-        attendance.totalMinutes = Math.round(
-          (now.getTime() - new Date(attendance.punchIn).getTime()) / 60000
-        );
-      }
       if (isSessionStart) {
         attendance.sessionCount = (attendance.sessionCount || 1) + 1;
       }
