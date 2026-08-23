@@ -297,7 +297,10 @@ export default function AgentReportsPage() {
     setDetailLoading(true);
     setDetailStats(null);
     setDetailLeads([]);
-    setAttendance([]);
+    
+    // Pre-fetch attendance in background so it displays instantly when switching tabs
+    fetchAttendance(r.agentId, from, to);
+
     try {
       const res = await fetch(`/api/admin/agents/${r.agentId}/detail?from=${from}&to=${to}`);
       const data = await res.json();
@@ -324,9 +327,7 @@ export default function AgentReportsPage() {
     setDrawerToDate(range.to);
     if (selectedAgent) {
       openAgentDetail(selectedAgent, range.from, range.to);
-      if (detailTab === 'attendance') {
-        fetchAttendance(selectedAgent.agentId, range.from, range.to);
-      }
+      fetchAttendance(selectedAgent.agentId, range.from, range.to);
     }
   };
 
@@ -337,9 +338,7 @@ export default function AgentReportsPage() {
     }
     if (selectedAgent) {
       openAgentDetail(selectedAgent, drawerFromDate, drawerToDate);
-      if (detailTab === 'attendance') {
-        fetchAttendance(selectedAgent.agentId, drawerFromDate, drawerToDate);
-      }
+      fetchAttendance(selectedAgent.agentId, drawerFromDate, drawerToDate);
     }
   };
 
@@ -359,7 +358,7 @@ export default function AgentReportsPage() {
     try {
       const res = await fetch(`/api/admin/agents/${agentId}/attendance?from=${from}&to=${to}`);
       const data = await res.json();
-      if (data.success) setAttendance(data.attendance);
+      if (data.success) setAttendance(data.attendance || []);
       else toast.error(data.error);
     } catch { toast.error('Failed to load attendance'); }
     finally { setAttendanceLoading(false); }
@@ -367,7 +366,7 @@ export default function AgentReportsPage() {
 
   const handleTabChange = (tab: 'leads' | 'attendance') => {
     setDetailTab(tab);
-    if (tab === 'attendance' && selectedAgent && attendance.length === 0) {
+    if (tab === 'attendance' && selectedAgent) {
       fetchAttendance(selectedAgent.agentId, drawerFromDate, drawerToDate);
     }
   };
