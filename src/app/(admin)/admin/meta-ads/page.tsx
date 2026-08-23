@@ -8,6 +8,7 @@ import {
   Zap, Radio, CheckCheck, Lock, ShieldCheck, ShieldAlert
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import AutoDistributionToggle from '@/components/admin/AutoDistributionToggle';
 
 interface CampaignMeta {
   _id: string;
@@ -263,6 +264,9 @@ export default function MetaAdsAdminPage() {
 
         {/* Action Controls in a single sleek row */}
         <div className="flex flex-wrap lg:flex-nowrap items-center gap-2 shrink-0">
+          {/* Master Auto-Distribution Switch */}
+          <AutoDistributionToggle compact />
+
           {/* Live Auto-Sync Status & Toggle */}
           <button
             onClick={() => {

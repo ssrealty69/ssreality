@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import * as XLSX from 'xlsx';
+import AutoDistributionToggle from '@/components/admin/AutoDistributionToggle';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 
@@ -756,6 +757,9 @@ export default function AgentReportsPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          {/* Master Auto-Distribution Switch */}
+          <AutoDistributionToggle compact />
+
           {/* Date presets */}
           <div className="flex bg-white border border-gray-200 rounded-xl p-1 gap-0.5 shadow-sm">
             {PRESETS.map(p => (

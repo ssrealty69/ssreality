@@ -96,6 +96,35 @@ export function getAgentWeightAndRank(agent: any): { rank: number; weight: numbe
   return { rank: 99, weight: 0.80, isTop3: false };
 }
 
+/**
+ * Global Switch Check: Check if Master Auto-Distribution is Enabled in Database
+ */
+export async function isAutoDistributionEnabled(): Promise<boolean> {
+  try {
+    await connectDB();
+    const Setting = (await import('@/models/Setting')).default;
+    const setting = await Setting.findOne({ key: 'auto_lead_distribution_enabled' }).lean();
+    if (!setting) return false;
+    return (setting as any).value === 'true';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Update Master Auto-Distribution Switch in Database
+ */
+export async function setAutoDistributionEnabled(enabled: boolean): Promise<boolean> {
+  await connectDB();
+  const Setting = (await import('@/models/Setting')).default;
+  await Setting.findOneAndUpdate(
+    { key: 'auto_lead_distribution_enabled' },
+    { key: 'auto_lead_distribution_enabled', value: enabled ? 'true' : 'false' },
+    { upsert: true, new: true }
+  );
+  return enabled;
+}
+
 export interface LeadDistributionPayload {
   name: string;
   phone: string;
@@ -115,6 +144,7 @@ export interface LeadDistributionPayload {
   adName?: string;
   platform?: string;
   notes?: string;
+  forceManual?: boolean;
   createdAt?: Date;
 }
 
@@ -129,6 +159,14 @@ export async function distributeLead(payload: LeadDistributionPayload): Promise<
   reason?: string;
 }> {
   await connectDB();
+
+  // Master Switch Check: If auto distribution is disabled and this is not a forced manual assignment, return
+  if (!payload.forceManual) {
+    const isEnabled = await isAutoDistributionEnabled();
+    if (!isEnabled) {
+      return { assigned: false, reason: 'Auto lead distribution is currently paused by Admin' };
+    }
+  }
 
   const cleanPhone = (payload.phone || '').replace(/\D/g, '');
   if (cleanPhone.length < 10) {
