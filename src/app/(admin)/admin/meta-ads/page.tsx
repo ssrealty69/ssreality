@@ -296,29 +296,33 @@ export default function MetaAdsAdminPage() {
             <span>{autoSync ? 'Live (25s)' : 'Paused'}</span>
           </button>
 
-          {/* Instant Webhook Button */}
-          <button
-            onClick={() => setShowWebhookGuide(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm shrink-0"
-            title="Setup 0-second instant Google Sheets trigger"
-          >
-            <Zap size={13} className="text-[#C9A227]" />
-            <span>Trigger</span>
-          </button>
+          {/* Instant Webhook Button - Only for Super Admin */}
+          {isSuperAdmin && (
+            <button
+              onClick={() => setShowWebhookGuide(true)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm shrink-0"
+              title="Setup 0-second instant Google Sheets trigger"
+            >
+              <Zap size={13} className="text-[#C9A227]" />
+              <span>Trigger</span>
+            </button>
+          )}
 
-          {/* External Google Sheet link */}
-          <a
-            href="https://docs.google.com/spreadsheets/d/1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8/edit?gid=2100604883#gid=2100604883"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm shrink-0"
-          >
-            <FileSpreadsheet size={14} className="text-[#107C41]" />
-            <span>Sheet</span>
-            <ExternalLink size={11} className="text-[#7A7560]" />
-          </a>
+          {/* External Google Sheet link - ONLY FOR SUPER ADMIN */}
+          {isSuperAdmin && (
+            <a
+              href="https://docs.google.com/spreadsheets/d/1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8/edit?gid=2100604883#gid=2100604883"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white border border-[#C9A227]/30 text-[#1A1800] hover:bg-[#F9F6EE] transition-all shadow-sm shrink-0"
+            >
+              <FileSpreadsheet size={14} className="text-[#107C41]" />
+              <span>Sheet</span>
+              <ExternalLink size={11} className="text-[#7A7560]" />
+            </a>
+          )}
 
-          {/* Export Dropdown */}
+          {/* Export Dropdown - Only for Super Admin */}
           {isSuperAdmin && (
             <div className="relative shrink-0">
               <button
