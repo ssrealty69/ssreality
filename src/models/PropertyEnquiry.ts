@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface IPropertyEnquiry extends Document {
   name: string;
   phone: string;
+  email?: string;
   requirement?: string;
   propertyId: string;
   propertyTitle: string;
@@ -19,6 +20,7 @@ const PropertyEnquirySchema = new Schema<IPropertyEnquiry>(
   {
     name:           { type: String, required: true, trim: true },
     phone:          { type: String, required: true, trim: true },
+    email:          { type: String, trim: true, lowercase: true },
     requirement:    { type: String, trim: true, default: '' },
     propertyId:     { type: String, required: true },
     propertyTitle:  { type: String, required: true, trim: true },

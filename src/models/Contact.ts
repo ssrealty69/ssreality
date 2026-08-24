@@ -7,7 +7,7 @@ export interface IContact extends Document {
   subject: string;
   message: string;
   propertyId?: string;
-  assignedAgentId?: mongoose.Types.ObjectId;
+  assignedAgentId?: mongoose.Types.ObjectId | string;
   status: 'new' | 'read' | 'replied';
   createdAt: Date;
 }

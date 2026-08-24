@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import PropertyEnquiry from '@/models/PropertyEnquiry';
 import AgentLead from '@/models/AgentLead';
@@ -78,8 +78,7 @@ export async function POST(req: NextRequest) {
                 if (phone) {
                   const requirement = notes.join(' | ') || `Meta Form ID: ${formId || ''}`;
                   
-                  // Insert into PropertyEnquiry as Meta Lead
-                  const newLead = await PropertyEnquiry.create({
+                  const newLead: any = await PropertyEnquiry.create({
                     name: fullName,
                     phone: phone,
                     email: email,
@@ -92,7 +91,7 @@ export async function POST(req: NextRequest) {
                     status: 'new',
                   });
 
-                  console.log(`✅ Saved Meta Lead: ${fullName} (${phone}) - ID: ${newLead._id}`);
+                  console.log(`✅ Saved Meta Lead: ${fullName} (${phone}) - ID: ${newLead?._id}`);
                 }
               }
             } catch (graphErr: any) {

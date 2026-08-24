@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
+import Agent from '@/models/Agent';
 import AgentAttendance from '@/models/AgentAttendance';
 import { getLocalDateRange, localToday, parseLocalDate } from '@/lib/dateUtils';
 
@@ -113,7 +114,7 @@ export async function GET(
       const record = records.find((r) => r.date === dateStr);
 
       if (record && (record.punchIn || (record.activeSeconds && record.activeSeconds > 0))) {
-        const punchIn = record.punchIn ? new Date(record.punchIn) : (record.createdAt ? new Date(record.createdAt) : new Date());
+        const punchIn = record.punchIn ? new Date(record.punchIn) : ((record as any).createdAt ? new Date((record as any).createdAt) : new Date());
         const punchOut = record.punchOut ? new Date(record.punchOut) : null;
         
         let activeSecs = record.activeSeconds || 0;
@@ -177,7 +178,7 @@ export async function PATCH(
       ],
       date: todayStr
     });
-    if (!record) {
+    if (!record || !record.punchIn) {
       return NextResponse.json({ success: false, error: 'No punch-in found for today' }, { status: 404 });
     }
 

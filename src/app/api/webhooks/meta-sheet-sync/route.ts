@@ -11,7 +11,6 @@ export async function POST(req: NextRequest) {
   try {
     const result = await fetchAndSyncGoogleSheets();
     return NextResponse.json({
-      success: true,
       message: 'Google Sheets synced and leads distributed successfully in real-time!',
       timestamp: new Date().toISOString(),
       ...result,
@@ -29,7 +28,6 @@ export async function GET(req: NextRequest) {
   try {
     const result = await fetchAndSyncGoogleSheets();
     return NextResponse.json({
-      success: true,
       message: 'Google Sheets synced and leads distributed successfully in real-time!',
       timestamp: new Date().toISOString(),
       ...result,

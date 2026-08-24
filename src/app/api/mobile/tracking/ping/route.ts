@@ -177,7 +177,7 @@ export async function POST(req: NextRequest) {
       isOfficeGeofence: isWithinRadius,
       isShiftActive: inShift,
       shiftWindow: '10:00 AM - 07:00 PM IST',
-      logId: log._id,
+      logId: log ? (log as any)._id : null,
     });
   } catch (error: any) {
     console.error('Error in location tracking ping:', error);

@@ -62,6 +62,8 @@ export interface IAgentLead extends Document {
   adName?: string;
   platform?: string;
   isRead?: boolean;
+  isReassignedAtNoon?: boolean;
+  reassignedFrom?: string;
   notes?: string;
   disposition: Disposition;
   visitDetails?: IVisitDetails;
