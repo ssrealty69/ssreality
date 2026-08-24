@@ -91,6 +91,8 @@ export async function POST(req: NextRequest) {
       age: sanitizedAge,
       position: sanitizedPosition,
       resumeUrl,
+      status: 'new',
+      isRead: false,
     });
 
     // Send Email

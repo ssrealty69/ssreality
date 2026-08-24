@@ -11,12 +11,12 @@ const navItems = [
   { href: '/admin/properties', label: 'Properties', icon: Home, restricted: true },
   { href: '/admin/floor-plans', label: 'Floor Plans', icon: Layers, restricted: true },
   { href: '/admin/delivered-landmarks', label: 'Delivered Landmarks', icon: Compass, restricted: true },
-  { href: '/admin/leads', label: 'Leads', icon: Users, hasBadge: true },
+  { href: '/admin/leads', label: 'Leads', icon: Users, badgeKey: 'leads' },
   { href: '/admin/agents', label: 'Team Management', icon: Users },
   { href: '/admin/tracking', label: 'Field GPS Radar', icon: Navigation },
   { href: '/admin/reports', label: 'Team Reports', icon: BarChart2 },
   { href: '/admin/share-kits', label: 'Share Kits', icon: Package2 },
-  { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase },
+  { href: '/admin/jobs', label: 'Job Applications', icon: Briefcase, badgeKey: 'jobs' },
   { href: '/admin/meta-ads', label: 'Meta Ads', icon: Megaphone },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText, restricted: true },
   { href: '/admin/marketing/tracking', label: 'Marketing & Tracking', icon: Target, restricted: true },
@@ -30,14 +30,14 @@ export default function AdminSidebar({
   setIsOpen: (val: boolean) => void;
 }) {
   const pathname = usePathname();
-  const [unreadLeads, setUnreadLeads] = useState(0);
+  const [unreadCounts, setUnreadCounts] = useState<{ leads: number; jobs: number }>({ leads: 0, jobs: 0 });
   const [role, setRole] = useState('admin');
 
   useEffect(() => {
     let isMounted = true;
 
-    // Fetch unread leads count initially and poll every 30 seconds
-    const fetchUnreadCount = async () => {
+    // Fetch unread leads & job applications count initially and poll every 25 seconds
+    const fetchUnreadCounts = async () => {
       if (typeof window !== 'undefined' && (!navigator.onLine || document.hidden)) {
         return;
       }
@@ -46,15 +46,18 @@ export default function AdminSidebar({
         if (!res.ok) return;
         const data = await res.json();
         if (isMounted && data.success) {
-          setUnreadLeads(data.unreadCount || 0);
+          setUnreadCounts({
+            leads: data.unreadLeads ?? data.unreadCount ?? 0,
+            jobs: data.unreadJobs ?? 0,
+          });
         }
       } catch (err) {
         // Silently ignore transient network drops during background polling
       }
     };
 
-    fetchUnreadCount();
-    const interval = setInterval(fetchUnreadCount, 30000);
+    fetchUnreadCounts();
+    const interval = setInterval(fetchUnreadCounts, 25000);
     
     // Read role from cookie
     const getCookie = (name: string) => {
@@ -69,7 +72,7 @@ export default function AdminSidebar({
       isMounted = false;
       clearInterval(interval);
     };
-  }, []);
+  }, [pathname]);
 
   const isSuperAdmin = role === 'super_admin';
   const visibleNavItems = navItems.filter(item => {
@@ -118,7 +121,12 @@ export default function AdminSidebar({
           {visibleNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
-            const showBadge = item.hasBadge && unreadLeads > 0;
+            const badgeCount = item.badgeKey === 'leads' 
+              ? unreadCounts.leads 
+              : item.badgeKey === 'jobs' 
+                ? unreadCounts.jobs 
+                : 0;
+            const showBadge = badgeCount > 0;
 
             return (
               <Link
@@ -142,8 +150,8 @@ export default function AdminSidebar({
                 </div>
                 <span className="font-medium flex-1">{item.label}</span>
                 {showBadge && (
-                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                    {unreadLeads}
+                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center shadow-sm">
+                    {badgeCount}
                   </span>
                 )}
               </Link>

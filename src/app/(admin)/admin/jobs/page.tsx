@@ -11,6 +11,8 @@ interface JobApplication {
   age: string;
   position: string;
   resumeUrl?: string;
+  status?: string;
+  isRead?: boolean;
   createdAt: string;
 }
 
@@ -35,6 +37,8 @@ export default function AdminJobsPage() {
       .then((data) => {
         if (data.success && data.data) {
           setApplications(data.data);
+          // Mark applications as read so unread counter badge clears
+          fetch('/api/admin/jobs/mark-read', { method: 'POST' }).catch(() => {});
         }
       })
       .catch((err) => {
@@ -175,7 +179,16 @@ export default function AdminJobsPage() {
                         })}
                       </span>
                     </td>
-                    <td className="py-4 px-4 font-extrabold text-gray-800 whitespace-nowrap">{app.name}</td>
+                    <td className="py-4 px-4 font-extrabold text-gray-800 whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <span>{app.name}</span>
+                        {(app.isRead === false || app.status === 'new') && (
+                          <span className="bg-red-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full shadow-sm">
+                            New
+                          </span>
+                        )}
+                      </div>
+                    </td>
                     <td className="py-4 px-4 text-gray-600 font-bold whitespace-nowrap">
                       <span className="flex items-center gap-1.5">
                         <Phone size={12} className="text-[#C9A227] shrink-0" />

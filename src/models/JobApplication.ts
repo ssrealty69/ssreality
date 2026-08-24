@@ -6,6 +6,8 @@ export interface IJobApplication extends Document {
   age: string;
   position: string;
   resumeUrl?: string;
+  status: 'new' | 'viewed' | 'contacted' | 'rejected';
+  isRead: boolean;
   createdAt: Date;
 }
 
@@ -15,7 +17,10 @@ const JobApplicationSchema: Schema = new Schema({
   age: { type: String, required: true, trim: true },
   position: { type: String, required: true },
   resumeUrl: { type: String },
+  status: { type: String, enum: ['new', 'viewed', 'contacted', 'rejected'], default: 'new' },
+  isRead: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 
 export default mongoose.models.JobApplication || mongoose.model<IJobApplication>('JobApplication', JobApplicationSchema);
+

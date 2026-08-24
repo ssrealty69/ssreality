@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/mongodb';
 import Contact from '@/models/Contact';
 import PropertyEnquiry from '@/models/PropertyEnquiry';
 import AiLead from '@/models/AiLead';
+import JobApplication from '@/models/JobApplication';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,18 +17,28 @@ export async function GET(req: NextRequest) {
 
     await connectDB();
 
-    const [contactCount, enquiryCount, aiLeadCount] = await Promise.all([
+    const [contactCount, enquiryCount, aiLeadCount, jobCount] = await Promise.all([
       Contact.countDocuments({ status: 'new' }),
       PropertyEnquiry.countDocuments({ status: 'new' }),
-      AiLead.countDocuments({ status: 'new' })
+      AiLead.countDocuments({ status: 'new' }),
+      JobApplication.countDocuments({
+        $or: [
+          { status: 'new' },
+          { isRead: false },
+        ]
+      })
     ]);
+
+    const totalLeadsUnread = contactCount + enquiryCount + aiLeadCount;
 
     return NextResponse.json({
       success: true,
-      unreadCount: contactCount + enquiryCount + aiLeadCount
+      unreadCount: totalLeadsUnread,
+      unreadLeads: totalLeadsUnread,
+      unreadJobs: jobCount,
     });
   } catch (error: any) {
-    console.error('Fetch Unread Leads Count Error:', error);
+    console.error('Fetch Unread Counts Error:', error);
     return NextResponse.json({ success: false, error: 'Server Error' }, { status: 500 });
   }
 }
