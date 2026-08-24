@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import AgentLead from '@/models/AgentLead';
 import { verifyAgentToken } from '@/lib/agentAuth';
+import { triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,9 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    // 24/7 background lead sync from Google Sheets (non-blocking)
+    triggerAutoSyncIfNeeded();
+
     await connectDB();
 
     // Today's date range (IST-aware: using UTC midnight boundaries)

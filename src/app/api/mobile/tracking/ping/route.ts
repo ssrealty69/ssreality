@@ -4,6 +4,7 @@ import AgentLocationLog from '@/models/AgentLocationLog';
 import AgentAttendance from '@/models/AgentAttendance';
 import Agent from '@/models/Agent';
 import { getGeofenceSettings } from '@/lib/geofenceConfig';
+import { triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +44,9 @@ function isWithinShiftHours(): boolean {
 
 export async function POST(req: NextRequest) {
   try {
+    // 24/7 background lead sync from Google Sheets (non-blocking)
+    triggerAutoSyncIfNeeded();
+
     await connectDB();
     const body = await req.json();
 
