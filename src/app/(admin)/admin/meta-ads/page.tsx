@@ -156,19 +156,30 @@ export default function MetaAdsAdminPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
-      const data = await res.json();
 
-      if (data.success) {
+      const text = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(
+          res.status >= 500
+            ? `Server Error (${res.status}): Sync timed out or spreadsheet is busy. Please try again.`
+            : `Network Error: ${text.slice(0, 100)}`
+        );
+      }
+
+      if (res.ok && data.success) {
         toast.success(
-          `Sync successful! ${data.data.totalSheets} sheets scanned, ${data.data.totalNewInserted} new leads saved permanently.`,
+          `Sync successful! ${data.data?.totalSheets || 0} sheets scanned, ${data.data?.totalNewInserted || 0} new leads saved permanently.`,
           { id: 'meta-sync', duration: 5000 }
         );
         fetchLeads();
       } else {
-        toast.error(data.details || data.error || 'Sync failed', { id: 'meta-sync' });
+        toast.error(data.details || data.error || 'Sync failed. Please check Google Sheet permissions.', { id: 'meta-sync' });
       }
     } catch (err: any) {
-      toast.error('Sync network error: ' + err.message, { id: 'meta-sync' });
+      toast.error('Sync error: ' + err.message, { id: 'meta-sync' });
     } finally {
       setSyncing(false);
     }

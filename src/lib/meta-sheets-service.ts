@@ -321,6 +321,7 @@ export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) 
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) SSRealty/1.0',
     },
+    redirect: 'follow',
     cache: 'no-store',
   });
 
@@ -336,6 +337,11 @@ export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) 
   let totalNewInserted = 0;
   let totalUpdated = 0;
   let grandTotalLeadsInDB = 0;
+  const freshLeadsToDistribute: any[] = [];
+  const now = new Date();
+  const DISTRIBUTION_START_DATE = new Date('2026-08-21T18:30:00.000Z');
+
+  const campaignBulkOps: any[] = [];
 
   for (let i = 0; i < sheetNames.length; i++) {
     const sheetName = sheetNames[i];
@@ -343,63 +349,52 @@ export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) 
 
     if (parsed.leads.length > 0) {
       // Bulk upsert into MongoDB — NEVER DELETE existing records
-      const bulkOps = parsed.leads.map((lead) => {
-        const filter = { sheetName: lead.sheetName, phone: lead.phone };
-
-        return {
-          updateOne: {
-            filter,
-            update: {
-              $setOnInsert: {
-                sheetName: lead.sheetName,
-                leadId: lead.leadId,
-                phone: lead.phone,
-                rawPhone: lead.rawPhone,
-                createdAt: lead.createdAt,
-                syncedAt: new Date(),
-              },
-              $set: {
-                name: lead.name,
-                email: lead.email,
-                campaignName: lead.campaignName,
-                campaignId: lead.campaignId,
-                adName: lead.adName,
-                adId: lead.adId,
-                adsetName: lead.adsetName,
-                adsetId: lead.adsetId,
-                formName: lead.formName,
-                formId: lead.formId,
-                platform: lead.platform,
-                isOrganic: lead.isOrganic,
-                budget: lead.budget,
-                planning: lead.planning,
-                visitTimeline: lead.visitTimeline,
-                configuration: lead.configuration,
-                city: lead.city,
-                leadStatus: lead.leadStatus,
-                customAnswers: lead.customAnswers,
-              },
+      const bulkOps = parsed.leads.map((lead) => ({
+        updateOne: {
+          filter: { sheetName: lead.sheetName, phone: lead.phone },
+          update: {
+            $setOnInsert: {
+              sheetName: lead.sheetName,
+              leadId: lead.leadId,
+              phone: lead.phone,
+              rawPhone: lead.rawPhone,
+              createdAt: lead.createdAt,
+              syncedAt: now,
             },
-            upsert: true,
+            $set: {
+              name: lead.name,
+              email: lead.email,
+              campaignName: lead.campaignName,
+              campaignId: lead.campaignId,
+              adName: lead.adName,
+              adId: lead.adId,
+              adsetName: lead.adsetName,
+              adsetId: lead.adsetId,
+              formName: lead.formName,
+              formId: lead.formId,
+              platform: lead.platform,
+              isOrganic: lead.isOrganic,
+              budget: lead.budget,
+              planning: lead.planning,
+              visitTimeline: lead.visitTimeline,
+              configuration: lead.configuration,
+              city: lead.city,
+              leadStatus: lead.leadStatus,
+              customAnswers: lead.customAnswers,
+            },
           },
-        };
-      });
+          upsert: true,
+        },
+      }));
 
       const bulkRes = await MetaSheetLead.bulkWrite(bulkOps, { ordered: false });
-      const inserted = bulkRes.upsertedCount || 0;
-      const modified = bulkRes.modifiedCount || 0;
+      totalNewInserted += bulkRes.upsertedCount || 0;
+      totalUpdated += bulkRes.modifiedCount || 0;
 
-      totalNewInserted += inserted;
-      totalUpdated += modified;
-
-      // Auto-distribute fresh leads from today onwards (22 Aug 2026+) to team agents in real-time
-      const DISTRIBUTION_START_DATE = new Date('2026-08-21T18:30:00.000Z');
+      // Queue fresh leads from today onwards for background distribution
       for (const lead of parsed.leads) {
-        if (lead.createdAt && lead.createdAt < DISTRIBUTION_START_DATE) {
-          continue; // Skip old historical leads
-        }
-        try {
-          await distributeLead({
+        if (lead.createdAt && lead.createdAt >= DISTRIBUTION_START_DATE) {
+          freshLeadsToDistribute.push({
             name: lead.name,
             phone: lead.phone,
             email: lead.email,
@@ -419,51 +414,61 @@ export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) 
             platform: lead.platform,
             createdAt: lead.createdAt,
           });
-        } catch (_) {}
+        }
       }
     }
 
-    // Count true total in DB for this sheet (including any historically preserved leads)
-    const dbTotalForSheet = await MetaSheetLead.countDocuments({ sheetName });
-    grandTotalLeadsInDB += dbTotalForSheet;
-
-    // Get true latest lead date from DB
-    const latestDoc = await MetaSheetLead.findOne({ sheetName }).sort({ createdAt: -1 }).select('createdAt').lean();
-    const latestDate = latestDoc?.createdAt ? new Date(latestDoc.createdAt) : parsed.latestLeadDate;
-    
-    const now = new Date();
+    const latestDate = parsed.latestLeadDate;
     const isActive = !!latestDate && (now.getTime() - latestDate.getTime()) <= ACTIVE_THRESHOLD_MS;
 
-    // Update Campaign Config
-    await MetaCampaignConfig.findOneAndUpdate(
-      { sheetName },
-      {
-        sheetName,
-        sheetId,
-        totalLeads: dbTotalForSheet,
-        latestLeadDate: latestDate,
-        isActive,
-        status: isActive ? 'active' : 'inactive',
-        lastSyncedAt: new Date(),
-        order: i,
+    campaignBulkOps.push({
+      updateOne: {
+        filter: { sheetName },
+        update: {
+          $set: {
+            sheetName,
+            sheetId,
+            totalLeads: parsed.leads.length,
+            latestLeadDate: latestDate,
+            isActive,
+            status: isActive ? 'active' : 'inactive',
+            lastSyncedAt: now,
+            order: i,
+          },
+        },
+        upsert: true,
       },
-      { upsert: true, new: true }
-    );
+    });
 
     syncResults.push({
       sheetName,
       totalInSheet: parsed.leads.length,
-      totalInDB: dbTotalForSheet,
+      totalInDB: parsed.leads.length,
       latestLeadDate: latestDate,
       isActive,
     });
+    grandTotalLeadsInDB += parsed.leads.length;
   }
 
-  // Execute 12 PM no-show unattended lead re-distribution if applicable
-  try {
-    await redistributeUnattendedMorningLeads();
-  } catch (reassignErr) {
-    console.error('Error during 12 PM lead redistribution:', reassignErr);
+  // Bulk update all Campaign Configs in 1 single database call
+  if (campaignBulkOps.length > 0) {
+    try {
+      await MetaCampaignConfig.bulkWrite(campaignBulkOps, { ordered: false });
+    } catch (_) {}
+  }
+
+  // Distribute fresh leads in the background without blocking the sync response
+  if (freshLeadsToDistribute.length > 0) {
+    (async () => {
+      for (const lead of freshLeadsToDistribute) {
+        try {
+          await distributeLead(lead);
+        } catch (_) {}
+      }
+      try {
+        await redistributeUnattendedMorningLeads();
+      } catch (_) {}
+    })().catch((err) => console.error('Background distribution error:', err));
   }
 
   return {
