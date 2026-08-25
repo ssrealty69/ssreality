@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import PropertyEnquiry from '@/models/PropertyEnquiry';
+import Agent from '@/models/Agent';
 
 export const dynamic = 'force-dynamic';
 

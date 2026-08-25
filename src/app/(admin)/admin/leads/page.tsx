@@ -215,10 +215,13 @@ export default function AdminLeadsPage() {
     const general: Lead[] = [];
     const loan: Lead[] = [];
     leads.forEach((lead) => {
+      const subject = (lead.subject || '').toLowerCase();
+      const message = lead.message || '';
       const isLoan =
-        lead.subject.toLowerCase().includes('emi') ||
-        lead.subject.toLowerCase().includes('home loan') ||
-        lead.message.includes('Home Loan Enquiry Details:');
+        subject.includes('emi') ||
+        subject.includes('home loan') ||
+        subject.includes('loan') ||
+        message.includes('Home Loan Enquiry Details:');
       if (isLoan) loan.push(lead);
       else general.push(lead);
     });
