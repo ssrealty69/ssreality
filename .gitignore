@@ -9,7 +9,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-./scripts/*
+
 # testing
 /coverage
 
@@ -46,7 +46,30 @@ next-env.d.ts
 /public/*.MOV
 /public/*.mov
 
+# scripts and local utility tools
+scripts/
+/scripts/
+scripts/**
+./scripts/*
+*.ps1
+*.py
+analyze_blogs.js
+check_brochure_format.js
+check_db.js
+find_duplex.js
+fix_blog.js
+fix_button_color.js
+fix_leads_to_brochure.js
+get_ids.js
+insert_gurgaon_penthouse_blog.js
+insert_lead.js
+insert_lead_jaiveer.js
+publish_new_blog.js
+update_blog_content.js
+update_gurgaon_penthouse_blog.js
+
 # temp logs and scratch
 *.log
 .next_dev_log*.txt
+temp*
 scratch/
