@@ -6,6 +6,7 @@ const PropertyEnquirySchema = new mongoose.Schema({}, { strict: false, collectio
 const PropertyEnquiry = mongoose.models.PropertyEnquiry || mongoose.model('PropertyEnquiry', PropertyEnquirySchema);
 
 async function run() {
+
   try {
     // Show all brochure entries with their exact fields
     const entries = await PropertyEnquiry.find({
@@ -14,7 +15,7 @@ async function run() {
 
     console.log(`Total brochure entries: ${entries.length}\n`);
     entries.forEach((e, i) => {
-      console.log(`[${i+1}] ${e.name} | ${e.phone}`);
+      console.log(`[${i + 1}] ${e.name} | ${e.phone}`);
       console.log(`    requirement: "${e.requirement}"`);
       console.log(`    source: "${e.source}"`);
       console.log(`    isBrochureDownload: ${e.isBrochureDownload}`);
