@@ -5,6 +5,7 @@ mongoose.connect('mongodb+srv://admin:2eQLgGd1nMSssR8P@ssrealty.kmrmgno.mongodb.
 const PropertyEnquirySchema = new mongoose.Schema({}, { strict: false, collection: 'propertyenquiries' });
 const PropertyEnquiry = mongoose.models.PropertyEnquiry || mongoose.model('PropertyEnquiry', PropertyEnquirySchema);
 
+
 async function run() {
 
   try {
