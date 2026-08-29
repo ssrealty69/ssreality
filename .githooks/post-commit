@@ -2,5 +2,5 @@
 # Git Post-Commit Hook: Automatic Dual DB Sync
 
 if [ -f "scripts/sync-databases.mjs" ]; then
-    node scripts/sync-databases.mjs
+    node scripts/sync-databases.mjs || true
 fi
