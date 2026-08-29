@@ -133,7 +133,7 @@ function fmtDate(iso: string) {
 }
 function fmtDateTime(iso: string) {
   const d = new Date(iso);
-  return `${d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })} ${d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`;
+  return `${d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', timeZone: 'Asia/Kolkata' })} ${d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}`;
 }
 function fmtMinutes(m?: number) {
   if (!m) return '—';
@@ -637,8 +637,8 @@ export default function AgentReportsPage() {
                     {selectedAgent.lastDistanceFormatted}
                   </span>
                 )}
-                <span>Punch In: <b className="text-gray-900">{selectedAgent.punchIn ? new Date(selectedAgent.punchIn).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '—'}</b></span>
-                <span>Last Active: <b className="text-gray-900">{selectedAgent.lastActiveAt ? new Date(selectedAgent.lastActiveAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '—'}</b></span>
+                <span>Punch In: <b className="text-gray-900">{selectedAgent.punchIn ? new Date(selectedAgent.punchIn).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) : '—'}</b></span>
+                <span>Last Active: <b className="text-gray-900">{selectedAgent.lastActiveAt ? new Date(selectedAgent.lastActiveAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) : '—'}</b></span>
               </div>
             </div>
 

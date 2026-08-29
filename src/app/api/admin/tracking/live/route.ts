@@ -120,10 +120,20 @@ export async function GET(req: NextRequest) {
 
       if (att?.punchIn && !att?.punchOut) {
         isPunchedIn = true;
-        const pInTime = new Date(att.punchIn).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+        const pInTime = new Date(att.punchIn).toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+          timeZone: 'Asia/Kolkata',
+        });
         punchStatusText = `Punched In (${pInTime})`;
       } else if (att?.punchIn && att?.punchOut) {
-        const pOutTime = new Date(att.punchOut).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+        const pOutTime = new Date(att.punchOut).toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+          timeZone: 'Asia/Kolkata',
+        });
         punchStatusText = `Punched Out (${pOutTime})`;
       } else if (!isInsideOffice && inShift && hasPing) {
         punchStatusText = `Outside Office (${km} km)`;
@@ -154,6 +164,8 @@ export async function GET(req: NextRequest) {
         hasPing,
         isSignalFresh,
         isPunchedIn,
+        punchIn: att?.punchIn ? new Date(att.punchIn).toISOString() : null,
+        punchOut: att?.punchOut ? new Date(att.punchOut).toISOString() : null,
         punchStatusText,
         screenTimeFormatted: formatMinutes(Math.round((att?.activeSeconds || 0) / 60)),
       };

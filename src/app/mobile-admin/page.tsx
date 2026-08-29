@@ -524,7 +524,7 @@ export default function MobileAdminPage() {
                         </span>
                       </div>
                       <p className="text-[10px] text-gray-400 font-medium truncate">
-                        Punch In: <b className="text-gray-700">{agent.punchIn ? new Date(agent.punchIn).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : 'Not yet'}</b>
+                        Punch In: <b className="text-gray-700">{agent.punchIn ? new Date(agent.punchIn).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) : 'Not yet'}</b>
                       </p>
                     </div>
                   </div>
@@ -613,7 +613,7 @@ export default function MobileAdminPage() {
                     <div className="bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
                       <p className="text-[9px] font-black uppercase text-emerald-800">Punch In</p>
                       <p className="font-black text-emerald-950 mt-0.5">
-                        {detailData.stats.punchIn ? new Date(detailData.stats.punchIn).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) : '—'}
+                        {detailData.stats.punchIn ? new Date(detailData.stats.punchIn).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) : '—'}
                       </p>
                     </div>
                     <div className="bg-amber-50 p-2.5 rounded-xl border border-amber-100">
@@ -660,7 +660,7 @@ export default function MobileAdminPage() {
                               </div>
                               <div className="flex items-center justify-between text-[10px] text-gray-500">
                                 <span>📞 {call.customerPhone}</span>
-                                <span>{new Date(call.calledAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</span>
+                                <span>{new Date(call.calledAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}</span>
                               </div>
                               {call.notes && (
                                 <p className="text-[10px] text-gray-600 bg-white p-1.5 rounded border border-gray-100 italic">

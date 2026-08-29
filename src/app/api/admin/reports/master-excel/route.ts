@@ -15,12 +15,12 @@ function checkAdminAuth(req: NextRequest): boolean {
 
 function formatDate(d: Date): string {
   if (!d || isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Asia/Kolkata' });
 }
 
 function formatTime(d: Date): string {
   if (!d || isNaN(d.getTime())) return '—';
-  return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+  return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Kolkata' });
 }
 
 function formatDateTime(d: Date): string {
