@@ -9,8 +9,8 @@ description: Best practices for managing environment variables, secrets, and scr
 - **Never** hardcode MongoDB connection strings (`mongodb+srv://...`), Redis URIs (`rediss://...`), Cloudinary keys, JWT/Admin secrets, or SMTP credentials directly in script files.
 - Always use `process.env.<VARIABLE_NAME>`.
 
-## 2. Dynamic Environment Loading in Standalone Scripts
-When writing or running a standalone Node.js or TypeScript script (e.g. in `scripts/` or scratch directory), dynamically load `.env.local` instead of hardcoding:
+## 2. Dynamic Environment Loading (ONLY `.env.local`, NEVER `.env`)
+When writing or running a standalone Node.js or TypeScript script (e.g. in `scripts/` or scratch directory), dynamically load `.env.local` exclusively. NEVER look for or create `.env`:
 
 ```javascript
 const fs = require('fs');

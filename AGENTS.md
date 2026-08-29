@@ -15,5 +15,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 2. **Git Security & Ignore Policy**:
    - Always ensure `scripts/`, `./scripts/*`, and local scratch scripts remain untracked in `.gitignore`.
    - Never commit environment files (`.env*`, `.env.local*`) or temporary scratch files (`temp*`).
+
+3. **ONLY Use `.env.local` — NEVER Use `.env`**:
+   - Always read configuration and environment variables from `.env.local` exclusively.
+   - NEVER create, read, reference, or use a `.env` file. Only `.env.local` is allowed.
 <!-- END:environment-security-rules -->
 
