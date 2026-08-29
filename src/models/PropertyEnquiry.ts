@@ -37,11 +37,7 @@ const PropertyEnquirySchema = new Schema<IPropertyEnquiry>(
   { timestamps: true }
 );
 
-if (mongoose.models.PropertyEnquiry) {
-  delete mongoose.models.PropertyEnquiry;
-}
-
 const PropertyEnquiry: Model<IPropertyEnquiry> =
-  mongoose.model<IPropertyEnquiry>('PropertyEnquiry', PropertyEnquirySchema);
+  mongoose.models.PropertyEnquiry || mongoose.model<IPropertyEnquiry>('PropertyEnquiry', PropertyEnquirySchema);
 
 export default PropertyEnquiry;

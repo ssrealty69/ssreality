@@ -27,10 +27,6 @@ const AgentActivityLogSchema = new Schema<IAgentActivityLog>(
 AgentActivityLogSchema.index({ agentId: 1, date: 1 });
 AgentActivityLogSchema.index({ timestamp: -1 });
 
-if (mongoose.models.AgentActivityLog) {
-  delete (mongoose.models as any).AgentActivityLog;
-}
-
 const AgentActivityLog: Model<IAgentActivityLog> =
   mongoose.models.AgentActivityLog ||
   mongoose.model<IAgentActivityLog>('AgentActivityLog', AgentActivityLogSchema);

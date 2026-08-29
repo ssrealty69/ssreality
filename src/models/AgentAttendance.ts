@@ -58,10 +58,6 @@ const AgentAttendanceSchema = new Schema<IAgentAttendance>(
 // One record per agent per day
 AgentAttendanceSchema.index({ agentId: 1, date: 1 }, { unique: false });
 
-if (mongoose.models.AgentAttendance) {
-  delete (mongoose.models as any).AgentAttendance;
-}
-
 const AgentAttendance: Model<IAgentAttendance> =
   mongoose.models.AgentAttendance ||
   mongoose.model<IAgentAttendance>('AgentAttendance', AgentAttendanceSchema);

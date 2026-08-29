@@ -200,10 +200,6 @@ PropertySchema.pre('findOneAndUpdate', async function () {
   }
 });
 
-if (process.env.NODE_ENV === 'development' && mongoose.models.Property) {
-  delete mongoose.models.Property;
-}
-
 const Property: Model<IProperty> =
   mongoose.models.Property || mongoose.model<IProperty>('Property', PropertySchema);
 

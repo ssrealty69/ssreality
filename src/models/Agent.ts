@@ -35,12 +35,7 @@ const AgentSchema = new Schema<IAgent>(
   { timestamps: true }
 );
 
-AgentSchema.index({ username: 1 });
-AgentSchema.index({ employee_id: 1 });
 
-if (mongoose.models.Agent) {
-  delete (mongoose.models as any).Agent;
-}
 
 const Agent: Model<IAgent> =
   mongoose.models.Agent || mongoose.model<IAgent>('Agent', AgentSchema);

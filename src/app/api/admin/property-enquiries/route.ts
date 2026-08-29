@@ -4,6 +4,7 @@ import PropertyEnquiry from '@/models/PropertyEnquiry';
 import Agent from '@/models/Agent';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // GET — list all property enquiries (admin only)
 export async function GET(req: NextRequest) {
@@ -16,10 +17,19 @@ export async function GET(req: NextRequest) {
 
     await connectDB();
 
-    const enquiries = await PropertyEnquiry.find({})
-      .populate('assignedAgentId', 'name')
-      .sort({ createdAt: -1 })
-      .lean();
+    // Ensure Agent model is registered
+    void Agent;
+
+    let enquiries: any[] = [];
+    try {
+      enquiries = await PropertyEnquiry.find({})
+        .populate({ path: 'assignedAgentId', select: 'name', model: Agent })
+        .sort({ createdAt: -1 })
+        .lean();
+    } catch (popErr) {
+      console.warn('PropertyEnquiry populate fallback without agent:', popErr);
+      enquiries = await PropertyEnquiry.find({}).sort({ createdAt: -1 }).lean();
+    }
 
     return NextResponse.json({ success: true, data: enquiries });
   } catch (error: any) {

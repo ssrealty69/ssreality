@@ -81,7 +81,7 @@ export default function AdminLeadsPage() {
       return '';
     };
     const currentRole = getCookie('admin_role');
-    setRole(currentRole);
+    setRole(currentRole || 'admin');
 
     if (currentRole !== 'agent') {
       fetchAll();
@@ -93,27 +93,31 @@ export default function AdminLeadsPage() {
     setLoading(true);
     try {
       const [leadsRes, enquiriesRes, aiLeadsRes] = await Promise.all([
-        fetch('/api/admin/leads'),
-        fetch('/api/admin/property-enquiries'),
-        fetch('/api/admin/ai-leads'),
+        fetch('/api/admin/leads', { cache: 'no-store' }),
+        fetch('/api/admin/property-enquiries', { cache: 'no-store' }),
+        fetch('/api/admin/ai-leads', { cache: 'no-store' }),
       ]);
 
       if (leadsRes.ok) {
         const d = await leadsRes.json();
-        if (d.success) setLeads(d.data);
+        if (d.success) setLeads(d.data || []);
+      } else {
+        console.error('Leads fetch returned status', leadsRes.status);
       }
 
       if (enquiriesRes.ok) {
         const d = await enquiriesRes.json();
-        if (d.success) setPropertyEnquiries(d.data);
+        if (d.success) setPropertyEnquiries(d.data || []);
+      } else {
+        console.error('Property enquiries fetch returned status', enquiriesRes.status);
       }
 
       if (aiLeadsRes.ok) {
         const d = await aiLeadsRes.json();
-        if (d.success) setAiLeads(d.data);
+        if (d.success) setAiLeads(d.data || []);
       }
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching leads data:', err);
       toast.error('Error fetching leads data');
     } finally {
       setLoading(false);

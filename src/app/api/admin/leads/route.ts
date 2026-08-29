@@ -6,6 +6,7 @@ import Agent from '@/models/Agent';
 import mongoose from 'mongoose';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET(req: NextRequest) {
   try {
@@ -16,15 +17,33 @@ export async function GET(req: NextRequest) {
     }
 
     await connectDB();
-    const leads = await Contact.find({}).populate('assignedAgentId', 'name').sort('-createdAt').lean();
+
+    // Ensure models are registered in Mongoose schema registry
+    void Agent;
+    void Property;
+
+    let leads: any[] = [];
+    try {
+      leads = await Contact.find({})
+        .populate({ path: 'assignedAgentId', select: 'name', model: Agent })
+        .sort('-createdAt')
+        .lean();
+    } catch (popErr) {
+      console.warn('Contact populate fallback without agent:', popErr);
+      leads = await Contact.find({}).sort('-createdAt').lean();
+    }
 
     // Resolve property titles for leads having a property reference
     const resolvedLeads = await Promise.all(leads.map(async (lead: any) => {
       let propertyTitle = null;
       if (lead.propertyId && mongoose.Types.ObjectId.isValid(lead.propertyId)) {
-        const prop = await Property.findById(lead.propertyId).select('title').lean();
-        if (prop) {
-          propertyTitle = (prop as any).title;
+        try {
+          const prop = await Property.findById(lead.propertyId).select('title').lean();
+          if (prop) {
+            propertyTitle = (prop as any).title;
+          }
+        } catch {
+          // Ignore individual property lookup errors
         }
       }
       return {

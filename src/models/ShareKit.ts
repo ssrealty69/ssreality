@@ -149,10 +149,6 @@ const ShareKitSchema = new Schema<IShareKit>(
   { timestamps: true }
 );
 
-if (process.env.NODE_ENV === 'development' && mongoose.models.ShareKit) {
-  delete mongoose.models.ShareKit;
-}
-
 const ShareKit: Model<IShareKit> =
   mongoose.models.ShareKit || mongoose.model<IShareKit>('ShareKit', ShareKitSchema);
 
