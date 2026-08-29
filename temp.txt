@@ -1,1 +1,0 @@
-{"success":true,"url":"https://res.cloudinary.com/ddpahrqfk/image/upload/v1781263725/ss-realty/qrsrqaenhwqj9a3iyt72.webp","publicId":"ss-realty/qrsrqaenhwqj9a3iyt72","format":"webp","width":1080,"height":1080,"originalSizeKB":87,"convertedSizeKB":57,"optimisedSizeKB":57,"savedPercent":34,"message":"Converted & optimised by Cloudinary. Saved 34% (87 KB → 57 KB)"}
