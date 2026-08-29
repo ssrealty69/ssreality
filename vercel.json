@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/webhooks/meta-sheet-sync",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
