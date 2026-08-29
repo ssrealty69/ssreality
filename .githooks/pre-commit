@@ -1,6 +1,5 @@
 #!/bin/sh
 # Git Pre-Commit Hook: Automated Secret Scanner
-
 # 1. Block any sensitive environment or key files from being staged
 STAGED_FILES=$(git diff --cached --name-only)
 
