@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save, Plus, Trash2, Loader2, Edit, Check } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -60,13 +60,10 @@ const WORLD_CLASS_AMENITIES = [
   'Yoga Deck',
 ];
 
-interface EditPropertyProps {
-  params: Promise<{ id: string }>;
-}
-
-export default function EditProperty({ params }: EditPropertyProps) {
+export default function EditProperty() {
   const router = useRouter();
-  const { id } = use(params);
+  const routeParams = useParams();
+  const id = (routeParams?.id as string) || '';
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   

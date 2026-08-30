@@ -142,7 +142,8 @@ export async function POST(req: NextRequest) {
           isMoving: false,
           isMock: false,
           batteryLevel: 100,
-          locationStatus: distanceMeters <= geoConfig.geofenceRadiusMeters ? 'in_office' : 'site_visit',
+          status: distanceMeters <= geoConfig.geofenceRadiusMeters ? 'IN_OFFICE' : 'ON_FIELD_VISIT',
+          distanceFromOfficeMeters: distanceMeters,
           address: address || 'SS Realty Office',
           notes: 'Punch-Out event recorded',
         });

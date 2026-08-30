@@ -102,10 +102,10 @@ export default function ImageSlider({ images, altPrefix }: ImageSliderProps) {
               alt={altPrefix ? `${altPrefix} Building Image ${idx + 1}` : `Property slide ${idx + 1}`} 
               fill 
               className="object-cover" 
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 75vw, 1200px"
               priority={idx === 0}
               loading={idx === 0 ? 'eager' : 'lazy'}
-              quality={70}
+              quality={90}
             />
           </div>
         ) : (

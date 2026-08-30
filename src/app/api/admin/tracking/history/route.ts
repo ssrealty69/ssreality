@@ -1,6 +1,7 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import AgentLocationLog from '@/models/AgentLocationLog';
+import Agent from '@/models/Agent';
 
 function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371; // Earth radius in KM
@@ -38,7 +39,32 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const pings = await AgentLocationLog.find({ agentId, date })
+    let agentMatches: string[] = [agentId];
+    try {
+      const isObjectId = /^[0-9a-fA-F]{24}$/.test(agentId);
+      const agent = await Agent.findOne({
+        $or: [
+          ...(isObjectId ? [{ _id: agentId }] : []),
+          { employee_id: agentId },
+          { employee_id: agentId.toUpperCase() },
+          { username: agentId.toLowerCase() },
+        ],
+      }).select('_id employee_id username').lean();
+
+      if (agent) {
+        agentMatches = Array.from(new Set([
+          agentId,
+          (agent as any)._id.toString(),
+          (agent as any).employee_id,
+          (agent as any).username,
+        ].filter(Boolean) as string[]));
+      }
+    } catch (_) {}
+
+    const pings = await AgentLocationLog.find({
+      agentId: { $in: agentMatches },
+      date,
+    })
       .sort({ timestamp: 1 })
       .lean();
 

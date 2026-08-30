@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save, Loader2, Sparkles, Plus } from 'lucide-react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -9,13 +9,10 @@ import { MediaUpload } from '@/components/admin/MediaUpload';
 import { BlogContentEditor } from '@/components/admin/BlogContentEditor';
 import { SeoControlPanel } from '@/components/admin/SeoControlPanel';
 
-interface EditBlogProps {
-  params: Promise<{ id: string }>;
-}
-
-export default function EditBlog({ params }: EditBlogProps) {
+export default function EditBlog() {
   const router = useRouter();
-  const { id } = use(params);
+  const routeParams = useParams();
+  const id = (routeParams?.id as string) || '';
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   

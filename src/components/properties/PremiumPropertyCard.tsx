@@ -238,11 +238,11 @@ export default function PremiumPropertyCard({ property, priority = false }: Prem
               src={src}
               alt={`${property.title} - Image ${idx + 1}`}
               fill
-              className="object-cover md:object-contain z-10"
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 440px"
+              className="object-cover z-10"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 880px"
               priority={priority && idx === 0}
               loading={priority && idx === 0 ? 'eager' : 'lazy'}
-              quality={50}
+              quality={90}
             />
           </div>
         ))}

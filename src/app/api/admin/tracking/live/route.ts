@@ -41,16 +41,11 @@ export async function GET(req: NextRequest) {
     const geofence = await getGeofenceSettings();
     const geofenceRadius = geofence.geofenceRadiusMeters || 200;
 
-    // 1. Fetch all active telecaller agents (excluding Executive/Director)
+    // 1. Fetch all active agents (including Yogesh Tanwar / Directors for full GPS radar visibility)
     const allAgents = await Agent.find({
       isActive: true,
-      role: { $ne: 'director' },
-      isExecutive: { $ne: true },
-      employee_id: { $ne: 'SSR000' },
-      name: { $not: /yogesh/i },
-      username: { $ne: 'info@ssrealty.org' },
     })
-      .select('name username phone employee_id allowRemotePunchIn')
+      .select('name username phone employee_id allowRemotePunchIn role isExecutive')
       .lean();
 
     // 2. Aggregate latest location ping for each agent today

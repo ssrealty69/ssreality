@@ -36,11 +36,7 @@ export async function GET(req: NextRequest) {
     const todayStr = localToday();
 
     const agents = await Agent.find({
-      role: { $ne: 'director' },
-      isExecutive: { $ne: true },
-      employee_id: { $ne: 'SSR000' },
-      name: { $not: /yogesh/i },
-      username: { $ne: 'info@ssrealty.org' },
+      isActive: true,
     }).select('name username phone employee_id isActive').lean();
 
     const nowMs = Date.now();

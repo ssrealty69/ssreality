@@ -86,7 +86,7 @@ export default function AmenitiesSection() {
           fill
           className="object-cover animate-pan-zoom"
           sizes="100vw"
-          quality={60}
+          quality={85}
         />
         {/* Soft luxury gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#FFFEF5]/90 via-transparent to-[#FFFEF5]/90" />
@@ -123,7 +123,7 @@ export default function AmenitiesSection() {
                   idx === currentIdx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
                 }`}
                 sizes="(max-width: 1024px) 50vw, 33vw"
-                quality={82}
+                quality={90}
               />
             ))}
             {/* Slider arrows overlay */}
@@ -158,7 +158,7 @@ export default function AmenitiesSection() {
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                     sizes="(max-width: 768px) 33vw, 14vw"
-                    quality={78}
+                    quality={85}
                   />
                 </div>
                 <p className="text-[12px] md:text-xs font-black text-center text-[#334155] group-hover:text-[#C9A227] transition-colors leading-tight uppercase tracking-tight max-w-[110px]">

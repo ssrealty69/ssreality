@@ -121,24 +121,21 @@ export async function POST(req: NextRequest) {
     const effectiveAgentName = agentName || agent?.name || 'Agent';
     const effectiveAgentId = agent ? (agent as any)._id.toString() : String(agentId);
 
-    // 1. Record location breadcrumb in AgentLocationLog (Exempt Director / Executive)
-    let log = null;
-    if (!isExecutive) {
-      log = await AgentLocationLog.create({
-        agentId: effectiveAgentId,
-        agentName: effectiveAgentName,
-        latitude: latNum,
-        longitude: lngNum,
-        accuracy: accuracy ? Number(accuracy) : undefined,
-        speed: speed ? Number(speed) : undefined,
-        batteryLevel: batteryLevel ? Number(batteryLevel) : undefined,
-        status: calculatedStatus,
-        distanceFromOfficeMeters: distanceMeters,
-        address: address || undefined,
-        timestamp: new Date(),
-        date: todayStr,
-      });
-    }
+    // 1. Record location breadcrumb in AgentLocationLog
+    const log = await AgentLocationLog.create({
+      agentId: effectiveAgentId,
+      agentName: effectiveAgentName,
+      latitude: latNum,
+      longitude: lngNum,
+      accuracy: accuracy ? Number(accuracy) : undefined,
+      speed: speed ? Number(speed) : undefined,
+      batteryLevel: batteryLevel ? Number(batteryLevel) : undefined,
+      status: calculatedStatus,
+      distanceFromOfficeMeters: distanceMeters,
+      address: address || undefined,
+      timestamp: new Date(),
+      date: todayStr,
+    });
 
     // 2. Track screen/app activity heartbeat WITHOUT altering punchIn or punchOut
     const now = new Date();

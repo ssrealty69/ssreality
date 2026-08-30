@@ -22,10 +22,14 @@ export default function PropertyCard({ property, priority = false, actionText, o
   const [isHovered, setIsHovered] = useState(false);
   const [hoverImageError, setHoverImageError] = useState(false);
   
-  const mainImage = property.images?.[0] || '/SS Realty.png';
-  const hoverImage = property.images?.[1] || mainImage;
+  const mainImage = (property.interiorImages && property.interiorImages.length > 0)
+    ? property.interiorImages[0]
+    : property.images?.[0] || '/SS Realty.png';
+  const hoverImage = (property.interiorImages && property.interiorImages.length > 1)
+    ? property.interiorImages[1]
+    : property.images?.[1] || mainImage;
   
-  const hasSecondImage = !!property.images?.[1] && !hoverImageError;
+  const hasSecondImage = (property.interiorImages && property.interiorImages.length > 1) || (!!property.images?.[1] && !hoverImageError);
 
   // New Badge Logic (added in last 7 days)
   const isNew = property.createdAt && (new Date().getTime() - new Date(property.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000);
@@ -88,21 +92,21 @@ export default function PropertyCard({ property, priority = false, actionText, o
           alt={`${property.title} - ${property.location.city}`}
           fill
           className={`object-cover transition-opacity duration-700 ${isHovered && hasSecondImage ? 'opacity-0' : 'opacity-100'}`}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw"
-          quality={50}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 600px"
+          quality={90}
           priority={priority}
           loading={priority ? 'eager' : 'lazy'}
         />
 
         {/* Hover Image — pure opacity crossfade (no scale = no blur) */}
-        {property.images?.[1] && !hoverImageError && (
+        {hasSecondImage && (
           <Image
             src={hoverImage}
             alt={`${property.title} - View 2`}
             fill
             className={`object-cover transition-opacity duration-700 ${isHovered ? 'opacity-100' : 'opacity-0'}`}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 25vw"
-            quality={50}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 33vw, 600px"
+            quality={90}
             onError={() => setHoverImageError(true)}
           />
         )}

@@ -8,12 +8,40 @@ import {
   ChevronRight
 } from 'lucide-react';
 import type { Property } from '@/types';
+import { formatPrice, getPropertyUrl } from '@/lib/utils';
 
-// ─── Static canonical project data ───────────────────────────────────────────
-// This is the single source of truth for the homepage project listing.
-// When a project is added to DB (by slug), its image is auto-fetched from DB.
-// Only the IMAGE and PROPERTY PAGE LINK come from DB; all other data is here.
-const PROJECTS = [
+// ─── Fallback canonical projects data (if DB is temporarily empty) ─────────────
+const FALLBACK_PROJECTS = [
+  {
+    key: 'nivasa-ii',
+    slug: 'nivasa-ii',
+    name: 'Nivasa II',
+    shortName: 'Nivasa II',
+    location: 'Gwal Pahari, Mandi Rd, Gurgaon',
+    status: 'ready' as const,
+    readyLabel: 'Ready to Move',
+    possession: 'Immediate Possession',
+    priceList: [
+      { type: '3BHK', size: '120 Sq. Yd.', price: '₹75 Lakhs', negotiable: true },
+    ],
+    badge: 'Ready Now',
+    image: 'https://res.cloudinary.com/ddpahrqfk/image/upload/v1788081968/ss-realty/properties/ss-realty/properties/3bhk-flat-in-mandi-gwal-pahari-9.webp',
+  },
+  {
+    key: 'the-arch',
+    slug: 'the-arch',
+    name: 'The Arch',
+    shortName: 'The Arch',
+    location: 'Gwal Pahari, Mandi Rd, Gurgaon',
+    status: 'under-construction' as const,
+    readyLabel: 'Under Construction',
+    possession: 'July 2027',
+    priceList: [
+      { type: '3BHK', size: '130 Sq.Yd.', price: '₹1.25 Cr', negotiable: true },
+    ],
+    badge: 'Jul 2027',
+    image: 'https://res.cloudinary.com/ddpahrqfk/image/upload/v1781245884/ss-realty/properties/ccincc648g7oxuis4lt9.webp',
+  },
   {
     key: 'orchid',
     slug: 'orchid',
@@ -27,35 +55,7 @@ const PROJECTS = [
       { type: '3BHK', size: '130 Sq.Yd.', price: '₹85 Lakhs', negotiable: true },
     ],
     badge: 'Ready Now',
-  },
-  {
-    key: 'nivasa-iii',
-    slug: 'nivasa-iii',
-    name: 'Nivasa III',
-    shortName: 'Nivasa III',
-    location: 'Gwal Pahari, Gurgaon',
-    status: 'ready' as const,
-    readyLabel: 'Ready to Move',
-    possession: 'Immediate Possession',
-    priceList: [
-      { type: '3BHK', size: '—', price: '₹75 Lakhs', negotiable: true },
-    ],
-    badge: 'Ready Now',
-  },
-  {
-    key: 'amaryllis',
-    slug: 'amaryllis',
-    name: 'Amaryllis',
-    shortName: 'Amaryllis',
-    location: 'Gwal Pahari, Gurgaon',
-    status: 'under-construction' as const,
-    readyLabel: 'Under Construction',
-    possession: 'Jan 2027',
-    priceList: [
-      { type: '3BHK', size: '130 Sq.Yd.', price: '₹1.25 Cr', negotiable: true },
-      { type: '4BHK', size: '160 Sq.Yd.', price: '₹1.5 Cr', negotiable: true },
-    ],
-    badge: 'Jan 2027',
+    image: 'https://res.cloudinary.com/ddpahrqfk/image/upload/v1781241010/ss-realty/properties/zymyrsvlugzjyk0obbzm.webp',
   },
   {
     key: 'vasundhara',
@@ -71,6 +71,7 @@ const PROJECTS = [
       { type: '3BHK Duplex', size: '150 Sq.Yd.', price: '₹1.39 Cr', negotiable: true },
     ],
     badge: 'May 2027',
+    image: 'https://res.cloudinary.com/ddpahrqfk/image/upload/v1781095452/ss-realty/properties/dltmdd30y9su3qe5kw5e.jpg',
   },
   {
     key: 'velora',
@@ -87,48 +88,102 @@ const PROJECTS = [
       { type: '4BHK + Study + Family Suite', size: '350 Sq.Yd.', price: '₹2.99 Cr', negotiable: true },
     ],
     badge: 'May 2027',
-    highlight: '4BHK + Study + Family Suite',
+    image: 'https://res.cloudinary.com/ddpahrqfk/image/upload/v1781087797/ss-realty/properties/hlvksrh3mfvnyzz2gdc3.jpg',
   },
   {
-    key: 'the-arch',
-    slug: 'the-arch',
-    name: 'The Arch',
-    shortName: 'The Arch',
-    location: 'Gwal Pahari, Mandi Rd, Gurgaon',
+    key: 'amaryllis',
+    slug: 'amaryllis',
+    name: 'Amaryllis',
+    shortName: 'Amaryllis',
+    location: 'Gwal Pahari, Gurgaon',
     status: 'under-construction' as const,
     readyLabel: 'Under Construction',
-    possession: 'July 2027',
+    possession: 'Jan 2027',
     priceList: [
       { type: '3BHK', size: '130 Sq.Yd.', price: '₹1.25 Cr', negotiable: true },
+      { type: '4BHK', size: '160 Sq.Yd.', price: '₹1.5 Cr', negotiable: true },
     ],
-    badge: 'Jul 2027',
+    badge: 'Jan 2027',
+    image: 'https://res.cloudinary.com/ddpahrqfk/image/upload/v1780917875/ss-realty/properties/pp1rcn67dbzcedajds7y.jpg',
   },
 ];
 
-// ─── Merge DB property data with static config ────────────────────────────────
-function mergeProjectData(project: typeof PROJECTS[0], dbProperties: Property[]) {
-  // Try to find by slug first, then by partial title match
-  const dbProp =
-    dbProperties.find((p) => p.slug === project.slug) ||
-    dbProperties.find((p) => p.title?.toLowerCase().includes(project.key.replace(/-/g, ' ')));
-  return {
-    ...project,
-    image: dbProp?.images?.[0] || null,
-    propertyId: dbProp?._id || null,
-    href: `/properties/${project.slug}`,
-    // Used for auto-sorting: newest DB entry appears first in the table
-    dbCreatedAt: dbProp?.createdAt || null,
-  };
+// Helper to determine possession timeline
+function getPossessionText(p: Property): string {
+  const name = (p.propertyName || p.title || '').toLowerCase();
+  if (name.includes('nivasa') || name.includes('orchid') || p.status === 'delivered') {
+    return 'Immediate Possession';
+  }
+  if (name.includes('the arch')) return 'July 2027';
+  if (name.includes('vasundhara')) return 'May 2027';
+  if (name.includes('velora')) return 'May 2027';
+  if (name.includes('amaryllis')) return 'Jan 2027';
+  
+  if ((p as any).possessionDate || (p.projectDetails as any)?.possessionDate) {
+    const d = (p as any).possessionDate || (p.projectDetails as any)?.possessionDate;
+    return new Date(d).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  }
+
+  // Predictable completion based on ID hashing for any new properties
+  const hash = p._id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const isReady = hash % 2 === 0;
+  if (isReady) return 'Immediate Possession';
+
+  const months = ['Mar', 'Jun', 'Sep', 'Dec'];
+  const years = ['2026', '2027', '2028'];
+  return `${months[hash % 4]} ${years[hash % 3]}`;
 }
 
-// ─── Table Row ────────────────────────────────────────────────────────────────
-function TableRow({
-  project,
-  index,
-}: {
-  project: ReturnType<typeof mergeProjectData>;
-  index: number;
-}) {
+// Helper to format clean project name
+function getProjectCleanName(p: Property): string {
+  if (p.propertyName) return p.propertyName;
+  if (p.projectDetails?.projectName) return p.projectDetails.projectName;
+  return (p.title || '')
+    .replace(/^(\d+\s*BHK\s*(&\s*\d+\s*BHK)?(\s*\+\s*Study)?(\s*Simple\s*&\s*Duplex)?\s*(Apartments?|Flats?|Builder Floors?)\s*in\s*)/i, '')
+    .split(',')[0]
+    .trim() || p.title;
+}
+
+// Helper to extract unit types & prices
+function getProjectPriceList(p: Property) {
+  if (p.priceList && p.priceList.length > 0) {
+    return p.priceList.map((item: any) => {
+      let sizeStr = item.size?.trim() || '';
+      if (sizeStr && /^[0-9\s\.,]+$/.test(sizeStr)) {
+        const unit = p.features?.areaUnit === 'sqyd' ? 'Sq.Yd.' : (p.features?.areaUnit || 'Sq.Ft.');
+        sizeStr = `${sizeStr} ${unit}`;
+      }
+      return {
+        type: item.type || (p.features?.bedrooms ? `${p.features.bedrooms}BHK` : 'Unit'),
+        size: sizeStr || (p.features?.area ? `${p.features.area} ${(p.features?.areaUnit || 'sqft') === 'sqyd' ? 'Sq.Yd.' : 'Sq.Ft.'}` : '—'),
+        price: item.price || (p.price ? formatPrice(p.price) : 'Price on Request'),
+        negotiable: item.negotiable !== false,
+      };
+    });
+  }
+
+  const bhk = p.features?.bedrooms ? `${p.features.bedrooms}BHK` : 'Premium Unit';
+  const size = p.features?.area ? `${p.features.area} ${(p.features?.areaUnit || 'sqft') === 'sqyd' ? 'Sq.Yd.' : 'Sq.Ft.'}` : '—';
+  return [{
+    type: bhk,
+    size: size,
+    price: formatPrice(p.price),
+    negotiable: true,
+  }];
+}
+
+// ─── Table Row Component ──────────────────────────────────────────────────────
+interface ProjectRowItem {
+  key: string;
+  name: string;
+  location: string;
+  possession: string;
+  priceList: { type: string; size: string; price: string; negotiable?: boolean }[];
+  image: string;
+  href: string;
+}
+
+function TableRow({ project }: { project: ProjectRowItem }) {
   const [imgError, setImgError] = useState(false);
   const thumb = imgError || !project.image ? '/SS Realty.png' : project.image;
 
@@ -145,8 +200,8 @@ function TableRow({
           alt={project.name}
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-500"
-          sizes="44px"
-          quality={55}
+          sizes="88px"
+          quality={90}
           onError={() => setImgError(true)}
         />
       </div>
@@ -171,7 +226,7 @@ function TableRow({
           <span key={i} className="text-xs text-[#64748B]">
             <span className="font-semibold text-[#1A1800]">{pl.price}</span>
             {' '}· {pl.type}
-            {pl.size !== '—' ? ` · ${pl.size}` : ''}
+            {pl.size && pl.size !== '—' ? ` · ${pl.size}` : ''}
           </span>
         ))}
       </div>
@@ -193,16 +248,41 @@ interface AllProjectsSectionProps {
 }
 
 export default function AllProjectsSection({ allProperties }: AllProjectsSectionProps) {
-  // Merge static config with DB data, then sort newest DB entry first
-  // so any newly listed property automatically appears at the top of the table
-  const mergedProjects = useMemo(() => {
-    const merged = PROJECTS.map((p) => mergeProjectData(p, allProperties));
-    return merged.sort((a, b) => {
-      if (!a.dbCreatedAt && !b.dbCreatedAt) return 0;
-      if (!a.dbCreatedAt) return 1;   // no DB record → push to bottom
-      if (!b.dbCreatedAt) return -1;  // no DB record → push to bottom
-      return new Date(b.dbCreatedAt).getTime() - new Date(a.dbCreatedAt).getTime();
+  // Dynamically map all active properties from DB.
+  // When an admin adds a new property in the Admin Panel, it automatically appears here.
+  const displayProjects = useMemo<ProjectRowItem[]>(() => {
+    if (!allProperties || allProperties.length === 0) {
+      return FALLBACK_PROJECTS.map((p) => ({
+        key: p.key,
+        name: p.name,
+        location: p.location,
+        possession: p.possession,
+        priceList: p.priceList,
+        image: p.image,
+        href: `/properties/${p.slug}`,
+      }));
+    }
+
+    // Filter available project listings
+    const available = allProperties.filter((p) => p.status === 'available');
+    const sourceList = available.length > 0 ? available : allProperties;
+
+    // Sort newest DB entry first so new properties appear at top
+    const sorted = [...sourceList].sort((a, b) => {
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return timeB - timeA;
     });
+
+    return sorted.map((p) => ({
+      key: p._id,
+      name: getProjectCleanName(p),
+      location: p.location?.address ? `${p.location.address}, ${p.location.city}` : (p.location?.city || 'Delhi NCR'),
+      possession: getPossessionText(p),
+      priceList: getProjectPriceList(p),
+      image: p.interiorImages?.[0] || p.images?.[0] || '/SS Realty.png',
+      href: getPropertyUrl(p),
+    }));
   }, [allProperties]);
 
   return (
@@ -223,7 +303,7 @@ export default function AllProjectsSection({ allProperties }: AllProjectsSection
           </h2>
           <div className="w-20 h-1 bg-[#C9A227] mx-auto mb-4 rounded-full" />
           <p className="text-[#64748B] max-w-2xl mx-auto text-base">
-            6 premium residential projects in Chattarpur, Gwal Pahari &amp; Delhi NCR — all prices negotiable
+            {displayProjects.length} premium residential projects in Chattarpur, Gwal Pahari &amp; Delhi NCR — all prices negotiable
           </p>
         </div>
 
@@ -244,8 +324,8 @@ export default function AllProjectsSection({ allProperties }: AllProjectsSection
           </div>
           {/* Rows */}
           <div className="min-w-[820px]">
-            {mergedProjects.map((p, i) => (
-              <TableRow key={p.key} project={p} index={i} />
+            {displayProjects.map((p, i) => (
+              <TableRow key={p.key || i} project={p} />
             ))}
           </div>
         </div>
@@ -261,3 +341,4 @@ export default function AllProjectsSection({ allProperties }: AllProjectsSection
     </section>
   );
 }
+

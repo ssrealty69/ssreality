@@ -4,10 +4,10 @@ const nextConfig: NextConfig = {
   // ─── Image Optimization ───────────────────────────────────────────────────
   images: {
     formats: ['image/avif', 'image/webp'],          // Serve AVIF first, then WebP
-    deviceSizes: [360, 480, 640, 750, 828, 1080, 1200, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    deviceSizes: [360, 480, 640, 750, 828, 1080, 1200, 1440, 1920, 2048, 2560, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512, 640, 800, 1024],
     minimumCacheTTL: 31536000,                      // Cache images for 1 year
-    qualities: [50, 60, 65, 70, 75, 80],           // Lower quality saves ~40% vs before
+    qualities: [60, 70, 75, 80, 85, 90, 95, 100],  // High quality options for razor-sharp property photos
     dangerouslyAllowSVG: false,
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },

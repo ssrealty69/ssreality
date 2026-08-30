@@ -348,7 +348,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
             className="object-cover"
             priority
             sizes="100vw"
-            quality={80}
+            quality={90}
           />
         </div>
         {/* Mobile Background */}
@@ -678,8 +678,8 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                         loading={idx === 0 ? 'eager' : 'lazy'}
-                        quality={idx === 0 ? 85 : 75}
-                        sizes={idx === 0 ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 25vw'}
+                        quality={90}
+                        sizes={idx === 0 ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 33vw'}
                       />
                     </div>
                   );
@@ -701,8 +701,8 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                       loading={idx === 0 ? 'eager' : 'lazy'}
-                      quality={idx === 0 ? 85 : 75}
-                      sizes={idx === 0 ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 25vw'}
+                      quality={90}
+                      sizes={idx === 0 ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 33vw'}
                     />
                   </div>
                 ))}
@@ -721,7 +721,7 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                       loading={idx === 0 ? 'eager' : 'lazy'}
-                      quality={idx === 0 ? 85 : 75}
+                      quality={90}
                       sizes={idx === 0 ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 33vw'}
                     />
                   </div>

@@ -81,6 +81,30 @@ export async function POST(req: NextRequest) {
 
     await AgentSession.create({ agentId: agent._id.toString(), token, expiresAt });
 
+    if (latitude && longitude) {
+      const latNum = Number(latitude);
+      const lngNum = Number(longitude);
+      if (!isNaN(latNum) && !isNaN(lngNum) && (latNum !== 0 || lngNum !== 0)) {
+        try {
+          const geoConfig = await getGeofenceSettings();
+          const distM = calculateDistanceMeters(geoConfig.officeLat, geoConfig.officeLng, latNum, lngNum);
+          const todayStr = getISTDateString();
+          await AgentLocationLog.create({
+            agentId: agent._id.toString(),
+            agentName: agent.name,
+            employeeId: agent.employee_id,
+            latitude: latNum,
+            longitude: lngNum,
+            status: distM <= geoConfig.geofenceRadiusMeters ? 'IN_OFFICE' : 'ON_FIELD_VISIT',
+            distanceFromOfficeMeters: distM,
+            address: address || undefined,
+            timestamp: new Date(),
+            date: todayStr,
+          });
+        } catch (_) {}
+      }
+    }
+
     return NextResponse.json({
       success: true,
       token,

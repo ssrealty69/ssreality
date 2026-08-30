@@ -72,14 +72,22 @@ interface GeofenceSettings {
   emergencyModeReason?: string;
 }
 
+function getTodayISTDateString(): string {
+  try {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
+  } catch {
+    const now = new Date();
+    const istOffset = 5.5 * 60 * 60 * 1000;
+    return new Date(now.getTime() + istOffset).toISOString().split('T')[0];
+  }
+}
+
 export default function AdminTrackingPage() {
   const [agents, setAgents] = useState<AgentLiveInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [selectedAgent, setSelectedAgent] = useState<AgentLiveInfo | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toISOString().split('T')[0]
-  );
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayISTDateString);
   const [routeHistory, setRouteHistory] = useState<RoutePoint[]>([]);
   const [routeDistanceKm, setRouteDistanceKm] = useState<number>(0);
   const [loadingRoute, setLoadingRoute] = useState(false);
@@ -243,12 +251,13 @@ export default function AdminTrackingPage() {
     return () => clearInterval(interval);
   }, [autoRefresh]);
 
-  const viewRouteHistory = async (agent: AgentLiveInfo) => {
+  const viewRouteHistory = async (agent: AgentLiveInfo, targetDate?: string) => {
+    const dateToFetch = targetDate || selectedDate;
     setSelectedAgent(agent);
     setLoadingRoute(true);
     try {
       const res = await fetch(
-        `/api/admin/tracking/history?agentId=${agent.agentId}&date=${selectedDate}`
+        `/api/admin/tracking/history?agentId=${agent.agentId}&date=${dateToFetch}`
       );
       const data = await res.json();
       if (data.success) {
@@ -688,7 +697,9 @@ export default function AdminTrackingPage() {
           onClose={() => setSelectedAgent(null)}
           onDateChange={(d) => {
             setSelectedDate(d);
-            viewRouteHistory(selectedAgent);
+            if (selectedAgent) {
+              viewRouteHistory(selectedAgent, d);
+            }
           }}
         />
       )}
