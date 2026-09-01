@@ -33,24 +33,36 @@ export async function GET(req: NextRequest) {
       leads = await Contact.find({}).sort('-createdAt').lean();
     }
 
-    // Resolve property titles for leads having a property reference
-    const resolvedLeads = await Promise.all(leads.map(async (lead: any) => {
-      let propertyTitle = null;
-      if (lead.propertyId && mongoose.Types.ObjectId.isValid(lead.propertyId)) {
-        try {
-          const prop = await Property.findById(lead.propertyId).select('title').lean();
-          if (prop) {
-            propertyTitle = (prop as any).title;
+    // Batch resolve property titles for leads having a property reference (Eliminates N+1 queries)
+    const propertyIds = Array.from(
+      new Set(
+        leads
+          .map((l: any) => l.propertyId)
+          .filter((id: any) => id && mongoose.Types.ObjectId.isValid(id))
+      )
+    );
+
+    const propertyMap = new Map<string, string>();
+    if (propertyIds.length > 0) {
+      try {
+        const properties = await Property.find({ _id: { $in: propertyIds } }).select('title').lean();
+        properties.forEach((p: any) => {
+          if (p._id && p.title) {
+            propertyMap.set(p._id.toString(), p.title);
           }
-        } catch {
-          // Ignore individual property lookup errors
-        }
+        });
+      } catch (err) {
+        console.warn('Batch property lookup failed:', err);
       }
+    }
+
+    const resolvedLeads = leads.map((lead: any) => {
+      const propIdStr = lead.propertyId?.toString?.() || lead.propertyId;
       return {
         ...JSON.parse(JSON.stringify(lead)),
-        propertyTitle
+        propertyTitle: propIdStr ? (propertyMap.get(propIdStr) || null) : null
       };
-    }));
+    });
     
     return NextResponse.json({
       success: true,

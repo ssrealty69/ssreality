@@ -28,6 +28,8 @@ const EventLogSchema = new Schema<IEventLog>(
 
 // Auto-expire logs after 90 days to keep DB clean
 EventLogSchema.index({ timestamp: 1 }, { expireAfterSeconds: 90 * 24 * 60 * 60 });
+EventLogSchema.index({ eventName: 1, timestamp: -1 });
+EventLogSchema.index({ timestamp: -1 });
 
 const EventLog: Model<IEventLog> =
   mongoose.models.EventLog ||

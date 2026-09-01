@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { 
-  Loader2, Save, Activity, Trash2, RefreshCw, Play, Check, AlertCircle, HelpCircle, ArrowRight
+  Loader2, Save, Activity, Play, Check, AlertCircle, HelpCircle, ArrowRight
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -19,17 +19,6 @@ interface TrackingSettings {
   updatedBy?: string;
 }
 
-interface EventLog {
-  _id: string;
-  eventName: string;
-  parameters: Record<string, any>;
-  sessionId: string;
-  page: string;
-  timestamp: string;
-  userAgent: string;
-  ipAddress: string;
-}
-
 export default function TrackingSettingsPage() {
   const [settings, setSettings] = useState<TrackingSettings>({
     isEnabled: false,
@@ -42,20 +31,17 @@ export default function TrackingSettingsPage() {
     enableEventLog: true
   });
 
-  const [logs, setLogs] = useState<EventLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
-  const [logsLoading, setLogsLoading] = useState(false);
   const [testResult, setTestResult] = useState<any>(null);
 
   // Validation state
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Fetch settings & logs on mount
+  // Fetch settings on mount
   useEffect(() => {
     fetchSettings();
-    fetchLogs();
   }, []);
 
   const fetchSettings = async () => {
@@ -82,42 +68,6 @@ export default function TrackingSettingsPage() {
       toast.error('Could not load tracking settings');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchLogs = async () => {
-    setLogsLoading(true);
-    try {
-      const res = await fetch('/api/admin/marketing/tracking/logs');
-      if (!res.ok) {
-        console.error('Failed to load telemetry logs. Status:', res.status);
-        return;
-      }
-      const json = await res.json();
-      if (json.success && json.data) {
-        setLogs(json.data);
-      }
-    } catch (err: any) {
-      console.error('Error fetching logs:', err);
-    } finally {
-      setLogsLoading(false);
-    }
-  };
-
-  const clearLogs = async () => {
-    if (!window.confirm('Are you sure you want to permanently delete all active event logs from the database?')) {
-      return;
-    }
-    try {
-      const res = await fetch('/api/admin/marketing/tracking/logs', { method: 'DELETE' });
-      if (res.ok) {
-        toast.success('Event logs cleared successfully');
-        setLogs([]);
-      } else {
-        toast.error('Failed to clear event logs');
-      }
-    } catch (err: any) {
-      toast.error('Error clearing event logs');
     }
   };
 
@@ -468,97 +418,6 @@ export default function TrackingSettingsPage() {
           )}
         </div>
       )}
-
-      {/* Real-time telemetry log auditor */}
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
-        <div className="px-6 py-5 border-b border-gray-50 flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-extrabold text-gray-800 flex items-center gap-2">
-              <Activity size={18} className="text-[#C9A227]" />
-              Live Telemetry Auditing Logs
-            </h2>
-            <p className="text-[10px] text-gray-400 font-bold uppercase mt-1 tracking-wider">Active debug and remarketing triggers</p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={fetchLogs}
-              disabled={logsLoading}
-              className="p-2 rounded-lg bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors flex items-center justify-center text-gray-500"
-              title="Refresh Logs"
-            >
-              <RefreshCw size={14} className={logsLoading ? 'animate-spin' : ''} />
-            </button>
-            {logs.length > 0 && (
-              <button 
-                onClick={clearLogs}
-                className="px-3 py-1.5 text-[10px] font-black uppercase text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-100 rounded-xl transition-colors flex items-center gap-1.5"
-              >
-                <Trash2 size={12} />
-                Clear Logs
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          {logsLoading && logs.length === 0 ? (
-            <div className="py-12 flex flex-col items-center justify-center text-gray-400 text-xs font-bold uppercase tracking-wider animate-pulse">
-              Fetching active audit trails...
-            </div>
-          ) : logs.length > 0 ? (
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="bg-gray-50/50 text-[10px] font-black text-gray-400 uppercase border-b border-gray-100">
-                  <th className="py-3 px-6">Timestamp</th>
-                  <th className="py-3 px-4">Event Name</th>
-                  <th className="py-3 px-4">Browser/Session</th>
-                  <th className="py-3 px-4">IP Address</th>
-                  <th className="py-3 px-6">Event Parameters Payload</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50 font-sans">
-                {logs.map((log) => {
-                  let eventBadgeClass = 'bg-gray-50 text-gray-600 border-gray-100';
-                  if (log.eventName === 'ViewProperty') {
-                    eventBadgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
-                  } else if (log.eventName === 'PageView') {
-                    eventBadgeClass = 'bg-blue-50 text-blue-700 border-blue-100';
-                  } else if (log.eventName.includes('Form') || log.eventName.includes('Submit') || log.eventName === 'LeadSubmit') {
-                    eventBadgeClass = 'bg-amber-50 text-amber-700 border-amber-100';
-                  }
-
-                  return (
-                    <tr key={log._id} className="hover:bg-[#FFFEF5]/50 transition-colors text-[11px] font-medium text-gray-600">
-                      <td className="py-3.5 px-6 whitespace-nowrap text-gray-400 font-bold">
-                        {new Date(log.timestamp).toLocaleString('en-IN', { hour12: false, month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                      </td>
-                      <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase border ${eventBadgeClass}`}>
-                          {log.eventName}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 max-w-[120px] truncate text-gray-500 font-mono text-[9px]">
-                        {log.sessionId || 'anonymous'}
-                      </td>
-                      <td className="py-3.5 px-4 font-mono font-bold text-gray-400">
-                        {log.ipAddress}
-                      </td>
-                      <td className="py-3.5 px-6 text-gray-500 font-mono text-[9px] max-w-[300px] truncate" title={JSON.stringify(log.parameters, null, 2)}>
-                        {JSON.stringify(log.parameters)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <div className="py-12 flex flex-col items-center justify-center text-gray-400 text-xs font-bold uppercase tracking-wider">
-              No telemetry events recorded yet. Turn on switch & browse the site to populate logs!
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 }
