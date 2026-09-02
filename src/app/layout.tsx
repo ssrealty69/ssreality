@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     template: '%s | SS Realty',
   },
   description:
-    'Discover premium flats, villas & plots for sale in Jonapur, Chattarpur & Delhi NCR. Expert real estate consulting by SS Realty.',
+    'Discover premium flats, villas & plots built and sold directly by SS Realty in Chattarpur, Gwal Pahari, Mandi Road & Delhi NCR. Self-build developer since 2008.',
   keywords: [
     // Brand variants
     'SS Realty', 'SSRealty', 'The SS Realty', 'SS Realty Teams', 'SS Realty Jonapur',
@@ -148,8 +148,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     height: 100,
                   },
                   image: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
-                  description: 'SS Realty is a premium real estate agency in Delhi NCR specializing in 3 BHK flats in Gwal Pahari, Chattarpur, and Gurgaon. We offer luxury homes, builder floors, farmhouses, villas, plots and commercial properties across Delhi NCR.',
-                  slogan: 'Your Trusted Real Estate Partner in Delhi NCR Since 2008',
+                  description: 'SS Realty is a premium real estate developer and builder in Delhi NCR. We design, construct, and sell our own 2BHK, 3BHK, 4BHK, and 4BHK + Study + Family Suite flats, builder floors, farmhouses, villas, plots and commercial properties across Chattarpur, Gwal Pahari, Mandi Road, and all of Delhi NCR. SS Realty is NOT a broker — every property is self-built by our own construction team.',
+                  slogan: 'Delhi NCR\'s Trusted Builder & Developer Since 2008',
                   foundingDate: '2008',
                   numberOfEmployees: { '@type': 'QuantitativeValue', value: 15 },
                   telephone: '+91-9311059100',
@@ -191,15 +191,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   currenciesAccepted: 'INR',
                   paymentAccepted: 'Cash, Bank Transfer, Home Loan',
                   knowsAbout: [
+                    '2 BHK Flat for Sale',
                     '3 BHK Flat for Sale in Gwal Pahari',
                     '3 BHK Flat in Chattarpur',
+                    '4 BHK Flat for Sale',
+                    '4 BHK + Study + Family Suite',
                     'Builder Floor in Gurgaon',
                     'Registry Flats in Chattarpur',
-                    'Sky Mansion Chattarpur',
+                    'Self-Built Premium Homes',
                     'Luxury Homes Delhi NCR',
                     'Farmhouse Sale Delhi NCR',
                     'Plots in Gurgaon',
                     'Commercial Properties Delhi NCR',
+                    'Mandi Road Properties Gurgaon',
                     'Residential Properties Gwal Pahari'
                   ],
                   sameAs: [

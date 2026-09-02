@@ -20,7 +20,7 @@ export default function HeroSection() {
         <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-[#C9A227]/30 rounded-full bg-[#C9A227]/10 backdrop-blur-md mb-6 shadow-lg">
           <span className="w-1.5 h-1.5 rounded-full bg-[#C9A227] animate-pulse" />
           <span className="text-[11px] font-bold text-[#F0D060] tracking-widest uppercase">
-            Delhi NCR's No.1 Real Estate Platform
+            Delhi NCR's Trusted Builder Since 2008
           </span>
         </div>
 
@@ -41,8 +41,8 @@ export default function HeroSection() {
 
         {/* Subtitle (Smaller and refined) */}
         <p className="text-sm md:text-base text-gray-300 max-w-2xl leading-relaxed mb-8 font-medium">
-          10,000+ premium residential and commercial properties from trusted builders. <br className="hidden md:block" /> 
-          Flats, Villas, Plots, Offices & more — all in one place.
+          1,000+ self-built premium homes delivered across Chattarpur, Gwal Pahari & Mandi Road. <br className="hidden md:block" /> 
+          2BHK, 3BHK, 4BHK Flats, Villas, Plots & more — designed, built & sold by SS Realty.
         </p>
 
         {/* Action Buttons */}
@@ -67,14 +67,14 @@ export default function HeroSection() {
 
           <div className="flex items-center gap-2">
             <Building2 className="w-4 h-4 text-[#C9A227]" />
-            <span className="text-[11px] font-bold text-gray-400 tracking-widest">2000+ PROPERTIES</span>
+            <span className="text-[11px] font-bold text-gray-400 tracking-widest">1000+ HOMES DELIVERED</span>
           </div>
 
           <div className="hidden sm:block w-px h-3 bg-gray-600" />
 
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-[#10B981]" />
-            <span className="text-[11px] font-bold text-gray-400 tracking-widest">VERIFIED BUILDERS</span>
+            <span className="text-[11px] font-bold text-gray-400 tracking-widest">SELF-BUILT PROJECTS</span>
           </div>
 
         </div>

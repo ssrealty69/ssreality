@@ -22,7 +22,7 @@ const FarmHouseSection    = dynamic(() => import('@/components/home/FarmHouseSec
 export const metadata: Metadata = {
   title: 'Luxury Homes & Flat for sale in Chattarpur, Gwal Pahari, Gurgaon and Delhi NCR',
   description:
-    'Find 3 BHK flat in Gwal Pahari, 3BHK flat in Chattarpur, builder floor in Gurgaon, flats for sale in Delhi NCR. SS Realty – your trusted real estate partner since 2008 for luxury homes, apartments, villas, plots & farmhouses across Chattarpur, Gwal Pahari, Gurugram and all of Delhi NCR.',
+    'Find 3 BHK flat in Gwal Pahari, 3BHK flat in Chattarpur, builder floor in Gurgaon, flats for sale in Delhi NCR. SS Realty – Delhi NCR\'s trusted builder & developer since 2008. We design, construct & sell our own luxury homes, apartments, villas, plots & farmhouses across Chattarpur, Gwal Pahari, Mandi Road, Gurugram and all of Delhi NCR.',
   keywords: '3 bhk flat for sale in gwal pahari, 2 bhk flats for sale in gwal pahari, 3bhk flats for sale in gwal pahari, buy flats in gwal pahari near gurgaon, 3 bhk in gwal pahari for sale, 3 bhk in gwal pahari price, 3bhk flat chattarpur, 3bhk flat in chattarpur for rent, 3 bhk flat in chattarpur for rent, 3 bhk flat in chattarpur delhi, 2 bhk flats in chattarpur with bank loan, 3bhk flat in jvts chattarpur, 3bhk flat for sale in chattarpur, chattarpur 3 bhk flat for sale, chattarpur 3 bhk flat price, 3 bhk flat in chattarpur enclave phase 2, 3 bhk flat chhatarpur, sky mansion chattarpur, flats 3bhk, three bhk flat, 3 bhk in chattarpur for sale, 3 bhk apartment for sale, 3 bhk flats in delhi, 2 bhk flat in delhi, flats in delhi, flats in chattarpur, 3 bk in chattarpur enclave, registry flats in chattarpur, flats for sale in chattarpur delhi, flats in chattarpur for rent, 3bhk for rent in gurgaon, 3bhk gurgaon, 3bhk flat for sale in gurgaon, 3bhk flats in gurgaon, 3bhk builder floor in gurgaon, 4bhk builder floor in gurgaon, 3bhk for sale in gurgaon, 3bhk flat for rent in gurgaon, 3bhk flat in gurgaon, 3bhk flat on rent near me, 3bhk flat in gurgaon price, 3bhk flat, 3 bhk flat in gwal pahari gurgaon, 3 bhk in gwal pahari, builder floor in gurgaon, house for sale in gurgaon, property in gurgaon, plots in gurgaon, flats in gurgaon, ready to move flats in gurgaon, 3 bhk flats in mandi gurgaon, flats in mandi, 2 bhk flats in mandi, flats in gadaipur, 2 bhk flats for sale south delhi, 3 bhk flats in south delhi, flats in south delhi, ss realty chattarpur, ss realty jonapur',
   alternates: { canonical: 'https://ssrealty.org' },
 };
@@ -73,7 +73,7 @@ export default async function HomePage() {
         "name": "Where can I find 3 BHK flat for sale in Gwal Pahari?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "SS Realty offers verified 3 BHK flats for sale in Gwal Pahari near Gurgaon border. Our listings include luxury apartments with premium amenities at competitive prices. Visit ssrealty.org or call +91-9311059100."
+          "text": "SS Realty builds and sells verified 3 BHK flats in Gwal Pahari near Gurgaon border. As a developer-builder, every property is self-constructed with premium materials. Visit ssrealty.org or call +91-9311059100."
         }
       },
       {
@@ -89,7 +89,7 @@ export default async function HomePage() {
         "name": "Are there registry flats available in Chattarpur Delhi?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes! SS Realty specializes in registry flats in Chattarpur Delhi including Chattarpur Enclave Phase 1 & 2 and JVTS Garden. We have verified listings of 3 BHK flats for sale in Chattarpur with full legal documentation and registry available."
+          "text": "Yes! SS Realty builds and sells registry flats in Chattarpur Delhi including Chattarpur Enclave Phase 1 & 2 and JVTS Garden. As a self-build developer, all our Chattarpur properties are constructed by our own team with full legal documentation and registry available."
         }
       },
       {
@@ -97,7 +97,7 @@ export default async function HomePage() {
         "name": "Does SS Realty offer builder floors in Gurgaon?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, SS Realty offers premium builder floors in Gurgaon and 3 BHK flats across Gurgaon. Our portfolio includes properties in sectors near Gwal Pahari border. We also have plots in Gurgaon for investment."
+          "text": "Yes, SS Realty builds premium builder floors in Gurgaon and 3 BHK flats across Gurgaon. As a developer-builder, every property is self-constructed — we are not brokers. Our Gwal Pahari projects include Orchid and The Arch on Mandi Road. We also build plots and homes in Gurgaon for investment."
         }
       },
       {
@@ -105,7 +105,7 @@ export default async function HomePage() {
         "name": "What type of properties does SS Realty offer?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "SS Realty offers a wide range of premium properties including 3 BHK luxury flats in Gwal Pahari and Chattarpur, builder floors in Gurgaon, farmhouses, villas, residential plots, commercial spaces, and lands across Delhi NCR."
+          "text": "SS Realty is a developer-builder that designs, constructs, and sells its own premium properties including 2BHK, 3BHK, 4BHK, and 4BHK + Study + Family Suite luxury flats, builder floors, farmhouses, villas, residential plots, commercial spaces across Chattarpur, Gwal Pahari, Mandi Road, and all of Delhi NCR. Every property is self-built by SS Realty's own construction team."
         }
       },
       {
@@ -145,7 +145,7 @@ export default async function HomePage() {
         "name": "Which is the best real estate agency in Chattarpur Delhi?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "SS Realty is widely regarded as the best real estate agency in Chattarpur, Delhi with 17+ years of experience since 2008. They have a 4.8/5 Google rating from 247+ verified clients. They specialize in registry flats, 3 BHK flats, builder floors, and sky mansions in Chattarpur. Contact: ssrealty.org | +91-9311059100."
+          "text": "SS Realty is widely regarded as the most trusted real estate developer and builder in Chattarpur, Delhi with 17+ years of experience since 2008. They have a 4.8/5 Google rating from 247+ verified clients. Unlike brokers, SS Realty designs, constructs, and sells their own properties — specializing in 2BHK, 3BHK, 4BHK flats, builder floors, and luxury homes in Chattarpur. Contact: ssrealty.org | +91-9311059100."
         }
       },
       {
@@ -153,7 +153,7 @@ export default async function HomePage() {
         "name": "Which is the best property dealer in South Delhi?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "SS Realty is one of the most trusted property dealers in South Delhi, operating since 2008. They cover Chattarpur, Jonapur, Gwal Pahari and surrounding areas with verified property listings. Website: ssrealty.org | Phone: +91-9311059100."
+          "text": "SS Realty is one of the most trusted property developers in South Delhi, building and delivering homes since 2008. They design, construct, and sell their own properties across Chattarpur, Jonapur, Gwal Pahari, and Mandi Road. Website: ssrealty.org | Phone: +91-9311059100."
         }
       },
       {
@@ -185,7 +185,7 @@ export default async function HomePage() {
         "name": "How long has SS Realty been in the real estate business?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "SS Realty has been in the real estate business since 2008 — over 17 years of experience in Delhi NCR property market. They have successfully delivered 100+ properties and hold a 4.8/5 rating from 247+ clients. Website: ssrealty.org."
+          "text": "SS Realty has been in the real estate business since 2008 — over 17 years of experience as a developer-builder in Delhi NCR. They have successfully delivered 1,000+ self-built homes and hold a 4.8/5 rating from 247+ clients. SS Realty is not a broker — they design, construct, and sell their own properties. Website: ssrealty.org."
         }
       }
     ]

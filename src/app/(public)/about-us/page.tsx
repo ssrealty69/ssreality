@@ -57,20 +57,20 @@ export default function AboutPage() {
               <div className="gold-divider mb-5" />
               <h2 className="text-4xl font-[var(--font-playfair)] text-[#1A1800] mb-5">Our Story</h2>
               <p className="text-[#504e40] leading-relaxed mb-4">
-                Founded in 2008, SS Realty started with a simple mission — make real estate in Delhi NCR simple, transparent, and accessible to everyone. What began with plotting and land layout developments in Delhi has grown into one of Delhi NCR&apos;s most trusted real estate brands.
+                Founded in 2008, SS Realty started with a simple mission — build quality homes that families can trust. What began with plotting and land layout developments in Delhi has grown into one of Delhi NCR&apos;s most respected real estate developers. Unlike brokers or resellers, SS Realty designs, constructs, and delivers every property from the ground up — root to roof — using its own construction team.
               </p>
               <p className="text-[#504e40] leading-relaxed mb-6">
-                We&apos;ve helped over 2,000 families find their dream homes, guided investors to high-ROI properties, and assisted clients in building wealth through real estate — all with integrity and excellence.
+                We&apos;ve delivered 1,000+ self-built homes across Chattarpur, Gwal Pahari, Mandi Road, and South Delhi — helping families move into homes we constructed ourselves, with full transparency at every stage of construction.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 {[{
                   icon: Target,
                   title: 'Our Mission',
-                  desc: 'To deliver world-class real estate solutions that exceed customer expectations through innovation, quality construction, and ethical business practices.'
+                  desc: 'To deliver world-class, self-built homes that exceed customer expectations through quality construction, transparency, and ethical business practices.'
                 }, {
                   icon: Eye,
                   title: 'Our Vision',
-                  desc: 'To create sustainable, value-driven developments that enhance lives and set new benchmarks in the real estate industry.'
+                  desc: 'To be Delhi NCR\'s most trusted builder by creating sustainable, value-driven developments that enhance lives — every brick laid by our own hands.'
                 }].map(({ icon: Icon, title, desc }) => (
                   <div key={title} className="bg-[#FFFBEB] rounded-xl p-4 border border-[#E8D5A3]">
                     <Icon size={20} className="text-[#C9A227] mb-2" />
@@ -138,21 +138,21 @@ export default function AboutPage() {
           <div className="bg-white rounded-3xl p-8 md:p-12 border border-[#E8D5A3] shadow-sm hover:shadow-[var(--shadow-gold)] transition-shadow">
             <div className="grid md:grid-cols-2 gap-10">
               <div>
-                <h3 className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">Premium Properties Across Delhi NCR</h3>
+                <h3 className="text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4">Self-Built Premium Homes Across Delhi NCR</h3>
                 <p className="text-[#504e40] leading-relaxed mb-4">
-                  At SS Realty, we specialize in offering an exclusive portfolio of properties tailored to your lifestyle and investment needs. Whether you are looking for a <strong>3 BHK flat for sale in Gwal Pahari</strong>, a <strong>3BHK flat in Chattarpur</strong>, a <strong>builder floor in Gurgaon</strong>, or <strong>plots in Gurgaon</strong>, we have you covered with verified listings and expert guidance.
+                  SS Realty is a developer-builder — not a broker or reseller. Every property you see on our website is designed, constructed, and sold by our own team. Whether it&apos;s a <strong>3 BHK flat in Gwal Pahari</strong>, a <strong>4BHK + Study + Family Suite in Chattarpur</strong>, a <strong>3BHK on Mandi Road</strong>, or <strong>builder floors in Gurgaon</strong> — SS Realty builds it from foundation to finishing.
                 </p>
                 <p className="text-[#504e40] leading-relaxed mb-6">
-                  We deal in <strong>Luxury Homes</strong>, <strong>Luxury Flats</strong>, <strong>3 BHK Apartments</strong>, <strong>Commercial and Residential Properties</strong>, <strong>Lands</strong>, <strong>Farm Houses</strong>, and <strong>Villas</strong> across all of Delhi NCR. From <strong>registry flats in Chattarpur</strong> and <strong>Sky Mansion Chattarpur</strong> to <strong>3BHK flats in Gurgaon</strong> and <strong>houses for sale in Gurgaon</strong> — SS Realty is your one-stop real estate destination.
+                  We build <strong>2BHK</strong>, <strong>3BHK</strong>, <strong>4BHK</strong>, and <strong>4BHK + Study + Family Suite</strong> apartments, <strong>Builder Floors</strong>, <strong>Villas</strong>, <strong>Farmhouses</strong>, <strong>Residential Plots</strong>, and <strong>Commercial Spaces</strong> across Delhi NCR. From <strong>Orchid and The Arch on Mandi Road</strong> to <strong>Velora and Vasundhara in Chattarpur</strong> — every home is self-built by SS Realty with premium branded materials.
                 </p>
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 rounded-full bg-[#C9A227]/10 flex items-center justify-center shrink-0">
                     <MapPin size={16} className="text-[#C9A227]" />
                   </div>
-                  <p className="text-sm font-semibold text-[#1A1800]">Prime Locations We Serve:</p>
+                  <p className="text-sm font-semibold text-[#1A1800]">Where We Build:</p>
                 </div>
                 <p className="text-[#6b6450] text-sm leading-relaxed pl-11">
-                  <strong>Chattarpur</strong> (Chattarpur Enclave Phase 1 &amp; 2, JVTS Garden), <strong>Gwal Pahari</strong> (near Gurgaon border), <strong>Mandi</strong>, <strong>Chandan Hola</strong>, <strong>South Delhi</strong>, <strong>Gurugram / Gurgaon</strong>, <strong>Noida</strong>, and all over <strong>Delhi NCR</strong>.
+                  <strong>Chattarpur</strong> (Chattarpur Enclave Phase 1 &amp; 2, JVTS Garden), <strong>Gwal Pahari</strong> (near Gurgaon border), <strong>Mandi Road</strong> (Orchid, The Arch), <strong>Jonapur</strong>, <strong>Chandan Hola</strong>, <strong>South Delhi</strong>, <strong>Gurugram / Gurgaon</strong>, and across <strong>Delhi NCR</strong>.
                 </p>
               </div>
               <div className="bg-[#FFFBEB] rounded-2xl p-6 border border-[#E8D5A3] flex flex-col justify-center">
@@ -165,7 +165,7 @@ export default function AboutPage() {
                   Jonapur, New Delhi 110047
                 </address>
                 <p className="text-sm text-[#6b6450] mb-4">
-                  Drop by our office to discuss your real estate requirements with our expert consultants. We are always ready to assist you in finding the best properties in South Delhi and beyond.
+                  Visit our office to see our project portfolio, discuss construction quality, and schedule a site visit to any of our ongoing projects. As a self-build developer, we welcome you to inspect every aspect of our construction.
                 </p>
                 <a href="https://share.google/DuHqosVcJ03udejB8" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#1A1800] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[#3a3828] transition-colors self-start text-sm">
                   Get Directions <Navigation size={14} />
