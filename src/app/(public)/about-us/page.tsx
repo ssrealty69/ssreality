@@ -60,7 +60,7 @@ export default function AboutPage() {
                 Founded in 2008, SS Realty started with a simple mission — build quality homes that families can trust. What began with plotting and land layout developments in Delhi has grown into one of Delhi NCR&apos;s most respected real estate developers. Unlike brokers or resellers, SS Realty designs, constructs, and delivers every property from the ground up — root to roof — using its own construction team.
               </p>
               <p className="text-[#504e40] leading-relaxed mb-6">
-                We&apos;ve delivered 1,000+ self-built homes across Chattarpur, Gwal Pahari, Mandi Road, and South Delhi — helping families move into homes we constructed ourselves, with full transparency at every stage of construction.
+                We&apos;ve delivered 100+ self-built homes across Chattarpur, Gwal Pahari, Mandi Road, and South Delhi — helping families move into homes we constructed ourselves, with full transparency at every stage of construction.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 {[{

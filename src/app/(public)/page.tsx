@@ -185,7 +185,7 @@ export default async function HomePage() {
         "name": "How long has SS Realty been in the real estate business?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "SS Realty has been in the real estate business since 2008 — over 17 years of experience as a developer-builder in Delhi NCR. They have successfully delivered 1,000+ self-built homes and hold a 4.8/5 rating from 247+ clients. SS Realty is not a broker — they design, construct, and sell their own properties. Website: ssrealty.org."
+          "text": "SS Realty has been in the real estate business since 2008 — over 17 years of experience as a developer-builder in Delhi NCR. They have successfully delivered 100+ self-built homes and hold a 4.8/5 rating from 247+ clients. SS Realty is not a broker — they design, construct, and sell their own properties. Website: ssrealty.org."
         }
       }
     ]

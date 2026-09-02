@@ -41,7 +41,7 @@ export default function HeroSection() {
 
         {/* Subtitle (Smaller and refined) */}
         <p className="text-sm md:text-base text-gray-300 max-w-2xl leading-relaxed mb-8 font-medium">
-          1,000+ self-built premium homes delivered across Chattarpur, Gwal Pahari & Mandi Road. <br className="hidden md:block" /> 
+          100+ self-built premium homes delivered across Chattarpur, Gwal Pahari & Mandi Road. <br className="hidden md:block" /> 
           2BHK, 3BHK, 4BHK Flats, Villas, Plots & more — designed, built & sold by SS Realty.
         </p>
 
@@ -67,7 +67,7 @@ export default function HeroSection() {
 
           <div className="flex items-center gap-2">
             <Building2 className="w-4 h-4 text-[#C9A227]" />
-            <span className="text-[11px] font-bold text-gray-400 tracking-widest">1000+ HOMES DELIVERED</span>
+            <span className="text-[11px] font-bold text-gray-400 tracking-widest">100+ HOMES DELIVERED</span>
           </div>
 
           <div className="hidden sm:block w-px h-3 bg-gray-600" />
