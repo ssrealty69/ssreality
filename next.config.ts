@@ -60,6 +60,11 @@ const nextConfig: NextConfig = {
         destination: '/privacy',
         permanent: true,
       },
+      {
+        source: '/properties/6a210f719c435ca44605f9ad',
+        destination: '/properties/nivasa-ii',
+        permanent: true,
+      },
     ];
   },
 

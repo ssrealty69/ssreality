@@ -1,11 +1,16 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Image from 'next/image';
 import { connectDB } from '@/lib/mongodb';
 import Property from '@/models/Property';
 
 export const revalidate = 60; // Revalidate page every 60 seconds
+
+// Known historical/indexed property IDs mapped to their current SEO slugs
+const LEGACY_PROPERTY_REDIRECTS: Record<string, string> = {
+  '6a210f719c435ca44605f9ad': 'nivasa-ii',
+};
 
 import ImageSlider from '@/components/properties/ImageSlider';
 import { formatPrice } from '@/lib/utils';
@@ -25,32 +30,35 @@ import mongoose from 'mongoose';
 export async function generateStaticParams() {
   try {
     await connectDB();
-    const properties = await Property.find({}).select('_id').lean();
+    const properties = await Property.find({}).select('slug _id').lean();
     return properties.map((property: any) => ({
-      id: property._id.toString(),
+      id: property.slug || property._id.toString(),
     }));
   } catch (error) {
     return FALLBACK_PROPERTIES.map((property) => ({
-      id: property._id,
+      id: property.slug || property._id,
     }));
   }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
+  const lookupId = LEGACY_PROPERTY_REDIRECTS[id] || id;
   try {
     await connectDB();
-    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const isObjectId = mongoose.Types.ObjectId.isValid(lookupId);
     let property: any = null;
     
     if (!isObjectId) {
-      property = await Property.findOne({ slug: id }).select('title description seo images').lean();
+      property = await Property.findOne({ slug: lookupId }).select('title description seo images slug').lean();
     }
     
     if (!property && isObjectId) {
-      property = await Property.findById(id).select('title description seo images').lean();
+      property = await Property.findById(lookupId).select('title description seo images slug').lean();
     }
-      const slug = property.slug || (property._id ? property._id.toString() : id);
+
+    if (property) {
+      const slug = property.slug || (property._id ? property._id.toString() : lookupId);
       return {
         title: property.seo?.title || `${property.title} | SS Realty`,
         description: property.seo?.description || property.description,
@@ -61,6 +69,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
           images: property.images && property.images.length > 0 ? [property.images[0]] : [],
         }
       };
+    }
   } catch (e) {
     console.error("Error generating metadata", e);
   }
@@ -191,6 +200,10 @@ function formatPropertyHeading(priceList: any[], propertyType: string): string {
 export default async function PropertyLandingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
+  if (LEGACY_PROPERTY_REDIRECTS[id]) {
+    redirect(`/properties/${LEGACY_PROPERTY_REDIRECTS[id]}`);
+  }
+
   let property: any = null;
   let relatedProperties: any[] = [];
   let deliveredProperties: any[] = [];
@@ -237,6 +250,11 @@ export default async function PropertyLandingPage({ params }: { params: Promise<
     }
   } catch (error) {
     console.error("MongoDB Connection Error in Frontend:", error);
+  }
+
+  // If user navigated via raw MongoDB ObjectId, redirect to SEO friendly slug
+  if (property && property.slug && id !== property.slug) {
+    redirect(`/properties/${property.slug}`);
   }
 
   // Return 404 if property not found in DB
