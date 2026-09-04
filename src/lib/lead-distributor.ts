@@ -171,6 +171,9 @@ export interface LeadDistributionPayload {
   createdAt?: Date;
 }
 
+// In-flight mutex to serialize concurrent distribution attempts for the same customer phone
+const inFlightDistributionPhones = new Set<string>();
+
 /**
  * Core Lead Distribution Function (200 IQ Weighted Algorithm + 6-9 PM IST Top 3 Window)
  */
@@ -208,137 +211,186 @@ export async function distributeLead(payload: LeadDistributionPayload): Promise<
 
   const phone10 = cleanPhone.slice(-10);
 
-  // 2. Anti-Duplicate Check: If this phone is already assigned to an agent, do not re-assign
-  const existing = await AgentLead.findOne({
-    phone: { $regex: `${phone10}$` },
-  }).lean();
-
-  if (existing) {
-    return {
-      assigned: false,
-      agentId: (existing as any).agentId,
-      agentName: (existing as any).agentName,
-      leadDocId: (existing as any)._id?.toString(),
-      reason: 'Lead already assigned to agent',
-    };
+  // In-flight concurrency lock to prevent duplicate concurrent executions
+  if (inFlightDistributionPhones.has(phone10)) {
+    return { assigned: false, reason: 'Distribution already in-flight for this phone number' };
   }
+  inFlightDistributionPhones.add(phone10);
 
-  // 3. Fetch all active telecallers who are NOT on leave and NOT executive/director
-  const allActiveAgents = await Agent.find({
-    isActive: true,
-    isReceivingLeads: { $ne: false },
-    role: { $ne: 'director' },
-    isExecutive: { $ne: true },
-    employee_id: { $ne: 'SSR000' },
-    name: { $not: /yogesh/i },
-    username: { $ne: 'info@ssrealty.org' },
-  }).lean();
-
-  if (allActiveAgents.length === 0) {
-    return { assigned: false, reason: 'No active agents available to receive leads' };
-  }
-
-  const leadTime = payload.createdAt || new Date();
-  const isTop3Time = isEveningTop3Window(leadTime);
-
-  // 3. Filter Eligible Agents based on 6 PM - 9 PM IST Window
-  let eligibleAgents = allActiveAgents.map((agent) => {
-    const { rank, weight, isTop3 } = getAgentWeightAndRank(agent);
-    return { ...agent, rank, weight, isTop3 };
-  });
-
-  if (isTop3Time) {
-    const top3Only = eligibleAgents.filter((a) => a.isTop3);
-    if (top3Only.length > 0) {
-      eligibleAgents = top3Only;
+  try {
+    // 2. Deep Anti-Duplicate Check: Check if this phone OR originalLeadId is already assigned to ANY agent
+    const duplicateConditions: any[] = [
+      { phone: phone10 },
+      { phone: { $regex: `${phone10}$` } },
+    ];
+    if (payload.originalLeadId) {
+      duplicateConditions.push({ originalLeadId: payload.originalLeadId });
     }
-  }
 
-  // 4. Calculate Distribution Scores (Weighted Proportional Round-Robin)
-  // Score = (Total Assigned Leads for Agent) / (Agent Weight)
-  const agentScores = await Promise.all(
-    eligibleAgents.map(async (agent) => {
-      const agentIdStr = String(agent._id);
-      const assignedCount = await AgentLead.countDocuments({
-        $or: [
-          { agentId: agentIdStr },
-          { agentId: agent.employee_id },
-          { agentName: agent.name },
-        ],
-      });
+    const existing = await AgentLead.findOne({ $or: duplicateConditions }).lean();
 
-      const lastAssignedTime = agent.lastAssignedLeadAt
-        ? new Date(agent.lastAssignedLeadAt).getTime()
-        : 0;
-
-      // Score formula: lower score means agent is next in line
-      const score = assignedCount / agent.weight;
-
+    if (existing) {
       return {
-        agent,
-        assignedCount,
-        score,
-        lastAssignedTime,
+        assigned: false,
+        agentId: (existing as any).agentId,
+        agentName: (existing as any).agentName,
+        leadDocId: (existing as any)._id?.toString(),
+        reason: `Lead already assigned to agent ${(existing as any).agentName}`,
       };
-    })
-  );
-
-  // Sort by score ascending (lowest score gets the lead); tie-breaker: oldest lastAssignedTime
-  agentScores.sort((a, b) => {
-    if (Math.abs(a.score - b.score) > 0.05) {
-      return a.score - b.score;
     }
-    return a.lastAssignedTime - b.lastAssignedTime;
-  });
 
-  const selected = agentScores[0].agent;
-  const selectedAgentId = String(selected._id);
-  const selectedAgentName = selected.name;
+    // 3. Fetch all active telecallers who are NOT on leave and NOT executive/director
+    const allActiveAgents = await Agent.find({
+      isActive: true,
+      isReceivingLeads: { $ne: false },
+      role: { $ne: 'director' },
+      isExecutive: { $ne: true },
+      employee_id: { $ne: 'SSR000' },
+      name: { $not: /yogesh/i },
+      username: { $ne: 'info@ssrealty.org' },
+    }).lean();
 
-  // 5. Clean Project Name
-  const normalizedProjectName = cleanProjectTitle(
-    payload.rawProjectName || payload.sheetName || payload.formName || payload.propertyInterest
-  );
+    if (allActiveAgents.length === 0) {
+      return { assigned: false, reason: 'No active agents available to receive leads' };
+    }
 
-  // 6. Create AgentLead Record
-  const newAgentLead = await AgentLead.create({
-    agentId: selectedAgentId,
-    agentName: selectedAgentName,
-    name: payload.name && payload.name !== 'Lead' ? payload.name : `Lead ${phone10}`,
-    phone: phone10,
-    email: payload.email || '',
-    source: payload.source || 'Meta Ads',
-    originalLeadId: payload.originalLeadId || '',
-    originalLeadType: payload.originalLeadType || 'meta_lead',
-    projectName: normalizedProjectName,
-    propertyInterest: payload.propertyInterest || normalizedProjectName,
-    planning: payload.planning || '',
-    visitTimeline: payload.visitTimeline || '',
-    budget: payload.budget || '',
-    configuration: payload.configuration || '',
-    sheetName: payload.sheetName || '',
-    formName: payload.formName || '',
-    campaignName: payload.campaignName || '',
-    adName: payload.adName || '',
-    platform: payload.platform || 'fb',
-    isRead: false,
-    notes: payload.notes || '',
-    disposition: 'new',
-    history: [],
-    createdAt: leadTime,
-  });
+    const leadTime = payload.createdAt || new Date();
+    const isTop3Time = isEveningTop3Window(leadTime);
 
-  // 7. Update Agent's Last Assigned Timestamp
-  await Agent.findByIdAndUpdate(selected._id, {
-    lastAssignedLeadAt: new Date(),
-  });
+    // 3. Filter Eligible Agents based on 6 PM - 9 PM IST Window
+    let eligibleAgents = allActiveAgents.map((agent) => {
+      const { rank, weight, isTop3 } = getAgentWeightAndRank(agent);
+      return { ...agent, rank, weight, isTop3 };
+    });
 
-  return {
-    assigned: true,
-    agentId: selectedAgentId,
-    agentName: selectedAgentName,
-    leadDocId: newAgentLead._id.toString(),
-  };
+    if (isTop3Time) {
+      const top3Only = eligibleAgents.filter((a) => a.isTop3);
+      if (top3Only.length > 0) {
+        eligibleAgents = top3Only;
+      }
+    }
+
+    // 4. Calculate Distribution Scores (Weighted Proportional Round-Robin)
+    // Score = (Total Assigned Leads for Agent) / (Agent Weight)
+    const agentScores = await Promise.all(
+      eligibleAgents.map(async (agent) => {
+        const agentIdStr = String(agent._id);
+        const assignedCount = await AgentLead.countDocuments({
+          $or: [
+            { agentId: agentIdStr },
+            { agentId: agent.employee_id },
+            { agentName: agent.name },
+          ],
+        });
+
+        const lastAssignedTime = agent.lastAssignedLeadAt
+          ? new Date(agent.lastAssignedLeadAt).getTime()
+          : 0;
+
+        // Score formula: lower score means agent is next in line
+        const score = assignedCount / agent.weight;
+
+        return {
+          agent,
+          assignedCount,
+          score,
+          lastAssignedTime,
+        };
+      })
+    );
+
+    // Sort by score ascending (lowest score gets the lead); tie-breaker: oldest lastAssignedTime
+    agentScores.sort((a, b) => {
+      if (Math.abs(a.score - b.score) > 0.05) {
+        return a.score - b.score;
+      }
+      return a.lastAssignedTime - b.lastAssignedTime;
+    });
+
+    const selected = agentScores[0].agent;
+    const selectedAgentId = String(selected._id);
+    const selectedAgentName = selected.name;
+
+    // 5. Clean Project Name
+    const normalizedProjectName = cleanProjectTitle(
+      payload.rawProjectName || payload.sheetName || payload.formName || payload.propertyInterest
+    );
+
+    // 6. Create AgentLead Record with race-condition catch
+    let newAgentLead: any = null;
+    try {
+      newAgentLead = await AgentLead.create({
+        agentId: selectedAgentId,
+        agentName: selectedAgentName,
+        name: payload.name && payload.name !== 'Lead' ? payload.name : `Lead ${phone10}`,
+        phone: phone10,
+        email: payload.email || '',
+        source: payload.source || 'Meta Ads',
+        originalLeadId: payload.originalLeadId || '',
+        originalLeadType: payload.originalLeadType || 'meta_lead',
+        projectName: normalizedProjectName,
+        propertyInterest: payload.propertyInterest || normalizedProjectName,
+        planning: payload.planning || '',
+        visitTimeline: payload.visitTimeline || '',
+        budget: payload.budget || '',
+        configuration: payload.configuration || '',
+        sheetName: payload.sheetName || '',
+        formName: payload.formName || '',
+        campaignName: payload.campaignName || '',
+        adName: payload.adName || '',
+        platform: payload.platform || 'fb',
+        isRead: false,
+        notes: payload.notes || '',
+        disposition: 'new',
+        history: [],
+        createdAt: leadTime,
+      });
+    } catch (createErr: any) {
+      if (createErr.code === 11000) {
+        const existingAfterRace = await AgentLead.findOne({
+          $or: [
+            { phone: phone10 },
+            { phone: { $regex: `${phone10}$` } },
+            ...(payload.originalLeadId ? [{ originalLeadId: payload.originalLeadId }] : []),
+          ],
+        }).lean();
+        return {
+          assigned: false,
+          agentId: (existingAfterRace as any)?.agentId,
+          agentName: (existingAfterRace as any)?.agentName,
+          reason: `Duplicate prevented: Lead already assigned to agent ${(existingAfterRace as any)?.agentName}`,
+        };
+      }
+      throw createErr;
+    }
+
+    // 7. Update Agent's Last Assigned Timestamp
+    await Agent.findByIdAndUpdate(selected._id, {
+      lastAssignedLeadAt: new Date(),
+    });
+
+    // 8. Update original source doc's assignedAgentId if applicable
+    if (payload.originalLeadId && mongoose.Types.ObjectId.isValid(payload.originalLeadId)) {
+      try {
+        if (payload.originalLeadType === 'contact') {
+          const Contact = (await import('@/models/Contact')).default;
+          await Contact.findByIdAndUpdate(payload.originalLeadId, { assignedAgentId: selectedAgentId });
+        } else if (payload.originalLeadType === 'property_enquiry' || payload.originalLeadType === 'brochure') {
+          const PropertyEnquiry = (await import('@/models/PropertyEnquiry')).default;
+          await PropertyEnquiry.findByIdAndUpdate(payload.originalLeadId, { assignedAgentId: selectedAgentId });
+        }
+      } catch (_) {}
+    }
+
+    return {
+      assigned: true,
+      agentId: selectedAgentId,
+      agentName: selectedAgentName,
+      leadDocId: newAgentLead._id.toString(),
+    };
+  } finally {
+    inFlightDistributionPhones.delete(phone10);
+  }
 }
 
 /**

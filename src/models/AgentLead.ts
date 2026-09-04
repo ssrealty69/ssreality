@@ -158,7 +158,11 @@ const AgentLeadSchema = new Schema<IAgentLead>(
 AgentLeadSchema.index({ agentId: 1, disposition: 1 });
 AgentLeadSchema.index({ agentId: 1, isRead: 1 });
 AgentLeadSchema.index({ createdAt: -1 });
-AgentLeadSchema.index({ phone: 1 });
+AgentLeadSchema.index({ phone: 1 }, { unique: true });
+AgentLeadSchema.index(
+  { originalLeadId: 1 },
+  { unique: true, partialFilterExpression: { originalLeadId: { $type: 'string', $gt: '' } } }
+);
 AgentLeadSchema.index({ agentId: 1, phone: 1 });
 AgentLeadSchema.index({ isReassignedAtNoon: 1 });
 

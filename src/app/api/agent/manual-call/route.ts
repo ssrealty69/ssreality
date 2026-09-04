@@ -22,15 +22,23 @@ export async function POST(req: NextRequest) {
 
     await connectDB();
 
-    // Check if lead already exists for this agent & phone
-    let lead = await AgentLead.findOne({ agentId: auth.agentId, phone: phone.trim() });
+    const cleanDigits = (phone || '').replace(/\D/g, '');
+    const phone10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : cleanDigits;
+
+    // Check if lead already exists in AgentLead (by normalized 10-digit phone)
+    let lead = await AgentLead.findOne({
+      $or: [
+        { phone: phone10 },
+        { phone: { $regex: `${phone10}$` } },
+      ],
+    });
 
     if (!lead) {
       lead = new AgentLead({
         agentId: auth.agentId,
         agentName: auth.agent!.name,
         name: name || 'Unknown',
-        phone: phone.trim(),
+        phone: phone10 || phone.trim(),
         originalLeadType: 'manual',
         disposition: disposition || 'new',
       });

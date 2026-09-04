@@ -43,9 +43,11 @@ export async function POST(req: NextRequest) {
         orQueries.push({ _id: new mongoose.Types.ObjectId(leadId) });
       }
     }
-    if (phoneNumber) {
-      const clean = phoneNumber.replace(/[^0-9]/g, '');
-      if (clean) orQueries.push({ phone: clean });
+    const cleanDigits = (phoneNumber || '').replace(/[^0-9]/g, '');
+    const phone10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : cleanDigits;
+    if (phone10) {
+      orQueries.push({ phone: phone10 });
+      orQueries.push({ phone: { $regex: `${phone10}$` } });
     }
 
     if (orQueries.length > 0) {
@@ -56,8 +58,8 @@ export async function POST(req: NextRequest) {
 
     if (!agentLead) {
       // Find source doc for name & phone if leadId provided
-      let name = (leadName && leadName !== 'Unknown Contact') ? leadName : (phoneNumber ? `Lead ${phoneNumber}` : 'Website Lead');
-      let phone = phoneNumber || '';
+      let name = (leadName && leadName !== 'Unknown Contact') ? leadName : (phone10 ? `Lead ${phone10}` : 'Website Lead');
+      let phone = phone10 || phoneNumber || '';
       let interest = propertyInterest || '';
 
       if (leadId && mongoose.Types.ObjectId.isValid(leadId)) {
@@ -80,7 +82,7 @@ export async function POST(req: NextRequest) {
         agentId,
         agentName,
         name,
-        phone,
+        phone: phone10 || phone,
         source: source || 'mobile',
         originalLeadId: leadId || undefined,
         originalLeadType: (source === 'manual' || leadId?.startsWith('manual-')) ? 'manual' : undefined,
@@ -125,7 +127,32 @@ export async function POST(req: NextRequest) {
       agentLead.followUpDate = new Date(followUpDate);
     }
 
-    await agentLead.save();
+    try {
+      await agentLead.save();
+    } catch (saveErr: any) {
+      if (saveErr.code === 11000) {
+        // Fallback: reload the existing lead that took the unique slot and update its disposition/history
+        const existingAfterRace = await AgentLead.findOne({ $or: orQueries });
+        if (existingAfterRace) {
+          existingAfterRace.history.push({
+            disposition: mappedDisp,
+            notes: notes || '',
+            calledAt: new Date(),
+            duration: duration || (durationSeconds ? `${durationSeconds}s` : '0s'),
+            durationSeconds: durationSeconds || 0,
+            recordingUrl: recordingUrl || undefined,
+            recordingPath: recordingPath || undefined,
+          });
+          existingAfterRace.disposition = mappedDisp;
+          if (visitDetails) existingAfterRace.visitDetails = visitDetails;
+          if (followUpDate) existingAfterRace.followUpDate = new Date(followUpDate);
+          await existingAfterRace.save();
+          agentLead = existingAfterRace;
+        }
+      } else {
+        throw saveErr;
+      }
+    }
 
     // 2. Also update status and name on original PropertyEnquiry or Contact if present
     if (leadId && mongoose.Types.ObjectId.isValid(leadId)) {
