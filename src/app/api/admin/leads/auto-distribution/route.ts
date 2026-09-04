@@ -98,6 +98,15 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
+  const roleCookie = req.cookies.get('admin_role')?.value;
+  const isSuperAdmin = roleCookie === 'super_admin' || req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET;
+  if (!isSuperAdmin) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden: Super Admin permissions required' },
+      { status: 403 }
+    );
+  }
+
   try {
     await connectDB();
     const deleteRes = await AgentLead.deleteMany({});

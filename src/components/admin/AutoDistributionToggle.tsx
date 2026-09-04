@@ -21,6 +21,7 @@ export default function AutoDistributionToggle({
   const [pendingAction, setPendingAction] = useState<'enable' | 'disable' | null>(null);
   const [showResetModal, setShowResetModal] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   const fetchStatus = async () => {
     try {
@@ -37,6 +38,15 @@ export default function AutoDistributionToggle({
 
   useEffect(() => {
     fetchStatus();
+
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || '';
+      return '';
+    };
+    const role = getCookie('admin_role');
+    setIsSuperAdmin(role === 'super_admin');
   }, []);
 
   const handleToggleClick = () => {
@@ -146,15 +156,17 @@ export default function AutoDistributionToggle({
         </div>
 
         <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
-          <button
-            onClick={() => setShowResetModal(true)}
-            disabled={loading || resetting}
-            className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-all cursor-pointer shadow-xs disabled:opacity-50"
-            title="Reset all test assigned leads across all agent IDs"
-          >
-            <RotateCcw size={13} className={resetting ? 'animate-spin' : ''} />
-            <span>{resetting ? 'Resetting...' : 'Reset Assigned Leads'}</span>
-          </button>
+          {isSuperAdmin && (
+            <button
+              onClick={() => setShowResetModal(true)}
+              disabled={loading || resetting}
+              className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-all cursor-pointer shadow-xs disabled:opacity-50"
+              title="Reset all test assigned leads across all agent IDs"
+            >
+              <RotateCcw size={13} className={resetting ? 'animate-spin' : ''} />
+              <span>{resetting ? 'Resetting...' : 'Reset Assigned Leads'}</span>
+            </button>
+          )}
 
           <button
             onClick={handleToggleClick}
@@ -235,8 +247,8 @@ export default function AutoDistributionToggle({
         </div>
       )}
 
-      {/* Reset Leads Confirmation Modal */}
-      {showResetModal && (
+      {/* Reset Leads Confirmation Modal - Strictly Super Admin Only */}
+      {isSuperAdmin && showResetModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
             <div className="flex items-center gap-3">
