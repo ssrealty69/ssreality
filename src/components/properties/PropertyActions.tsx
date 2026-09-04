@@ -258,11 +258,11 @@ export default function PropertyActions({ propertyId, propertyTitle, brochureUrl
 
       {/* Brochure Modal Popup */}
       {showBrochureModal && property && (
-        <BrochureModal 
-          property={property} 
+        <BrochureModal
+          property={property}
           images={property.images && property.images.length > 0 ? property.images : ['/placeholder.jpg']}
           waLink={waLink}
-          onClose={() => setShowBrochureModal(false)} 
+          onClose={() => setShowBrochureModal(false)}
         />
       )}
     </>

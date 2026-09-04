@@ -15,13 +15,13 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
   const mainImage = (property.interiorImages && property.interiorImages.length > 0)
     ? property.interiorImages[0]
     : property.images?.[0] || '/SS Realty.png';
-  
+
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const shareUrl = `${window.location.origin}${getPropertyUrl(property)}`;
-    
+
     if (navigator.share) {
       try {
         await navigator.share({
@@ -41,7 +41,7 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
       }
     }
   };
-  
+
   return (
     <article className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm flex flex-col h-full group transition-all duration-300 hover:shadow-md hover:border-[#C9A227]/30">
       {/* Image Container */}
@@ -105,14 +105,14 @@ export default function SimilarPropertyCard({ property }: SimilarPropertyCardPro
 
         {/* View Details Button */}
         <div className="mt-auto flex items-center gap-2">
-          <Link 
+          <Link
             href={getPropertyUrl(property)}
             className="flex-1 py-2 bg-gradient-to-r from-[#C9A227] via-[#F0D060] to-[#B8860B] text-[#1A1800] text-[11px] sm:text-xs font-heading font-bold rounded-md text-center transition-all flex items-center justify-center gap-1 group/btn shadow-[var(--shadow-gold-sm)] hover:shadow-md hover:scale-[1.02] active:scale-95 relative overflow-hidden"
           >
             {/* SHINE EFFECT */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] pointer-events-none" />
             <span className="relative z-10 flex items-center gap-1">
-              View Details 
+              View Details
               <ChevronRight size={14} className="transition-transform group-hover/btn:translate-x-1" />
             </span>
           </Link>

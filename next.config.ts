@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   // ─── Image Optimization ───────────────────────────────────────────────────
   images: {
+    unoptimized: true,                              // Direct serving from Cloudinary & CDN (bypasses Vercel 5K transform limit)
     formats: ['image/avif', 'image/webp'],          // Serve AVIF first, then WebP
     deviceSizes: [360, 480, 640, 750, 828, 1080, 1200, 1440, 1920, 2048, 2560, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512, 640, 800, 1024],

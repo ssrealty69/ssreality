@@ -17,8 +17,8 @@ type Props = { params: Promise<{ slug: string }> };
 async function getBlog(slug: string): Promise<Blog | null> {
   try {
     await connectDB();
-    let blog = await BlogModel.findOne({ 
-      slug, 
+    let blog = await BlogModel.findOne({
+      slug,
       $or: [
         { published: true }, // Legacy
         { status: 'published' },
@@ -26,7 +26,7 @@ async function getBlog(slug: string): Promise<Blog | null> {
       ]
     }).lean() as any;
     if (blog) {
-      BlogModel.findByIdAndUpdate(blog._id, { $inc: { views: 1 } }).exec().catch(() => {});
+      BlogModel.findByIdAndUpdate(blog._id, { $inc: { views: 1 } }).exec().catch(() => { });
     } else {
       blog = FALLBACK_BLOGS.find(b => b.slug === slug);
     }
@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const blog = await getBlog(slug);
   if (!blog) return { title: 'Post Not Found | SS Realty' };
-  
+
   // Custom SEO parameters with rich defaults
   const seoTitle = blog.seo?.title || blog.title;
   const seoDesc = blog.seo?.description || blog.excerpt;
@@ -167,18 +167,18 @@ export default async function BlogPostPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      
+
       {/* Premium Hero Section with Lead Form */}
       <div className="relative pt-22 pb-4 lg:pt-26 lg:pb-8 overflow-hidden border-b border-[#E8D5A3]/40">
         {/* Background Patterns */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
-          style={{ backgroundImage: 'radial-gradient(#C9A227 1px, transparent 1px)', backgroundSize: '32px 32px' }} 
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{ backgroundImage: 'radial-gradient(#C9A227 1px, transparent 1px)', backgroundSize: '32px 32px' }}
         />
         <div className="absolute top-0 right-0 w-[60%] h-full bg-gradient-to-l from-[#C9A227]/5 to-transparent pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-x-16 items-start">
-            
+
             {/* Left Column: Header & Trust Section */}
             <div className="flex flex-col gap-6 lg:gap-8 order-1 w-full lg:col-start-1">
               {/* Header (Title + Excerpt) */}
@@ -186,7 +186,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <Link href="/blog" className="inline-flex items-center gap-2 text-[#C9A227] hover:text-[#B8860B] font-semibold text-[10px] mb-4 uppercase tracking-wider group">
                   <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-1" /> Back to Blog
                 </Link>
-                
+
                 <div className="flex items-center gap-2 mb-3">
                   <span className="px-2 py-0.5 bg-[#C9A227]/10 text-[#B8860B] rounded-md text-[9px] font-bold uppercase tracking-wide">
                     {blog.category}
@@ -198,7 +198,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <h1 className="text-2xl md:text-4xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-4 leading-[1.2] text-balance">
                   {blog.title}
                 </h1>
-                
+
                 <p className="text-[#6b6450] text-sm md:text-base mb-3 leading-relaxed max-w-xl">
                   {blog.excerpt}
                 </p>
@@ -295,7 +295,7 @@ export default async function BlogPostPage({ params }: Props) {
             </p>
 
 
-            <div 
+            <div
               className="prose prose-sm md:prose-lg max-w-full w-full break-words overflow-x-auto text-[#3a3828] leading-relaxed [&_a]:no-underline [&_a[style]]:text-inherit [&_a[style]]:no-underline [&_a[style]]:font-[inherit]"
               dangerouslySetInnerHTML={{ __html: blog.content }}
             />
@@ -315,45 +315,45 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Sidebar / Related Posts */}
           <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-8">
-              <div className="bg-white rounded-2xl border border-[#E8D5A3] p-6">
-                <h3 className="text-xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-5 pb-3 border-b border-[#E8D5A3]">
-                  Related <span className="text-[#C9A227]">Articles</span>
-                </h3>
-                <div className="space-y-6">
-                  {/* We show fallback related posts for better UX if dynamic is missing */}
-                  {[
-                    { title: 'Luxury Living in Gwal Pahari: New Destination', slug: 'luxury-living-gurugram-gwal-pahari', date: '2026-04-22', views: '1.4k' },
-                    { title: 'Delhi NCR Real Estate Investment 2026 Guide', slug: 'real-estate-investment-delhi-ncr-2026-guide', date: '2026-04-20', views: '1.4k' },
-                    { title: 'Chattarpur vs Gwal Pahari — Which is Better?', slug: 'chattarpur-vs-gwal-pahari-which-location-better-flat', date: '2026-06-10', views: '39' },
-                    { title: 'NRI Guide to Buying Property in India', slug: 'nri-guide-buying-property-india', date: '2026-04-25', views: '1.3k' },
-                    { title: 'First Time Home Buyer Guide Delhi', slug: 'first-time-home-buyer-guide-delhi-step-by-step-flat-purchase', date: '2026-06-15', views: '139' },
-                    { title: 'Builder Floor vs Apartment — South Delhi Guide', slug: 'builder-floor-vs-apartment-delhi-south-delhi-buyers-guide', date: '2026-06-18', views: '178' },
-                  ].filter(p => p.slug !== slug).slice(0, 4).map((post) => (
-                     <Link key={post.slug} href={`/blog/${post.slug}`} className="group block p-3 rounded-xl hover:bg-[#FFFBEB] border border-transparent hover:border-[#E8D5A3] transition-all">
-                       <div className="flex items-center justify-between gap-2 mb-1">
-                         <p className="text-[10px] text-[#a09060]">{formatDate(post.date)}</p>
-                         {(post as any).views && <span className="text-[9px] bg-[#C9A227]/10 text-[#B8860B] font-bold px-1.5 py-0.5 rounded-full">👁 {(post as any).views}</span>}
-                       </div>
-                       <h4 className="font-semibold text-[#1A1800] group-hover:text-[#C9A227] transition-colors leading-snug text-sm">
-                         {post.title}
-                       </h4>
-                       <span className="text-[10px] text-[#C9A227] font-semibold mt-1 inline-block group-hover:translate-x-1 transition-transform">Read more →</span>
-                     </Link>
-                  ))}
-                </div>
+            <div className="bg-white rounded-2xl border border-[#E8D5A3] p-6">
+              <h3 className="text-xl font-bold font-[var(--font-playfair)] text-[#1A1800] mb-5 pb-3 border-b border-[#E8D5A3]">
+                Related <span className="text-[#C9A227]">Articles</span>
+              </h3>
+              <div className="space-y-6">
+                {/* We show fallback related posts for better UX if dynamic is missing */}
+                {[
+                  { title: 'Luxury Living in Gwal Pahari: New Destination', slug: 'luxury-living-gurugram-gwal-pahari', date: '2026-04-22', views: '1.4k' },
+                  { title: 'Delhi NCR Real Estate Investment 2026 Guide', slug: 'real-estate-investment-delhi-ncr-2026-guide', date: '2026-04-20', views: '1.4k' },
+                  { title: 'Chattarpur vs Gwal Pahari — Which is Better?', slug: 'chattarpur-vs-gwal-pahari-which-location-better-flat', date: '2026-06-10', views: '39' },
+                  { title: 'NRI Guide to Buying Property in India', slug: 'nri-guide-buying-property-india', date: '2026-04-25', views: '1.3k' },
+                  { title: 'First Time Home Buyer Guide Delhi', slug: 'first-time-home-buyer-guide-delhi-step-by-step-flat-purchase', date: '2026-06-15', views: '139' },
+                  { title: 'Builder Floor vs Apartment — South Delhi Guide', slug: 'builder-floor-vs-apartment-delhi-south-delhi-buyers-guide', date: '2026-06-18', views: '178' },
+                ].filter(p => p.slug !== slug).slice(0, 4).map((post) => (
+                  <Link key={post.slug} href={`/blog/${post.slug}`} className="group block p-3 rounded-xl hover:bg-[#FFFBEB] border border-transparent hover:border-[#E8D5A3] transition-all">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <p className="text-[10px] text-[#a09060]">{formatDate(post.date)}</p>
+                      {(post as any).views && <span className="text-[9px] bg-[#C9A227]/10 text-[#B8860B] font-bold px-1.5 py-0.5 rounded-full">👁 {(post as any).views}</span>}
+                    </div>
+                    <h4 className="font-semibold text-[#1A1800] group-hover:text-[#C9A227] transition-colors leading-snug text-sm">
+                      {post.title}
+                    </h4>
+                    <span className="text-[10px] text-[#C9A227] font-semibold mt-1 inline-block group-hover:translate-x-1 transition-transform">Read more →</span>
+                  </Link>
+                ))}
               </div>
+            </div>
 
-              {/* Newsletter / CTA Sidebar */}
-              <div className="gold-gradient rounded-2xl p-6 text-center">
-                <h3 className="text-lg font-bold text-[#1A1800] mb-2">Get Market Updates</h3>
-                <p className="text-[#5c4004] text-xs mb-5">Subscribe to our newsletter for exclusive insights.</p>
-                <div className="space-y-2">
-                  <input type="email" placeholder="Email Address" className="w-full px-4 py-2 rounded-xl border border-[#E8D5A3] text-sm outline-none focus:border-[#C9A227]" />
-                  <button className="w-full bg-[#1A1800] text-[#C9A227] font-semibold py-2 rounded-xl text-sm transition-transform active:scale-95">
-                    Subscribe Now
-                  </button>
-                </div>
+            {/* Newsletter / CTA Sidebar */}
+            <div className="gold-gradient rounded-2xl p-6 text-center">
+              <h3 className="text-lg font-bold text-[#1A1800] mb-2">Get Market Updates</h3>
+              <p className="text-[#5c4004] text-xs mb-5">Subscribe to our newsletter for exclusive insights.</p>
+              <div className="space-y-2">
+                <input type="email" placeholder="Email Address" className="w-full px-4 py-2 rounded-xl border border-[#E8D5A3] text-sm outline-none focus:border-[#C9A227]" />
+                <button className="w-full bg-[#1A1800] text-[#C9A227] font-semibold py-2 rounded-xl text-sm transition-transform active:scale-95">
+                  Subscribe Now
+                </button>
               </div>
+            </div>
           </div>
         </div>
 

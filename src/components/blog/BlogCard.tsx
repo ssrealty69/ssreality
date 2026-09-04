@@ -31,7 +31,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
           />
           {/* Subtle Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1800]/40 via-transparent to-transparent opacity-60" />
-          
+
           {/* Glassmorphism Category Badge */}
           <div className="absolute top-4 left-4">
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md border border-white/30 text-white shadow-lg">
@@ -57,7 +57,7 @@ export default function BlogCard({ blog }: BlogCardProps) {
           <h3 className="font-[var(--font-playfair)] text-xl leading-tight text-[#1A1800] mb-3 group-hover:text-[#C9A227] transition-colors duration-300 line-clamp-2 font-bold">
             {blog.title}
           </h3>
-          
+
           <p className="text-sm text-[#6b6450]/80 leading-relaxed line-clamp-2 mb-6">
             {truncate(blog.excerpt, 100)}
           </p>

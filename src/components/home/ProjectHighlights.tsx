@@ -47,12 +47,12 @@ export default function ProjectHighlights() {
     });
   };
 
-  const filteredFeatures = activeTab === 'all' 
-    ? features 
+  const filteredFeatures = activeTab === 'all'
+    ? features
     : features.filter(f => f.category === activeTab);
 
   return (
-    <section 
+    <section
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovering(true)}
@@ -174,10 +174,10 @@ export default function ProjectHighlights() {
             <circle cx="350" cy="350" r="320" fill="none" stroke="#C9A227" strokeWidth="1" strokeDasharray="12 18" />
             <circle cx="350" cy="350" r="280" fill="none" stroke="#C9A227" strokeWidth="0.7" strokeDasharray="6 22" />
             <circle cx="350" cy="350" r="240" fill="none" stroke="#C9A227" strokeWidth="1" strokeDasharray="20 10" />
-            {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg, i) => (
+            {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg, i) => (
               <line key={i} x1="350" y1="30" x2="350" y2="80" stroke="#C9A227" strokeWidth="1.5" transform={`rotate(${deg} 350 350)`} />
             ))}
-            {[0,45,90,135,180,225,270,315].map((deg, i) => (
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => (
               <path key={i} d="M350 100 L360 130 L350 160 L340 130 Z" fill="rgba(201,162,39,0.5)" transform={`rotate(${deg} 350 350)`} />
             ))}
           </svg>
@@ -186,7 +186,7 @@ export default function ProjectHighlights() {
           <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
             <circle cx="250" cy="250" r="230" fill="none" stroke="#C9A227" strokeWidth="0.8" strokeDasharray="4 16" />
             <circle cx="250" cy="250" r="190" fill="none" stroke="#C9A227" strokeWidth="1.2" strokeDasharray="14 8" />
-            {[0,60,120,180,240,300].map((deg, i) => (
+            {[0, 60, 120, 180, 240, 300].map((deg, i) => (
               <circle key={i} cx="250" cy="60" r="7" fill="none" stroke="#C9A227" strokeWidth="1.5" transform={`rotate(${deg} 250 250)`} />
             ))}
           </svg>
@@ -235,7 +235,7 @@ export default function ProjectHighlights() {
       </div>
 
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-24 relative z-10">
-        
+
         {/* Header Block */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C9A227]/12 border border-[#C9A227]/25 text-[#A67C1E] text-[10px] font-bold tracking-[0.25em] uppercase mb-4 shadow-sm shadow-[#C9A227]/5">
@@ -257,11 +257,10 @@ export default function ProjectHighlights() {
             <button
               key={cat.id}
               onClick={() => setActiveTab(cat.id)}
-              className={`px-5 py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 border ${
-                activeTab === cat.id
+              className={`px-5 py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 border ${activeTab === cat.id
                   ? 'bg-[#C9A227] text-[#1A1800] border-[#C9A227] shadow-lg shadow-[#C9A227]/15 scale-105'
                   : 'bg-white/80 text-[#5a4a30] border-orange-100 hover:border-[#C9A227]/40 hover:text-[#7A5C00] hover:bg-white'
-              }`}
+                }`}
             >
               {cat.label}
             </button>
@@ -271,7 +270,7 @@ export default function ProjectHighlights() {
         {/* Specifications Cards Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8 justify-center">
           {filteredFeatures.map((feature, index) => (
-            <div 
+            <div
               key={`${activeTab}-${index}`}
               style={{ animationDelay: `${(index % 6) * 50}ms` }}
               className="flex flex-col items-center p-4 bg-[#FAF8F5] rounded-2xl border-t border-l border-white border-b-2 border-r-2 border-[#DCD3C5] hover:border-[#C9A227] transition-all duration-300 group card-3d card-stagger cursor-pointer"
@@ -287,7 +286,7 @@ export default function ProjectHighlights() {
                   quality={80}
                 />
               </div>
-              
+
               {/* Title */}
               <p className="text-[10px] md:text-xs font-bold text-center text-[#334155] group-hover:text-[#C9A227] transition-colors duration-300 leading-tight uppercase tracking-wider min-h-[32px] flex items-center justify-center px-1">
                 {feature.title}
