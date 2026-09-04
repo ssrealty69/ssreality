@@ -134,6 +134,10 @@ export default function AdminLeadsPage() {
 
 
   const handleOpenAssignModal = () => {
+    if (activeTab === 'general') {
+      toast.error('General contact queries are handled directly by Admin and cannot be assigned to agents.');
+      return;
+    }
     if (selectedLeads.length === 0) {
       toast.error('Please select at least one lead');
       return;
@@ -262,6 +266,7 @@ export default function AdminLeadsPage() {
   const handleTabClick = async (tab: 'general' | 'loan' | 'property' | 'brochure') => {
     setActiveTab(tab);
     setSearchQuery('');
+    setSelectedLeads([]);
     
     let unreadIds: string[] = [];
     let type = '';
@@ -874,7 +879,7 @@ export default function AdminLeadsPage() {
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-gray-50 text-[10px] font-black text-gray-400 uppercase border-b border-gray-100">
-                    <th className="py-4 px-3"></th>
+                    <th className="py-4 px-4 text-center">Type</th>
                     <th className="py-4 px-6">Submitted Date</th>
                     <th className="py-4 px-4">Name</th>
                     <th className="py-4 px-4">Email</th>
@@ -887,14 +892,11 @@ export default function AdminLeadsPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {(filteredLeads as Lead[]).map((lead) => (
-                    <tr key={lead._id} className={`hover:bg-[#FFFEF5]/50 transition-colors ${isLeadSelected(lead._id) ? 'bg-amber-50/50 ring-1 ring-inset ring-[#C9A227]/30' : ''}`}>
-                      <td className="py-4 px-3">
-                        <input
-                          type="checkbox"
-                          checked={isLeadSelected(lead._id)}
-                          onChange={() => toggleLeadSelect(lead._id, 'contact')}
-                          className="w-4 h-4 rounded accent-[#C9A227] cursor-pointer"
-                        />
+                    <tr key={lead._id} className="hover:bg-[#FFFEF5]/50 transition-colors">
+                      <td className="py-4 px-4 text-center">
+                        <span className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md whitespace-nowrap">
+                          Direct Admin
+                        </span>
                       </td>
                       <td className="py-4 px-6 font-semibold text-gray-500 whitespace-nowrap">
                         <span className="flex items-center gap-1.5">

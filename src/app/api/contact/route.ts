@@ -63,33 +63,43 @@ export async function POST(req: NextRequest) {
       propertyId: sanitizedPropId,
     });
 
-    // ── Lead Auto-Distribution Engine ─────────────────────────────────────────
-    try {
-      let propertyInterest = sanitizedSubject;
-      if (sanitizedPropId && mongoose.Types.ObjectId.isValid(sanitizedPropId)) {
-        const prop = await Property.findById(sanitizedPropId).lean();
-        if (prop) propertyInterest = (prop as any).title;
-      }
+    // ── Lead Auto-Distribution Engine (Strictly Loan Enquiries ONLY) ───────
+    // General contact enquiries are strictly handled by Admin and NEVER distributed to agents!
+    const lowerSubject = sanitizedSubject.toLowerCase();
+    const isLoanEnquiry =
+      lowerSubject.includes('emi') ||
+      lowerSubject.includes('home loan') ||
+      lowerSubject.includes('loan') ||
+      sanitizedMessage.includes('Home Loan Enquiry Details:');
 
-      const distRes = await distributeLead({
-        name: sanitizedName,
-        phone: sanitizedPhone,
-        email: sanitizedEmail,
-        source: 'Contact Form',
-        originalLeadId: contact._id.toString(),
-        originalLeadType: 'contact',
-        rawProjectName: propertyInterest,
-        propertyInterest: propertyInterest,
-        notes: sanitizedMessage,
-        createdAt: new Date(),
-      });
+    if (isLoanEnquiry) {
+      try {
+        let propertyInterest = sanitizedSubject;
+        if (sanitizedPropId && mongoose.Types.ObjectId.isValid(sanitizedPropId)) {
+          const prop = await Property.findById(sanitizedPropId).lean();
+          if (prop) propertyInterest = (prop as any).title;
+        }
 
-      if (distRes.assigned && distRes.agentId) {
-        contact.assignedAgentId = distRes.agentId;
-        await contact.save();
+        const distRes = await distributeLead({
+          name: sanitizedName,
+          phone: sanitizedPhone,
+          email: sanitizedEmail,
+          source: 'Contact Form',
+          originalLeadId: contact._id.toString(),
+          originalLeadType: 'contact',
+          rawProjectName: propertyInterest,
+          propertyInterest: propertyInterest,
+          notes: sanitizedMessage,
+          createdAt: new Date(),
+        });
+
+        if (distRes.assigned && distRes.agentId) {
+          contact.assignedAgentId = distRes.agentId;
+          await contact.save();
+        }
+      } catch (assignmentError) {
+        console.error('Contact Lead Assignment Error:', assignmentError);
       }
-    } catch (assignmentError) {
-      console.error('Contact Lead Assignment Error:', assignmentError);
     }
     // ────────────────────────────────────────────────────────────────────────
 

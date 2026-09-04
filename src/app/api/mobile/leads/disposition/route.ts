@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
       if (leadName && leadName !== 'Unknown Contact' && !leadName.startsWith('Lead +')) {
         agentLead.name = leadName;
       }
-      if (agentName && agentName !== 'Mobile CRM User') {
+      if (agentName && agentName !== 'Mobile CRM User' && (!agentLead.agentName || agentLead.agentName === 'Mobile CRM User')) {
         agentLead.agentName = agentName;
       }
       if (agentId && agentId !== 'mobile_agent' && (!agentLead.agentId || agentLead.agentId === 'mobile_agent')) {

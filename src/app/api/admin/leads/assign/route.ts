@@ -55,18 +55,34 @@ export async function POST(req: NextRequest) {
         continue;
       }
 
-      // 2. Check if source lead already has an assigned agent
+      // 2. Strict Check: General contact queries cannot be assigned to agents
+      if (type === 'contact') {
+        const subject = (sourceDoc.subject || '').toLowerCase();
+        const message = sourceDoc.message || '';
+        const isLoan =
+          subject.includes('emi') ||
+          subject.includes('home loan') ||
+          subject.includes('loan') ||
+          message.includes('Home Loan Enquiry Details:');
+
+        if (!isLoan) {
+          skipped.push({ id, reason: 'General contact queries are handled directly by Admin and cannot be assigned to agents' });
+          continue;
+        }
+      }
+
+      // 3. Check if source lead already has an assigned agent
       if (sourceDoc.assignedAgentId) {
         skipped.push({ id, reason: `Already assigned to agent ID ${sourceDoc.assignedAgentId}` });
         continue;
       }
 
-      // 3. Normalize 10-digit phone number
+      // 4. Normalize 10-digit phone number
       const rawPhone = sourceDoc.phone || '';
       const cleanDigits = rawPhone.replace(/\D/g, '');
       const phone10 = cleanDigits.length >= 10 ? cleanDigits.slice(-10) : cleanDigits;
 
-      // 4. Deep Anti-Duplicate Check across ALL agents:
+      // 5. Deep Anti-Duplicate Check across ALL agents:
       // If this lead ID or this phone number is already assigned to ANY agent, do not duplicate!
       const duplicateConditions: any[] = [
         { originalLeadId: id },
@@ -78,7 +94,17 @@ export async function POST(req: NextRequest) {
 
       const existing = await AgentLead.findOne({ $or: duplicateConditions }).lean();
       if (existing) {
-        skipped.push({ id, reason: `Lead or phone is already assigned to agent ${existing.agentName}` });
+        // Sync source document to existing agent's ID so table immediately reflects single ownership
+        if (type === 'contact') {
+          await Contact.findByIdAndUpdate(id, { assignedAgentId: (existing as any).agentId });
+        } else if (type === 'property_enquiry') {
+          await PropertyEnquiry.findByIdAndUpdate(id, { assignedAgentId: (existing as any).agentId });
+        }
+
+        skipped.push({
+          id,
+          reason: `Customer phone (${phone10}) is already assigned to agent ${(existing as any).agentName}. Cannot be assigned to multiple agents.`,
+        });
         continue;
       }
 

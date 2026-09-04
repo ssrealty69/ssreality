@@ -123,7 +123,7 @@ const AgentLeadSchema = new Schema<IAgentLead>(
     phone:            { type: String, required: true, trim: true },
     email:            { type: String, trim: true, lowercase: true },
     source:           { type: String, trim: true },
-    originalLeadId:   { type: String, index: true },
+    originalLeadId:   { type: String },
     originalLeadType: { type: String, enum: ['contact','property_enquiry','ai_lead','manual','meta_lead','brochure'] },
     propertyInterest: { type: String, trim: true },
     projectName:      { type: String, trim: true },

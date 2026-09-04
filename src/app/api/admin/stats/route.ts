@@ -43,8 +43,8 @@ export async function GET(req: NextRequest) {
       Contact.countDocuments({}),
       PropertyEnquiry.countDocuments({}),
       JobApplication.countDocuments({}),
-      Contact.find({}, { name: 1, phone: 1, subject: 1, createdAt: 1 }).sort({ createdAt: -1 }).limit(4).lean(),
-      JobApplication.find({}, { name: 1, position: 1, phone: 1, createdAt: 1 }).sort({ createdAt: -1 }).limit(4).lean()
+      Contact.find({}).select('name phone subject createdAt').sort({ createdAt: -1 }).limit(4).lean(),
+      JobApplication.find({}).select('name position phone createdAt').sort({ createdAt: -1 }).limit(4).lean()
     ]);
 
     // Total leads = all contact form submissions + all property enquiries (includes brochures)

@@ -204,6 +204,24 @@ export async function distributeLead(payload: LeadDistributionPayload): Promise<
     }
   }
 
+  // Guard: General contact form enquiries are strictly handled by Admin and NEVER auto-distributed to agents!
+  if (payload.originalLeadType === 'contact' || payload.source === 'Contact Form') {
+    const subject = (payload.propertyInterest || payload.rawProjectName || '').toLowerCase();
+    const notes = (payload.notes || '');
+    const isLoan =
+      subject.includes('emi') ||
+      subject.includes('home loan') ||
+      subject.includes('loan') ||
+      notes.includes('Home Loan Enquiry Details:');
+
+    if (!isLoan) {
+      return {
+        assigned: false,
+        reason: 'General contact form enquiries are strictly excluded from agent auto-distribution',
+      };
+    }
+  }
+
   const cleanPhone = (payload.phone || '').replace(/\D/g, '');
   if (cleanPhone.length < 10) {
     return { assigned: false, reason: 'Invalid phone number' };
@@ -230,12 +248,80 @@ export async function distributeLead(payload: LeadDistributionPayload): Promise<
     const existing = await AgentLead.findOne({ $or: duplicateConditions }).lean();
 
     if (existing) {
+      const existingAgentId = String((existing as any).agentId);
+      const existingAgentName = String((existing as any).agentName);
+
+      // 2a. Link newly incoming source document to the already assigned agent
+      if (payload.originalLeadId && mongoose.Types.ObjectId.isValid(payload.originalLeadId)) {
+        try {
+          if (payload.originalLeadType === 'contact') {
+            const Contact = (await import('@/models/Contact')).default;
+            await Contact.findByIdAndUpdate(payload.originalLeadId, { assignedAgentId: existingAgentId });
+          } else if (payload.originalLeadType === 'property_enquiry' || payload.originalLeadType === 'brochure') {
+            const PropertyEnquiry = (await import('@/models/PropertyEnquiry')).default;
+            await PropertyEnquiry.findByIdAndUpdate(payload.originalLeadId, { assignedAgentId: existingAgentId });
+          }
+        } catch (linkErr) {
+          console.error('Failed to link source doc to existing assigned agent:', linkErr);
+        }
+      }
+
+      // 2b. Enrich existing AgentLead with cross-platform details so the assigned agent sees full activity
+      try {
+        const detailsList = [
+          payload.configuration ? `Config: ${payload.configuration}` : '',
+          payload.budget ? `Budget: ${payload.budget}` : '',
+          payload.visitTimeline ? `Timeline: ${payload.visitTimeline}` : '',
+          payload.notes ? `Notes: ${payload.notes}` : '',
+        ].filter(Boolean);
+
+        const crossPlatformLog = `[Cross-Platform Enquiry - ${payload.source}] Re-enquired for "${payload.propertyInterest || payload.rawProjectName || 'SS Realty'}". ${detailsList.join(' | ')}`;
+
+        const updateOps: any = {
+          $set: { isRead: false },
+          $push: {
+            history: {
+              disposition: (existing as any).disposition || 'new',
+              notes: crossPlatformLog,
+              calledAt: new Date(),
+              duration: '0s',
+              durationSeconds: 0,
+            },
+          },
+        };
+
+        // If existing lead name is a placeholder and incoming lead has a real name
+        const curName = String((existing as any).name || '');
+        if ((!curName || curName.startsWith('Lead ') || curName === 'Meta Lead' || curName === 'Unknown' || curName === 'Website Lead') && payload.name && !payload.name.startsWith('Lead ')) {
+          updateOps.$set.name = payload.name;
+        }
+
+        // If existing lead has no email and incoming has email
+        if (!(existing as any).email && payload.email) {
+          updateOps.$set.email = payload.email;
+        }
+
+        // Enrich questionnaire fields if not already populated
+        if (!(existing as any).budget && payload.budget) updateOps.$set.budget = payload.budget;
+        if (!(existing as any).planning && payload.planning) updateOps.$set.planning = payload.planning;
+        if (!(existing as any).visitTimeline && payload.visitTimeline) updateOps.$set.visitTimeline = payload.visitTimeline;
+        if (!(existing as any).configuration && payload.configuration) updateOps.$set.configuration = payload.configuration;
+
+        // Append to notes string for instant visibility
+        const appendNote = `\n[${new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })} ${payload.source}]: Interested in "${payload.propertyInterest || payload.rawProjectName || 'SS Realty'}"`;
+        updateOps.$set.notes = (existing as any).notes ? `${(existing as any).notes}${appendNote}` : appendNote.trim();
+
+        await AgentLead.findByIdAndUpdate((existing as any)._id, updateOps);
+      } catch (enrichErr) {
+        console.error('Error enriching existing AgentLead with cross-platform details:', enrichErr);
+      }
+
       return {
-        assigned: false,
-        agentId: (existing as any).agentId,
-        agentName: (existing as any).agentName,
+        assigned: true,
+        agentId: existingAgentId,
+        agentName: existingAgentName,
         leadDocId: (existing as any)._id?.toString(),
-        reason: `Lead already assigned to agent ${(existing as any).agentName}`,
+        reason: `Cross-platform duplicate: Already assigned to ${existingAgentName}; linked & enriched`,
       };
     }
 
@@ -471,9 +557,22 @@ export async function bulkDistributeUnassignedLeads(): Promise<{
     }
   }
 
-  // 3. Process General Contacts
+  // 3. Process Contacts (Strictly LOAN enquiries only, NEVER General contacts)
   const contacts = await Contact.find().sort({ createdAt: 1 }).lean();
   for (const ct of contacts as any[]) {
+    const subject = (ct.subject || '').toLowerCase();
+    const message = ct.message || '';
+    const isLoan =
+      subject.includes('emi') ||
+      subject.includes('home loan') ||
+      subject.includes('loan') ||
+      message.includes('Home Loan Enquiry Details:');
+
+    // Strictly skip general contact enquiries from agent distribution
+    if (!isLoan) {
+      continue;
+    }
+
     totalProcessed++;
     const res = await distributeLead({
       name: ct.name,
