@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Zap, Pause, Play, RefreshCw, Layers, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Zap, Pause, Play, RefreshCw, Layers, ShieldCheck, CheckCircle2, RotateCcw } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface AutoDistributionToggleProps {
@@ -19,6 +19,8 @@ export default function AutoDistributionToggle({
   const [loading, setLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<'enable' | 'disable' | null>(null);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const fetchStatus = async () => {
     try {
@@ -76,6 +78,27 @@ export default function AutoDistributionToggle({
     }
   };
 
+  const confirmReset = async () => {
+    setResetting(true);
+    setShowResetModal(false);
+    try {
+      const res = await fetch('/api/admin/leads/auto-distribution', {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message || 'All assigned leads cleared from all agent IDs');
+        window.location.reload();
+      } else {
+        toast.error(data.error || 'Failed to reset assigned leads');
+      }
+    } catch {
+      toast.error('Network error resetting assigned leads');
+    } finally {
+      setResetting(false);
+    }
+  };
+
   if (enabled === null) {
     return (
       <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs text-gray-400 ${className}`}>
@@ -122,10 +145,20 @@ export default function AutoDistributionToggle({
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <button
+            onClick={() => setShowResetModal(true)}
+            disabled={loading || resetting}
+            className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition-all cursor-pointer shadow-xs disabled:opacity-50"
+            title="Reset all test assigned leads across all agent IDs"
+          >
+            <RotateCcw size={13} className={resetting ? 'animate-spin' : ''} />
+            <span>{resetting ? 'Resetting...' : 'Reset Assigned Leads'}</span>
+          </button>
+
           <button
             onClick={handleToggleClick}
-            disabled={loading}
+            disabled={loading || resetting}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition-all shadow-md cursor-pointer ${
               enabled
                 ? 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 hover:scale-[1.02]'
@@ -196,6 +229,52 @@ export default function AutoDistributionToggle({
                 }`}
               >
                 {pendingAction === 'enable' ? 'Yes, Turn ON' : 'Yes, Pause Routing'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reset Leads Confirmation Modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-md shrink-0 bg-red-100 text-red-700">
+                <RotateCcw size={20} />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-[#1A1800]">
+                  Reset All Assigned Leads?
+                </h3>
+                <p className="text-xs text-gray-500">
+                  Clears assigned leads across all agents' IDs.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-red-50 border border-red-100 text-xs text-red-700 leading-relaxed space-y-1.5">
+              <p className="font-semibold">
+                This will remove all currently assigned leads from all agent IDs and set every agent back to 0 assigned leads.
+              </p>
+              <p className="text-[11px] text-gray-600">
+                Original leads in Meta Sheet and Contact forms remain safely stored in your database.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5 pt-2">
+              <button
+                onClick={() => setShowResetModal(false)}
+                className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl text-xs transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmReset}
+                disabled={resetting}
+                className="flex-1 py-2.5 font-bold rounded-xl text-xs shadow-md transition-all cursor-pointer bg-gradient-to-r from-red-600 to-red-700 text-white hover:brightness-105 disabled:opacity-50"
+              >
+                {resetting ? 'Resetting...' : 'Yes, Reset to 0'}
               </button>
             </div>
           </div>

@@ -102,6 +102,8 @@ export async function DELETE(req: NextRequest) {
     await connectDB();
     const deleteRes = await AgentLead.deleteMany({});
     await Agent.updateMany({}, { $unset: { lastAssignedLeadAt: '' } });
+    await Contact.updateMany({ assignedAgentId: { $exists: true } }, { $unset: { assignedAgentId: '' } });
+    await PropertyEnquiry.updateMany({ assignedAgentId: { $exists: true } }, { $unset: { assignedAgentId: '' } });
 
     return NextResponse.json({
       success: true,
