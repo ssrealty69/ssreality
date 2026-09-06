@@ -8,143 +8,478 @@ export const FALLBACK_BLOGS: any[] = [
     category: 'Legal',
     excerpt: 'Complete 2026 buyer guide to buying registry flats in Chattarpur Enclave Phase 2 with up to 90% bank and NBFC loan. Discover prices, floor plans, legal checklists, EMI calculations, and top builder floors by SS Realty.',
     content: `
-      <div class="prose prose-lg max-w-none text-[#3a3828] leading-relaxed">
-        <p class="text-lg md:text-xl font-medium text-[#1A1800] leading-relaxed mb-6">
-          Finding an affordable luxury home in South Delhi with undisputed legal titles and seamless banking finance has historically been one of the biggest challenges for middle-class and upper-middle-class homebuyers. Today, <strong>Chattarpur Enclave Phase 2</strong> has firmly established itself as South Delhi’s most sought-after residential destination for <strong>verified registry flats with up to 90% bank and NBFC loan approval</strong>.
+      <div class="article-body" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2D3748; line-height: 1.8;">
+
+        <!-- Lead Paragraph -->
+        <p class="lead-text" style="font-size: 1.15rem; line-height: 1.85; color: #1A202C; font-weight: 500; margin-bottom: 1.75rem;">
+          Finding an affordable luxury home in South Delhi with undisputed legal freehold titles and seamless banking finance has historically been one of the biggest challenges for middle-class and upper-middle-class homebuyers. Today, <strong><a href="/properties?search=Chattarpur" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">Chattarpur Enclave Phase 2</a></strong> has firmly established itself as South Delhi’s premier residential destination for <strong>verified registry flats with up to 90% bank and NBFC loan approval</strong>.
         </p>
 
-        <p class="mb-6">
-          Whether you are a working corporate professional seeking a hassle-free commute to Cyber City and Central Delhi, a family looking to upgrade to a spacious independent builder floor with lift and parking, or an investor eyeing consistent rental yields of 5% to 6%, this comprehensive 2026 guide breaks down everything you need to know about purchasing a registry flat in Chattarpur Enclave Phase 2 — from sub-registrar registration and loan eligibility to floor plans, neighborhood infrastructure, and actual on-ground prices.
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #4A5568; margin-bottom: 2rem;">
+          Whether you are an IT or corporate executive commuting daily to Cyber City or Central Delhi, a growing family looking to upgrade to a spacious <a href="/properties?type=Builder%20Floor" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">3BHK or 4BHK independent builder floor</a> with private elevator and dedicated stilt parking, or an astute investor eyeing attractive rental yields of 5% to 6%, this comprehensive 2026 handbook breaks down everything you need to know about purchasing a registry flat in Chattarpur Enclave Phase 2 — from sub-registrar registration and loan eligibility to floor plans, neighborhood infrastructure, price trends, and signature projects built by <a href="/about-us" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">SS Realty</a>.
         </p>
 
-        <div class="my-8 p-6 bg-gradient-to-r from-[#FFFBEB] to-[#FFF8E1] border-l-4 border-[#C9A227] rounded-r-2xl shadow-sm">
-          <h3 class="text-lg font-bold text-[#1A1800] mb-2">🔑 Key Location & Infrastructure Highlights</h3>
-          <ul class="space-y-2 text-sm text-[#4a4030]">
-            <li><strong>Metro Connectivity:</strong> 5–7 minutes drive to Chattarpur Metro Station (Yellow Line) and Qutub Minar Metro Station.</li>
-            <li><strong>Gurugram Cyber Hub Access:</strong> Seamless 15-minute commute to Golf Course Road and DLF Cyber City via Mandi Road.</li>
-            <li><strong>Bank Loan Availability:</strong> Up to 90% housing loans approved from Tata Capital, ICICI HFC, Piramal, and PNB Housing.</li>
-            <li><strong>Zero Brokerage:</strong> Direct developer-builder purchase from <a href="/about-us" class="text-[#C9A227] font-semibold hover:underline">SS Realty</a> with 100+ delivered landmarks.</li>
+        <!-- Quick Summary Card (Light Warm Gold Theme) -->
+        <div style="background: linear-gradient(135deg, #FFFDF8 0%, #FFF8E7 100%); border: 1.5px solid #C9A227; padding: 1.75rem; border-radius: 1rem; margin-bottom: 2.5rem; box-shadow: 0 6px 20px rgba(201,162,39,0.08);">
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: #7A5C00; margin-top: 0; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>🔑</span> Key Location & Investment Highlights at a Glance (2026)
+          </h3>
+          <ul style="list-style-type: none; padding-left: 0; margin: 0; color: #2D3748; line-height: 1.9; font-size: 1rem;">
+            <li style="margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.5rem;">
+              <span style="color: #059669; font-weight: bold;">✔</span>
+              <span><strong>Metro Connectivity:</strong> Just 5–7 minutes drive to Chattarpur Metro Station (Yellow Line) and Qutub Minar Metro Station.</span>
+            </li>
+            <li style="margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.5rem;">
+              <span style="color: #059669; font-weight: bold;">✔</span>
+              <span><strong>Gurugram Cyber Hub Access:</strong> 15-minute direct signal-free corridor to Golf Course Road & DLF Cyber City via Mandi Road.</span>
+            </li>
+            <li style="margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.5rem;">
+              <span style="color: #059669; font-weight: bold;">✔</span>
+              <span><strong>Up to 90% Bank & NBFC Loan:</strong> Approved by Tata Capital, ICICI HFC, Piramal Capital, PNB Housing, and LIC HFL.</span>
+            </li>
+            <li style="margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.5rem;">
+              <span style="color: #059669; font-weight: bold;">✔</span>
+              <span><strong>Self-Built Developer Advantage:</strong> Buy directly from <a href="/about-us" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">SS Realty</a> (building South Delhi homes since 2008) with 100+ delivered projects and <strong>0% brokerage</strong>.</span>
+            </li>
+            <li style="display: flex; align-items: flex-start; gap: 0.5rem;">
+              <span style="color: #059669; font-weight: bold;">✔</span>
+              <span><strong>Clear Registry & Mutation:</strong> 100% legal Sub-Registrar VA registration with government stamp duty challan and mutation in Municipal records.</span>
+            </li>
           </ul>
         </div>
 
-        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
+        <hr style="border: none; border-top: 1px solid #E8D5A3; margin: 2.5rem 0;" />
+
+        <!-- SECTION 1 -->
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #1A202C; margin-top: 2.5rem; margin-bottom: 1.25rem; font-family: var(--font-playfair, serif);">
           1. Why Chattarpur Enclave Phase 2 is South Delhi's #1 Real Estate Hotspot
         </h2>
-        <p class="mb-4">
-          Chattarpur Enclave is divided into two distinct sectors — Phase 1 and Phase 2. While Phase 1 is bustling with commercial high-streets and metro access, <strong>Phase 2 offers a peaceful, well-planned residential environment</strong> characterized by wide internal roads, private gated entry gates, underground cabling, IGL piped natural gas (PNG), and pristine greenery bordering the Asola Bhatti Wildlife Sanctuary and sprawling South Delhi farmhouses.
-        </p>
-        <p class="mb-6">
-          With direct connectivity to 100 Feet Road, SSN Marg, CDR Chowk, and Vasant Kunj, residents enjoy the rare luxury of clean air and serene surroundings while staying within 20 minutes of South Delhi’s best retail and corporate hubs.
+
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #4A5568; margin-bottom: 1.5rem;">
+          Chattarpur Enclave is strategically divided into two distinct sectors — Phase 1 and Phase 2. While Phase 1 is bustling with high-street commercial retail, gyms, and primary metro feeder routes, <strong>Phase 2 offers an exclusive, serene, well-planned residential enclave</strong>. It features wide 25–40 feet paved internal roads, 24/7 guarded security gates, underground electrical and communication cabling, IGL piped natural gas (PNG), and Delhi Jal Board (DJB) sweet water supply.
         </p>
 
-        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
-          2. Registry Flat vs. GPA Property: What Every Buyer Must Know
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #4A5568; margin-bottom: 1.5rem;">
+          Surrounded by the lush Aravali biodiversity corridor and multi-acre South Delhi farmhouse estates (DLF Farms, Radhey Mohan Drive, Sultanpur Farms), Chattarpur Enclave Phase 2 enjoys significantly cleaner air and lower AQI levels compared to congested North or East Delhi localities. For corporate commuters working in Gurugram, the newly upgraded Mandi Road bypass connects Chattarpur directly to Golf Course Extension Road in under 15 minutes.
+        </p>
+
+        <!-- Intersperse Related Article Callout 1 -->
+        <div style="background: #FFFDF8; border-left: 4px solid #C9A227; border-top: 1px solid #E8D5A3; border-right: 1px solid #E8D5A3; border-bottom: 1px solid #E8D5A3; padding: 1.25rem 1.5rem; border-radius: 0 0.75rem 0.75rem 0; margin: 2rem 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">💡 Recommended Deep Dive</span>
+            <h4 style="font-size: 1.05rem; font-weight: 700; color: #1A202C; margin: 0;">Chattarpur vs Gwal Pahari — Which Location is Better for Flats in 2026?</h4>
+          </div>
+          <a href="/blog/chattarpur-vs-gwal-pahari-which-location-better-flat" style="background: #FAF6E8; color: #7A5C00; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1.15rem; border-radius: 9999px; text-decoration: none; border: 1.5px solid #C9A227; white-space: nowrap;">Read Comparison →</a>
+        </div>
+
+        <!-- Intersperse Project Showcase 1: NIVASA II -->
+        <div style="background: #FFFFFF; border: 2px solid #E8D5A3; border-radius: 1.25rem; padding: 1.75rem; margin: 2.5rem 0; box-shadow: 0 8px 24px rgba(201,162,39,0.09);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; border-bottom: 1px solid #FAF0D7; padding-bottom: 0.75rem;">
+            <div>
+              <span style="background: #FEF3C7; color: #92400E; font-size: 0.75rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 9999px; text-transform: uppercase;">Featured Ready Project</span>
+              <h3 style="font-size: 1.45rem; font-weight: 800; color: #1A202C; margin: 0.35rem 0 0 0;">Nivasa II – Mandi / Chattarpur Enclave</h3>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 1.5rem; font-weight: 900; color: #9E7B15;">₹75 Lakhs</span>
+              <span style="display: block; font-size: 0.8rem; color: #059669; font-weight: 700;">90% Bank Loan Approved</span>
+            </div>
+          </div>
+          <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin-bottom: 1.25rem;">
+            <strong>Configuration:</strong> Spacious 3BHK Builder Floors (120 Sq.Yd.) | <strong>Status:</strong> Ready to Move with Immediate Registry | <strong>Highlights:</strong> Modular Italian kitchen with quartz counter, branded Otis 6-passenger automatic lift, reserved stilt parking, private balconies with tree-top views, and sweet drinking water supply.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="/properties/nivasa-ii" style="background: #FAF6E8; color: #7A5C00; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.5rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem;">
+              🏢 View Nivasa II Floor Plans & Pricing →
+            </a>
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20to%20visit%20Nivasa%20II%20in%20Chattarpur%20Mandi" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.25rem; border-radius: 0.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+              💬 Book Free Site Visit
+            </a>
+          </div>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #E8D5A3; margin: 2.5rem 0;" />
+
+        <!-- SECTION 2 -->
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #1A202C; margin-top: 2.5rem; margin-bottom: 1.25rem; font-family: var(--font-playfair, serif);">
+          2. Registry Flat vs. GPA Property: What Every Delhi Homebuyer Must Understand
         </h2>
-        <p class="mb-4">
-          A common misconception among first-time buyers in Delhi is that all builder floors in South Delhi are sold on General Power of Attorney (GPA). In reality, <strong>Chattarpur Enclave Phase 2 has dedicated sectors of clear-title freehold registry properties</strong> executed legally at the Sub-Registrar VA (Mehrauli/Hauz Khas) office.
+
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #4A5568; margin-bottom: 1.5rem;">
+          One of the most frequent questions asked by homebuyers across Delhi NCR is: <em>"Are flats in Chattarpur legally registered with government stamp duty?"</em> The answer is a resounding <strong>YES</strong>, provided you choose freehold abadi plots located in verified sectors like Chattarpur Enclave Phase 2.
         </p>
 
-        <div class="overflow-x-auto my-6">
-          <table class="w-full border-collapse text-left text-sm bg-white rounded-xl shadow-sm border border-[#E8D5A3]/50 overflow-hidden">
-            <thead>
-              <tr class="bg-[#1A1800] text-[#C9A227] uppercase text-xs tracking-wider">
-                <th class="p-3.5 border-b border-[#E8D5A3]/30">Parameter</th>
-                <th class="p-3.5 border-b border-[#E8D5A3]/30">Freehold Registry Flat (Phase 2)</th>
-                <th class="p-3.5 border-b border-[#E8D5A3]/30">GPA / Agreement to Sell Flat</th>
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #4A5568; margin-bottom: 1.5rem;">
+          In Delhi, properties historically exchanged on General Power of Attorney (GPA) or simple notarized agreements lack definitive legal ownership titles and cannot be financed through nationalized banks or formal NBFC lenders. In sharp contrast, a <strong>Freehold Registry Flat</strong> in Chattarpur Enclave Phase 2 provides complete legal protection under the Indian Registration Act, with registered sale deeds stamped at the Sub-Registrar VA (Mehrauli/Hauz Khas) office. Learn step-by-step legal processes in our guide on <a href="/blog/how-to-buy-a-flat-in-delhi-complete-legal-loan-registration-guide" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">How to Buy a Flat in Delhi: Complete Legal & Loan Registration Guide</a>.
+        </p>
+
+        <!-- Comparison Table (Light Clean Luxury Theme) -->
+        <div style="overflow-x: auto; margin-bottom: 2rem;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; background: #FFFFFF; border: 1.5px solid #E8D5A3; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+            <thead style="background-color: #FAF6E8; color: #7A5C00;">
+              <tr>
+                <th style="padding: 1rem 1.25rem; font-weight: 800; border-bottom: 2px solid #E8D5A3;">Evaluation Parameter</th>
+                <th style="padding: 1rem 1.25rem; font-weight: 800; border-bottom: 2px solid #E8D5A3;">Freehold Registry Flat (Phase 2)</th>
+                <th style="padding: 1rem 1.25rem; font-weight: 800; border-bottom: 2px solid #E8D5A3;">Unregistered / GPA Floor</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[#E8D5A3]/30">
-              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
-                <td class="p-3.5 font-bold text-[#1A1800]">Sub-Registrar Registration</td>
-                <td class="p-3.5 text-emerald-700 font-bold">✅ Registered with Govt. Stamp Duty</td>
-                <td class="p-3.5 text-red-600 font-medium">❌ Notary / Agreement Only</td>
+            <tbody style="color: #2D3748; line-height: 1.6;">
+              <tr style="border-bottom: 1px solid #F1F5F9;">
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">Sub-Registrar Registration</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">✅ Registered with Govt. Stamp Duty Challan</td>
+                <td style="padding: 1rem 1.25rem; color: #DC2626; font-weight: 600;">❌ Notary / Possession Agreement Only</td>
               </tr>
-              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
-                <td class="p-3.5 font-bold text-[#1A1800]">Bank / NBFC Loan Eligibility</td>
-                <td class="p-3.5 text-emerald-700 font-bold">✅ Up to 90% Loan from Leading NBFCs</td>
-                <td class="p-3.5 text-red-600 font-medium">❌ No Standard Bank Home Loans</td>
+              <tr style="border-bottom: 1px solid #F1F5F9; background-color: #FFFDF8;">
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">Bank & NBFC Home Loan</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">✅ Up to 90% Loan from Leading NBFCs & Banks</td>
+                <td style="padding: 1rem 1.25rem; color: #DC2626; font-weight: 600;">❌ No Standard Bank Financing</td>
               </tr>
-              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
-                <td class="p-3.5 font-bold text-[#1A1800]">Title Ownership</td>
-                <td class="p-3.5 text-emerald-700 font-bold">✅ Undisputed Freehold Ownership with Mutation</td>
-                <td class="p-3.5 text-red-600 font-medium">⚠️ Possession-based Proxy Ownership</td>
+              <tr style="border-bottom: 1px solid #F1F5F9;">
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">Legal Title & Mutation</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">✅ Undisputed Freehold Ownership in Govt. Records</td>
+                <td style="padding: 1rem 1.25rem; color: #DC2626; font-weight: 600;">⚠️ Possession-based Proxy Ownership</td>
               </tr>
-              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
-                <td class="p-3.5 font-bold text-[#1A1800]">Resale Value & Appreciation</td>
-                <td class="p-3.5 text-emerald-700 font-bold">✅ 12% – 15% Annual Capital Appreciation</td>
-                <td class="p-3.5 text-gray-600 font-medium">Stagnant / Liquidity Constraints</td>
+              <tr style="border-bottom: 1px solid #F1F5F9; background-color: #FFFDF8;">
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">Capital Appreciation (Annual)</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">✅ 12% to 15% Annual Growth & High Liquidity</td>
+                <td style="padding: 1rem 1.25rem; color: #718096;">Stagnant / Limited Buyer Pool</td>
+              </tr>
+              <tr>
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">BSES & DJB Meter Transfer</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">✅ Instant Direct Name Transfer</td>
+                <td style="padding: 1rem 1.25rem; color: #718096;">Requires Third-party Indemnity Bonds</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
-          3. Bank Loan & NBFC Financing Guide: How to Get Up to 90% Loan
+        <!-- Intersperse Related Article Callout 2 -->
+        <div style="background: #FFFDF8; border-left: 4px solid #C9A227; border-top: 1px solid #E8D5A3; border-right: 1px solid #E8D5A3; border-bottom: 1px solid #E8D5A3; padding: 1.25rem 1.5rem; border-radius: 0 0.75rem 0.75rem 0; margin: 2rem 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">💡 Must Read Legal Guide</span>
+            <h4 style="font-size: 1.05rem; font-weight: 700; color: #1A202C; margin: 0;">3BHK Flat in Chattarpur & Gwal Pahari: Top 10 Lal Dora Property Benefits</h4>
+          </div>
+          <a href="/blog/3bhk-flat-for-sale-chattarpur-gwal-pahari-lal-dora-property-benefits" style="background: #FAF6E8; color: #7A5C00; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1.15rem; border-radius: 9999px; text-decoration: none; border: 1.5px solid #C9A227; white-space: nowrap;">Read Article →</a>
+        </div>
+
+        <!-- Intersperse Project Showcase 2: THE ORCHID -->
+        <div style="background: #FFFFFF; border: 2px solid #E8D5A3; border-radius: 1.25rem; padding: 1.75rem; margin: 2.5rem 0; box-shadow: 0 8px 24px rgba(201,162,39,0.09);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; border-bottom: 1px solid #FAF0D7; padding-bottom: 0.75rem;">
+            <div>
+              <span style="background: #DCFCE7; color: #166534; font-size: 0.75rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 9999px; text-transform: uppercase;">Aravali Facing Landmark</span>
+              <h3 style="font-size: 1.45rem; font-weight: 800; color: #1A202C; margin: 0.35rem 0 0 0;">The Orchid – Gwal Pahari / Mandi Road</h3>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 1.5rem; font-weight: 900; color: #9E7B15;">₹85 Lakhs</span>
+              <span style="display: block; font-size: 0.8rem; color: #059669; font-weight: 700;">Registry Flat (90% Loan)</span>
+            </div>
+          </div>
+          <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin-bottom: 1.25rem;">
+            <strong>Configuration:</strong> 2BHK & 3BHK Premium Floors (130 Sq.Yd.) | <strong>Location:</strong> Main Mandi Road, Gwal Pahari | <strong>USP:</strong> Unobstructed panoramic Aravali forest views, lush green air quality, 10 minutes drive from Golf Course Road, designer false ceilings, premium Jaguar sanitaryware, and smart digital door locks. Read our complete <a href="/blog/orchid-3bhk-gwal-pahari-mandi-road-gurgaon-affordable-luxury-guide" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">Orchid Mandi Road Complete Guide</a>.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="/properties/the-orchid" style="background: #FAF6E8; color: #7A5C00; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.5rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem;">
+              🏢 View The Orchid Specifications →
+            </a>
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20details%20for%20The%20Orchid%20on%20Mandi%20Road" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.25rem; border-radius: 0.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+              💬 WhatsApp Brochure
+            </a>
+          </div>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #E8D5A3; margin: 2.5rem 0;" />
+
+        <!-- SECTION 3 -->
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #1A202C; margin-top: 2.5rem; margin-bottom: 1.25rem; font-family: var(--font-playfair, serif);">
+          3. Configuration Breakdown, Floor Plans & Real Price Matrix (2026)
         </h2>
-        <p class="mb-4">
-          One of the primary advantages of purchasing a verified registry flat in Chattarpur Enclave Phase 2 is the availability of structured home loan financing from India’s leading Non-Banking Financial Companies (NBFCs) and nationalized private housing finance institutions.
-        </p>
-        <p class="mb-4">
-          Reputed lending partners actively sanctioning housing loans on <a href="/properties" class="text-[#C9A227] font-semibold hover:underline">SS Realty properties</a> include <strong>Tata Capital Housing Finance, ICICI Home Finance, Piramal Capital, PNB Housing, and LIC Housing Finance</strong>.
+
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #4A5568; margin-bottom: 1.5rem;">
+          Chattarpur Enclave Phase 2 offers a versatile range of builder floor configurations designed to suit varying family sizes, lifestyle aspirations, and budgetary requirements. Unlike high-rise group housing societies where super-area loadings exceed 35% to 40%, independent builder floors by <a href="/properties" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">SS Realty</a> deliver <strong>over 85% usable carpet area</strong>, guaranteeing substantially larger bedrooms, modular kitchens, and spacious private balconies. For a comparison of privacy and cost advantages, read our guide on <a href="/blog/builder-floor-vs-apartment-delhi-south-delhi-buyers-guide" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">Builder Floor vs High-Rise Apartment in South Delhi</a>.
         </p>
 
-        <h3 class="text-xl font-bold text-[#1A1800] mt-8 mb-4">Chattarpur Enclave Phase 2 Price Range & Configurations (2026 Overview)</h3>
-        <div class="overflow-x-auto my-6">
-          <table class="w-full border-collapse text-left text-sm bg-white rounded-xl shadow-sm border border-[#E8D5A3]/50 overflow-hidden">
-            <thead>
-              <tr class="bg-[#1A1800] text-[#C9A227] uppercase text-xs tracking-wider">
-                <th class="p-3.5 border-b border-[#E8D5A3]/30">Configuration</th>
-                <th class="p-3.5 border-b border-[#E8D5A3]/30">Super Area</th>
-                <th class="p-3.5 border-b border-[#E8D5A3]/30">Price Range</th>
-                <th class="p-3.5 border-b border-[#E8D5A3]/30">Max Loan Available</th>
+        <!-- Price & Area Table -->
+        <div style="overflow-x: auto; margin-bottom: 2.5rem;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; background: #FFFFFF; border: 1.5px solid #E8D5A3; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+            <thead style="background-color: #FAF6E8; color: #7A5C00;">
+              <tr>
+                <th style="padding: 1rem 1.25rem; font-weight: 800; border-bottom: 2px solid #E8D5A3;">Configuration</th>
+                <th style="padding: 1rem 1.25rem; font-weight: 800; border-bottom: 2px solid #E8D5A3;">Super Built-up Area</th>
+                <th style="padding: 1rem 1.25rem; font-weight: 800; border-bottom: 2px solid #E8D5A3;">Starting Price (2026)</th>
+                <th style="padding: 1rem 1.25rem; font-weight: 800; border-bottom: 2px solid #E8D5A3;">Max Bank Loan Available</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[#E8D5A3]/30">
-              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
-                <td class="p-3.5 font-bold text-[#1A1800]">2BHK Luxury Flat</td>
-                <td class="p-3.5">750 – 950 Sq.Ft. (80 – 105 Sq.Yd.)</td>
-                <td class="p-3.5 text-emerald-700 font-bold">₹38 Lakhs – ₹55 Lakhs</td>
-                <td class="p-3.5 text-blue-700 font-semibold">Up to ₹45 Lakhs</td>
+            <tbody style="color: #2D3748; line-height: 1.6;">
+              <tr style="border-bottom: 1px solid #F1F5F9;">
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">2BHK Luxury Builder Floor</td>
+                <td style="padding: 1rem 1.25rem;">750 – 950 Sq.Ft. (80 – 105 Sq.Yd.)</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">₹38 Lakhs – ₹55 Lakhs</td>
+                <td style="padding: 1rem 1.25rem; color: #2563EB; font-weight: 600;">Up to ₹45 Lakhs (90%)</td>
               </tr>
-              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
-                <td class="p-3.5 font-bold text-[#1A1800]">3BHK Luxury Builder Floor</td>
-                <td class="p-3.5">1,150 – 1,550 Sq.Ft. (130 – 170 Sq.Yd.)</td>
-                <td class="p-3.5 text-emerald-700 font-bold">₹65 Lakhs – ₹95 Lakhs</td>
-                <td class="p-3.5 text-blue-700 font-semibold">Up to ₹80 Lakhs</td>
+              <tr style="border-bottom: 1px solid #F1F5F9; background-color: #FFFDF8;">
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">3BHK Luxury Builder Floor</td>
+                <td style="padding: 1rem 1.25rem;">1,150 – 1,550 Sq.Ft. (120 – 170 Sq.Yd.)</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">₹65 Lakhs – ₹95 Lakhs</td>
+                <td style="padding: 1rem 1.25rem; color: #2563EB; font-weight: 600;">Up to ₹80 Lakhs (90%)</td>
               </tr>
-              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
-                <td class="p-3.5 font-bold text-[#1A1800]">4BHK & Duplex Penthouse</td>
-                <td class="p-3.5">2,000 – 3,200 Sq.Ft. (220 – 350 Sq.Yd.)</td>
-                <td class="p-3.5 text-emerald-700 font-bold">₹1.15 Cr – ₹1.85 Crore</td>
-                <td class="p-3.5 text-blue-700 font-semibold">Up to ₹1.50 Crore</td>
+              <tr style="border-bottom: 1px solid #F1F5F9;">
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">4BHK Large Format Floor</td>
+                <td style="padding: 1rem 1.25rem;">1,800 – 2,400 Sq.Ft. (200 – 270 Sq.Yd.)</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">₹1.15 Cr – ₹1.65 Crore</td>
+                <td style="padding: 1rem 1.25rem; color: #2563EB; font-weight: 600;">Up to ₹1.40 Crore (85%)</td>
+              </tr>
+              <tr style="background-color: #FFFDF8;">
+                <td style="padding: 1rem 1.25rem; font-weight: 700;">Duplex Penthouse + Private Terrace</td>
+                <td style="padding: 1rem 1.25rem;">2,500 – 3,500 Sq.Ft. (280 – 390 Sq.Yd.)</td>
+                <td style="padding: 1rem 1.25rem; color: #059669; font-weight: 700;">₹1.50 Cr – ₹2.99 Crore</td>
+                <td style="padding: 1rem 1.25rem; color: #2563EB; font-weight: 600;">Up to ₹2.25 Crore (80%)</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
-          4. Luxury Specifications & Architectural Excellence
-        </h2>
-        <p class="mb-4">
-          Every builder floor developed by SS Realty is equipped with premium fixtures:
-        </p>
-        <ul class="space-y-2 mb-6 list-disc pl-5">
-          <li><strong>Flooring:</strong> Imported Italian marble in living & dining areas; vitrified wooden finish tiles in master bedrooms.</li>
-          <li><strong>Kitchen:</strong> Modular setup with German soft-close drawers, quartz countertops, chimney, and gas hob.</li>
-          <li><strong>Bathrooms:</strong> Kohler and Jaguar branded CP fittings, vanity mirrors, instant geysers, and concealed cisterns.</li>
-          <li><strong>Convenience:</strong> Branded 6-passenger automatic lift, stilt car parking with EV charger point, and private terrace garden access.</li>
-          <li><strong>Smart Security:</strong> Digital fingerprint door lock, video door phone, 24x7 CCTV coverage, and MyGate app integration.</li>
-        </ul>
+        <!-- Intersperse Related Article Callout 3 -->
+        <div style="background: #FFFDF8; border-left: 4px solid #C9A227; border-top: 1px solid #E8D5A3; border-right: 1px solid #E8D5A3; border-bottom: 1px solid #E8D5A3; padding: 1.25rem 1.5rem; border-radius: 0 0.75rem 0.75rem 0; margin: 2rem 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">💡 Investment Analysis</span>
+            <h4 style="font-size: 1.05rem; font-weight: 700; color: #1A202C; margin: 0;">Why Aravali-Facing Builder Floors Are Delhi NCR's Hottest Real Estate Asset</h4>
+          </div>
+          <a href="/blog/south-delhi-gwal-pahari-real-estate-investment-guide" style="background: #FAF6E8; color: #7A5C00; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1.15rem; border-radius: 9999px; text-decoration: none; border: 1.5px solid #C9A227; white-space: nowrap;">Read Report →</a>
+        </div>
 
-        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
-          5. Schedule Your Free Site Visit with SS Realty
+        <!-- Intersperse Project Showcase 3: THE ARCH -->
+        <div style="background: #FFFFFF; border: 2px solid #E8D5A3; border-radius: 1.25rem; padding: 1.75rem; margin: 2.5rem 0; box-shadow: 0 8px 24px rgba(201,162,39,0.09);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; border-bottom: 1px solid #FAF0D7; padding-bottom: 0.75rem;">
+            <div>
+              <span style="background: #EDE9FE; color: #5B21B6; font-size: 0.75rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 9999px; text-transform: uppercase;">Architectural Landmark</span>
+              <h3 style="font-size: 1.45rem; font-weight: 800; color: #1A202C; margin: 0.35rem 0 0 0;">The Arch – Main Mandi Road</h3>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 1.5rem; font-weight: 900; color: #9E7B15;">₹1.25 Crore</span>
+              <span style="display: block; font-size: 0.8rem; color: #059669; font-weight: 700;">Possession July 2027</span>
+            </div>
+          </div>
+          <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin-bottom: 1.25rem;">
+            <strong>Configuration:</strong> 3BHK Ultra-Modern Floors (130 Sq.Yd.) | <strong>Design:</strong> Futuristic parametric curved facade, grand double-height entrance reception, landscaped rooftop meditation lounge, smart climate automation, and EV charging infrastructure in stilt parking.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="/properties/the-arch" style="background: #FAF6E8; color: #7A5C00; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.5rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem;">
+              🏢 Explore The Arch Details →
+            </a>
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20construction%20updates%20for%20The%20Arch" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.25rem; border-radius: 0.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+              💬 Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #E8D5A3; margin: 2.5rem 0;" />
+
+        <!-- SECTION 4 -->
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #1A202C; margin-top: 2.5rem; margin-bottom: 1.25rem; font-family: var(--font-playfair, serif);">
+          4. Step-by-Step Bank & NBFC Home Loan Approval Process (Up to 90%)
         </h2>
-        <p class="mb-6">
-          With over 18+ years of developer excellence since 2008 and 100+ delivered landmarks, SS Realty guarantees 100% verified registry titles, direct developer pricing with zero brokerage, and on-site bank loan assistance.
+
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #4A5568; margin-bottom: 1.5rem;">
+          Because SS Realty properties in Chattarpur Enclave Phase 2 and Mandi Road possess pristine freehold registry documentation, leading banking and housing finance institutions have pre-approved our project files. This drastically shortens the loan processing turnaround to just <strong>5 to 7 working days</strong>. Also check our advisory on <a href="/blog/delhi-circle-rate-hike-2026-buyers-guide" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">Delhi Circle Rate Hike 2026: Stamp Duty & Registration Impact</a>.
         </p>
-        <p class="mb-6">
-          Contact our senior property advisory team at <strong>+91 93110 59100</strong> or <a href="/properties" class="text-[#C9A227] font-semibold hover:underline">browse our active property listings</a> to book your personalized site visit today.
+
+        <!-- Loan Steps Box (Light Theme) -->
+        <div style="background: #FFFDF8; border: 1.5px solid #E8D5A3; border-radius: 1rem; padding: 1.75rem; margin-bottom: 2rem;">
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: #7A5C00; margin-top: 0; margin-bottom: 1rem;">
+            📋 4-Step Home Loan Approval Roadmap:
+          </h3>
+          <ol style="padding-left: 1.25rem; color: #2D3748; line-height: 1.85; font-size: 0.95rem; margin: 0;">
+            <li style="margin-bottom: 0.75rem;">
+              <strong>Financial Profile Verification & Eligibility Check:</strong> Calculation of Debt-to-Income (DTI) ratio. Salaried professionals require 6 months bank statements, 3 months payslips, Form 16, and PAN/Aadhaar. Self-employed business owners require 3 years ITR with CA-audited financials.
+            </li>
+            <li style="margin-bottom: 0.75rem;">
+              <strong>Sanction Letter Issuance:</strong> Formal sanction letter issued within 48 to 72 hours by NBFC partners (Tata Capital, ICICI HFC, Piramal, PNB Housing, LIC HFL) with flexible tenure up to 30 years.
+            </li>
+            <li style="margin-bottom: 0.75rem;">
+              <strong>Technical & Legal Title Search:</strong> Bank's empanelled lawyer and civil engineer verify the 30-year mother chain deed, site layout, and NOCs.
+            </li>
+            <li>
+              <strong>Sub-Registrar Registration & Disbursal:</strong> Property registered at Sub-Registrar VA office. Banker hands over the loan disbursement demand draft directly upon execution.
+            </li>
+          </ol>
+        </div>
+
+        <!-- Intersperse Project Showcase 4: VELORA -->
+        <div style="background: #FFFFFF; border: 2px solid #E8D5A3; border-radius: 1.25rem; padding: 1.75rem; margin: 2.5rem 0; box-shadow: 0 8px 24px rgba(201,162,39,0.09);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; border-bottom: 1px solid #FAF0D7; padding-bottom: 0.75rem;">
+            <div>
+              <span style="background: #FEF3C7; color: #92400E; font-size: 0.75rem; font-weight: 800; padding: 0.25rem 0.75rem; border-radius: 9999px; text-transform: uppercase;">Ultra Luxury Large Format</span>
+              <h3 style="font-size: 1.45rem; font-weight: 800; color: #1A202C; margin: 0.35rem 0 0 0;">Velora – Chattarpur Enclave</h3>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 1.5rem; font-weight: 900; color: #9E7B15;">₹1.50 Cr – ₹2.99 Cr</span>
+              <span style="display: block; font-size: 0.8rem; color: #059669; font-weight: 700;">Super Luxury Living</span>
+            </div>
+          </div>
+          <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin-bottom: 1.25rem;">
+            <strong>Configuration:</strong> 3BHK & 4BHK + Study + Private Family Suite (165 to 350 Sq.Yd.) | <strong>Highlights:</strong> Imported Italian Dyna marble flooring, double-glazed soundproof UPVC windows, private elevator lobby, smart fingerprint biometric entry, and expansive master bedroom with walk-in wardrobe.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="/properties/velora" style="background: #FAF6E8; color: #7A5C00; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.5rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem;">
+              🏢 Explore Velora Residences →
+            </a>
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20details%20for%20Velora%20Chattarpur" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.25rem; border-radius: 0.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+              💬 Request Private Walkthrough
+            </a>
+          </div>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #E8D5A3; margin: 2.5rem 0;" />
+
+        <!-- SECTION 5 -->
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #1A202C; margin-top: 2.5rem; margin-bottom: 1.25rem; font-family: var(--font-playfair, serif);">
+          5. The SS Realty Advantage: 0% Brokerage & 18+ Years of Builder Trust
+        </h2>
+
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #4A5568; margin-bottom: 1.5rem;">
+          Unlike property portals and local middlemen brokers who charge 1% to 2% brokerage commissions while having zero control over construction quality, <strong>SS Realty is a master developer-builder</strong>. Since 2008, we have conceptualized, engineered, and delivered over 100+ landmark builder floors across South Delhi, Chattarpur, and Gwal Pahari. For first-time buyers, check our complete <a href="/blog/first-time-home-buyer-guide-delhi-step-by-step-flat-purchase" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">First-Time Home Buyer Guide in Delhi</a>.
         </p>
+
+        <!-- Intersperse Project Showcase 5 & 6: VASUNDHARA & AMARYLLIS (Dual Grid) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2.5rem 0;">
+          <!-- Vasundhara -->
+          <div style="background: #FFFFFF; border: 1.5px solid #E8D5A3; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <span style="display: inline-block; background: #E0E7FF; color: #3730A3; font-weight: 800; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; text-transform: uppercase; margin-bottom: 0.5rem;">Simplex & Duplex</span>
+              <h3 style="font-size: 1.25rem; font-weight: 800; color: #1A202C; margin-bottom: 0.25rem;">Vasundhara – Chattarpur</h3>
+              <p style="font-size: 0.85rem; color: #718096; margin-bottom: 0.75rem;">3BHK Simplex & Duplex Floors (150 Sq.Yd.)</p>
+              <p style="color: #9E7B15; font-size: 1.35rem; font-weight: 800; margin-bottom: 0.75rem;">₹1.25 Cr – ₹1.39 Cr</p>
+              <p style="font-size: 0.85rem; color: #4A5568; line-height: 1.6; margin-bottom: 1rem;">Duplex living in South Delhi with double-height ceiling and private rooftop terrace.</p>
+            </div>
+            <a href="/properties/vasundhara" style="display: block; text-align: center; background: #FAF6E8; color: #7A5C00; font-weight: 800; padding: 0.65rem 1rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227;">Explore Vasundhara Details →</a>
+          </div>
+
+          <!-- Amaryllis -->
+          <div style="background: #FFFFFF; border: 1.5px solid #E8D5A3; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <span style="display: inline-block; background: #FCE7F3; color: #9D174D; font-weight: 800; font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; text-transform: uppercase; margin-bottom: 0.5rem;">Fast Selling</span>
+              <h3 style="font-size: 1.25rem; font-weight: 800; color: #1A202C; margin-bottom: 0.25rem;">Amaryllis – Gwal Pahari</h3>
+              <p style="font-size: 0.85rem; color: #718096; margin-bottom: 0.75rem;">3BHK & 4BHK Luxury Apartments (130–160 Sq.Yd.)</p>
+              <p style="color: #9E7B15; font-size: 1.35rem; font-weight: 800; margin-bottom: 0.75rem;">₹1.25 Cr – ₹1.50 Cr</p>
+              <p style="font-size: 0.85rem; color: #4A5568; line-height: 1.6; margin-bottom: 1rem;">Premium Aravali ridge development near Gurgaon border with 90% loan.</p>
+            </div>
+            <a href="/properties/amaryllis" style="display: block; text-align: center; background: #FAF6E8; color: #7A5C00; font-weight: 800; padding: 0.65rem 1rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227;">Explore Amaryllis Details →</a>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 2rem 0 3rem 0;">
+          <a href="/properties" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #C9A227; color: #1A1800; font-weight: 800; padding: 0.85rem 2rem; border-radius: 9999px; text-decoration: none; font-size: 1rem; box-shadow: 0 4px 15px rgba(201,162,39,0.25);">
+            <span>🏢</span> View All SS Realty Residential Projects in Delhi NCR →
+          </a>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #E8D5A3; margin: 2.5rem 0;" />
+
+        <!-- SECTION 6: Related Articles Interlinking Hub -->
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #1A202C; margin-top: 2.5rem; margin-bottom: 1.25rem; font-family: var(--font-playfair, serif);">
+          6. Recommended Real Estate Guides & South Delhi Market Reports
+        </h2>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem;">
+          <a href="/blog/orchid-3bhk-gwal-pahari-mandi-road-gurgaon-affordable-luxury-guide" style="background: #FFFDF8; border: 1px solid #E8D5A3; padding: 1.25rem; border-radius: 0.75rem; text-decoration: none; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase;">Buying Guide</span>
+            <h4 style="font-size: 1rem; font-weight: 700; color: #1A202C; margin-top: 0.25rem; line-height: 1.4;">Orchid 3BHK Flat in Mandi – Complete Guide on Mandi Road →</h4>
+          </a>
+
+          <a href="/blog/chattarpur-vs-gwal-pahari-which-location-better-flat" style="background: #FFFDF8; border: 1px solid #E8D5A3; padding: 1.25rem; border-radius: 0.75rem; text-decoration: none; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase;">Location Analysis</span>
+            <h4 style="font-size: 1rem; font-weight: 700; color: #1A202C; margin-top: 0.25rem; line-height: 1.4;">Chattarpur vs Gwal Pahari — Which Location is Better for Flats in 2026? →</h4>
+          </a>
+
+          <a href="/blog/3bhk-flat-for-sale-chattarpur-gwal-pahari-lal-dora-property-benefits" style="background: #FFFDF8; border: 1px solid #E8D5A3; padding: 1.25rem; border-radius: 0.75rem; text-decoration: none; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase;">Legal Report</span>
+            <h4 style="font-size: 1rem; font-weight: 700; color: #1A202C; margin-top: 0.25rem; line-height: 1.4;">3BHK Flat in Chattarpur: Top 10 Lal Dora Property Benefits →</h4>
+          </a>
+
+          <a href="/blog/delhi-circle-rate-hike-2026-buyers-guide" style="background: #FFFDF8; border: 1px solid #E8D5A3; padding: 1.25rem; border-radius: 0.75rem; text-decoration: none; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase;">Legal Advisory</span>
+            <h4 style="font-size: 1rem; font-weight: 700; color: #1A202C; margin-top: 0.25rem; line-height: 1.4;">Delhi Circle Rate Hike 2026: Stamp Duty & Registration Impact →</h4>
+          </a>
+
+          <a href="/blog/south-delhi-gwal-pahari-real-estate-investment-guide" style="background: #FFFDF8; border: 1px solid #E8D5A3; padding: 1.25rem; border-radius: 0.75rem; text-decoration: none; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase;">Investment Report</span>
+            <h4 style="font-size: 1rem; font-weight: 700; color: #1A202C; margin-top: 0.25rem; line-height: 1.4;">Why Aravali-Facing Floors Are Delhi NCR's Hottest Real Estate Asset →</h4>
+          </a>
+
+          <a href="/blog/how-to-buy-a-flat-in-delhi-complete-legal-loan-registration-guide" style="background: #FFFDF8; border: 1px solid #E8D5A3; padding: 1.25rem; border-radius: 0.75rem; text-decoration: none; display: block; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase;">Buyer Handbook</span>
+            <h4 style="font-size: 1rem; font-weight: 700; color: #1A202C; margin-top: 0.25rem; line-height: 1.4;">How to Buy a Flat in Delhi: Step-by-Step Legal & Loan Checklist →</h4>
+          </a>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #E8D5A3; margin: 2.5rem 0;" />
+
+        <!-- SECTION 7: FAQs -->
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #1A202C; margin-top: 2.5rem; margin-bottom: 1.25rem; font-family: var(--font-playfair, serif);">
+          7. Frequently Asked Questions (FAQs)
+        </h2>
+
+        <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 2.5rem;">
+          <div style="background: #FFFDF8; border: 1px solid #E8D5A3; border-radius: 0.75rem; padding: 1.25rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #1A202C; margin-bottom: 0.5rem; margin-top: 0;">Q1. Are flats in Chattarpur Enclave Phase 2 eligible for legal government registry?</h3>
+            <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin: 0;">
+              Yes! Flats constructed on freehold abadi land in Chattarpur Enclave Phase 2 are legally registered at the Sub-Registrar VA office with complete stamp duty challans, official sub-registrar biometric execution, and municipal mutation.
+            </p>
+          </div>
+
+          <div style="background: #FFFDF8; border: 1px solid #E8D5A3; border-radius: 0.75rem; padding: 1.25rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #1A202C; margin-bottom: 0.5rem; margin-top: 0;">Q2. What percentage of home loan can I get on a Chattarpur registry flat?</h3>
+            <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin: 0;">
+              Qualified salaried and business buyers can secure 80% to 90% of the total property valuation as a housing loan through leading NBFCs and banks such as Tata Capital, ICICI Home Finance, Piramal Capital, PNB Housing, and LIC HFL.
+            </p>
+          </div>
+
+          <div style="background: #FFFDF8; border: 1px solid #E8D5A3; border-radius: 0.75rem; padding: 1.25rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #1A202C; margin-bottom: 0.5rem; margin-top: 0;">Q3. How far is Chattarpur Enclave Phase 2 from the nearest metro station?</h3>
+            <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin: 0;">
+              Chattarpur Enclave Phase 2 is located approximately 1.8 km to 2.5 km (5 to 7 minutes drive or e-rickshaw ride) from Chattarpur Metro Station and Qutub Minar Metro Station on the DMRC Yellow Line.
+            </p>
+          </div>
+
+          <div style="background: #FFFDF8; border: 1px solid #E8D5A3; border-radius: 0.75rem; padding: 1.25rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #1A202C; margin-bottom: 0.5rem; margin-top: 0;">Q4. What is the starting price for a 3BHK flat in Chattarpur Enclave Phase 2?</h3>
+            <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin: 0;">
+              3BHK luxury builder floors in Chattarpur Enclave Phase 2 typically range between ₹65 Lakhs and ₹95 Lakhs depending on plot size (120 to 170 Sq.Yd.), internal road width, lift brand, and modular furnishing. Explore active listings on our <a href="/properties" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">properties page</a>.
+            </p>
+          </div>
+
+          <div style="background: #FFFDF8; border: 1px solid #E8D5A3; border-radius: 0.75rem; padding: 1.25rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #1A202C; margin-bottom: 0.5rem; margin-top: 0;">Q5. Does SS Realty charge any brokerage fees on direct builder purchases?</h3>
+            <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin: 0;">
+              No. SS Realty is a self-funded developer-builder that designs, constructs, and sells its own projects. When you purchase directly from SS Realty, you pay <strong>0% brokerage and zero middleman commissions</strong>.
+            </p>
+          </div>
+
+          <div style="background: #FFFDF8; border: 1px solid #E8D5A3; border-radius: 0.75rem; padding: 1.25rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #1A202C; margin-bottom: 0.5rem; margin-top: 0;">Q6. How can I schedule an on-site property inspection?</h3>
+            <p style="font-size: 0.95rem; color: #4A5568; line-height: 1.7; margin: 0;">
+              You can connect directly with the SS Realty sales advisory team via WhatsApp at <a href="https://wa.me/919311059100" style="color: #059669; font-weight: 700; text-decoration: underline;">+91 93110 59100</a> or submit an inquiry through our <a href="/contact" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">contact page</a>. Our senior advisors provide guided site tours 7 days a week.
+            </p>
+          </div>
+        </div>
+
+        <!-- Warm Luxury Call to Action Banner (Clean Light Theme, Crisp Contrast) -->
+        <div style="background: linear-gradient(135deg, #FFFDF8 0%, #FFF9EB 100%); border: 2px solid #C9A227; border-radius: 1.25rem; padding: 2.5rem 1.75rem; text-align: center; color: #1A202C; margin-top: 3rem; box-shadow: 0 10px 30px rgba(201,162,39,0.12);">
+          <h3 style="font-size: 1.85rem; font-weight: 800; color: #1A1800; margin-top: 0; margin-bottom: 0.75rem; font-family: var(--font-playfair, serif);">
+            Ready to Visit Your Dream Home in Chattarpur Enclave Phase 2?
+          </h3>
+          <p style="font-size: 1.05rem; color: #4A5568; max-width: 650px; margin: 0 auto 1.75rem auto; line-height: 1.7;">
+            Schedule a free guided site visit today. Explore ready-to-move 2BHK, 3BHK, and 4BHK luxury builder floors with immediate possession, clear registry titles, and 90% bank loan approval.
+          </p>
+          <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20am%20interested%20in%20visiting%20Registry%20Flats%20in%20Chattarpur%20Enclave%20Phase%202" style="background: #25D366; color: #FFFFFF !important; font-weight: 800; padding: 0.85rem 1.75rem; border-radius: 9999px; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 14px rgba(37,211,102,0.35);">
+              💬 Chat on WhatsApp (+91 93110 59100)
+            </a>
+            <a href="/properties" style="background: #C9A227; color: #1A1800 !important; font-weight: 800; padding: 0.85rem 1.75rem; border-radius: 9999px; text-decoration: none; font-size: 1rem; border: 1.5px solid #B8860B; box-shadow: 0 4px 14px rgba(201,162,39,0.25);">
+              🏢 Explore All Projects
+            </a>
+          </div>
+        </div>
+
       </div>
     `,
     coverImage: '/blog/registry-flats-in-chattarpur-enclave-phase-2-with-bank-loan.jpg',
@@ -154,7 +489,7 @@ export const FALLBACK_BLOGS: any[] = [
     },
     published: true,
     publishDate: '2026-09-06T10:00:00.000Z',
-    views: 128,
+    views: 135,
   },
   {
     _id: 'b0',
