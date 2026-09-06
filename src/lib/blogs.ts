@@ -69,7 +69,9 @@ export const FALLBACK_BLOGS: any[] = [
             <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">💡 Recommended Deep Dive</span>
             <h4 style="font-size: 1.05rem; font-weight: 700; color: #1A202C; margin: 0;">Chattarpur vs Gwal Pahari — Which Location is Better for Flats in 2026?</h4>
           </div>
-          <a href="/blog/chattarpur-vs-gwal-pahari-which-location-better-flat" style="background: #FAF6E8; color: #7A5C00; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1.15rem; border-radius: 9999px; text-decoration: none; border: 1.5px solid #C9A227; white-space: nowrap;">Read Comparison →</a>
+          <a href="/blog/chattarpur-vs-gwal-pahari-which-location-better-flat" style="background: #1E293B; color: #F0D060 !important; font-weight: 700; font-size: 0.85rem; padding: 0.55rem 1.25rem; border-radius: 9999px; text-decoration: none !important; border: 1.5px solid #C9A227; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+            <span style="color: #F0D060 !important; font-weight: 700;">Read Comparison →</span>
+          </a>
         </div>
 
         <!-- Intersperse Project Showcase 1: NIVASA II -->
@@ -88,11 +90,11 @@ export const FALLBACK_BLOGS: any[] = [
             <strong>Configuration:</strong> Spacious 3BHK Builder Floors (120 Sq.Yd.) | <strong>Status:</strong> Ready to Move with Immediate Registry | <strong>Highlights:</strong> Modular Italian kitchen with quartz counter, branded Otis 6-passenger automatic lift, reserved stilt parking, private balconies with tree-top views, and sweet drinking water supply.
           </p>
           <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="/properties/nivasa-ii" style="background: #FAF6E8; color: #7A5C00; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.5rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem;">
-              🏢 View Nivasa II Floor Plans & Pricing →
+            <a href="/properties/nivasa-ii" style="background: #1E293B; color: #F0D060 !important; font-weight: 800; font-size: 0.9rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none !important; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <span style="color: #F0D060 !important; font-weight: 800;">🏢 View Nivasa II Floor Plans & Pricing →</span>
             </a>
-            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20to%20visit%20Nivasa%20II%20in%20Chattarpur%20Mandi" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.25rem; border-radius: 0.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-              💬 Book Free Site Visit
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20to%20visit%20Nivasa%20II%20in%20Chattarpur%20Mandi" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.75rem 1.35rem; border-radius: 0.5rem; text-decoration: none !important; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(37,211,102,0.35);">
+              <span style="color: #FFFFFF !important; font-weight: 800;">💬 Book Free Site Visit</span>
             </a>
           </div>
         </div>
@@ -158,7 +160,9 @@ export const FALLBACK_BLOGS: any[] = [
             <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">💡 Must Read Legal Guide</span>
             <h4 style="font-size: 1.05rem; font-weight: 700; color: #1A202C; margin: 0;">3BHK Flat in Chattarpur & Gwal Pahari: Top 10 Lal Dora Property Benefits</h4>
           </div>
-          <a href="/blog/3bhk-flat-for-sale-chattarpur-gwal-pahari-lal-dora-property-benefits" style="background: #FAF6E8; color: #7A5C00; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1.15rem; border-radius: 9999px; text-decoration: none; border: 1.5px solid #C9A227; white-space: nowrap;">Read Article →</a>
+          <a href="/blog/3bhk-flat-for-sale-chattarpur-gwal-pahari-lal-dora-property-benefits" style="background: #1E293B; color: #F0D060 !important; font-weight: 700; font-size: 0.85rem; padding: 0.55rem 1.25rem; border-radius: 9999px; text-decoration: none !important; border: 1.5px solid #C9A227; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+            <span style="color: #F0D060 !important; font-weight: 700;">Read Article →</span>
+          </a>
         </div>
 
         <!-- Intersperse Project Showcase 2: THE ORCHID -->
@@ -177,11 +181,11 @@ export const FALLBACK_BLOGS: any[] = [
             <strong>Configuration:</strong> 2BHK & 3BHK Premium Floors (130 Sq.Yd.) | <strong>Location:</strong> Main Mandi Road, Gwal Pahari | <strong>USP:</strong> Unobstructed panoramic Aravali forest views, lush green air quality, 10 minutes drive from Golf Course Road, designer false ceilings, premium Jaguar sanitaryware, and smart digital door locks. Read our complete <a href="/blog/orchid-3bhk-gwal-pahari-mandi-road-gurgaon-affordable-luxury-guide" style="color: #9E7B15; font-weight: 700; text-decoration: underline;">Orchid Mandi Road Complete Guide</a>.
           </p>
           <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="/properties/the-orchid" style="background: #FAF6E8; color: #7A5C00; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.5rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem;">
-              🏢 View The Orchid Specifications →
+            <a href="/properties/the-orchid" style="background: #1E293B; color: #F0D060 !important; font-weight: 800; font-size: 0.9rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none !important; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <span style="color: #F0D060 !important; font-weight: 800;">🏢 View The Orchid Specifications →</span>
             </a>
-            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20details%20for%20The%20Orchid%20on%20Mandi%20Road" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.25rem; border-radius: 0.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-              💬 WhatsApp Brochure
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20details%20for%20The%20Orchid%20on%20Mandi%20Road" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.75rem 1.35rem; border-radius: 0.5rem; text-decoration: none !important; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(37,211,102,0.35);">
+              <span style="color: #FFFFFF !important; font-weight: 800;">💬 WhatsApp Brochure</span>
             </a>
           </div>
         </div>
@@ -243,7 +247,9 @@ export const FALLBACK_BLOGS: any[] = [
             <span style="font-size: 0.75rem; font-weight: 800; color: #9E7B15; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">💡 Investment Analysis</span>
             <h4 style="font-size: 1.05rem; font-weight: 700; color: #1A202C; margin: 0;">Why Aravali-Facing Builder Floors Are Delhi NCR's Hottest Real Estate Asset</h4>
           </div>
-          <a href="/blog/south-delhi-gwal-pahari-real-estate-investment-guide" style="background: #FAF6E8; color: #7A5C00; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1.15rem; border-radius: 9999px; text-decoration: none; border: 1.5px solid #C9A227; white-space: nowrap;">Read Report →</a>
+          <a href="/blog/south-delhi-gwal-pahari-real-estate-investment-guide" style="background: #1E293B; color: #F0D060 !important; font-weight: 700; font-size: 0.85rem; padding: 0.55rem 1.25rem; border-radius: 9999px; text-decoration: none !important; border: 1.5px solid #C9A227; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+            <span style="color: #F0D060 !important; font-weight: 700;">Read Report →</span>
+          </a>
         </div>
 
         <!-- Intersperse Project Showcase 3: THE ARCH -->
@@ -262,11 +268,11 @@ export const FALLBACK_BLOGS: any[] = [
             <strong>Configuration:</strong> 3BHK Ultra-Modern Floors (130 Sq.Yd.) | <strong>Design:</strong> Futuristic parametric curved facade, grand double-height entrance reception, landscaped rooftop meditation lounge, smart climate automation, and EV charging infrastructure in stilt parking.
           </p>
           <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="/properties/the-arch" style="background: #FAF6E8; color: #7A5C00; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.5rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem;">
-              🏢 Explore The Arch Details →
+            <a href="/properties/the-arch" style="background: #1E293B; color: #F0D060 !important; font-weight: 800; font-size: 0.9rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none !important; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <span style="color: #F0D060 !important; font-weight: 800;">🏢 Explore The Arch Details →</span>
             </a>
-            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20construction%20updates%20for%20The%20Arch" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.25rem; border-radius: 0.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-              💬 Chat on WhatsApp
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20construction%20updates%20for%20The%20Arch" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.75rem 1.35rem; border-radius: 0.5rem; text-decoration: none !important; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(37,211,102,0.35);">
+              <span style="color: #FFFFFF !important; font-weight: 800;">💬 Chat on WhatsApp</span>
             </a>
           </div>
         </div>
@@ -319,11 +325,11 @@ export const FALLBACK_BLOGS: any[] = [
             <strong>Configuration:</strong> 3BHK & 4BHK + Study + Private Family Suite (165 to 350 Sq.Yd.) | <strong>Highlights:</strong> Imported Italian Dyna marble flooring, double-glazed soundproof UPVC windows, private elevator lobby, smart fingerprint biometric entry, and expansive master bedroom with walk-in wardrobe.
           </p>
           <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <a href="/properties/velora" style="background: #FAF6E8; color: #7A5C00; font-weight: 800; font-size: 0.9rem; padding: 0.65rem 1.5rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem;">
-              🏢 Explore Velora Residences →
+            <a href="/properties/velora" style="background: #1E293B; color: #F0D060 !important; font-weight: 800; font-size: 0.9rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; text-decoration: none !important; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <span style="color: #F0D060 !important; font-weight: 800;">🏢 Explore Velora Residences →</span>
             </a>
-            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20details%20for%20Velora%20Chattarpur" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.65rem 1.25rem; border-radius: 0.5rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
-              💬 Request Private Walkthrough
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20want%20details%20for%20Velora%20Chattarpur" style="background: #25D366; color: #FFFFFF !important; font-weight: 700; font-size: 0.9rem; padding: 0.75rem 1.35rem; border-radius: 0.5rem; text-decoration: none !important; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(37,211,102,0.35);">
+              <span style="color: #FFFFFF !important; font-weight: 800;">💬 Request Private Walkthrough</span>
             </a>
           </div>
         </div>
@@ -350,7 +356,9 @@ export const FALLBACK_BLOGS: any[] = [
               <p style="color: #9E7B15; font-size: 1.35rem; font-weight: 800; margin-bottom: 0.75rem;">₹1.25 Cr – ₹1.39 Cr</p>
               <p style="font-size: 0.85rem; color: #4A5568; line-height: 1.6; margin-bottom: 1rem;">Duplex living in South Delhi with double-height ceiling and private rooftop terrace.</p>
             </div>
-            <a href="/properties/vasundhara" style="display: block; text-align: center; background: #FAF6E8; color: #7A5C00; font-weight: 800; padding: 0.65rem 1rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227;">Explore Vasundhara Details →</a>
+            <a href="/properties/vasundhara" style="display: block; text-align: center; background: #1E293B; color: #F0D060 !important; font-weight: 800; padding: 0.75rem 1rem; border-radius: 0.5rem; text-decoration: none !important; border: 1.5px solid #C9A227; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <span style="color: #F0D060 !important; font-weight: 800;">Explore Vasundhara Details →</span>
+            </a>
           </div>
 
           <!-- Amaryllis -->
@@ -362,13 +370,16 @@ export const FALLBACK_BLOGS: any[] = [
               <p style="color: #9E7B15; font-size: 1.35rem; font-weight: 800; margin-bottom: 0.75rem;">₹1.25 Cr – ₹1.50 Cr</p>
               <p style="font-size: 0.85rem; color: #4A5568; line-height: 1.6; margin-bottom: 1rem;">Premium Aravali ridge development near Gurgaon border with 90% loan.</p>
             </div>
-            <a href="/properties/amaryllis" style="display: block; text-align: center; background: #FAF6E8; color: #7A5C00; font-weight: 800; padding: 0.65rem 1rem; border-radius: 0.5rem; text-decoration: none; border: 1.5px solid #C9A227;">Explore Amaryllis Details →</a>
+            <a href="/properties/amaryllis" style="display: block; text-align: center; background: #1E293B; color: #F0D060 !important; font-weight: 800; padding: 0.75rem 1rem; border-radius: 0.5rem; text-decoration: none !important; border: 1.5px solid #C9A227; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+              <span style="color: #F0D060 !important; font-weight: 800;">Explore Amaryllis Details →</span>
+            </a>
           </div>
         </div>
 
         <div style="text-align: center; margin: 2rem 0 3rem 0;">
-          <a href="/properties" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #C9A227; color: #1A1800; font-weight: 800; padding: 0.85rem 2rem; border-radius: 9999px; text-decoration: none; font-size: 1rem; box-shadow: 0 4px 15px rgba(201,162,39,0.25);">
-            <span>🏢</span> View All SS Realty Residential Projects in Delhi NCR →
+          <a href="/properties" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem; background: #1E293B; color: #FFFFFF !important; font-weight: 800; padding: 0.95rem 2.25rem; border-radius: 9999px; text-decoration: none !important; font-size: 1.05rem; border: 2px solid #C9A227; box-shadow: 0 6px 20px rgba(0,0,0,0.2);">
+            <span style="font-size: 1.25rem;">🏢</span>
+            <span style="color: #FFFFFF !important; font-weight: 800;">View All SS Realty Residential Projects in Delhi NCR →</span>
           </a>
         </div>
 
@@ -471,11 +482,11 @@ export const FALLBACK_BLOGS: any[] = [
             Schedule a free guided site visit today. Explore ready-to-move 2BHK, 3BHK, and 4BHK luxury builder floors with immediate possession, clear registry titles, and 90% bank loan approval.
           </p>
           <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20am%20interested%20in%20visiting%20Registry%20Flats%20in%20Chattarpur%20Enclave%20Phase%202" style="background: #25D366; color: #FFFFFF !important; font-weight: 800; padding: 0.85rem 1.75rem; border-radius: 9999px; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 14px rgba(37,211,102,0.35);">
-              💬 Chat on WhatsApp (+91 93110 59100)
+            <a href="https://wa.me/919311059100?text=Hi%20SS%20Realty%2C%20I%20am%20interested%20in%20visiting%20Registry%20Flats%20in%20Chattarpur%20Enclave%20Phase%202" style="background: #25D366; color: #FFFFFF !important; font-weight: 800; padding: 0.95rem 1.85rem; border-radius: 9999px; text-decoration: none !important; font-size: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 6px 18px rgba(37,211,102,0.35);">
+              <span style="color: #FFFFFF !important; font-weight: 800;">💬 Chat on WhatsApp (+91 93110 59100)</span>
             </a>
-            <a href="/properties" style="background: #C9A227; color: #1A1800 !important; font-weight: 800; padding: 0.85rem 1.75rem; border-radius: 9999px; text-decoration: none; font-size: 1rem; border: 1.5px solid #B8860B; box-shadow: 0 4px 14px rgba(201,162,39,0.25);">
-              🏢 Explore All Projects
+            <a href="/properties" style="background: #1E293B; color: #F0D060 !important; font-weight: 800; padding: 0.95rem 1.85rem; border-radius: 9999px; text-decoration: none !important; font-size: 1rem; border: 1.5px solid #C9A227; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 6px 18px rgba(0,0,0,0.15);">
+              <span style="color: #F0D060 !important; font-weight: 800;">🏢 Explore All Projects</span>
             </a>
           </div>
         </div>
@@ -489,7 +500,7 @@ export const FALLBACK_BLOGS: any[] = [
     },
     published: true,
     publishDate: '2026-09-06T10:00:00.000Z',
-    views: 135,
+    views: 142,
   },
   {
     _id: 'b0',
