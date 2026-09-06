@@ -2,6 +2,161 @@ import type { Blog } from '@/types';
 
 export const FALLBACK_BLOGS: any[] = [
   {
+    _id: 'b-chattarpur-phase2',
+    title: 'Registry Flats in Chattarpur Enclave Phase 2 with Bank Loan — Complete 2026 Buyer Guide, Price, Floor Plans & NBFC Loan Process',
+    slug: 'registry-flats-in-chattarpur-enclave-phase-2-with-bank-loan',
+    category: 'Legal',
+    excerpt: 'Complete 2026 buyer guide to buying registry flats in Chattarpur Enclave Phase 2 with up to 90% bank and NBFC loan. Discover prices, floor plans, legal checklists, EMI calculations, and top builder floors by SS Realty.',
+    content: `
+      <div class="prose prose-lg max-w-none text-[#3a3828] leading-relaxed">
+        <p class="text-lg md:text-xl font-medium text-[#1A1800] leading-relaxed mb-6">
+          Finding an affordable luxury home in South Delhi with undisputed legal titles and seamless banking finance has historically been one of the biggest challenges for middle-class and upper-middle-class homebuyers. Today, <strong>Chattarpur Enclave Phase 2</strong> has firmly established itself as South Delhi’s most sought-after residential destination for <strong>verified registry flats with up to 90% bank and NBFC loan approval</strong>.
+        </p>
+
+        <p class="mb-6">
+          Whether you are a working corporate professional seeking a hassle-free commute to Cyber City and Central Delhi, a family looking to upgrade to a spacious independent builder floor with lift and parking, or an investor eyeing consistent rental yields of 5% to 6%, this comprehensive 2026 guide breaks down everything you need to know about purchasing a registry flat in Chattarpur Enclave Phase 2 — from sub-registrar registration and loan eligibility to floor plans, neighborhood infrastructure, and actual on-ground prices.
+        </p>
+
+        <div class="my-8 p-6 bg-gradient-to-r from-[#FFFBEB] to-[#FFF8E1] border-l-4 border-[#C9A227] rounded-r-2xl shadow-sm">
+          <h3 class="text-lg font-bold text-[#1A1800] mb-2">🔑 Key Location & Infrastructure Highlights</h3>
+          <ul class="space-y-2 text-sm text-[#4a4030]">
+            <li><strong>Metro Connectivity:</strong> 5–7 minutes drive to Chattarpur Metro Station (Yellow Line) and Qutub Minar Metro Station.</li>
+            <li><strong>Gurugram Cyber Hub Access:</strong> Seamless 15-minute commute to Golf Course Road and DLF Cyber City via Mandi Road.</li>
+            <li><strong>Bank Loan Availability:</strong> Up to 90% housing loans approved from Tata Capital, ICICI HFC, Piramal, and PNB Housing.</li>
+            <li><strong>Zero Brokerage:</strong> Direct developer-builder purchase from <a href="/about-us" class="text-[#C9A227] font-semibold hover:underline">SS Realty</a> with 100+ delivered landmarks.</li>
+          </ul>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
+          1. Why Chattarpur Enclave Phase 2 is South Delhi's #1 Real Estate Hotspot
+        </h2>
+        <p class="mb-4">
+          Chattarpur Enclave is divided into two distinct sectors — Phase 1 and Phase 2. While Phase 1 is bustling with commercial high-streets and metro access, <strong>Phase 2 offers a peaceful, well-planned residential environment</strong> characterized by wide internal roads, private gated entry gates, underground cabling, IGL piped natural gas (PNG), and pristine greenery bordering the Asola Bhatti Wildlife Sanctuary and sprawling South Delhi farmhouses.
+        </p>
+        <p class="mb-6">
+          With direct connectivity to 100 Feet Road, SSN Marg, CDR Chowk, and Vasant Kunj, residents enjoy the rare luxury of clean air and serene surroundings while staying within 20 minutes of South Delhi’s best retail and corporate hubs.
+        </p>
+
+        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
+          2. Registry Flat vs. GPA Property: What Every Buyer Must Know
+        </h2>
+        <p class="mb-4">
+          A common misconception among first-time buyers in Delhi is that all builder floors in South Delhi are sold on General Power of Attorney (GPA). In reality, <strong>Chattarpur Enclave Phase 2 has dedicated sectors of clear-title freehold registry properties</strong> executed legally at the Sub-Registrar VA (Mehrauli/Hauz Khas) office.
+        </p>
+
+        <div class="overflow-x-auto my-6">
+          <table class="w-full border-collapse text-left text-sm bg-white rounded-xl shadow-sm border border-[#E8D5A3]/50 overflow-hidden">
+            <thead>
+              <tr class="bg-[#1A1800] text-[#C9A227] uppercase text-xs tracking-wider">
+                <th class="p-3.5 border-b border-[#E8D5A3]/30">Parameter</th>
+                <th class="p-3.5 border-b border-[#E8D5A3]/30">Freehold Registry Flat (Phase 2)</th>
+                <th class="p-3.5 border-b border-[#E8D5A3]/30">GPA / Agreement to Sell Flat</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#E8D5A3]/30">
+              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
+                <td class="p-3.5 font-bold text-[#1A1800]">Sub-Registrar Registration</td>
+                <td class="p-3.5 text-emerald-700 font-bold">✅ Registered with Govt. Stamp Duty</td>
+                <td class="p-3.5 text-red-600 font-medium">❌ Notary / Agreement Only</td>
+              </tr>
+              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
+                <td class="p-3.5 font-bold text-[#1A1800]">Bank / NBFC Loan Eligibility</td>
+                <td class="p-3.5 text-emerald-700 font-bold">✅ Up to 90% Loan from Leading NBFCs</td>
+                <td class="p-3.5 text-red-600 font-medium">❌ No Standard Bank Home Loans</td>
+              </tr>
+              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
+                <td class="p-3.5 font-bold text-[#1A1800]">Title Ownership</td>
+                <td class="p-3.5 text-emerald-700 font-bold">✅ Undisputed Freehold Ownership with Mutation</td>
+                <td class="p-3.5 text-red-600 font-medium">⚠️ Possession-based Proxy Ownership</td>
+              </tr>
+              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
+                <td class="p-3.5 font-bold text-[#1A1800]">Resale Value & Appreciation</td>
+                <td class="p-3.5 text-emerald-700 font-bold">✅ 12% – 15% Annual Capital Appreciation</td>
+                <td class="p-3.5 text-gray-600 font-medium">Stagnant / Liquidity Constraints</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
+          3. Bank Loan & NBFC Financing Guide: How to Get Up to 90% Loan
+        </h2>
+        <p class="mb-4">
+          One of the primary advantages of purchasing a verified registry flat in Chattarpur Enclave Phase 2 is the availability of structured home loan financing from India’s leading Non-Banking Financial Companies (NBFCs) and nationalized private housing finance institutions.
+        </p>
+        <p class="mb-4">
+          Reputed lending partners actively sanctioning housing loans on <a href="/properties" class="text-[#C9A227] font-semibold hover:underline">SS Realty properties</a> include <strong>Tata Capital Housing Finance, ICICI Home Finance, Piramal Capital, PNB Housing, and LIC Housing Finance</strong>.
+        </p>
+
+        <h3 class="text-xl font-bold text-[#1A1800] mt-8 mb-4">Chattarpur Enclave Phase 2 Price Range & Configurations (2026 Overview)</h3>
+        <div class="overflow-x-auto my-6">
+          <table class="w-full border-collapse text-left text-sm bg-white rounded-xl shadow-sm border border-[#E8D5A3]/50 overflow-hidden">
+            <thead>
+              <tr class="bg-[#1A1800] text-[#C9A227] uppercase text-xs tracking-wider">
+                <th class="p-3.5 border-b border-[#E8D5A3]/30">Configuration</th>
+                <th class="p-3.5 border-b border-[#E8D5A3]/30">Super Area</th>
+                <th class="p-3.5 border-b border-[#E8D5A3]/30">Price Range</th>
+                <th class="p-3.5 border-b border-[#E8D5A3]/30">Max Loan Available</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#E8D5A3]/30">
+              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
+                <td class="p-3.5 font-bold text-[#1A1800]">2BHK Luxury Flat</td>
+                <td class="p-3.5">750 – 950 Sq.Ft. (80 – 105 Sq.Yd.)</td>
+                <td class="p-3.5 text-emerald-700 font-bold">₹38 Lakhs – ₹55 Lakhs</td>
+                <td class="p-3.5 text-blue-700 font-semibold">Up to ₹45 Lakhs</td>
+              </tr>
+              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
+                <td class="p-3.5 font-bold text-[#1A1800]">3BHK Luxury Builder Floor</td>
+                <td class="p-3.5">1,150 – 1,550 Sq.Ft. (130 – 170 Sq.Yd.)</td>
+                <td class="p-3.5 text-emerald-700 font-bold">₹65 Lakhs – ₹95 Lakhs</td>
+                <td class="p-3.5 text-blue-700 font-semibold">Up to ₹80 Lakhs</td>
+              </tr>
+              <tr class="hover:bg-[#FFFBEB]/50 transition-colors">
+                <td class="p-3.5 font-bold text-[#1A1800]">4BHK & Duplex Penthouse</td>
+                <td class="p-3.5">2,000 – 3,200 Sq.Ft. (220 – 350 Sq.Yd.)</td>
+                <td class="p-3.5 text-emerald-700 font-bold">₹1.15 Cr – ₹1.85 Crore</td>
+                <td class="p-3.5 text-blue-700 font-semibold">Up to ₹1.50 Crore</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
+          4. Luxury Specifications & Architectural Excellence
+        </h2>
+        <p class="mb-4">
+          Every builder floor developed by SS Realty is equipped with premium fixtures:
+        </p>
+        <ul class="space-y-2 mb-6 list-disc pl-5">
+          <li><strong>Flooring:</strong> Imported Italian marble in living & dining areas; vitrified wooden finish tiles in master bedrooms.</li>
+          <li><strong>Kitchen:</strong> Modular setup with German soft-close drawers, quartz countertops, chimney, and gas hob.</li>
+          <li><strong>Bathrooms:</strong> Kohler and Jaguar branded CP fittings, vanity mirrors, instant geysers, and concealed cisterns.</li>
+          <li><strong>Convenience:</strong> Branded 6-passenger automatic lift, stilt car parking with EV charger point, and private terrace garden access.</li>
+          <li><strong>Smart Security:</strong> Digital fingerprint door lock, video door phone, 24x7 CCTV coverage, and MyGate app integration.</li>
+        </ul>
+
+        <h2 class="text-2xl md:text-3xl font-bold font-[var(--font-playfair)] text-[#1A1800] mt-12 mb-4 pb-2 border-b border-[#E8D5A3]">
+          5. Schedule Your Free Site Visit with SS Realty
+        </h2>
+        <p class="mb-6">
+          With over 18+ years of developer excellence since 2008 and 100+ delivered landmarks, SS Realty guarantees 100% verified registry titles, direct developer pricing with zero brokerage, and on-site bank loan assistance.
+        </p>
+        <p class="mb-6">
+          Contact our senior property advisory team at <strong>+91 93110 59100</strong> or <a href="/properties" class="text-[#C9A227] font-semibold hover:underline">browse our active property listings</a> to book your personalized site visit today.
+        </p>
+      </div>
+    `,
+    coverImage: '/blog/registry-flats-in-chattarpur-enclave-phase-2-with-bank-loan.jpg',
+    author: {
+      name: 'SS Realty Research & Advisory Team',
+      image: '/SS Realty Official Logo.png',
+    },
+    published: true,
+    publishDate: '2026-09-06T10:00:00.000Z',
+    views: 128,
+  },
+  {
     _id: 'b0',
     title: '3BHK Flat for Sale in Chattarpur & Gwal Pahari | Lal Dora Property Benefits | SS Realty',
     slug: '3bhk-flat-for-sale-chattarpur-gwal-pahari-lal-dora-property-benefits',
