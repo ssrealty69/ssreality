@@ -40,9 +40,6 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '50mb',
     },
-    // Disable strict CSS chunking to allow cross-chunk CSS merging; reduces the two
-    // blocking CSS files into fewer requests, saving ~500 ms render-blocking time.
-    cssChunking: false,
     // Extract critical CSS and inline it into the HTML to prevent render-blocking
     optimizeCss: true,
   },

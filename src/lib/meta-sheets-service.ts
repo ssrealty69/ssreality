@@ -289,9 +289,15 @@ const AUTO_SYNC_COOLDOWN_MS = 30 * 1000; // 30 seconds debounce
 
 /**
  * Intelligent Non-blocking Auto-Sync Engine
- * Automatically fetches fresh leads from Google Sheets in the background whenever called.
+ * Disabled by default on serverless request paths to prevent CPU limit exhaustion.
+ * Use /api/admin/meta-ads/sync or /api/webhooks/meta-sheet-sync instead.
  */
 export async function triggerAutoSyncIfNeeded(sheetId = DEFAULT_META_SHEET_ID): Promise<void> {
+  // Prevent serverless CPU quota exhaustion — sync via cron or dedicated webhook endpoint
+  if (process.env.ENABLE_IN_REQUEST_AUTO_SYNC !== 'true') {
+    return;
+  }
+
   const now = Date.now();
   if (isSyncInProgress) return;
   if (now - lastAutoSyncTimestamp < AUTO_SYNC_COOLDOWN_MS) return;

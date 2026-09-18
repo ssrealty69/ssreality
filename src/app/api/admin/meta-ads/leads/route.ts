@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMetaLeads, triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
+import { getMetaLeads } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    // Non-blocking background real-time sync with Google Sheets
-    triggerAutoSyncIfNeeded();
 
     const { searchParams } = new URL(req.url);
 

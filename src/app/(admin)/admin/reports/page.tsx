@@ -230,10 +230,11 @@ export default function AgentReportsPage() {
   useEffect(() => { 
     fetchReports(fromDate, toDate); 
 
-    // Auto-refresh presence every 30s
+    // Auto-refresh presence every 90s when active
     const interval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.hidden) return;
       fetchReports(fromDate, toDate);
-    }, 30000);
+    }, 90000);
     return () => clearInterval(interval);
   }, [fetchReports, fromDate, toDate]);
 

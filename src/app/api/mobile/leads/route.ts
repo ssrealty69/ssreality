@@ -5,7 +5,6 @@ import AgentLead from '@/models/AgentLead';
 import Agent from '@/models/Agent';
 import AgentSession from '@/models/AgentSession';
 import { cleanProjectTitle } from '@/lib/lead-distributor';
-import { triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -109,9 +108,6 @@ function mapDispositionToStatus(disposition: string): string {
 
 export async function GET(req: NextRequest) {
   try {
-    // Non-blocking real-time auto-sync from Google Sheets
-    triggerAutoSyncIfNeeded();
-
     await connectDB();
     const { searchParams } = new URL(req.url);
     const filter = searchParams.get('filter'); // 'all', 'new', 'brochure', 'blog', 'contact', 'meta'

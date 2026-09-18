@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
         end: '19:00',
         timezone: 'Asia/Kolkata',
       },
-      pingIntervalSeconds: 30,
+      pingIntervalSeconds: 90,
       minDistanceFilterMeters: 5,
       officeAddress: settings.officeAddress,
       officeLat: settings.officeLat,
