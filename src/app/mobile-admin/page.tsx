@@ -163,7 +163,7 @@ export default function MobileAdminPage() {
   useEffect(() => {
     fetchData();
     // Auto-refresh every 25 seconds
-    const interval = setInterval(() => fetchData(false), 25000);
+    const interval = setInterval(() => { if (!document.hidden) fetchData(false); }, 25000);
     return () => clearInterval(interval);
   }, [fetchData]);
 

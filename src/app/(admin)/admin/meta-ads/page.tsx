@@ -141,7 +141,7 @@ export default function MetaAdsAdminPage() {
   useEffect(() => {
     if (!autoSync) return;
     const interval = setInterval(() => {
-      fetchLeads(true); // Silent background auto-sync
+      if (!document.hidden) fetchLeads(true); // Silent background auto-sync (paused while tab is hidden)
     }, 25000); // Poll every 25 seconds
     return () => clearInterval(interval);
   }, [autoSync, fetchLeads]);

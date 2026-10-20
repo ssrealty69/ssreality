@@ -232,7 +232,7 @@ export default function AgentReportsPage() {
 
     // Auto-refresh presence every 30s
     const interval = setInterval(() => {
-      fetchReports(fromDate, toDate);
+      if (!document.hidden) fetchReports(fromDate, toDate);
     }, 30000);
     return () => clearInterval(interval);
   }, [fetchReports, fromDate, toDate]);

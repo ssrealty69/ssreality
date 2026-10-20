@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import LocationTrend from '@/models/LocationTrend';
+import { getCached, setCached } from '@/lib/redis';
 
 export const dynamic = 'force-dynamic';
 
@@ -453,30 +454,49 @@ function generateDynamicLocation(name: string) {
   };
 }
 
+// Public read-only data: let the Vercel CDN answer repeat requests instead of a function invocation.
+const CDN_HEADERS = { 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400' };
+
 export async function GET(req: NextRequest) {
   try {
-    await connectDB();
-    
-    // Auto seed if empty OR if old schema or emoji names detected OR if new preset (Sultanpur) is missing
-    let count = await LocationTrend.countDocuments();
-    const sultanpurExists = await LocationTrend.findOne({ name: /Sultanpur/i });
-    if (count < SEED_TRENDS.length || !sultanpurExists) {
-      console.log('Migrating database: seeding/updating location trends...');
-      await LocationTrend.deleteMany({});
-      await LocationTrend.insertMany(SEED_TRENDS);
-    } else {
-      // Check migration & emoji presence with standard safe regex
-      const hasEmoji = await LocationTrend.findOne({ name: { $regex: /👑|🚀|🌳|🏢|✈️/ } });
-      const sample = await LocationTrend.findOne({ reraRegistration: { $exists: true } });
-      if (!sample || hasEmoji) {
-        console.log('Migrating database: clearing emoji-prefixed names and updating records...');
-        await LocationTrend.deleteMany({});
-        await LocationTrend.insertMany(SEED_TRENDS);
-      }
-    }
-
     const searchParams = req.nextUrl.searchParams;
     const query = searchParams.get('query');
+    const hasQuery = !!query && query.trim().length >= 3;
+
+    // Reject junk input so arbitrary strings cannot create unbounded LocationTrend documents.
+    if (hasQuery && !/^[\p{L}\p{N} ,.'&()-]{3,60}$/u.test(query!.trim())) {
+      return NextResponse.json({ success: false, error: 'Invalid location query' }, { status: 400 });
+    }
+
+    const cacheKey = hasQuery ? `invest:trend:${query!.trim().toLowerCase()}` : 'invest:trends:all';
+    const cachedResponse = await getCached<unknown>(cacheKey);
+    if (cachedResponse) {
+      return NextResponse.json(cachedResponse, { headers: CDN_HEADERS });
+    }
+
+    await connectDB();
+
+    // The seed/migration probe costs 3-4 queries; run it at most once a day, not on every request.
+    if (!(await getCached<boolean>('invest:trends:migrated'))) {
+      // Auto seed if empty OR if old schema or emoji names detected OR if new preset (Sultanpur) is missing
+      let count = await LocationTrend.countDocuments();
+      const sultanpurExists = await LocationTrend.findOne({ name: /Sultanpur/i });
+      if (count < SEED_TRENDS.length || !sultanpurExists) {
+        console.log('Migrating database: seeding/updating location trends...');
+        await LocationTrend.deleteMany({});
+        await LocationTrend.insertMany(SEED_TRENDS);
+      } else {
+        // Check migration & emoji presence with standard safe regex
+        const hasEmoji = await LocationTrend.findOne({ name: { $regex: /👑|🚀|🌳|🏢|✈️/ } });
+        const sample = await LocationTrend.findOne({ reraRegistration: { $exists: true } });
+        if (!sample || hasEmoji) {
+          console.log('Migrating database: clearing emoji-prefixed names and updating records...');
+          await LocationTrend.deleteMany({});
+          await LocationTrend.insertMany(SEED_TRENDS);
+        }
+      }
+      await setCached('invest:trends:migrated', true, 86400);
+    }
 
     if (query && query.trim().length >= 3) {
       const normalizedQuery = query.trim();
@@ -503,29 +523,26 @@ export async function GET(req: NextRequest) {
           if (updatedMatched) matched = updatedMatched;
         }
 
-        return NextResponse.json({
-          success: true,
-          data: JSON.parse(JSON.stringify(matched))
-        });
+        const body = { success: true, data: JSON.parse(JSON.stringify(matched)) };
+        await setCached(cacheKey, body, 3600);
+        return NextResponse.json(body, { headers: CDN_HEADERS });
       }
 
       // If still not found, algorithmically generate, save to DB, and return it!
       const generated = generateDynamicLocation(normalizedQuery);
       const created = await LocationTrend.create(generated);
       
-      return NextResponse.json({
-        success: true,
-        data: JSON.parse(JSON.stringify(created.toObject()))
-      });
+      const body = { success: true, data: JSON.parse(JSON.stringify(created.toObject())) };
+      await setCached(cacheKey, body, 3600);
+      return NextResponse.json(body, { headers: CDN_HEADERS });
     }
 
     const trends = await LocationTrend.find({}).lean();
     const safeTrends = JSON.parse(JSON.stringify(trends));
 
-    return NextResponse.json({
-      success: true,
-      data: safeTrends
-    });
+    const body = { success: true, data: safeTrends };
+    await setCached(cacheKey, body, 3600);
+    return NextResponse.json(body, { headers: CDN_HEADERS });
   } catch (error: any) {
     console.error('Fetch Location Trends API Error:', error);
     return NextResponse.json({ success: false, error: 'Server Error', details: error.message }, { status: 500 });

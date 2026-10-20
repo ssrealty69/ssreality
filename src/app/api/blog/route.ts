@@ -6,6 +6,9 @@ import { getAllBlogs } from '@/lib/blog-service';
 
 export const dynamic = 'force-dynamic';
 
+// Public listing data: serve repeat requests from the Vercel CDN instead of invoking a function.
+const CDN_HEADERS = { 'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=1200' };
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -19,7 +22,7 @@ export async function GET(req: NextRequest) {
     try {
       const cached: any = await getCached(cacheKey);
       if (cached && cached.data && cached.data.length > 0) {
-        return NextResponse.json(cached);
+        return NextResponse.json(cached, { headers: CDN_HEADERS });
       }
     } catch (e) {
       console.warn('Redis cache error:', e);
@@ -45,7 +48,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, data.length > 0 ? { headers: CDN_HEADERS } : undefined);
   } catch (error) {
     console.error('Final API error:', error);
     return NextResponse.json({ 

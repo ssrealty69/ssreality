@@ -247,7 +247,7 @@ export default function AdminTrackingPage() {
     fetchLiveTracking();
     fetchGeofenceSettings();
     if (!autoRefresh) return;
-    const interval = setInterval(fetchLiveTracking, 15000);
+    const interval = setInterval(() => { if (!document.hidden) fetchLiveTracking(); }, 15000);
     return () => clearInterval(interval);
   }, [autoRefresh]);
 

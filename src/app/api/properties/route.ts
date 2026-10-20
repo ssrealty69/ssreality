@@ -6,6 +6,9 @@ import { FALLBACK_PROPERTIES } from '@/constants/properties';
 
 export const dynamic = 'force-dynamic';
 
+// Public listing data: serve repeat requests from the Vercel CDN instead of invoking a function.
+const CDN_HEADERS = { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' };
+
 
 
 export async function GET(req: NextRequest) {
@@ -26,7 +29,7 @@ export async function GET(req: NextRequest) {
 
     const cacheKey = `properties:${JSON.stringify({ page, limit, city, propertyType, priceType, minPrice, maxPrice, bedrooms, status, featured, query, sort })}`;
     const cached = await getCached(cacheKey);
-    if (cached) return NextResponse.json(cached);
+    if (cached) return NextResponse.json(cached, { headers: CDN_HEADERS });
 
     await connectDB();
 
@@ -64,7 +67,7 @@ export async function GET(req: NextRequest) {
     };
 
     await setCached(cacheKey, response, 300); // 5 min cache
-    return NextResponse.json(response);
+    return NextResponse.json(response, { headers: CDN_HEADERS });
   } catch (error) {
     console.error("DB Connection or fetch error:", error);
     // Return fallback data instead of 500 error to let frontend run locally without DB
