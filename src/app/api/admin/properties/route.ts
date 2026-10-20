@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Property from '@/models/Property';
@@ -49,6 +50,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const property = await Property.create(body);
     await invalidateCache('properties:*');
+    revalidatePath('/properties');
+    revalidatePath('/');
     return NextResponse.json({ success: true, data: property }, { status: 201 });
   } catch (error: unknown) {
     console.error('Error creating property:', error);

@@ -36,21 +36,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     await connectDB();
     
-    // 3. Fetch properties
+    // 3. Fetch properties (with images for Google Image Search indexing)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const properties = await Property.find({ status: { $ne: 'sold' } })
-      .select('_id slug updatedAt createdAt')
+      .select('_id slug images interiorImages updatedAt createdAt')
       .lean();
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const propertyPages: MetadataRoute.Sitemap = properties.map((property: any) => ({
-      url: `${baseUrl}/properties/${property.slug || property._id}`,
-      lastModified: property.updatedAt || property.createdAt || new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    }));
+    const propertyPages: MetadataRoute.Sitemap = properties.map((property: any) => {
+      const propImages: string[] = [];
+      if (property.images && Array.isArray(property.images)) {
+        propImages.push(...property.images.filter((img: string) => typeof img === 'string' && img.startsWith('http')));
+      }
+      if (property.interiorImages && Array.isArray(property.interiorImages)) {
+        propImages.push(...property.interiorImages.filter((img: string) => typeof img === 'string' && img.startsWith('http')));
+      }
 
-    // 4. Fetch published blogs
+      return {
+        url: `${baseUrl}/properties/${property.slug || property._id}`,
+        lastModified: property.updatedAt || property.createdAt || new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.85,
+        ...(propImages.length > 0 ? { images: propImages.slice(0, 5) } : {}),
+      };
+    });
+
+    // 4. Fetch published blogs (with coverImage for Google News / Image search)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const blogs = await Blog.find({ 
       $or: [
@@ -59,16 +70,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { status: 'scheduled', publishDate: { $lte: new Date() } }
       ]
     })
-      .select('slug updatedAt createdAt')
+      .select('slug coverImage updatedAt createdAt')
       .lean();
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const blogPages: MetadataRoute.Sitemap = blogs.map((blog: any) => ({
-      url: `${baseUrl}/blog/${blog.slug}`,
-      lastModified: blog.updatedAt || blog.createdAt || new Date(),
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    }));
+    const blogPages: MetadataRoute.Sitemap = blogs.map((blog: any) => {
+      const blogImages: string[] = [];
+      if (blog.coverImage) {
+        const fullCover = blog.coverImage.startsWith('http') ? blog.coverImage : `${baseUrl}${blog.coverImage.startsWith('/') ? '' : '/'}${blog.coverImage}`;
+        blogImages.push(fullCover);
+      }
+
+      return {
+        url: `${baseUrl}/blog/${blog.slug}`,
+        lastModified: blog.updatedAt || blog.createdAt || new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.75,
+        ...(blogImages.length > 0 ? { images: blogImages } : {}),
+      };
+    });
 
     return [...staticPages, ...seoLandingPages, ...propertyPages, ...blogPages];
   } catch (error) {

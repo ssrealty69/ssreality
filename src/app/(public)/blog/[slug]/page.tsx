@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, User, ArrowLeft, Tag, Clock, Eye } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Tag, Clock, Eye, Sparkles } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import type { Blog } from '@/types';
 import { connectDB } from '@/lib/mongodb';
@@ -10,7 +10,12 @@ import BlogModel from '@/models/Blog';
 import PropertyModel from '@/models/Property';
 import { FALLBACK_BLOGS } from '@/lib/blogs';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 1800; // ISR; admin blog edits revalidate on demand
+
+// No pre-render at build (avoids DB hits per deploy); pages are generated on first visit, then cached (ISR).
+export async function generateStaticParams() {
+  return [];
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -118,31 +123,43 @@ export default async function BlogPostPage({ params }: Props) {
   // Fetch live available properties for dynamic project section
   const availableProperties = await getAvailableProperties();
 
-  // JSON-LD Structured Data for SEO
+  // JSON-LD Structured Data for SEO, AEO & AI Engines
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: blog.title,
-    image: blog.coverImage,
-    datePublished: blog.createdAt,
+    image: [blog.coverImage],
+    datePublished: blog.publishDate || blog.createdAt,
     dateModified: blog.updatedAt || blog.createdAt,
+    inLanguage: 'en-IN',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://ssrealty.org/blog/${slug}`,
+    },
     author: {
       '@type': 'Person',
       name: blog.author?.name || 'SS Realty Expert',
-      url: 'https://ssrealty.org',
+      jobTitle: 'Senior Real Estate Analyst & Consultant',
+      worksFor: {
+        '@type': 'RealEstateAgent',
+        name: 'SS Realty',
+        url: 'https://ssrealty.org',
+      },
+      url: 'https://ssrealty.org/about-us',
     },
     publisher: {
       '@type': 'Organization',
       name: 'SS Realty',
+      url: 'https://ssrealty.org',
       logo: {
         '@type': 'ImageObject',
         url: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
       },
     },
     description: blog.excerpt,
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `https://ssrealty.org/blog/${slug}`,
+    speakable: {
+      '@type': 'SpeakableSpecification',
+      cssSelector: ['.blog-quick-summary', 'h1', 'h2'],
     },
   };
 
@@ -290,9 +307,23 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
-            <p className="text-lg text-[#504e40] leading-relaxed italic border-l-4 border-[#C9A227] pl-5 mb-8 bg-[#FFFBEB] py-4 pr-4 rounded-r-xl">
-              {blog.excerpt}
-            </p>
+            {/* ── SXO / AEO / AIO — AI Overview & Quick Summary Block ── */}
+            <div className="blog-quick-summary bg-[#FFFBEB] border-2 border-[#E8D5A3] rounded-2xl p-5 md:p-6 mb-8 shadow-sm">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles size={16} className="text-[#C9A227] animate-pulse" />
+                <span className="text-xs font-black uppercase tracking-wider text-[#1A1800]">
+                  Quick AI Overview &amp; Key Takeaways
+                </span>
+              </div>
+              <p className="text-[#3a3828] text-base md:text-lg leading-relaxed font-medium">
+                {blog.excerpt}
+              </p>
+              <div className="mt-3 pt-3 border-t border-[#E8D5A3]/60 flex flex-wrap items-center gap-3 md:gap-5 text-xs text-[#6b6450]">
+                <span className="font-semibold text-emerald-700">✓ Verified by SS Realty</span>
+                <span>✓ Zero Brokerage Buying</span>
+                <span>✓ Up to 80–90% Loan Available</span>
+              </div>
+            </div>
 
 
             <div
@@ -322,6 +353,7 @@ export default async function BlogPostPage({ params }: Props) {
               <div className="space-y-6">
                 {/* We show fallback related posts for better UX if dynamic is missing */}
                 {[
+                  { title: 'Why Invest in Mandi, Gurgaon? 2026 Guide', slug: 'why-invest-in-mandi-gurgaon-real-estate-guide', date: '2026-09-15', views: 'New' },
                   { title: 'Luxury Living in Gwal Pahari: New Destination', slug: 'luxury-living-gurugram-gwal-pahari', date: '2026-04-22', views: '1.4k' },
                   { title: 'Delhi NCR Real Estate Investment 2026 Guide', slug: 'real-estate-investment-delhi-ncr-2026-guide', date: '2026-04-20', views: '1.4k' },
                   { title: 'Chattarpur vs Gwal Pahari — Which is Better?', slug: 'chattarpur-vs-gwal-pahari-which-location-better-flat', date: '2026-06-10', views: '39' },

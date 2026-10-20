@@ -500,9 +500,10 @@ input:focus, select:focus, textarea:focus {
 /* Premium Tables styling */
 .prose table {
   width: 100%;
+  min-width: 720px !important;
   border-collapse: collapse !important;
-  margin-top: 2em !important;
-  margin-bottom: 2em !important;
+  margin-top: 1.5em !important;
+  margin-bottom: 1.5em !important;
   font-size: 0.925rem !important;
   background-color: #FFFFFF !important;
   border-radius: 12px !important;
@@ -512,14 +513,16 @@ input:focus, select:focus, textarea:focus {
 
 .prose th, .prose td {
   border: 1px solid rgba(232, 213, 163, 0.4) !important;
-  padding: 10px 12px !important;
+  padding: 12px 14px !important;
   line-height: 1.6 !important;
-  /* Override editor-inserted pixel widths */
   width: auto !important;
-  min-width: 0 !important;
-  max-width: none !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+}
+
+.prose td.wrap-cell {
   white-space: normal !important;
-  word-break: break-word !important;
+  min-width: 180px !important;
 }
 
 .prose th {
@@ -527,6 +530,7 @@ input:focus, select:focus, textarea:focus {
   color: var(--color-dark-900) !important;
   font-weight: 700 !important;
   font-family: var(--font-body) !important;
+  white-space: nowrap !important;
 }
 
 .prose tr:nth-child(even) {
@@ -534,7 +538,18 @@ input:focus, select:focus, textarea:focus {
 }
 
 .prose tr:hover {
-  background-color: rgba(201, 162, 39, 0.02) !important;
+  background-color: rgba(201, 162, 39, 0.04) !important;
+}
+
+/* Horizontal scroll container for tables in blog */
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 1rem;
+  border: 1px solid #E8D5A3;
+  background: #FFFFFF;
+  position: relative;
 }
 
 /* Hyperlinks in blog content */

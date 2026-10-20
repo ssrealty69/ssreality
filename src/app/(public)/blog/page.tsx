@@ -9,9 +9,24 @@ export const metadata: Metadata = {
   description:
     'Expert real estate guides, property investment tips & Delhi NCR market trends. Stay informed with SS Realty\'s blog for buyers, sellers & NRI investors.',
   alternates: { canonical: 'https://ssrealty.org/blog' },
+  openGraph: {
+    title: 'Real Estate Blog & Delhi NCR Property Guides | SS Realty',
+    description: 'Expert property investment guides, registry flat advice, and market insights for Chattarpur, Gwal Pahari, and Gurgaon.',
+    url: 'https://ssrealty.org/blog',
+    type: 'website',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'SS Realty Blog & Market Insights' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Delhi NCR Real Estate Blog | SS Realty',
+    description: 'Property guides, market trends and investment tips in Delhi NCR.',
+    images: ['/og-image.jpg'],
+  },
 };
 
-export const dynamic = 'force-dynamic';
+// Static + ISR: category filtering happens client-side via /api/blog (Redis cached),
+// so this page must not read searchParams (that would force a function run per visit).
+export const revalidate = 1800;
 
 async function getInitialBlogs(category?: string): Promise<{ data: Blog[], total: number }> {
   try {
@@ -41,12 +56,45 @@ async function BlogPageContent({ currentCategory }: { currentCategory: string })
   );
 }
 
-export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
-  const params = await searchParams;
-  const currentCategory = params.category || 'All';
+export default async function BlogPage() {
+  const currentCategory = 'All';
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://ssrealty.org' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://ssrealty.org/blog' },
+    ],
+  };
+
+  const blogCollectionSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'SS Realty Blog & Insights',
+    description: 'Real estate news, market trends, investment tips, and property buying guides in Delhi NCR.',
+    url: 'https://ssrealty.org/blog',
+    publisher: {
+      '@type': 'Organization',
+      name: 'SS Realty',
+      url: 'https://ssrealty.org',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
+      },
+    },
+  };
 
   return (
     <div className="min-h-screen bg-[#FFFEF5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogCollectionSchema) }}
+      />
       {/* Header */}
       <div className="relative pt-36 pb-20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80')" }} />

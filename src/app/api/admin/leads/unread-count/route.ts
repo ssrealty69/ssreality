@@ -4,14 +4,11 @@ import Contact from '@/models/Contact';
 import PropertyEnquiry from '@/models/PropertyEnquiry';
 import AiLead from '@/models/AiLead';
 import JobApplication from '@/models/JobApplication';
-import { triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    // 24/7 background lead sync from Google Sheets (non-blocking)
-    triggerAutoSyncIfNeeded();
 
     const token = req.cookies.get('admin_token')?.value;
     const secret = req.headers.get('x-admin-secret');

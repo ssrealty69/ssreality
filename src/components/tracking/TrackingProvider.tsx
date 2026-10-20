@@ -110,7 +110,8 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
     }
 
     // D. Database server-side EventLog debug trace — only when explicitly enabled
-    if (currentSettings.enableEventLog) {
+    // PageLeave is skipped here: GA/Pixel already capture it, and each DB-logged event is a serverless invocation.
+    if (currentSettings.enableEventLog && eventName !== 'PageLeave') {
       const url = '/api/tracking/event';
       const bodyStr = JSON.stringify({
         eventName,
@@ -211,11 +212,9 @@ export default function TrackingProvider({ settings, children }: TrackingProvide
     };
 
     window.addEventListener('visibilitychange', handleExit);
-    window.addEventListener('beforeunload', handleExit);
 
     return () => {
       window.removeEventListener('visibilitychange', handleExit);
-      window.removeEventListener('beforeunload', handleExit);
     };
   }, []); // intentionally [] — handlers use refs to stay fresh
 

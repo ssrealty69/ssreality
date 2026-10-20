@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
@@ -57,6 +58,8 @@ export async function PUT(
     // Invalidate Redis caches
     await invalidateCache(`blog:${blog.slug}`);
     await invalidateCache('blogs:*');
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${blog.slug}`);
 
     return NextResponse.json({ success: true, data: blog });
   } catch (error: any) {
@@ -80,6 +83,8 @@ export async function DELETE(
     // Invalidate Redis caches
     await invalidateCache(`blog:${blog.slug}`);
     await invalidateCache('blogs:*');
+    revalidatePath('/blog');
+    revalidatePath(`/blog/${blog.slug}`);
 
     return NextResponse.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {

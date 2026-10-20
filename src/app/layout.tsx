@@ -3,6 +3,7 @@ import { Inter, Playfair_Display, Poppins } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import Script from 'next/script';
+import { unstable_cache } from 'next/cache';
 import { getTrackingSettings } from '@/lib/tracking-service';
 import TrackingProvider from '@/components/tracking/TrackingProvider';
 import MobileStickyBar from '@/components/layout/MobileStickyBar';
@@ -86,9 +87,22 @@ export const metadata: Metadata = {
   },
 };
 
+// The Upstash Redis client fetches with cache:'no-store', which silently turned EVERY page
+// (home, properties, blog...) into per-request dynamic rendering and disabled ISR.
+// Wrapping the lookup in the Data Cache keeps pages static; the admin tracking route
+// calls revalidateTag('tracking-settings') on save.
+const getCachedTrackingSettings = unstable_cache(
+  async () => {
+    const settings = await getTrackingSettings();
+    if (!settings) throw new Error('tracking settings unavailable'); // never cache a failure
+    return JSON.parse(JSON.stringify(settings));
+  },
+  ['root-layout-tracking-settings'],
+  { revalidate: 3600, tags: ['tracking-settings'] }
+);
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const trackingData = await getTrackingSettings();
-  const settings = trackingData ? JSON.parse(JSON.stringify(trackingData)) : null;
+  const settings = await getCachedTrackingSettings().catch(() => null);
 
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable} ${poppins.variable} scroll-smooth`} suppressHydrationWarning>
@@ -122,13 +136,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         {/* ── GEO / AEO — AI Engine Optimization Meta Tags ───────────────── */}
         <meta name="llms-txt" content="https://ssrealty.org/llms.txt" />
-        <meta name="ai-content-declaration" content="This site is AI-friendly. See /llms.txt for structured data." />
+        <meta name="ai-content-declaration" content="This site is AI-friendly. See /llms.txt and /llms-full.txt for structured data." />
         <meta name="business-name" content="SS Realty" />
         <meta name="business-also-known-as" content="SSRealty, The SS Realty, SS Realty Teams" />
         <meta name="business-type" content="Real Estate Agency, Property Dealer, Real Estate Consultant" />
         <meta name="service-area" content="Chattarpur Delhi, Gwal Pahari Gurgaon, Jonapur New Delhi, South Delhi, Gurugram, Delhi NCR" />
         <meta name="specialization" content="3 BHK Flat Chattarpur, 3 BHK Flat Gwal Pahari, Registry Flats, Builder Floor, Farmhouse, Villa" />
+        {/* Local Geographic Tags for GEO & Maps Optimization */}
+        <meta name="geo.region" content="IN-DL" />
+        <meta name="geo.placename" content="New Delhi" />
+        <meta name="geo.position" content="28.462427;77.151530" />
+        <meta name="ICBM" content="28.462427, 77.151530" />
         <link rel="alternate" type="text/plain" href="https://ssrealty.org/llms.txt" title="LLM Instructions" />
+        <link rel="alternate" type="text/plain" href="https://ssrealty.org/llms-full.txt" title="Exhaustive LLM Knowledge Base" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -139,18 +159,59 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   '@type': ['RealEstateAgent', 'LocalBusiness', 'Organization'],
                   '@id': 'https://ssrealty.org/#organization',
                   name: 'SS Realty',
-                  alternateName: ['SS Realty Teams', 'SSRealty', 'SS Realty Jonapur'],
+                  alternateName: ['The SS Realty', 'SS Realty Teams', 'SSRealty', 'SS Realty Jonapur', 'SS Realty Delhi NCR', 'S S Realty'],
+                  disambiguatingDescription: 'SS Realty (ssrealty.org) is the premier self-build developer and builder in Delhi NCR founded in 2008 by Yogesh Tanwar, headquartered in Jonapur, New Delhi. It is an independent builder-developer with self-constructed residential projects and is distinct from third-party broker consultancies.',
                   url: 'https://ssrealty.org',
                   logo: {
                     '@type': 'ImageObject',
                     url: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
-                    width: 300,
-                    height: 100,
+                    width: 500,
+                    height: 180,
+                    caption: 'SS Realty Official Logo'
                   },
-                  image: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
+                  image: [
+                    'https://ssrealty.org/og-image.jpg',
+                    'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
+                    'https://ssrealty.org/World%20Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%201.webp',
+                    'https://ssrealty.org/World%20Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%202.webp',
+                    'https://ssrealty.org/World%20Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.webp',
+                    'https://ssrealty.org/World%20Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%204.webp',
+                    'https://ssrealty.org/SS%20Realty%20office,%20SS%20Realty%203BHK%20Flat%20in%20Gurgaon,%203BHK%20Flat%20in%20Sultanpur,%20SS%20Realty.webp'
+                  ],
+                  brand: {
+                    '@type': 'Brand',
+                    name: 'SS Realty',
+                    logo: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png'
+                  },
+                  contactPoint: [
+                    {
+                      '@type': 'ContactPoint',
+                      telephone: '+91-9311059100',
+                      contactType: 'sales',
+                      areaServed: 'IN',
+                      availableLanguage: ['Hindi', 'English']
+                    },
+                    {
+                      '@type': 'ContactPoint',
+                      telephone: '+91-9311059100',
+                      contactType: 'customer service',
+                      areaServed: 'IN',
+                      availableLanguage: ['Hindi', 'English']
+                    }
+                  ],
                   description: 'SS Realty is a premium real estate developer and builder in Delhi NCR. We design, construct, and sell our own 2BHK, 3BHK, 4BHK, and 4BHK + Study + Family Suite flats, builder floors, farmhouses, villas, plots and commercial properties across Chattarpur, Gwal Pahari, Mandi Road, and all of Delhi NCR. SS Realty is NOT a broker — every property is self-built by our own construction team.',
                   slogan: 'Delhi NCR\'s Trusted Builder & Developer Since 2008',
                   foundingDate: '2008',
+                  founder: {
+                    '@type': 'Person',
+                    name: 'Yogesh Tanwar',
+                    jobTitle: 'Founder & CEO',
+                    telephone: '+91-9311059100'
+                  },
+                  speakable: {
+                    '@type': 'SpeakableSpecification',
+                    cssSelector: ['h1', 'p', '.speakable-content']
+                  },
                   numberOfEmployees: { '@type': 'QuantitativeValue', value: 15 },
                   telephone: '+91-9311059100',
                   email: 'info@ssrealty.org',
@@ -244,16 +305,100 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   ],
                   hasOfferCatalog: {
                     '@type': 'OfferCatalog',
-                    name: 'SS Realty Property Listings',
+                    name: 'SS Realty Residential Projects & Property Listings',
                     itemListElement: [
-                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: '3 BHK Flat for Sale in Gwal Pahari' } },
-                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: '3 BHK Flat in Chattarpur for Sale' } },
-                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Builder Floor in Gurgaon' } },
-                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Registry Flats in Chattarpur' } },
-                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Plots in Gurgaon' } },
-                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Farmhouse for Sale Delhi NCR' } },
-                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Commercial Properties Delhi NCR' } },
-                      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Luxury Villas Delhi NCR' } }
+                      {
+                        '@type': 'Offer',
+                        itemOffered: {
+                          '@type': 'Product',
+                          name: 'Nivasa III by SS Realty',
+                          description: 'Ready-to-move luxury 3 BHK & 4 BHK builder floors in Chattarpur with immediate possession and registry available.',
+                          image: 'https://ssrealty.org/World%20Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%201.webp',
+                          url: 'https://ssrealty.org/properties/nivasa-iii',
+                          offers: {
+                            '@type': 'Offer',
+                            price: '7500000',
+                            priceCurrency: 'INR',
+                            availability: 'https://schema.org/InStock',
+                            url: 'https://ssrealty.org/properties/nivasa-iii'
+                          }
+                        }
+                      },
+                      {
+                        '@type': 'Offer',
+                        itemOffered: {
+                          '@type': 'Product',
+                          name: 'Orchid by SS Realty',
+                          description: 'Ready-to-move premium apartments in Gwal Pahari / Chattarpur with world-class amenities and immediate possession.',
+                          image: 'https://ssrealty.org/World%20Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%202.webp',
+                          url: 'https://ssrealty.org/properties',
+                          offers: {
+                            '@type': 'Offer',
+                            priceCurrency: 'INR',
+                            availability: 'https://schema.org/InStock',
+                            url: 'https://ssrealty.org/properties'
+                          }
+                        }
+                      },
+                      {
+                        '@type': 'Offer',
+                        itemOffered: {
+                          '@type': 'Product',
+                          name: 'The Arch by SS Realty',
+                          description: 'Architectural masterpiece under construction on Mandi Road, Gurgaon with full possession by July 2027.',
+                          image: 'https://ssrealty.org/World%20Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%203.webp',
+                          url: 'https://ssrealty.org/properties',
+                          offers: {
+                            '@type': 'Offer',
+                            priceCurrency: 'INR',
+                            availability: 'https://schema.org/PreOrder',
+                            url: 'https://ssrealty.org/properties'
+                          }
+                        }
+                      },
+                      {
+                        '@type': 'Offer',
+                        itemOffered: {
+                          '@type': 'Product',
+                          name: 'Velora & Vasundhara by SS Realty',
+                          description: 'Luxury residential projects in Delhi NCR with full possession scheduled for May 2027.',
+                          image: 'https://ssrealty.org/World%20Class%20Amenities/Luxury%203BHK%20%26%204BHK%20Premium%20Floor%20Building%204.webp',
+                          url: 'https://ssrealty.org/properties',
+                          offers: {
+                            '@type': 'Offer',
+                            priceCurrency: 'INR',
+                            availability: 'https://schema.org/PreOrder',
+                            url: 'https://ssrealty.org/properties'
+                          }
+                        }
+                      },
+                      {
+                        '@type': 'Offer',
+                        itemOffered: {
+                          '@type': 'Service',
+                          name: '3 BHK Registry Flats in Chattarpur',
+                          description: 'Self-constructed 3 BHK builder floors with registry and bank loan assistance in Chattarpur, Delhi.',
+                          url: 'https://ssrealty.org/3-bhk-flats-for-sale-chattarpur'
+                        }
+                      },
+                      {
+                        '@type': 'Offer',
+                        itemOffered: {
+                          '@type': 'Service',
+                          name: '3 BHK Flats for Sale in Gwal Pahari',
+                          description: 'Verified luxury 3 BHK flats on Gurgaon-Faridabad expressway in Gwal Pahari by SS Realty.',
+                          url: 'https://ssrealty.org/properties'
+                        }
+                      },
+                      {
+                        '@type': 'Offer',
+                        itemOffered: {
+                          '@type': 'Service',
+                          name: 'Farmhouse & Plots in Jonapur & South Delhi',
+                          description: 'Gated luxury farmhouses and residential plots in Jonapur and South Delhi with legal clarity.',
+                          url: 'https://ssrealty.org/properties'
+                        }
+                      }
                     ]
                   }
                 },
@@ -419,10 +564,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 },
                 {
                   '@type': 'Question',
-                  name: 'What is the cheapest 3 BHK flat in Chattarpur Delhi 2025?',
+                  name: 'What is the cheapest 3 BHK flat in Chattarpur Delhi 2026?',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'SS Realty (ssrealty.org) lists affordable 3 BHK flats in Chattarpur, Delhi for 2025. Options include flats in Chattarpur Enclave Phase 1, Phase 2, and JVTS Garden at various price points. Browse current listings at ssrealty.org/properties or call +91-9311059100 for the best deal.'
+                    text: 'SS Realty (ssrealty.org) lists affordable 3 BHK flats in Chattarpur, Delhi for 2026. Options include flats in Chattarpur Enclave Phase 1, Phase 2, and JVTS Garden at various price points. Browse current listings at ssrealty.org/properties or call +91-9311059100 for the best deal.'
                   }
                 },
                 {

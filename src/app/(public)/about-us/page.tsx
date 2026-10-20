@@ -4,11 +4,24 @@ import { Target, Eye, Heart, Users, Award, CheckCircle2, Phone, Mail, MapPin, Na
 import JourneyTimeline from '@/components/public/JourneyTimeline';
 
 export const metadata: Metadata = {
-  title: 'About SS Realty | 3 BHK Flats in Chattarpur, Gwal Pahari & Gurgaon',
+  title: 'About SS Realty | Premier Self-Build Developer in Delhi NCR Since 2008',
   description:
-    'SS Realty – trusted since 2008 for 3 BHK flats in Chattarpur, Gwal Pahari & Gurgaon. Buy luxury homes, builder floors, farmhouses, villas & plots across Delhi NCR. Visit us at Jonapur, New Delhi.',
-  keywords: '3 bhk flat for sale in gwal pahari, 3bhk flat chattarpur, 3bhk flat for sale in chattarpur, chattarpur 3 bhk flat for sale, sky mansion chattarpur, 3 bhk flat in chattarpur enclave phase 2, registry flats in chattarpur, flats for sale in chattarpur delhi, 3bhk for rent in gurgaon, 3bhk flat for sale in gurgaon, 3bhk builder floor in gurgaon, builder floor in gurgaon, property in gurgaon, plots in gurgaon, flats in gurgaon, 3 bhk in gwal pahari, house for sale in gurgaon, ss realty chattarpur, ss realty jonapur',
+    'SS Realty – trusted since 2008 for 3 BHK flats in Chattarpur, Gwal Pahari & Gurgaon. We design, construct and sell self-built luxury builder floors, villas and farmhouses across Delhi NCR.',
+  keywords: 'about ss realty, ss realty founder, yogesh tanwar ss realty, real estate developer chattarpur, 3 bhk flat for sale in gwal pahari, 3bhk flat chattarpur, 3bhk flat for sale in chattarpur, registry flats in chattarpur, builder floor in gurgaon, ss realty jonapur',
   alternates: { canonical: 'https://ssrealty.org/about-us' },
+  openGraph: {
+    title: 'About SS Realty | Premier Self-Build Developer in Delhi NCR',
+    description: '17+ years of trust, self-built quality homes, and transparent real estate in Chattarpur, Gwal Pahari & Delhi NCR.',
+    url: 'https://ssrealty.org/about-us',
+    type: 'website',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'About SS Realty Team & Projects' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About SS Realty | Premier Developer in Delhi NCR',
+    description: '17+ years of trust and self-built luxury homes in Delhi NCR.',
+    images: ['/og-image.jpg'],
+  },
 };
 
 // SSG — fully static
@@ -31,8 +44,51 @@ const values = [
 ];
 
 export default function AboutPage() {
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://ssrealty.org' },
+      { '@type': 'ListItem', position: 2, name: 'About Us', item: 'https://ssrealty.org/about-us' },
+    ],
+  };
+
+  const aboutPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'About SS Realty — Premier Real Estate Developer in Delhi NCR',
+    description: 'Learn about SS Realty, our self-build developer history since 2008, leadership team led by Yogesh Tanwar, and luxury projects in Chattarpur, Gwal Pahari & Gurgaon.',
+    mainEntity: {
+      '@type': 'Organization',
+      name: 'SS Realty',
+      url: 'https://ssrealty.org',
+      foundingDate: '2008',
+      founder: {
+        '@type': 'Person',
+        name: 'Yogesh Tanwar',
+        jobTitle: 'Founder & CEO',
+        telephone: '+919311059100',
+      },
+      numberOfEmployees: { '@type': 'QuantitativeValue', value: 15 },
+      employee: team.map((member) => ({
+        '@type': 'Person',
+        name: member.name,
+        jobTitle: member.role,
+        telephone: member.phone,
+      })),
+    },
+  };
+
   return (
     <div className="min-h-screen bg-[#FFFEF5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageSchema) }}
+      />
       {/* Hero */}
       <div className="relative pt-36 pb-20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80')" }} />

@@ -12,9 +12,22 @@ export const metadata: Metadata = {
     'Browse 2 BHK & 3 BHK flat for sale in Gwal Pahari, Mandi, 3BHK flat in Chattarpur, builder floors in Gurgaon, South Delhi, plots & farmhouses. SS Realty – verified luxury properties across Chattarpur, Gwal Pahari, Mandi, Gadaipur, Gurugram & all of Delhi NCR.',
   keywords: '3 bhk flat for sale in gwal pahari, 2 bhk flats for sale in gwal pahari, 3bhk flats for sale in gwal pahari, buy flats in gwal pahari near gurgaon, 3 bhk in gwal pahari for sale, 3 bhk in gwal pahari price, 3bhk flat chattarpur, 3 bhk flat in chattarpur delhi, 2 bhk flats in chattarpur with bank loan, 3bhk flat for sale in chattarpur, chattarpur 3 bhk flat for sale, chattarpur 3 bhk flat price, 3 bhk flat in chattarpur enclave phase 2, registry flats in chattarpur, flats for sale in chattarpur delhi, flats in chattarpur, 2 bhk flat in delhi, 3 bhk flats in delhi, flats in delhi, 3bhk for rent in gurgaon, 3bhk flat for sale in gurgaon, 3bhk flats in gurgaon, 3bhk builder floor in gurgaon, 4bhk builder floor in gurgaon, ready to move flats in gurgaon, 3bhk for sale in gurgaon, 3bhk flat in gurgaon, 3bhk flat in gurgaon price, 3 bhk flat in gwal pahari gurgaon, 3 bhk in gwal pahari, builder floor in gurgaon, house for sale in gurgaon, property in gurgaon, plots in gurgaon, flats in gurgaon, 3 bhk flats in mandi gurgaon, flats in mandi, 2 bhk flats in mandi, flats in gadaipur, 2 bhk flats for sale south delhi, 3 bhk flats in south delhi, flats in south delhi, sky mansion chattarpur, cheapest 3bhk flat chattarpur, affordable flat south delhi, best property dealer chattarpur, registry flat chattarpur enclave, low price flat chattarpur delhi',
   alternates: { canonical: 'https://ssrealty.org/properties' },
+  openGraph: {
+    title: '3 BHK & 2 BHK Flats for Sale in Chattarpur, Gwal Pahari & Gurgaon | SS Realty',
+    description: 'Explore verified luxury flats, builder floors & plots across Chattarpur, Gwal Pahari & Delhi NCR. Direct developer dealing with zero brokerage.',
+    url: 'https://ssrealty.org/properties',
+    type: 'website',
+    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'SS Realty Luxury Properties Delhi NCR' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Luxury Flats for Sale in Chattarpur & Gwal Pahari | SS Realty',
+    description: 'Browse verified ready to move and under-construction builder floors by SS Realty.',
+    images: ['/og-image.jpg'],
+  },
 };
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // ISR; admin property edits revalidate on demand
 
 async function getProperties(): Promise<Property[]> {
   try {
@@ -139,8 +152,21 @@ const propertiesFaqSchema = {
 
 async function PropertiesPageContent() {
   const properties = await getProperties();
+  const propertiesBreadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://ssrealty.org' },
+      { '@type': 'ListItem', position: 2, name: 'Properties', item: 'https://ssrealty.org/properties' },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(propertiesBreadcrumbSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(propertiesItemListSchema) }}

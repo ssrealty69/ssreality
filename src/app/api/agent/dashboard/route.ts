@@ -1,3 +1,4 @@
+import { after } from 'next/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import AgentLead from '@/models/AgentLead';
@@ -13,8 +14,8 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // 24/7 background lead sync from Google Sheets (non-blocking)
-    triggerAutoSyncIfNeeded();
+    // Throttled (Redis, 10 min) background lead sync, runs after the response is sent
+    after(() => triggerAutoSyncIfNeeded());
 
     await connectDB();
 

@@ -39,6 +39,13 @@ export async function generateMetadata({ params }: SeoLandingPageProps): Promise
       url: config.canonicalUrl,
       type: 'website',
       siteName: 'SS Realty',
+      images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: config.metaTitle }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: config.metaTitle,
+      description: config.metaDescription,
+      images: ['/og-image.jpg'],
     },
   };
 }
@@ -202,9 +209,41 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
     })),
   };
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://ssrealty.org' },
+      { '@type': 'ListItem', position: 2, name: config.h1, item: config.canonicalUrl },
+    ],
+  };
+
+  const itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: config.h1,
+    description: config.metaDescription,
+    url: config.canonicalUrl,
+    numberOfItems: properties.length,
+    itemListElement: properties.slice(0, 10).map((prop: Property, idx: number) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: prop.title,
+      url: `https://ssrealty.org/properties/${prop.slug || prop._id}`,
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[#FFFEF5]">
-      {/* Schema */}
+      {/* Schemas: FAQ, Breadcrumbs & ItemList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}

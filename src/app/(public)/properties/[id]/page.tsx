@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { connectDB } from '@/lib/mongodb';
 import Property from '@/models/Property';
 
-export const revalidate = 60; // Revalidate page every 60 seconds
+export const revalidate = 3600; // Admin edits trigger on-demand revalidatePath, so hourly is enough
 
 // Known historical/indexed property IDs mapped to their current SEO slugs
 const LEGACY_PROPERTY_REDIRECTS: Record<string, string> = {

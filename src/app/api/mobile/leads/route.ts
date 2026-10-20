@@ -1,3 +1,4 @@
+import { after } from 'next/server';
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/mongodb';
@@ -109,8 +110,8 @@ function mapDispositionToStatus(disposition: string): string {
 
 export async function GET(req: NextRequest) {
   try {
-    // Non-blocking real-time auto-sync from Google Sheets
-    triggerAutoSyncIfNeeded();
+    // Throttled (Redis, 10 min) background lead sync, runs after the response is sent
+    after(() => triggerAutoSyncIfNeeded());
 
     await connectDB();
     const { searchParams } = new URL(req.url);

@@ -2,6 +2,7 @@ import * as XLSX from 'xlsx';
 import { connectDB } from '@/lib/mongodb';
 import MetaSheetLead, { IMetaSheetLead } from '@/models/MetaSheetLead';
 import MetaCampaignConfig, { IMetaCampaignConfig } from '@/models/MetaCampaignConfig';
+import { acquireLock } from '@/lib/redis';
 import { distributeLead, redistributeUnattendedMorningLeads } from '@/lib/lead-distributor';
 
 export const DEFAULT_META_SHEET_ID = '1tVgMpHWRHIXozGO32Mmvc2r0xdYuiPkJptpaDjm3eA8';
@@ -283,34 +284,28 @@ export function parseSheetData(workbook: XLSX.WorkBook, sheetName: string): Pars
   };
 }
 
-let lastAutoSyncTimestamp = 0;
 let isSyncInProgress = false;
-const AUTO_SYNC_COOLDOWN_MS = 30 * 1000; // 30 seconds debounce
+const AUTO_SYNC_COOLDOWN_SECONDS = 10 * 60; // shared across all instances via Redis
 
 /**
- * Intelligent Non-blocking Auto-Sync Engine
- * Automatically fetches fresh leads from Google Sheets in the background whenever called.
+ * Throttled auto-sync. Call it inside `after()` so it runs after the response is sent.
+ * The cooldown lives in Redis (not instance memory) so cold starts and parallel
+ * serverless instances cannot each re-download the whole Google Sheet.
  */
 export async function triggerAutoSyncIfNeeded(sheetId = DEFAULT_META_SHEET_ID): Promise<void> {
-  const now = Date.now();
   if (isSyncInProgress) return;
-  if (now - lastAutoSyncTimestamp < AUTO_SYNC_COOLDOWN_MS) return;
-
   isSyncInProgress = true;
-  lastAutoSyncTimestamp = now;
-
-  // Run in background without blocking the caller
-  (async () => {
-    try {
-      await fetchAndSyncGoogleSheets(sheetId);
-      // Run 12 PM no-show unattended lead re-distribution if applicable
-      await redistributeUnattendedMorningLeads();
-    } catch (err) {
-      console.error('Background Auto-Sync Error:', err);
-    } finally {
-      isSyncInProgress = false;
-    }
-  })();
+  try {
+    const acquired = await acquireLock('meta_sheet_auto_sync_lock', AUTO_SYNC_COOLDOWN_SECONDS);
+    if (!acquired) return;
+    await fetchAndSyncGoogleSheets(sheetId);
+    // Run 12 PM no-show unattended lead re-distribution if applicable
+    await redistributeUnattendedMorningLeads();
+  } catch (err) {
+    console.error('Background Auto-Sync Error:', err);
+  } finally {
+    isSyncInProgress = false;
+  }
 }
 
 export async function fetchAndSyncGoogleSheets(sheetId = DEFAULT_META_SHEET_ID) {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { getTrackingSettings, updateTrackingSettings } from '@/lib/tracking-service';
 
 export const dynamic = 'force-dynamic';
@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
     const settings = await updateTrackingSettings(body, updatedBy);
 
     // Revalidate all pages so new pixel/tracking IDs are reflected immediately
+    revalidateTag('tracking-settings', 'max');
     revalidatePath('/', 'layout');
     revalidatePath('/admin', 'layout');
 

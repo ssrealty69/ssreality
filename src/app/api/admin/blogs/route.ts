@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Blog from '@/models/Blog';
@@ -66,6 +67,8 @@ export async function POST(req: NextRequest) {
 
     const blog = await Blog.create(body);
     await invalidateCache('blogs:*');
+    revalidatePath('/blog');
+    revalidatePath('/sitemap.xml');
     return NextResponse.json({ success: true, data: blog }, { status: 201 });
   } catch (error: unknown) {
     console.error('Error creating blog:', error);

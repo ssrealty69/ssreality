@@ -45,3 +45,17 @@ export async function invalidateCache(pattern: string): Promise<void> {
     if (keys.length > 0) await r.del(...keys);
   } catch { /* silent */ }
 }
+
+/**
+ * Distributed throttle shared across all serverless instances.
+ * Returns true if the caller acquired the lock (key was not already set).
+ * Returns false when Redis is unavailable so callers never stampede.
+ */
+export async function acquireLock(key: string, ttlSeconds: number): Promise<boolean> {
+  try {
+    const r = getRedis();
+    if (!r) return false;
+    const res = await r.set(key, '1', { nx: true, ex: ttlSeconds });
+    return res === 'OK';
+  } catch { return false; }
+}

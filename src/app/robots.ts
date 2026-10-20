@@ -85,7 +85,34 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         disallow: disallowList,
       },
-      // ── Cohere / Other AI Research Crawlers ──────────────────────────────
+      {
+        userAgent: 'Meta-ExternalAgent', // Meta AI crawling
+        allow: '/',
+        disallow: disallowList,
+      },
+      // ── Apple Intelligence & Siri ────────────────────────────────────────
+      {
+        userAgent: 'Applebot',          // Apple Search & Spotlight
+        allow: '/',
+        disallow: disallowList,
+      },
+      {
+        userAgent: 'Applebot-Extended', // Apple Intelligence AI training & search
+        allow: '/',
+        disallow: disallowList,
+      },
+      // ── Amazon Alexa & Cloud Crawlers ────────────────────────────────────
+      {
+        userAgent: 'Amazonbot',
+        allow: '/',
+        disallow: disallowList,
+      },
+      // ── Cohere / ByteDance / Other AI Research Crawlers ──────────────────
+      {
+        userAgent: 'Bytespider',
+        allow: '/',
+        disallow: disallowList,
+      },
       {
         userAgent: 'cohere-ai',
         allow: '/',

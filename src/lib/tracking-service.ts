@@ -27,7 +27,7 @@ export async function getTrackingSettings(): Promise<ITrackingSettings | null> {
         googleAdsRemarketingLabel: '',
         ga4MeasurementId: '',
         enableAdvancedMatching: false,
-        enableEventLog: true,
+        enableEventLog: false,
         lastUpdated: new Date(),
         updatedBy: 'System Seed'
       }) as ITrackingSettings;

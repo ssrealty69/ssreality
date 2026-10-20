@@ -80,6 +80,7 @@ export async function PUT(
     revalidatePath(`/properties/${id}`);
     if (property.slug) revalidatePath(`/properties/${property.slug}`);
     revalidatePath('/');
+    revalidatePath('/properties');
 
     return NextResponse.json({ success: true, data: property });
   } catch (error: any) {
@@ -108,6 +109,7 @@ export async function DELETE(
     revalidatePath(`/properties/${id}`);
     if (property.slug) revalidatePath(`/properties/${property.slug}`);
     revalidatePath('/');
+    revalidatePath('/properties');
 
     return NextResponse.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {

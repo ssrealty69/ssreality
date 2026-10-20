@@ -88,3 +88,8 @@ export function proxy(request: NextRequest) {
   return NextResponse.next();
 }
 
+// Only run on admin routes — without a matcher the proxy would run on every request
+// (static assets, images, public pages), burning Vercel middleware invocations.
+export const config = {
+  matcher: ['/admin/:path*', '/api/admin/:path*'],
+};

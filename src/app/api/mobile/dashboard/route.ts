@@ -1,3 +1,4 @@
+import { after } from 'next/server';
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/mongodb';
@@ -52,8 +53,8 @@ const CONNECTED_DISPOSITIONS = [
 
 export async function GET(req: NextRequest) {
   try {
-    // Non-blocking background real-time sync with Google Sheets
-    triggerAutoSyncIfNeeded();
+    // Throttled (Redis, 10 min) background lead sync, runs after the response is sent
+    after(() => triggerAutoSyncIfNeeded());
 
     await connectDB();
     const { searchParams } = new URL(req.url);
