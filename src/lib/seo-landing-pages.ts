@@ -5,6 +5,7 @@ export interface SeoLandingPageConfig {
   h1: string;
   subheading: string;
   canonicalUrl: string;
+  keywords?: string[];
   filters: {
     location?: string;
     bedrooms?: number;
@@ -15,6 +16,17 @@ export interface SeoLandingPageConfig {
   introParagraphs: string[];
   features: string[];
   faqs: { question: string; answer: string }[];
+  localities?: {
+    name: string;
+    superArea: string;
+    distanceToMetro: string;
+    priceRange: string;
+    highlights: string;
+  }[];
+  relatedSearches?: {
+    label: string;
+    slug: string;
+  }[];
 }
 
 export const SEO_LANDING_PAGES: Record<string, SeoLandingPageConfig> = {
@@ -96,6 +108,206 @@ export const SEO_LANDING_PAGES: Record<string, SeoLandingPageConfig> = {
       {
         question: 'Can I get a fully furnished 3 BHK flat in Chattarpur?',
         answer: 'Yes, we offer both semi-furnished and fully-furnished 3 BHK options equipped with wardrobes, false ceiling lights, modular kitchen cabinets, and chimney.'
+      }
+    ]
+  },
+
+  '3-bhk-flat-in-chattarpur': {
+    slug: '3-bhk-flat-in-chattarpur',
+    metaTitle: '3 BHK Flat in Chattarpur Delhi | Luxury Builder Floors in Chhatarpur | SS Realty',
+    metaDescription: 'Searching for 3 BHK flat in Chattarpur (Chhatarpur / Chatarpur / chttarpur)? Explore luxury 3 BHK builder floors near Chattarpur Metro with stilt parking, lift, registry & up to 80% loan. Zero brokerage.',
+    h1: '3 BHK Flat in Chattarpur (Chhatarpur), South Delhi',
+    subheading: 'Luxury 3 Bedroom Builder Floors with Stilt Car Parking, High-Speed Lift & 100% Freehold Registry Near Metro',
+    canonicalUrl: 'https://ssrealty.org/3-bhk-flat-in-chattarpur',
+    keywords: [
+      '3 BHK Flat in chttarpur',
+      '3 BHK Flat in Chatarpur',
+      '3 BHK flat in Chhatarpur',
+      'builder floor in chhatarpur',
+      '3 BHK Flat in Chattarpur',
+      '3 BHK flat in Chattarpur Enclave',
+      'builder floor in Chattarpur with lift and parking',
+      'registry flat in chhatarpur',
+      '3 BHK ready to move flat in chattarpur',
+      'flats near chattarpur metro station'
+    ],
+    filters: { location: 'Chattarpur', bedrooms: 3 },
+    introParagraphs: [
+      'Looking for a spacious and modern 3 BHK flat in Chattarpur (also commonly searched as Chhatarpur, Chatarpur, or chttarpur)? SS Realty brings you an exclusive portfolio of architecturally designed 3 BHK luxury builder floors in prime enclaves of Chattarpur, South Delhi. Designed for discerning families who refuse to compromise on space, natural light, and lifestyle, our 3 BHK residences offer generous floor layouts ranging from 110 Sq. Yds. to 160 Sq. Yds. with premium interior finishes.',
+      'Unlike congested high-rise societies, an independent builder floor in Chhatarpur offers unmatched privacy, dedicated stilt car parking, high-speed elevator access, and low-density living in South Delhi\'s green farmhouse belt. Whether you are searching for a ready-to-move 3 BHK flat in Chattarpur Enclave Phase 1 or 2, JVTS Garden, 100 Feet Road, or Mandi Road, our properties are situated on wide 30ft to 50ft roads with 24/7 water supply, BSES electricity connections, and IGL piped gas connectivity.',
+      'Every 3 BHK flat in Chattarpur developed by SS Realty is 100% clear-title freehold registry property. We formalize every sale deed through the Sub-Registrar VA (Mehrauli/Hauz Khas) office, guaranteeing complete legal security. With pre-approved home loan facilities up to 80% to 90% from leading banks and NBFCs, acquiring your dream home in South Delhi has never been more straightforward or secure.',
+      'Enjoy unbeatable South Delhi connectivity: live just 5 to 10 minutes away from Chattarpur Metro Station (Yellow Line and upcoming Silver Line), 15 minutes from DLF Cyber City and Golf Course Road Gurgaon, and 20 minutes from IGI Airport and Aerocity. With top schools, Max Hospital Saket, Fortis Vasant Kunj, and DLF Promenade nearby, Chattarpur is the premier residential destination for modern urban professionals and families.'
+    ],
+    features: [
+      'Walking / 5-min distance to Chattarpur & Chhatarpur Mandir Metro (Yellow Line)',
+      '100% Freehold Registry with Sub-Registrar VA Mehrauli / Hauz Khas',
+      'Up to 80%–90% Bank & NBFC Home Loan Assistance (Tata Capital, ICICI HFC, Piramal)',
+      'Dedicated Stilt Covered Car Parking & Automatic Schindler / Otis Elevator',
+      'Italian Marble / Vitrified Tile Flooring with Premium False Ceiling & Ambient LED',
+      'Modular Kitchen with Chimney, Hob & Branded CP Fittings (Jaguar / Cera)',
+      'Spacious 3 Bedrooms with Attached Bathrooms & Private Running Balconies',
+      'Zero Brokerage Fee — Direct Developer Dealing with 15+ Years Track Record'
+    ],
+    localities: [
+      {
+        name: 'Chattarpur Enclave Phase 1',
+        superArea: '120 – 145 Sq. Yds.',
+        distanceToMetro: '3 to 5 Mins (Chattarpur Metro)',
+        priceRange: '₹75 Lakhs – ₹95 Lakhs',
+        highlights: 'Wide avenues, gated security, modular kitchen, immediate registry'
+      },
+      {
+        name: 'Chattarpur Enclave Phase 2',
+        superArea: '125 – 150 Sq. Yds.',
+        distanceToMetro: '5 to 7 Mins (Yellow Line)',
+        priceRange: '₹70 Lakhs – ₹90 Lakhs',
+        highlights: '30ft wide approach roads, stilt parking, up to 90% loan approved'
+      },
+      {
+        name: 'JVTS Garden, Chattarpur',
+        superArea: '110 – 135 Sq. Yds.',
+        distanceToMetro: '6 to 8 Mins',
+        priceRange: '₹65 Lakhs – ₹85 Lakhs',
+        highlights: 'Peaceful residential pocket, elevator access, 3 washrooms & 2 balconies'
+      },
+      {
+        name: '100 Feet Road Chattarpur',
+        superArea: '135 – 160 Sq. Yds.',
+        distanceToMetro: '4 Mins',
+        priceRange: '₹85 Lakhs – ₹1.25 Crore',
+        highlights: 'Ultra-luxury builder floors, high rental yield, prime commercial transit'
+      },
+      {
+        name: 'Chhatarpur Mandi Road',
+        superArea: '130 – 155 Sq. Yds.',
+        distanceToMetro: '8 to 10 Mins (Direct Gurgaon Access)',
+        priceRange: '₹75 Lakhs – ₹95 Lakhs',
+        highlights: 'Farmhouse green belt air quality, rapid commute to Cyber City & Saket'
+      }
+    ],
+    faqs: [
+      {
+        question: 'What is the price of a 3 BHK flat in Chattarpur (Chhatarpur)?',
+        answer: 'The price of a 3 BHK flat in Chattarpur generally starts from ₹65 Lakhs for semi-furnished units and goes up to ₹1.25 Crore for ultra-luxury builder floors with private terrace rights or prime 100 Feet Road locations, depending on carpet area, road width, and custom furnishings.'
+      },
+      {
+        question: 'Are 3 BHK builder floors in Chhatarpur legally registered with government sale deeds?',
+        answer: 'Yes! All SS Realty 3 BHK builder floors in Chattarpur are built on verified freehold abadi land and are executed via 100% registered sale deeds (conveyance deeds) at the Sub-Registrar VA (Mehrauli/Hauz Khas) office with full legal transparency.'
+      },
+      {
+        question: 'Can I get a bank loan on a 3 BHK flat in Chattarpur, and what percentage is funded?',
+        answer: 'Yes, up to 80% to 90% home loan assistance is available through leading NBFCs and housing finance companies including Tata Capital, ICICI Home Finance, Piramal, and PNB Housing. Our dedicated in-house banking team manages the complete documentation and approval process.'
+      },
+      {
+        question: 'How far are these 3 BHK flats from the Chattarpur Metro Station?',
+        answer: 'Most of our 3 BHK properties in Chattarpur Enclave, JVTS Garden, and 100 Feet Road are located within a 3 to 8 minute drive or walking distance from the Chattarpur Metro Station (Yellow Line), providing quick signal-free access to Gurgaon and Central Delhi.'
+      },
+      {
+        question: 'What amenities and parking facilities are provided with the flats?',
+        answer: 'Every 3 BHK builder floor comes equipped with dedicated stilt covered car parking, branded high-speed automatic elevator (Schindler/Otis), modular kitchen with chimney and hob, Italian marble/vitrified tiles, false ceiling with ambient LED lighting, digital door lock, and 24/7 water supply.'
+      },
+      {
+        question: 'Why should I choose an independent builder floor in Chhatarpur over high-rise apartments?',
+        answer: 'An independent builder floor in Chhatarpur provides single-floor private living without paying hefty monthly maintenance charges or facing high-rise overcrowding. You get freehold ownership, larger living spaces, private balconies, and superior long-term land value appreciation.'
+      }
+    ],
+    relatedSearches: [
+      { label: '2 BHK Flat in Chattarpur', slug: '/2-bhk-flat-in-chattarpur' },
+      { label: '3 BHK Flats in South Delhi', slug: '/3-bhk-flats-in-south-delhi' },
+      { label: 'Flats for Sale in South Delhi', slug: '/flats-for-sale-in-south-delhi' },
+      { label: 'Flats in Mandi Gurgaon Border', slug: '/flats-in-mandi' },
+      { label: 'Flats in Gadaipur South Delhi', slug: '/flats-in-gadaipur' },
+      { label: 'Ready to Move Flats in Gurgaon', slug: '/ready-to-move-flats-in-gurgaon' }
+    ]
+  },
+
+  // Exact-match variations for search intent & spelling aliases
+  '3-bhk-flat-in-chttarpur': {
+    slug: '3-bhk-flat-in-chttarpur',
+    metaTitle: '3 BHK Flat in Chattarpur (Chhatarpur) | Builder Floors | SS Realty',
+    metaDescription: 'Find luxury 3 BHK flats in Chattarpur / Chhatarpur Delhi. Registry ready builder floors with lift, car parking & up to 80% loan. Call SS Realty.',
+    h1: '3 BHK Flat in Chattarpur (Chhatarpur), South Delhi',
+    subheading: 'Luxury 3 Bedroom Builder Floors with Stilt Car Parking, High-Speed Lift & 100% Freehold Registry Near Metro',
+    canonicalUrl: 'https://ssrealty.org/3-bhk-flat-in-chattarpur',
+    keywords: [
+      '3 BHK Flat in chttarpur',
+      '3 BHK Flat in Chatarpur',
+      '3 BHK flat in Chhatarpur',
+      'builder floor in chhatarpur'
+    ],
+    filters: { location: 'Chattarpur', bedrooms: 3 },
+    introParagraphs: [
+      'Searching for a 3 BHK flat in Chattarpur (Chhatarpur / Chatarpur / chttarpur)? SS Realty brings you premium 3 BHK builder floors in South Delhi featuring Italian marble, modular kitchen, stilt parking, and Schindler elevators.',
+      'Enjoy complete legal peace of mind with 100% freehold registry, up to 90% NBFC loan assistance, and prime connectivity just 5 minutes from Chattarpur Metro Station.'
+    ],
+    features: [
+      'Near Chattarpur Metro Station (Yellow Line)',
+      '100% Freehold Registry & Up to 80%–90% Loan Available',
+      'Stilt Car Parking, Gated Security & Schindler Elevator',
+      'Modular Kitchen with Italian Marble & Branded CP Fittings'
+    ],
+    faqs: [
+      {
+        question: 'What is the starting price for a 3 BHK flat in Chattarpur?',
+        answer: '3 BHK flats in Chattarpur start from ₹65 Lakhs onwards with up to 90% loan assistance.'
+      }
+    ]
+  },
+
+  '3-bhk-flat-in-chhatarpur': {
+    slug: '3-bhk-flat-in-chhatarpur',
+    metaTitle: '3 BHK Flat in Chhatarpur Delhi | Luxury Builder Floors | SS Realty',
+    metaDescription: 'Explore 3 BHK flats in Chhatarpur South Delhi. Gated builder floors with stilt parking, elevator, registry & up to 80% NBFC loan. Direct builder price.',
+    h1: '3 BHK Flat in Chhatarpur, South Delhi',
+    subheading: 'Premium 3 Bedroom Residences Near Chhatarpur Mandir & Metro Station',
+    canonicalUrl: 'https://ssrealty.org/3-bhk-flat-in-chattarpur',
+    keywords: [
+      '3 BHK flat in Chhatarpur',
+      'builder floor in chhatarpur',
+      '3 BHK Flat in Chattarpur'
+    ],
+    filters: { location: 'Chattarpur', bedrooms: 3 },
+    introParagraphs: [
+      'Experience spacious and elegant living with SS Realty\'s 3 BHK builder floors in Chhatarpur. Designed with expansive rooms, premium modular kitchens, and private balconies in prime South Delhi.'
+    ],
+    features: [
+      '5 Minutes to Chhatarpur Metro Station',
+      '100% Registry & 80%–90% Loan Facility',
+      'Reserved Stilt Parking & Branded Lift'
+    ],
+    faqs: [
+      {
+        question: 'Are Chhatarpur builder floors eligible for bank loans?',
+        answer: 'Yes, leading NBFCs provide up to 90% loan approvals for our Chhatarpur properties.'
+      }
+    ]
+  },
+
+  'builder-floor-in-chhatarpur': {
+    slug: 'builder-floor-in-chhatarpur',
+    metaTitle: 'Builder Floor in Chhatarpur South Delhi | 2, 3 & 4 BHK | SS Realty',
+    metaDescription: 'Find luxury builder floors in Chhatarpur South Delhi. Clear title registry, stilt parking, lift & up to 80% loan assistance. Buy direct from builder SS Realty.',
+    h1: 'Builder Floor in Chhatarpur, South Delhi',
+    subheading: 'Independent Luxury Living with Covered Parking, Elevator & 100% Registry',
+    canonicalUrl: 'https://ssrealty.org/3-bhk-flat-in-chattarpur',
+    keywords: [
+      'builder floor in chhatarpur',
+      '3 BHK Flat in chttarpur',
+      '3 BHK flat in Chhatarpur'
+    ],
+    filters: { location: 'Chattarpur', bedrooms: 3 },
+    introParagraphs: [
+      'SS Realty offers premium independent builder floors in Chhatarpur. Experience the freedom of single-floor ownership, zero high-rise congestion, and low maintenance with guaranteed registry.'
+    ],
+    features: [
+      'Independent Single-Floor Living with Full Privacy',
+      'Dedicated Stilt Parking & Schindler Elevator Access',
+      'Clear Title Deed Registered at Sub-Registrar VA'
+    ],
+    faqs: [
+      {
+        question: 'Why choose an independent builder floor in Chhatarpur?',
+        answer: 'Builder floors provide superior square footage, private balconies, no society restrictions, and higher land appreciation compared to multi-storey apartments.'
       }
     ]
   },
@@ -297,6 +509,33 @@ export const SEO_LANDING_PAGES: Record<string, SeoLandingPageConfig> = {
   }
 };
 
+export const SEO_SLUG_ALIASES: Record<string, string> = {
+  '3-bhk-flat-in-chatarpur': '3-bhk-flat-in-chattarpur',
+  '3-bhk-flats-in-chatarpur': '3-bhk-flat-in-chattarpur',
+  '3-bhk-flats-in-chttarpur': '3-bhk-flat-in-chattarpur',
+  '3-bhk-flats-in-chhatarpur': '3-bhk-flat-in-chattarpur',
+  '3-bhk-flats-in-chattarpur': '3-bhk-flat-in-chattarpur',
+  'builder-floor-in-chattarpur': '3-bhk-flat-in-chattarpur',
+};
+
 export function getSeoLandingPage(slug: string): SeoLandingPageConfig | null {
-  return SEO_LANDING_PAGES[slug] || null;
+  if (SEO_LANDING_PAGES[slug]) {
+    return SEO_LANDING_PAGES[slug];
+  }
+
+  const normalized = (slug || '').toLowerCase();
+  const targetKey = SEO_SLUG_ALIASES[normalized];
+  if (targetKey && SEO_LANDING_PAGES[targetKey]) {
+    return {
+      ...SEO_LANDING_PAGES[targetKey],
+      slug: normalized,
+    };
+  }
+
+  return null;
+}
+
+export function getAllSeoSlugs(): string[] {
+  const set = new Set([...Object.keys(SEO_LANDING_PAGES), ...Object.keys(SEO_SLUG_ALIASES)]);
+  return Array.from(set);
 }

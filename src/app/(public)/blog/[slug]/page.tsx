@@ -294,13 +294,13 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="lg:col-span-8 min-w-0 w-full overflow-hidden">
             {/* ── THUMBNAIL (16:9 = 1920×1080 ratio) ── */}
             {blog.coverImage && (
-              <div className="w-full mb-8 rounded-2xl overflow-hidden shadow-lg">
+              <div className="w-full mb-8 rounded-2xl overflow-hidden shadow-lg aspect-video max-h-[460px] bg-[#1A1800]">
                 <Image
                   src={blog.coverImage}
                   alt={blog.title}
-                  width={1200}
-                  height={675}
-                  className="w-full h-auto object-contain"
+                  width={1920}
+                  height={1080}
+                  className="w-full h-full object-cover"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 1200px"
                   priority
                 />

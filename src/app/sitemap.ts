@@ -25,13 +25,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority,
   }));
 
-  // 2. High-priority dedicated SEO landing pages
-  const seoLandingPages: MetadataRoute.Sitemap = Object.keys(SEO_LANDING_PAGES).map((slug) => ({
-    url: `${baseUrl}/${slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: 0.95,
-  }));
+  // 2. High-priority dedicated SEO landing pages (only canonical URLs for clean indexing)
+  const seoLandingPages: MetadataRoute.Sitemap = Object.entries(SEO_LANDING_PAGES)
+    .filter(([slug, config]) => config.canonicalUrl.endsWith(`/${slug}`))
+    .map(([slug]) => ({
+      url: `${baseUrl}/${slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.95,
+    }));
 
   try {
     await connectDB();

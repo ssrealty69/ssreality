@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getSeoLandingPage, SEO_LANDING_PAGES } from '@/lib/seo-landing-pages';
+import { getSeoLandingPage, SEO_LANDING_PAGES, getAllSeoSlugs } from '@/lib/seo-landing-pages';
 import { FALLBACK_PROPERTIES } from '@/constants/properties';
 import PropertyCard from '@/components/properties/PropertyCard';
 import PropertyModel from '@/models/Property';
@@ -14,7 +14,7 @@ interface SeoLandingPageProps {
 }
 
 export async function generateStaticParams() {
-  return Object.keys(SEO_LANDING_PAGES).map((slug) => ({
+  return getAllSeoSlugs().map((slug) => ({
     seoSlug: slug,
   }));
 }
@@ -30,6 +30,7 @@ export async function generateMetadata({ params }: SeoLandingPageProps): Promise
   return {
     title: config.metaTitle,
     description: config.metaDescription,
+    keywords: config.keywords && config.keywords.length > 0 ? config.keywords : undefined,
     alternates: {
       canonical: config.canonicalUrl,
     },
@@ -393,6 +394,50 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
           </div>
         </div>
 
+        {/* Micro-Market & Price Matrix Section */}
+        {config.localities && config.localities.length > 0 && (
+          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#E8D5A3]/60 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E8D5A3]/40 pb-4">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-bold font-[var(--font-playfair)] text-[#1A1800]">
+                  Locality & Price Guide: {config.h1}
+                </h3>
+                <p className="text-xs sm:text-sm text-[#a09060] mt-1">
+                  Compare top residential pockets, average area, distance to metro & starting prices.
+                </p>
+              </div>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#9E7B15] bg-[#FAF6E8] px-3.5 py-1.5 rounded-full border border-[#E8D5A3] shrink-0 self-start sm:self-auto">
+                Updated for 2026
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm border-collapse">
+                <thead>
+                  <tr className="bg-[#FAF6E8] text-[#7A5C00] font-bold border-b border-[#E8D5A3]">
+                    <th className="py-3 px-4 rounded-tl-xl">Locality / Pocket</th>
+                    <th className="py-3 px-4">Super Area</th>
+                    <th className="py-3 px-4">Metro Distance</th>
+                    <th className="py-3 px-4">Price Range</th>
+                    <th className="py-3 px-4 rounded-tr-xl">Key Highlights</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E8D5A3]/40 text-[#4a4535]">
+                  {config.localities.map((loc, idx) => (
+                    <tr key={idx} className="hover:bg-[#FFFEF5] transition-colors">
+                      <td className="py-3.5 px-4 font-bold text-[#1A1800]">{loc.name}</td>
+                      <td className="py-3.5 px-4 font-medium">{loc.superArea}</td>
+                      <td className="py-3.5 px-4 text-[#15803D] font-semibold">{loc.distanceToMetro}</td>
+                      <td className="py-3.5 px-4 font-bold text-[#9E7B15] whitespace-nowrap">{loc.priceRange}</td>
+                      <td className="py-3.5 px-4 text-xs text-[#5c5540]">{loc.highlights}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Frequently Asked Questions (FAQ) */}
         {config.faqs.length > 0 && (
           <div className="space-y-6">
@@ -408,6 +453,26 @@ export default async function SeoLandingPage({ params }: SeoLandingPageProps) {
                   </h3>
                   <p className="text-sm text-[#5c5540] pl-5 leading-relaxed">{faq.answer}</p>
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Related Searches Section */}
+        {config.relatedSearches && config.relatedSearches.length > 0 && (
+          <div className="bg-[#FAF6E8]/60 rounded-2xl p-6 sm:p-8 border border-[#E8D5A3]/50 space-y-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#7A5C00]">
+              Related Searches & Nearby Locations
+            </h4>
+            <div className="flex flex-wrap gap-2.5">
+              {config.relatedSearches.map((item, idx) => (
+                <Link
+                  key={idx}
+                  href={item.slug}
+                  className="px-4 py-2 rounded-full bg-white border border-[#E8D5A3] text-xs font-semibold text-[#1A1800] hover:border-[#C9A227] hover:text-[#9E7B15] transition-all shadow-xs"
+                >
+                  {item.label}
+                </Link>
               ))}
             </div>
           </div>

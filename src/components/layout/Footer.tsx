@@ -83,9 +83,9 @@ export default function Footer() {
             <ul className="space-y-2 text-xs text-[#a09060]">
               <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Flats in Chattarpur</Link></li>
               <li><Link href="/2-bhk-flat-in-chattarpur" className="hover:text-[#C9A227] transition-colors">2 BHK Flats Chattarpur</Link></li>
-              <li><Link href="/3-bhk-flats-for-sale-chattarpur" className="hover:text-[#C9A227] transition-colors">3 BHK Flats Chattarpur</Link></li>
-              <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Builder Floor Chattarpur</Link></li>
-              <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Bank Loan Flats</Link></li>
+              <li><Link href="/3-bhk-flat-in-chattarpur" className="hover:text-[#C9A227] transition-colors">3 BHK Flat in Chattarpur</Link></li>
+              <li><Link href="/builder-floor-in-chhatarpur" className="hover:text-[#C9A227] transition-colors">Builder Floor in Chhatarpur</Link></li>
+              <li><Link href="/flats-in-chattarpur" className="hover:text-[#C9A227] transition-colors">Bank Loan Registry Flats</Link></li>
             </ul>
           </div>
 
