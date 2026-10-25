@@ -11,8 +11,11 @@ interface Flat {
   number: string;
   status: 'available' | 'sold' | 'reserved';
   bedrooms?: number;
+  typeLabel?: string;
   price?: number;
   notes?: string;
+  rowSpan?: number;
+  isDuplex?: boolean;
 }
 
 interface Floor {
@@ -34,6 +37,13 @@ interface Property {
   _id: string;
   title: string;
   location: { city: string };
+  priceList?: Array<{
+    type: string;
+    size?: string;
+    price: string | number;
+    negotiable?: boolean;
+    _id?: string;
+  }>;
 }
 
 interface FloorPlanConfiguratorProps {
@@ -81,8 +91,11 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
     number:     string;
     status:     'available' | 'sold' | 'reserved';
     bedrooms?:  number;
+    typeLabel?: string;
     price?:     string;
     notes?:     string;
+    rowSpan?:   number;
+    isDuplex?:  boolean;
   } | null>(null);
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -121,9 +134,10 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
 
     const generatedFloors: Floor[] = floorConfigs.map((fc, idx) => {
       const flats: Flat[] = Array.from({ length: fc.roomCount }, (_, j) => ({
-        number:   `${fc.roomPrefix} ${j + 1}`,
-        status:   'available',
-        bedrooms: fc.defaultBhk > 0 ? fc.defaultBhk : undefined,
+        number:    `${fc.roomPrefix} ${j + 1}`,
+        status:    'available',
+        bedrooms:  fc.defaultBhk > 0 ? fc.defaultBhk : undefined,
+        typeLabel: fc.defaultBhk > 0 ? `${fc.defaultBhk} BHK` : undefined,
       }));
       return { floorNumber: idx, floorName: fc.floorName, flats };
     });
@@ -141,27 +155,33 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
     setEditingFlat({
       floorIndex,
       flatIndex,
-      number:   flat.number,
-      status:   flat.status,
-      bedrooms: flat.bedrooms,
-      price:    flat.price ? flat.price.toString() : '',
-      notes:    flat.notes || '',
+      number:    flat.number,
+      status:    flat.status,
+      bedrooms:  flat.bedrooms,
+      typeLabel: flat.typeLabel || '',
+      price:     flat.price ? flat.price.toString() : '',
+      notes:     flat.notes || '',
+      rowSpan:   flat.rowSpan || (flat.isDuplex ? 2 : 1),
+      isDuplex:  flat.isDuplex || (flat.rowSpan ? flat.rowSpan > 1 : false),
     });
   };
 
   const handleApplyFlatEdits = () => {
     if (!editingFlat) return;
-    const { floorIndex, flatIndex, number, status, bedrooms, price, notes } = editingFlat;
+    const { floorIndex, flatIndex, number, status, bedrooms, typeLabel, price, notes, isDuplex, rowSpan } = editingFlat;
     if (!number.trim()) { toast.error('Room number/label is required'); return; }
 
     setFloors(prev => {
       const updated = [...prev];
       updated[floorIndex].flats[flatIndex] = {
-        number:   number.trim(),
+        number:    number.trim(),
         status,
-        bedrooms: bedrooms ? Number(bedrooms) : undefined,
-        price:    price && price.trim() ? Number(price) : undefined,
-        notes:    notes?.trim() || undefined,
+        bedrooms:  bedrooms ? Number(bedrooms) : undefined,
+        typeLabel: typeLabel?.trim() || undefined,
+        price:     price && price.trim() ? Number(price) : undefined,
+        notes:     notes?.trim() || undefined,
+        rowSpan:   isDuplex ? (rowSpan && rowSpan > 1 ? rowSpan : 2) : 1,
+        isDuplex:  !!isDuplex,
       };
       return updated;
     });
@@ -495,10 +515,13 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
                                 <X size={10} strokeWidth={3} />
                               </button>
                               <div className="font-bold text-sm tracking-wide leading-tight">{flat.number}</div>
-                              {flat.bedrooms ? (
-                                <div className="text-[10px] font-semibold mt-0.5 text-gray-500">{flat.bedrooms} BHK</div>
-                              ) : (
-                                <div className="text-[10px] font-semibold mt-0.5 text-gray-400">---</div>
+                              <div className="text-[10px] font-semibold mt-0.5 text-gray-500 truncate max-w-[80px]" title={flat.typeLabel || (flat.bedrooms ? `${flat.bedrooms} BHK` : '---')}>
+                                {flat.typeLabel || (flat.bedrooms ? `${flat.bedrooms} BHK` : '---')}
+                              </div>
+                              {(flat.isDuplex || (flat.rowSpan && flat.rowSpan > 1)) && (
+                                <div className="text-[8px] font-black text-[#1F3864] bg-blue-50 border border-blue-200 rounded px-1 py-0.5 mt-1 uppercase tracking-tight">
+                                  Duplex (2 Flr)
+                                </div>
                               )}
                               {flat.price && (
                                 <div className="text-[9px] font-bold text-gray-600 mt-1">₹{flat.price}L</div>
@@ -561,20 +584,98 @@ export default function FloorPlanConfigurator({ property, existingPlan }: FloorP
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">BHK / Type</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">BHK / Unit Type</label>
                   <select
-                    value={editingFlat.bedrooms || ''}
-                    onChange={e => setEditingFlat(prev => prev ? { ...prev, bedrooms: e.target.value ? Number(e.target.value) : undefined } : null)}
+                    value={editingFlat.typeLabel || (editingFlat.bedrooms ? `${editingFlat.bedrooms} BHK` : '')}
+                    onChange={e => {
+                      const val = e.target.value;
+                      if (!val) {
+                        setEditingFlat(prev => prev ? { ...prev, bedrooms: undefined, typeLabel: undefined } : null);
+                        return;
+                      }
+                      const bhkMatch = val.match(/(\d+)\s*bhk/i);
+                      const bedrooms = bhkMatch ? parseInt(bhkMatch[1], 10) : undefined;
+
+                      const matchedPriceItem = property.priceList?.find(p => p.type.toLowerCase() === val.toLowerCase());
+                      let autoPrice = editingFlat.price;
+                      if (!autoPrice && matchedPriceItem && matchedPriceItem.price) {
+                        const pStr = String(matchedPriceItem.price).toLowerCase();
+                        if (pStr.includes('cr')) {
+                          const num = parseFloat(pStr);
+                          if (!isNaN(num)) autoPrice = String(num * 100);
+                        } else if (pStr.includes('l')) {
+                          const num = parseFloat(pStr);
+                          if (!isNaN(num)) autoPrice = String(num);
+                        }
+                      }
+
+                      setEditingFlat(prev => prev ? {
+                        ...prev,
+                        typeLabel: val,
+                        bedrooms: bedrooms || prev.bedrooms,
+                        price: autoPrice || prev.price
+                      } : null);
+                    }}
                     className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:border-[#C9A227]"
                   >
-                    <option value="">Commercial / Other</option>
-                    <option value={1}>1 BHK</option>
-                    <option value={2}>2 BHK</option>
-                    <option value={3}>3 BHK</option>
-                    <option value={4}>4 BHK</option>
-                    <option value={5}>5 BHK</option>
+                    <option value="">Select or choose...</option>
+                    {property.priceList && property.priceList.length > 0 && (
+                      <optgroup label="⭐ Listed in this Property">
+                        {property.priceList.map(pl => (
+                          <option key={pl._id || pl.type} value={pl.type}>
+                            {pl.type} {pl.size ? `(${pl.size})` : ''} {pl.price ? `— ₹${pl.price}` : ''}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                    <optgroup label="Standard Configurations">
+                      <option value="1 BHK">1 BHK</option>
+                      <option value="2 BHK">2 BHK</option>
+                      <option value="3 BHK">3 BHK</option>
+                      <option value="4 BHK">4 BHK</option>
+                      <option value="5 BHK">5 BHK</option>
+                      <option value="Independent Floor">Independent Floor</option>
+                      <option value="Penthouse / Duplex">Penthouse / Duplex</option>
+                      <option value="Commercial / Other">Commercial / Other</option>
+                    </optgroup>
                   </select>
+                  <input
+                    type="text"
+                    placeholder="Custom Label (e.g. 4BHK Family Suite)"
+                    value={editingFlat.typeLabel || ''}
+                    onChange={e => {
+                      const val = e.target.value;
+                      const bhkMatch = val.match(/(\d+)\s*bhk/i);
+                      setEditingFlat(prev => prev ? {
+                        ...prev,
+                        typeLabel: val,
+                        bedrooms: bhkMatch ? parseInt(bhkMatch[1], 10) : prev.bedrooms
+                      } : null);
+                    }}
+                    className="w-full mt-1.5 px-2.5 py-1.5 bg-white border border-gray-200 rounded-lg text-xs text-gray-700 focus:outline-none focus:border-[#C9A227] placeholder:text-gray-400"
+                  />
                 </div>
+              </div>
+
+              {/* Duplex Toggle */}
+              <div className="flex items-center gap-2.5 p-3 bg-blue-50/70 border border-blue-200 rounded-lg">
+                <input
+                  type="checkbox"
+                  id="isDuplexCheck"
+                  checked={editingFlat.isDuplex || (editingFlat.rowSpan && editingFlat.rowSpan > 1) || false}
+                  onChange={e => {
+                    const checked = e.target.checked;
+                    setEditingFlat(prev => prev ? {
+                      ...prev,
+                      isDuplex: checked,
+                      rowSpan: checked ? 2 : 1
+                    } : null);
+                  }}
+                  className="w-4 h-4 text-[#1F3864] rounded border-gray-300 focus:ring-blue-500 cursor-pointer"
+                />
+                <label htmlFor="isDuplexCheck" className="text-xs font-bold text-gray-700 cursor-pointer select-none">
+                  Duplex Unit (Spans 2 Floors)
+                </label>
               </div>
 
               {/* Status */}

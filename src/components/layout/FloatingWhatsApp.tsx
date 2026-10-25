@@ -1,11 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { MessageCircle } from 'lucide-react';
 
 export default function FloatingWhatsApp() {
+  const pathname = usePathname();
   const [shouldRender, setShouldRender] = useState(false);
   const waLink = "https://wa.me/919311059100?text=Hello SS Realty, I am interested in your properties. Please share more details.";
+
+  if (pathname?.startsWith('/floor-plans') || pathname?.startsWith('/floorview') || pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   useEffect(() => {
     // Render on interaction or after 4 seconds

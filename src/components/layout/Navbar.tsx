@@ -38,6 +38,10 @@ export default function Navbar() {
   const isHomePage = pathname === '/';
   const isSolid = scrolled || !isHomePage;
 
+  if (pathname?.startsWith('/floor-plans') || pathname?.startsWith('/floorview')) {
+    return null;
+  }
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       {/* Top Contact Bar - Hidden on Desktop */}

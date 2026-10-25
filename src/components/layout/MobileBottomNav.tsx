@@ -6,6 +6,10 @@ import { Home, Calculator, Search, Info, Phone } from 'lucide-react';
 export default function MobileBottomNav() {
   const pathname = usePathname();
 
+  if (pathname?.startsWith('/floor-plans') || pathname?.startsWith('/floorview') || pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   const navItems = [
     { name: 'HOME', href: '/', icon: Home, isCenter: false },
     { name: 'EMI', href: '/emi-calculator', icon: Calculator, isCenter: false },

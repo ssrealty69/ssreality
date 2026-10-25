@@ -33,6 +33,10 @@ export default function Footer() {
   const pathname = usePathname();
   const isFloorPlanPage = pathname?.includes('/floor-plans') || pathname?.includes('/floorview');
 
+  if (isFloorPlanPage) {
+    return null;
+  }
+
   return (
     <footer className="bg-[#0d0c00] text-[#d4c48a]">
       {/* Top CTA Strip */}

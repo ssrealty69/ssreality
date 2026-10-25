@@ -6,8 +6,8 @@ import { usePathname } from 'next/navigation';
 export default function MobileStickyBar() {
   const pathname = usePathname();
 
-  // Hide on admin routes or floorview full screen routes
-  if (pathname?.startsWith('/admin') || pathname?.includes('/floorview')) {
+  // Hide on admin routes or floorview/floor-plans full screen routes
+  if (pathname?.startsWith('/admin') || pathname?.includes('/floorview') || pathname?.includes('/floor-plans')) {
     return null;
   }
 

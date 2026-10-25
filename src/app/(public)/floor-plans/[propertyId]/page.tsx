@@ -33,7 +33,7 @@ export default async function PublicFloorPlanPage({
 
   try {
     await connectDB();
-    const rawProperty = await Property.findById(propertyId).select('title location features agent status propertyType').lean();
+    const rawProperty = await Property.findById(propertyId).select('title propertyName location features agent status propertyType price priceList').lean();
     
     if (!rawProperty) {
       errorMsg = 'Property not found';
@@ -70,10 +70,11 @@ export default async function PublicFloorPlanPage({
           ...allPlotPlans.map(p => p.propertyId)
         ];
         
-        const rawProps = await Property.find({ _id: { $in: planIds } }).select('title location').lean();
+        const rawProps = await Property.find({ _id: { $in: planIds } }).select('title propertyName location').lean();
         propertiesWithPlans = JSON.parse(JSON.stringify(rawProps)).map((p: any) => ({
           _id: p._id.toString(),
           title: p.title,
+          propertyName: p.propertyName,
           location: p.location,
         }));
       }

@@ -4,8 +4,11 @@ export interface IFlat {
   number: string;                     // e.g. "101", "A-3"
   status: 'available' | 'sold' | 'reserved';
   bedrooms?: number;                  // e.g., 2 (for 2 BHK), 3 (for 3 BHK)
+  typeLabel?: string;                 // e.g., "4BHK + Study + Family Suite", "Independent Floor"
   price?: number;                     // Optional price
   notes?: string;                     // Optional private admin notes
+  rowSpan?: number;                   // For Duplex / multi-floor units (e.g. 2)
+  isDuplex?: boolean;                 // Whether this unit is a Duplex
 }
 
 export interface IFloor {
@@ -31,8 +34,11 @@ const FlatSchema = new Schema<IFlat>({
     default: 'available' 
   },
   bedrooms: { type: Number },
+  typeLabel: { type: String },
   price: { type: Number },
-  notes: { type: String }
+  notes: { type: String },
+  rowSpan: { type: Number, default: 1 },
+  isDuplex: { type: Boolean, default: false }
 });
 
 const FloorSchema = new Schema<IFloor>({
