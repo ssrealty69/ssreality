@@ -72,6 +72,15 @@ const nextConfig: NextConfig = {
   // ─── HTTP Security Headers ────────────────────────────────────────────────
   async headers() {
     return [
+      // ── Allow CORS for mobile API (Flutter Web / PWA) ──────────────────────
+      {
+        source: '/api/mobile/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, PATCH, DELETE, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization, X-Requested-With, Accept' },
+        ],
+      },
       // ── Comprehensive security headers for all routes ─────────────────────
       {
         source: '/(.*)',
