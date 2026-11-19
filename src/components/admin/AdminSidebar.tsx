@@ -57,7 +57,14 @@ export default function AdminSidebar({
     };
 
     fetchUnreadCounts();
-    const interval = setInterval(fetchUnreadCounts, 25000);
+    const interval = setInterval(fetchUnreadCounts, 90000);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchUnreadCounts();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     
     // Read role from cookie
     const getCookie = (name: string) => {
@@ -71,6 +78,7 @@ export default function AdminSidebar({
     return () => {
       isMounted = false;
       clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [pathname]);
 

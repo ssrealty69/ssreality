@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import AgentLead from '@/models/AgentLead';
 import { verifyAgentToken } from '@/lib/agentAuth';
-import { triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 

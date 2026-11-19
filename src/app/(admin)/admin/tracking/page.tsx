@@ -247,7 +247,10 @@ export default function AdminTrackingPage() {
     fetchLiveTracking();
     fetchGeofenceSettings();
     if (!autoRefresh) return;
-    const interval = setInterval(fetchLiveTracking, 15000);
+    const interval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.hidden) return;
+      fetchLiveTracking();
+    }, 45000);
     return () => clearInterval(interval);
   }, [autoRefresh]);
 
@@ -321,7 +324,7 @@ export default function AdminTrackingPage() {
               )}
               <span className={`relative inline-flex rounded-full h-2 w-2 ${autoRefresh ? 'bg-emerald-500' : 'bg-stone-400'}`} />
             </span>
-            <span>{autoRefresh ? 'Live (15s)' : 'Paused'}</span>
+            <span>{autoRefresh ? 'Live (45s)' : 'Paused'}</span>
           </button>
 
           <button

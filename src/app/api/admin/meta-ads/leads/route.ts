@@ -1,6 +1,6 @@
 import { after } from 'next/server';
 import { NextRequest, NextResponse } from 'next/server';
-import { getMetaLeads, triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
+import { getMetaLeads } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 

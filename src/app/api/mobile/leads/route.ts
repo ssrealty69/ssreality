@@ -6,7 +6,6 @@ import AgentLead from '@/models/AgentLead';
 import Agent from '@/models/Agent';
 import AgentSession from '@/models/AgentSession';
 import { cleanProjectTitle } from '@/lib/lead-distributor';
-import { triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 

@@ -5,7 +5,6 @@ import { connectDB } from '@/lib/mongodb';
 import Agent from '@/models/Agent';
 import AgentLead from '@/models/AgentLead';
 import AgentSession from '@/models/AgentSession';
-import { triggerAutoSyncIfNeeded } from '@/lib/meta-sheets-service';
 
 export const dynamic = 'force-dynamic';
 

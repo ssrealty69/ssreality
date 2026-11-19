@@ -137,12 +137,13 @@ export default function MetaAdsAdminPage() {
     fetchLeads();
   }, [fetchLeads]);
 
-  // Automated 30-Second Real-Time Poller
+  // Automated Background Poller (90s)
   useEffect(() => {
     if (!autoSync) return;
     const interval = setInterval(() => {
-      fetchLeads(true); // Silent background auto-sync
-    }, 25000); // Poll every 25 seconds
+      if (typeof document !== 'undefined' && document.hidden) return;
+      fetchLeads(true); // Silent background fetch
+    }, 90000); // Poll every 90 seconds
     return () => clearInterval(interval);
   }, [autoSync, fetchLeads]);
 
