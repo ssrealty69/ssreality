@@ -75,7 +75,8 @@ const nextConfig: NextConfig = {
         headers: [
           { key: 'Access-Control-Allow-Origin', value: '*' },
           { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, PATCH, DELETE, OPTIONS' },
-          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization, X-Requested-With, Accept' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization, X-Requested-With, Accept, x-agent-id, x-employee-id' },
+          { key: 'Access-Control-Max-Age', value: '86400' },
         ],
       },
       // ── Comprehensive security headers for all routes ─────────────────────

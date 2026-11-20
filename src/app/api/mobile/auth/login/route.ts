@@ -35,6 +35,19 @@ function getISTDateString(): string {
 
 export const dynamic = 'force-dynamic';
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Accept, x-agent-id, x-employee-id',
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: corsHeaders,
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -45,7 +58,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: false,
         error: 'Email / Employee ID and Password are required'
-      }, { status: 400 });
+      }, { status: 400, headers: corsHeaders });
     }
 
     await connectDB();
@@ -63,14 +76,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: false,
         error: 'This account is not registered in Team Members / Agents.'
-      }, { status: 401 });
+      }, { status: 401, headers: corsHeaders });
     }
 
     if (!agent.isActive) {
       return NextResponse.json({
         success: false,
         error: 'Your team account is deactivated. Please contact your administrator.'
-      }, { status: 403 });
+      }, { status: 403, headers: corsHeaders });
     }
 
     const hashed = hashPassword(password, agent.salt);
@@ -78,7 +91,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: false,
         error: 'Incorrect password. Please check and try again.'
-      }, { status: 401 });
+      }, { status: 401, headers: corsHeaders });
     }
 
     // Auto-sync plainPassword in database so admin panel immediately has the latest password
@@ -148,6 +161,8 @@ export async function POST(req: NextRequest) {
           isActive: true,
         },
       },
+    }, {
+      headers: corsHeaders,
     });
 
   } catch (error: any) {
@@ -155,6 +170,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: false,
       error: error.message || 'Internal server error'
-    }, { status: 500 });
+    }, { status: 500, headers: corsHeaders });
   }
 }

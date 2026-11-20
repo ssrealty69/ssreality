@@ -7,6 +7,19 @@ import mongoose from 'mongoose';
 
 export const dynamic = 'force-dynamic';
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Accept, x-agent-id, x-employee-id',
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: corsHeaders,
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -29,7 +42,7 @@ export async function POST(req: NextRequest) {
     } = body;
 
     if (!leadId && !phoneNumber) {
-      return NextResponse.json({ success: false, error: 'leadId or phoneNumber required' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'leadId or phoneNumber required' }, { status: 400, headers: corsHeaders });
     }
 
     await connectDB();
@@ -175,10 +188,10 @@ export async function POST(req: NextRequest) {
       success: true,
       message: 'Call disposition saved successfully with recording details',
       data: agentLead,
-    });
+    }, { headers: corsHeaders });
   } catch (error: any) {
     console.error('Mobile Lead Disposition Error:', error);
-    return NextResponse.json({ success: false, error: 'Server error', details: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: 'Server error', details: error.message }, { status: 500, headers: corsHeaders });
   }
 }
 

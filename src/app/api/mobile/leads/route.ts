@@ -9,6 +9,19 @@ import { cleanProjectTitle } from '@/lib/lead-distributor';
 
 export const dynamic = 'force-dynamic';
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Accept, x-agent-id, x-employee-id',
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: corsHeaders,
+  });
+}
+
 function extractUnitType(requirement?: string, title?: string): string {
   const text = `${requirement || ''} ${title || ''}`;
   
@@ -118,13 +131,23 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get('search')?.toLowerCase();
 
     // 1. Resolve requesting agent if provided
-    let agentParam = searchParams.get('agentId') || searchParams.get('agent') || searchParams.get('employeeId');
+    let agentParam = searchParams.get('agentId') || searchParams.get('agent') || searchParams.get('employeeId') || req.headers.get('x-employee-id') || req.headers.get('x-agent-id');
     const authHeader = req.headers.get('authorization');
     if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
+      const token = authHeader.substring(7).trim();
       const session = await AgentSession.findOne({ token }).lean();
       if (session && (session as any).agentId) {
         agentParam = (session as any).agentId;
+      } else if (token.startsWith('dev_token_') || token.startsWith('dev_access_token_')) {
+        // Support offline / web development dev tokens
+        const tLower = token.toLowerCase();
+        if (tLower.includes('director') || tLower.includes('yogesh')) agentParam = 'SSR000';
+        else if (tLower.includes('nikhil')) agentParam = 'SSR001';
+        else if (tLower.includes('ayaan')) agentParam = 'SSR002';
+        else if (tLower.includes('gulshan')) agentParam = 'SSR004';
+        else if (tLower.includes('nihal')) agentParam = 'SSR005';
+        else if (tLower.includes('bhavishya')) agentParam = 'SSR006';
+        else if (tLower.includes('vikas') || tLower.includes('nikita')) agentParam = 'SSR013';
       }
     }
 
@@ -279,12 +302,14 @@ export async function GET(req: NextRequest) {
       },
       data: filteredLeads,
       leads: filteredLeads,
+    }, {
+      headers: corsHeaders,
     });
   } catch (error: any) {
     console.error('Mobile Leads Fetch Error:', error);
     return NextResponse.json(
       { success: false, error: error.message || 'Failed to fetch leads' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
