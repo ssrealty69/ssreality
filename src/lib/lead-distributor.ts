@@ -31,7 +31,7 @@ export const AGENT_PRIORITY_SLABS: AgentPriorityConfig[] = [
   { rank: 2, namePattern: /ayaan/i,  employeeId: 'SSR002', weight: 1.30, isTop3: true },
   { rank: 3, namePattern: /nihal/i,  employeeId: 'SSR005', weight: 1.20, isTop3: true },
   { rank: 4, namePattern: /gulshan/i,employeeId: 'SSR004', weight: 1.05, isTop3: false },
-  { rank: 5, namePattern: /nikita/i, employeeId: 'SSR013', weight: 1.00, isTop3: false },
+  { rank: 5, namePattern: /vikas|vikash|nikita/i, employeeId: 'SSR013', weight: 1.00, isTop3: false },
   { rank: 6, namePattern: /bhavishya/i, employeeId: 'SSR006', weight: 0.95, isTop3: false },
   { rank: 7, namePattern: /manjeet/i,employeeId: 'SSR008', weight: 0.90, isTop3: false },
   { rank: 8, namePattern: /geetanjali/i, employeeId: 'SSR012', weight: 0.85, isTop3: false },
@@ -518,6 +518,7 @@ export async function bulkDistributeUnassignedLeads(): Promise<{
       campaignName: m.campaignName,
       adName: m.adName,
       platform: m.platform,
+      forceManual: true,
       createdAt: m.createdAt ? new Date(m.createdAt) : new Date(),
     });
 
@@ -546,6 +547,7 @@ export async function bulkDistributeUnassignedLeads(): Promise<{
       rawProjectName: pe.propertyTitle,
       propertyInterest: pe.propertyTitle,
       notes: pe.requirement,
+      forceManual: true,
       createdAt: pe.createdAt ? new Date(pe.createdAt) : new Date(),
     });
 
@@ -584,6 +586,7 @@ export async function bulkDistributeUnassignedLeads(): Promise<{
       rawProjectName: ct.propertyTitle || ct.subject,
       propertyInterest: ct.subject,
       notes: ct.message,
+      forceManual: true,
       createdAt: ct.createdAt ? new Date(ct.createdAt) : new Date(),
     });
 
