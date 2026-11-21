@@ -66,6 +66,20 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  // ─── Rewrites for PWA ──────────────────────────────────────────────────────
+  async rewrites() {
+    return [
+      {
+        source: '/crm',
+        destination: '/crm/index.html',
+      },
+      {
+        source: '/app',
+        destination: '/crm/index.html',
+      },
+    ];
+  },
+
   // ─── HTTP Security Headers ────────────────────────────────────────────────
   async headers() {
     return [
