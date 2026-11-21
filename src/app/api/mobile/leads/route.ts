@@ -8,9 +8,10 @@ import { verifyAgentToken } from '@/lib/agentAuth';
 
 export const dynamic = 'force-dynamic';
 
-// ✅ SECURITY FIX: CORS restricted to our own domain only (not public *)
+// ✅ CORS headers: allow mobile app and iOS PWA (e.g. ssrealtyteams.github.io, localhost, etc.)
+// Security is enforced via verifyAgentToken Bearer auth below
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://www.ssrealty.org',
+  'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Accept, x-agent-id, x-employee-id',
 };

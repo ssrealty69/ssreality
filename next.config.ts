@@ -129,16 +129,18 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              // Scripts: self + Vercel analytics + Google tag manager + inline (needed for Next.js) + Leaflet CDN
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live https://cdnjs.cloudflare.com",
+              // Scripts: self + Vercel analytics + Google tag manager + inline (needed for Next.js) + Leaflet CDN + Flutter Web/Wasm
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://vercel.live https://cdnjs.cloudflare.com https://www.gstatic.com",
+              // Workers: Flutter Web workers and canvaskit
+              "worker-src 'self' blob:",
               // Styles: self + Google Fonts + inline (needed for Next.js) + Leaflet CDN
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
               // Fonts: self + Google Fonts CDN
               "font-src 'self' https://fonts.gstatic.com data:",
               // Images: self + Cloudinary + Unsplash + Pixabay + YouTube + data URIs + OpenStreetMap tiles + Leaflet icons
               "img-src 'self' data: blob: https://res.cloudinary.com https://*.cloudinary.com https://images.unsplash.com https://cdn.pixabay.com https://img.youtube.com https://www.google-analytics.com https://*.tile.openstreetmap.org https://cdnjs.cloudflare.com https://a.tile.openstreetmap.org https://b.tile.openstreetmap.org https://c.tile.openstreetmap.org",
-              // Connections: self + API calls + Google Analytics + OpenStreetMap tile servers
-              "connect-src 'self' https://www.google-analytics.com https://vitals.vercel-insights.com https://vercel.live wss://ws-us3.pusher.com https://*.tile.openstreetmap.org",
+              // Connections: self + API calls + Google Analytics + OpenStreetMap tile servers + Flutter Web / Canvaskit
+              "connect-src 'self' blob: data: https://www.google-analytics.com https://vitals.vercel-insights.com https://vercel.live wss://ws-us3.pusher.com https://*.tile.openstreetmap.org https://www.gstatic.com https://fonts.gstatic.com",
               // Frames: YouTube, Google Maps, and Google Docs Viewer embeds allowed
               "frame-src 'self' https://www.youtube.com https://youtube.com https://www.google.com https://maps.google.com https://docs.google.com",
               // Media: self only
