@@ -4,6 +4,7 @@ import AgentLocationLog from '@/models/AgentLocationLog';
 import AgentAttendance from '@/models/AgentAttendance';
 import Agent from '@/models/Agent';
 import { getGeofenceSettings } from '@/lib/geofenceConfig';
+import { verifyAgentToken } from '@/lib/agentAuth';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +44,11 @@ function isWithinShiftHours(): boolean {
 
 export async function POST(req: NextRequest) {
   try {
+    // ✅ SECURITY: Require valid token
+    const auth = await verifyAgentToken(req);
+    if (!auth.success) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
 
     await connectDB();
     const body = await req.json();

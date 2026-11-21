@@ -6,6 +6,7 @@ import AgentAttendance from '@/models/AgentAttendance';
 import AgentLocationLog from '@/models/AgentLocationLog';
 import { getAutoDistributionConfig } from '@/lib/lead-distributor';
 import { localToday, getLocalDateRange } from '@/lib/dateUtils';
+import { verifyAgentToken } from '@/lib/agentAuth';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,12 @@ function formatTimeAgo(dateStr?: string | null): string {
 // GET: Aggregated team overview, attendance, performance and live radar for Director/Admin
 export async function GET(req: NextRequest) {
   try {
+    // ✅ SECURITY: Only authenticated agents (directors) can access admin overview
+    const auth = await verifyAgentToken(req);
+    if (!auth.success) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     await connectDB();
 
     const { searchParams } = new URL(req.url);

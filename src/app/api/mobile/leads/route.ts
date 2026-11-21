@@ -1,17 +1,17 @@
-import { after } from 'next/server';
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/mongodb';
 import AgentLead from '@/models/AgentLead';
 import Agent from '@/models/Agent';
-import AgentSession from '@/models/AgentSession';
 import { cleanProjectTitle } from '@/lib/lead-distributor';
+import { verifyAgentToken } from '@/lib/agentAuth';
 
 export const dynamic = 'force-dynamic';
 
+// ✅ SECURITY FIX: CORS restricted to our own domain only (not public *)
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+  'Access-Control-Allow-Origin': 'https://www.ssrealty.org',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With, Accept, x-agent-id, x-employee-id',
 };
 
@@ -25,7 +25,6 @@ export async function OPTIONS() {
 function extractUnitType(requirement?: string, title?: string): string {
   const text = `${requirement || ''} ${title || ''}`;
   
-  // 1. Check exact "Looking for: <Type>"
   const match = requirement?.match(/Looking for:\s*([^,\n\r]+)/i);
   if (match && match[1]) {
     const val = match[1].trim();
@@ -33,7 +32,6 @@ function extractUnitType(requirement?: string, title?: string): string {
     return val;
   }
 
-  // 2. Regex search for BHK / Plot
   if (/5\s*bhk/i.test(text)) return '5 BHK';
   if (/4\s*bhk/i.test(text)) return '4 BHK';
   if (/3\s*bhk/i.test(text)) return '3 BHK';
@@ -73,13 +71,12 @@ function formatISTDateTime(dateObj: Date): { formattedDate: string; formattedTim
   const minutes = istDate.getUTCMinutes().toString().padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12;
-  hours = hours ? hours : 12; // hour '0' should be '12'
+  hours = hours ? hours : 12;
   const hoursStr = hours.toString().padStart(2, '0');
 
   const formattedDate = `${day} ${month} ${year}`;
   const formattedTime = `${hoursStr}:${minutes} ${ampm}`;
 
-  // Calculate Lead Age (time difference from now)
   const diffMs = Date.now() - dateObj.getTime();
   const diffMinutes = Math.floor(diffMs / (60 * 1000));
   const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
@@ -122,67 +119,42 @@ function mapDispositionToStatus(disposition: string): string {
 
 export async function GET(req: NextRequest) {
   try {
-    // Throttled (Redis, 10 min) background lead sync, runs after the response is sent
-    after(() => triggerAutoSyncIfNeeded());
+    // ✅ SECURITY: Mandatory authentication — no token = no data
+    const auth = await verifyAgentToken(req);
+    if (!auth.success) {
+      return NextResponse.json(
+        { success: false, error: auth.error || 'Unauthorized' },
+        { status: 401, headers: corsHeaders }
+      );
+    }
 
     await connectDB();
     const { searchParams } = new URL(req.url);
-    const filter = searchParams.get('filter'); // 'all', 'new', 'brochure', 'blog', 'contact', 'meta'
+    const filter = searchParams.get('filter');
     const search = searchParams.get('search')?.toLowerCase();
 
-    // 1. Resolve requesting agent if provided
-    let agentParam = searchParams.get('agentId') || searchParams.get('agent') || searchParams.get('employeeId') || req.headers.get('x-employee-id') || req.headers.get('x-agent-id');
-    const authHeader = req.headers.get('authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7).trim();
-      const session = await AgentSession.findOne({ token }).lean();
-      if (session && (session as any).agentId) {
-        agentParam = (session as any).agentId;
-      } else if (token.startsWith('dev_token_') || token.startsWith('dev_access_token_')) {
-        // Support offline / web development dev tokens
-        const tLower = token.toLowerCase();
-        if (tLower.includes('director') || tLower.includes('yogesh')) agentParam = 'SSR000';
-        else if (tLower.includes('nikhil')) agentParam = 'SSR001';
-        else if (tLower.includes('ayaan')) agentParam = 'SSR002';
-        else if (tLower.includes('gulshan')) agentParam = 'SSR004';
-        else if (tLower.includes('nihal')) agentParam = 'SSR005';
-        else if (tLower.includes('bhavishya')) agentParam = 'SSR006';
-        else if (tLower.includes('vikas') || tLower.includes('nikita')) agentParam = 'SSR013';
-      }
-    }
+    // ✅ Agent resolved from verified session (auth.agentId is the MongoDB _id)
+    const agentId = auth.agentId!;
+    const agentDoc = auth.agent as any;
 
-    let agentDoc: any = null;
-    if (agentParam) {
-      const orClauses: any[] = [
-        { employee_id: agentParam.toUpperCase() },
-        { username: agentParam.toLowerCase() },
-        { name: new RegExp(`^${agentParam}$`, 'i') },
-      ];
-      if (mongoose.Types.ObjectId.isValid(agentParam)) {
-        orClauses.unshift({ _id: new mongoose.Types.ObjectId(agentParam) });
-      }
-      agentDoc = await Agent.findOne({ $or: orClauses }).lean();
-    }
-
-    const isExecutive = 
-      agentDoc?.role === 'director' || 
+    const isExecutive =
+      agentDoc?.role === 'director' ||
       agentDoc?.isExecutive === true ||
-      agentDoc?.employee_id === 'SSR000' || 
-      /yogesh/i.test(agentDoc?.name || '') || 
+      agentDoc?.employee_id === 'SSR000' ||
+      /yogesh/i.test(agentDoc?.name || '') ||
       agentDoc?.username === 'info@ssrealty.org';
 
-    // 2. Fetch Agent Leads (For Executive/Director, fetch ALL company leads)
+    // ✅ Director/Executive sees ALL leads; agents see only their own
     let agentLeadsQuery: any = {};
-    if (agentDoc && !isExecutive) {
-      const resolvedAgentId = String(agentDoc._id);
-      const employeeId = agentDoc.employee_id;
-      const agentName = agentDoc.name;
+    if (!isExecutive) {
+      const employeeId = agentDoc?.employee_id;
+      const agentName = agentDoc?.name;
 
       agentLeadsQuery = {
         $or: [
-          { agentId: resolvedAgentId },
-          { agentId: employeeId },
-          { agentName: new RegExp(`^${agentName}$`, 'i') },
+          { agentId: agentId },
+          ...(employeeId ? [{ agentId: employeeId }] : []),
+          ...(agentName ? [{ agentName: new RegExp(`^${agentName}$`, 'i') }] : []),
         ],
       };
     }
@@ -263,7 +235,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Apply Filter if present
+    // Apply Filter
     let filteredLeads = unifiedLeads;
     if (filter && filter !== 'all') {
       if (filter === 'new' || filter === 'newLead') {

@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { setAutoDistributionEnabled, getAutoDistributionConfig } from '@/lib/lead-distributor';
+import { verifyAgentToken } from '@/lib/agentAuth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    // ✅ SECURITY: Require valid token
+    const auth = await verifyAgentToken(req);
+    if (!auth.success) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
     const config = await getAutoDistributionConfig();
     return NextResponse.json({ success: true, ...config });
   } catch (err: any) {
@@ -14,6 +20,11 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    // ✅ SECURITY: Require valid token
+    const auth = await verifyAgentToken(req);
+    if (!auth.success) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
     const body = await req.json();
     const enabled = Boolean(body.enabled);
     const updated = await setAutoDistributionEnabled(enabled);

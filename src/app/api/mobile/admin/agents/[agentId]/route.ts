@@ -6,6 +6,7 @@ import AgentLead from '@/models/AgentLead';
 import AgentAttendance from '@/models/AgentAttendance';
 import AgentLocationLog from '@/models/AgentLocationLog';
 import { localToday, getLocalDateRange } from '@/lib/dateUtils';
+import { verifyAgentToken } from '@/lib/agentAuth';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,12 @@ export async function GET(
   props: { params: Promise<{ agentId: string }> }
 ) {
   try {
+    // ✅ SECURITY: Require valid token
+    const auth = await verifyAgentToken(req);
+    if (!auth.success) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     await connectDB();
     const resolvedParams = await Promise.resolve(props.params);
     const rawAgentId = String(resolvedParams?.agentId || '');

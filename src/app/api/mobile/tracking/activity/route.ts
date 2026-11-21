@@ -4,6 +4,7 @@ import AgentAttendance from '@/models/AgentAttendance';
 import AgentActivityLog from '@/models/AgentActivityLog';
 import Agent from '@/models/Agent';
 import { localToday } from '@/lib/dateUtils';
+import { verifyAgentToken } from '@/lib/agentAuth';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,12 @@ function formatDuration(totalSeconds: number): string {
 
 export async function POST(req: NextRequest) {
   try {
+    // ✅ SECURITY: Require valid token
+    const auth = await verifyAgentToken(req);
+    if (!auth.success) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await req.json().catch(() => ({}));
     const {
       agentId,
