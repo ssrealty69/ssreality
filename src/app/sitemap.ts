@@ -4,8 +4,12 @@ import Property from '@/models/Property';
 import Blog from '@/models/Blog';
 import { SEO_LANDING_PAGES } from '@/lib/seo-landing-pages';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Hourly dynamic sitemap revalidation for quick auto-indexing
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://ssrealty.org';
+  const rawBase = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://www.ssrealty.org';
+  const baseUrl = rawBase.replace('https://ssrealty.org', 'https://www.ssrealty.org');
 
   // 1. Core static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -72,7 +76,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { status: 'scheduled', publishDate: { $lte: new Date() } }
       ]
     })
-      .select('slug coverImage updatedAt createdAt')
+      .select('slug coverImage updatedAt createdAt publishDate')
+      .sort({ publishDate: -1, createdAt: -1 })
       .lean();
     
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,9 +90,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       return {
         url: `${baseUrl}/blog/${blog.slug}`,
-        lastModified: blog.updatedAt || blog.createdAt || new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.75,
+        lastModified: blog.updatedAt || blog.publishDate || blog.createdAt || new Date(),
+        changeFrequency: 'daily' as const,
+        priority: 0.9,
         ...(blogImages.length > 0 ? { images: blogImages } : {}),
       };
     });

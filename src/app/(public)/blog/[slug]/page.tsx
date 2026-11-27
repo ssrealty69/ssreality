@@ -74,11 +74,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const blog = await getBlog(slug);
   if (!blog) return { title: 'Post Not Found | SS Realty' };
 
+  const rawBase = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://www.ssrealty.org';
+  const siteUrl = rawBase.replace('https://ssrealty.org', 'https://www.ssrealty.org');
+
   // Custom SEO parameters with rich defaults
   const seoTitle = blog.seo?.title || blog.title;
   const seoDesc = blog.seo?.description || blog.excerpt;
   const seoKeywords = blog.seo?.keywords || blog.tags?.join(', ') || '';
-  const canonicalUrl = blog.seo?.canonicalUrl || `https://ssrealty.org/blog/${slug}`;
+  const canonicalUrl = blog.seo?.canonicalUrl 
+    ? blog.seo.canonicalUrl.replace('https://ssrealty.org', 'https://www.ssrealty.org')
+    : `${siteUrl}/blog/${slug}`;
+
+  // Ensure absolute image URL for OpenGraph and Schema validators
+  const fullCoverImage = blog.coverImage
+    ? (blog.coverImage.startsWith('http') ? blog.coverImage : `${siteUrl}${blog.coverImage.startsWith('/') ? '' : '/'}${blog.coverImage}`)
+    : `${siteUrl}/og-image.jpg`;
+
+  const datePublishedIso = blog.publishDate 
+    ? new Date(blog.publishDate).toISOString() 
+    : (blog.createdAt ? new Date(blog.createdAt).toISOString() : new Date().toISOString());
+  const dateModifiedIso = blog.updatedAt 
+    ? new Date(blog.updatedAt).toISOString() 
+    : datePublishedIso;
 
   return {
     title: seoTitle,
@@ -90,15 +107,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: seoTitle,
       description: seoDesc,
-      url: `https://ssrealty.org/blog/${slug}`,
+      url: canonicalUrl,
       type: 'article',
-      images: [{ url: blog.coverImage }],
+      publishedTime: datePublishedIso,
+      modifiedTime: dateModifiedIso,
+      images: [
+        {
+          url: fullCoverImage,
+          width: 1200,
+          height: 630,
+          alt: seoTitle,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: seoTitle,
       description: seoDesc,
-      images: [blog.coverImage],
+      images: [fullCoverImage],
     }
   };
 }
@@ -110,6 +136,9 @@ export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
   const blog = await getBlog(slug);
   if (!blog) notFound();
+
+  const rawBase = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://www.ssrealty.org';
+  const siteUrl = rawBase.replace('https://ssrealty.org', 'https://www.ssrealty.org');
 
   const readingTime = Math.ceil((blog.content || '').split(' ').length / 200);
 
@@ -123,18 +152,30 @@ export default async function BlogPostPage({ params }: Props) {
   // Fetch live available properties for dynamic project section
   const availableProperties = await getAvailableProperties();
 
-  // JSON-LD Structured Data for SEO, AEO & AI Engines
+  // Full absolute image URL for valid Rich Results Schema
+  const fullCoverImage = blog.coverImage
+    ? (blog.coverImage.startsWith('http') ? blog.coverImage : `${siteUrl}${blog.coverImage.startsWith('/') ? '' : '/'}${blog.coverImage}`)
+    : `${siteUrl}/og-image.jpg`;
+
+  const datePublishedIso = blog.publishDate 
+    ? new Date(blog.publishDate).toISOString() 
+    : (blog.createdAt ? new Date(blog.createdAt).toISOString() : new Date().toISOString());
+  const dateModifiedIso = blog.updatedAt 
+    ? new Date(blog.updatedAt).toISOString() 
+    : datePublishedIso;
+
+  // JSON-LD Structured Data for SEO, AEO & AI Engines (Google Search Console compliant)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: blog.title,
-    image: [blog.coverImage],
-    datePublished: blog.publishDate || blog.createdAt,
-    dateModified: blog.updatedAt || blog.createdAt,
+    image: [fullCoverImage],
+    datePublished: datePublishedIso,
+    dateModified: dateModifiedIso,
     inLanguage: 'en-IN',
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://ssrealty.org/blog/${slug}`,
+      '@id': `${siteUrl}/blog/${slug}`,
     },
     author: {
       '@type': 'Person',
@@ -143,17 +184,17 @@ export default async function BlogPostPage({ params }: Props) {
       worksFor: {
         '@type': 'RealEstateAgent',
         name: 'SS Realty',
-        url: 'https://ssrealty.org',
+        url: siteUrl,
       },
-      url: 'https://ssrealty.org/about-us',
+      url: `${siteUrl}/about-us`,
     },
     publisher: {
       '@type': 'Organization',
       name: 'SS Realty',
-      url: 'https://ssrealty.org',
+      url: siteUrl,
       logo: {
         '@type': 'ImageObject',
-        url: 'https://ssrealty.org/SS%20Realty%20Official%20Logo.png',
+        url: `${siteUrl}/SS%20Realty%20Official%20Logo.png`,
       },
     },
     description: blog.excerpt,
@@ -163,14 +204,14 @@ export default async function BlogPostPage({ params }: Props) {
     },
   };
 
-  // Breadcrumb Schema for Blog
+  // Breadcrumb Schema for Blog (with full absolute canonical URLs)
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://ssrealty.org' },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://ssrealty.org/blog' },
-      { '@type': 'ListItem', position: 3, name: blog.title, item: `https://ssrealty.org/blog/${slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` },
+      { '@type': 'ListItem', position: 3, name: blog.title, item: `${siteUrl}/blog/${slug}` },
     ]
   };
 
